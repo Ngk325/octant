@@ -97,17 +97,6 @@ small, .small {
   font-variant-ligatures: none;
 }
 
-/* Section labels. Sentence case, sans, 15px — not 10px uppercase mono. */
-.label {
-  display: block;
-  font-family: var(--sans);
-  font-size: var(--t-sm);
-  font-weight: 600;
-  letter-spacing: 0;
-  color: var(--muted);
-  margin-bottom: var(--s3);
-}
-
 ul, ol { max-width: var(--measure); padding-left: 1.3em; margin: 0 0 var(--s4); }
 li { margin-bottom: var(--s2); }
 

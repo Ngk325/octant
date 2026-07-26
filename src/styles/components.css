@@ -106,8 +106,53 @@ nav.tabs a.on { background: var(--accent-soft); color: var(--accent-ink); }
   padding: var(--s5);
   box-shadow: var(--shadow);
 }
-.card.flush { padding: var(--s4); }
 .card > :last-child { margin-bottom: 0; }
+/* Prose inside a card is measure-capped like prose anywhere else. Without
+   this, a card in a collapsed single-column grid runs its text the full
+   shell width — 120-character lines on exactly the pages that grew longest. */
+.card p, .card li { max-width: var(--measure); }
+
+/* A clickable card — see Tile in Bits.tsx. One shell for every linkable
+   tile in the app; content varies, chrome does not. */
+.tile {
+  display: block;
+  padding: var(--s4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.tile:hover { border-color: var(--rule-strong); box-shadow: var(--shadow-lg); }
+.tile.on { background: var(--accent-soft); border-color: var(--accent); }
+
+/* A selectable answer card — see ChoiceCard in Bits.tsx. */
+.choice {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  line-height: 1.45;
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.choice:hover { border-color: var(--rule-strong); }
+.choice.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.choice[disabled] { opacity: .55; cursor: default; }
+
+/* Anchored section headings — see Section.tsx. The scroll margin is derived,
+   never hard-coded; tests/styles.test.ts greps for stray literals. */
+.sec { scroll-margin-top: calc(var(--masthead-h) + var(--s4)); }
 
 .card-title {
   font-family: var(--sans);

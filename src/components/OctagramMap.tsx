@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { wheels, templeOf, type TempleName } from "../engine/octagram";
 import { quadra, type MbtiType } from "../engine/core";
 import { usePalette } from "./Theme";
@@ -152,38 +151,5 @@ export default function OctagramMap({ highlight }: { highlight?: MbtiType }) {
         four temples
       </text>
     </svg>
-  );
-}
-
-/** The eight wheels as links, for anywhere the ring is too big to draw. */
-export function OctagramLegend({ highlight }: { highlight?: MbtiType }) {
-  const p = usePalette();
-  return (
-    <div className="grid g-auto" style={{ gap: "var(--s3)" }}>
-      {wheels().map((w) => (
-        <div
-          key={w.origin}
-          style={{
-            border: "1px solid var(--rule)",
-            borderLeft: `3px solid ${
-              highlight && (w.pair as string[]).includes(highlight) ? "var(--accent)" : "var(--rule-strong)"
-            }`,
-            borderRadius: "var(--radius)",
-            padding: "var(--s3)",
-          }}
-        >
-          <b style={{ fontFamily: "var(--serif)", fontSize: "var(--t-base)" }}>{w.origin}</b>
-          <div className="small muted" style={{ marginBottom: 6 }}>{w.temple} temple</div>
-          <div className="cluster" style={{ gap: 6 }}>
-            {w.pair.map((t) => (
-              <Link key={t} to={`/type/${t}`} className="chip mono">
-                <i className="dot" style={{ background: p.quadra(quadra(t)) }} />
-                {t}
-              </Link>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }

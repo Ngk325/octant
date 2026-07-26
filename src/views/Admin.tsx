@@ -112,7 +112,7 @@ export default function Admin() {
       {waiting.length > 0 && (
         <Panel title={`Waiting for you — ${waiting.length}`} style={{ marginTop: "var(--s5)" }}>
           {waiting.map((u) => (
-            <Row key={u.email} user={u} busy={busy === u.email} onChange={change} />
+            <AdminRow key={u.email} user={u} busy={busy === u.email} onChange={change} />
           ))}
         </Panel>
       )}
@@ -128,7 +128,7 @@ export default function Admin() {
             </p>
           )}
           {rest.map((u) => (
-            <Row key={u.email} user={u} busy={busy === u.email} onChange={change} />
+            <AdminRow key={u.email} user={u} busy={busy === u.email} onChange={change} />
           ))}
         </Panel>
       )}
@@ -141,7 +141,7 @@ export default function Admin() {
   );
 }
 
-function Row({
+function AdminRow({
   user, busy, onChange,
 }: {
   user: User;

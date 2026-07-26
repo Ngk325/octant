@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TYPES, REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/data";
 import { REL_PLAIN, CONCEPT_PLAIN, SLOT_PLAIN } from "../engine/plain";
@@ -11,7 +11,7 @@ import { usePublishContext } from "../chat/ChatContext";
 import Term from "../components/Term";
 import TypePicker from "../components/TypePicker";
 import Explain from "../components/Explain";
-import { Panel, Row, Score, EaseBar } from "../components/Bits";
+import { FnTag, Panel, Row, Score, EaseBar, Tile } from "../components/Bits";
 
 /**
  * Two types: the relation, both directional ease scores, the composed playbook, and
@@ -85,7 +85,7 @@ export default function PairReader() {
               <Row
                 key={fn}
                 stacked
-                k={<span>{fn === pHero ? "Their strongest" : "Their second"} — <b className="mono" style={{ color: p.fn(fn) }}>{fn}</b> lands on {target}&rsquo;s <b>{slot}</b></span>}
+                k={<span>{fn === pHero ? "Their strongest" : "Their second"} — <FnTag fn={fn} /> lands on {target}&rsquo;s <b>{slot}</b></span>}
                 v={<span className="small">{SLOT_PLAIN[slot]}</span>}
               />
             ))}
@@ -190,25 +190,14 @@ export default function PairReader() {
         {TYPES.map((x) => {
           const v = ease(target, x);
           return (
-            <Link
-              key={x}
-              to={`/pair/${target}/${x}`}
-              style={{
-                display: "block",
-                padding: "var(--s3)",
-                border: "1px solid var(--rule)",
-                borderRadius: "var(--radius)",
-                background: x === persp ? "var(--accent-soft)" : "var(--surface)",
-                textDecoration: "none",
-              }}
-            >
+            <Tile key={x} to={`/pair/${target}/${x}`} selected={x === persp} style={{ padding: "var(--s3)" }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span className="mono">{x}</span>
                 <span className="mono" style={{ color: p.ease(v) }}>{v}</span>
               </div>
               <div className="small muted" style={{ margin: "2px 0 6px" }}>{REL_NAME[REL[target][x]]}</div>
               <EaseBar value={v} />
-            </Link>
+            </Tile>
           );
         })}
       </div>

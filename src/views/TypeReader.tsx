@@ -30,7 +30,7 @@ import ThemeSeasons from "../components/ThemeSeasons";
 import TypePicker from "../components/TypePicker";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
-import { Panel, Row } from "../components/Bits";
+import { FnTag, Panel, Row } from "../components/Bits";
 import Term from "../components/Term";
 
 const SECTIONS = [
@@ -104,7 +104,7 @@ export default function TypeReader() {
       </nav>
 
       {/* ------------------------------------------------ slots */}
-      <h2 id="slots" style={{ scrollMarginTop: 88 }}>The eight slots</h2>
+      <h2 id="slots" className="sec">The eight slots</h2>
 
       <Explain
         plain={`Eight habits of mind, in ${t}'s order of strength. The top four feel like "me". The bottom four run anyway, and feel like things that happen to you.`}
@@ -134,7 +134,7 @@ export default function TypeReader() {
         {st.map((fn, i) => (
           <Panel key={fn} title={`${i + 1}. ${SLOT_NAMES[i]}`}>
             <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
-              <b className="mono" style={{ color: p.fn(fn), fontSize: "var(--t-lg)" }}>{fn}</b>
+              <FnTag fn={fn} size="var(--t-lg)" />
               <Term>{SLOT_NAMES[i]}</Term>
               <span className="chip">{FN_ROLE[fn]}</span>
               <span className="chip" title={FN_KEYWORD_GLOSS[fn]}>{FN_KEYWORD[fn]}</span>
@@ -153,7 +153,7 @@ export default function TypeReader() {
       </div>
 
       {/* ------------------------------------------------ four sides */}
-      <h2 id="sides" style={{ scrollMarginTop: 88 }}>Four sides of the mind</h2>
+      <h2 id="sides" className="sec">Four sides of the mind</h2>
 
       <Explain
         big
@@ -194,7 +194,7 @@ export default function TypeReader() {
               <p>{side.what}</p>
             </Explain>
 
-            <Row k="Way in" v={<span><b className="mono" style={{ color: p.fn(side.gateway.fn) }}>{side.gateway.fn}</b>{k !== "ego" && <span className="small"> — your {side.gateway.egoSlot}</span>}</span>} />
+            <Row k="Way in" v={<span><FnTag fn={side.gateway.fn} />{k !== "ego" && <span className="small"> — your {side.gateway.egoSlot}</span>}</span>} />
             <Row k="What holds it shut" v={<span className="small">{side.blockedBy}</span>} stacked />
             <Row k="What opens it" v={<span className="small">{side.opensWith}</span>} stacked />
             <Row k="Deliberately" v={<span className="small">{side.atWill}</span>} stacked />
@@ -224,7 +224,7 @@ export default function TypeReader() {
       </p>
 
       {/* ------------------------------------------------ ops */}
-      <h2 id="ops" style={{ scrollMarginTop: 88 }}>The OPS overlay</h2>
+      <h2 id="ops" className="sec">The OPS overlay</h2>
 
       <Explain
         big
@@ -370,7 +370,7 @@ export default function TypeReader() {
       </Panel>
 
       {/* ------------------------------------------------ growth */}
-      <h2 id="growth" style={{ scrollMarginTop: 88 }}>Growth</h2>
+      <h2 id="growth" className="sec">Growth</h2>
 
       <Explain big plain={GATE_PLAIN[g.gate]}>
         <p>
@@ -418,7 +418,7 @@ export default function TypeReader() {
           {[st[3], st[4]].map((fn, n) => (
             <div key={fn}>
               <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
-                <b className="mono" style={{ color: p.fn(fn), fontSize: "var(--t-lg)" }}>{fn}</b>
+                <FnTag fn={fn} size="var(--t-lg)" />
                 <span className="chip">{n === 0 ? "Inferior" : "Nemesis"}</span>
                 <span className="chip">wants {FN_WANTS[fn].toLowerCase()}</span>
               </div>
@@ -457,7 +457,7 @@ export default function TypeReader() {
       </Panel>
 
       {/* ------------------------------------------------ octagram */}
-      <h2 id="octagram" style={{ scrollMarginTop: 88 }}>The Octagram</h2>
+      <h2 id="octagram" className="sec">The Octagram</h2>
 
       <Explain big plain={CONCEPT_PLAIN.octagram}>
         <p>
@@ -561,7 +561,7 @@ export default function TypeReader() {
       </Panel>
 
       {/* ------------------------------------------------ fit */}
-      <h2 id="fit" style={{ scrollMarginTop: 88 }}>Who you fit</h2>
+      <h2 id="fit" className="sec">Who you fit</h2>
 
       <div className="grid g3">
         <Panel title="Complements — restful">

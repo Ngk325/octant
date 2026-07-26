@@ -103,7 +103,7 @@ export default function Calculator() {
           </button>
         </div>
 
-        <div className="stack-v" style={{ position: "sticky", top: 88 }}>
+        <div className="stack-v" style={{ position: "sticky", top: "calc(var(--masthead-h) + var(--s5))" }}>
           {result.best && (
             <Panel title="Your type">
               <div className="cluster" style={{ gap: "var(--s4)" }}>
