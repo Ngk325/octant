@@ -15,6 +15,7 @@ src/engine/
   network.ts    n-person weighted digraph analysis
   palette.ts    fixed spectral palette — a function keeps its hue in every diagram
   verify.ts     the structural assertions, runnable at any time
+  lexicon.ts    88 term definitions + pairing logic for every category
   data.ts       GENERATED copy tables (see "Provenance")
 ```
 
@@ -27,6 +28,38 @@ src/engine/
 | `/pair/:a/:b` | Relation, **both** directional ease scores, and the composed playbook. Shareable URL. |
 | `/network` | The reason this is software and not a spreadsheet: group as a weighted digraph. |
 | `/matrix` | All 256 cells, colour-scaled, every cell a link into the pair reader. |
+| `/lexicon` | 88 defined terms, searchable and filterable; `/lexicon/:id` shows one term paired against every other member of its category. |
+
+## The lexicon
+
+Every term the system uses is defined, sourced and **pairable**. A definition alone is not much
+use — what matters is what happens when two of them meet. So each category that can pair does:
+Infantile against Caregiver, Alpha against Gamma, Play against Blast, Ne against Si, Hero against
+Trickster, and so on for all sixteen ordered combinations in each.
+
+Terms appear inline throughout the app as dotted underlines; clicking one shows the short
+definition and links to the full entry. The pair reader carries an **Aspect by aspect** section
+that walks all sixteen comparable dimensions of two types — quadra, temperament, interaction
+style, romance style, animal, gate, Hero and Inferior functions, and each of the eight coins —
+and prints the pairing text for that specific combination.
+
+Where the structure determines the answer (quadras, animals, functions, archetypes) the pairing
+is derived and the specifics interpolated. Where the flavour is the content (romance styles,
+interaction styles) all sixteen ordered pairs are authored, because reading someone is not the
+same as being read by them.
+
+## Complement and Catalyst
+
+Two derived fields that the original workbook conflated into one:
+
+- **Complement** — Dual + Activity. Supplies your **Inferior**, the function you fear. Restful.
+- **Catalyst** — the two types whose Hero is your **Nemesis**. Supplies the function you are
+  consciously reaching for and reflexively arguing with. Stimulating, slightly abrasive.
+  Structurally this always resolves to your Extinguishment and Mirage partners.
+
+An ENTP wants convergence, but convergence is Ni, and Ni is the Nemesis — which is why INTJ and
+INFJ feel compelling rather than comfortable, and why the old "Sidekicks" column kept reaching
+for them.
 
 ## Two things the interface insists on
 
@@ -44,27 +77,27 @@ different places. That divergence is the content, not an error to smooth over.
 ```sh
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 24 tests, including all 256 playbooks
+npm test           # 32 tests: engine port fidelity, lexicon integrity, catalysts
 npm run build      # → dist/
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy
 
-Create the project via **Workers & Pages → Create application → Pages → Import an existing Git
-repository**. Git integration cannot be added to an existing Pages project after the fact, so it
-has to be done at creation.
+**Cloudflare Workers with Static Assets.** See **[DEPLOY.md](./DEPLOY.md)** for the full
+runbook. Short version:
 
-| Setting | Value |
-|---|---|
-| Framework preset | Vite |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Production branch | `main` |
+```sh
+npm run cf:login     # Cloudflare OAuth, once
+npm run deploy       # build + wrangler deploy
+```
 
-`public/_redirects` ships the SPA fallback (`/* /index.html 200`) so deep links like
-`/pair/ENTP/ENFJ` resolve. A `wrangler.jsonc` is included if you later move to Workers Static
-Assets — Cloudflare's docs now steer new projects that way, and the migration is
-`npx wrangler deploy` with no code changes.
+Or connect the repo in the dashboard (Workers & Pages → Create → Workers → Import a repository)
+for build-and-deploy on every push.
+
+Workers rather than Pages because Pages' Git integration cannot be added after project creation,
+Cloudflare now routes new projects to Workers, and adding an API later needs no migration.
+`not_found_handling: "single-page-application"` in `wrangler.jsonc` is what makes deep links like
+`/pair/ENTP/ENFJ` survive a hard refresh.
 
 ## Provenance
 

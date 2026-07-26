@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  TYPES, quadra, stack, ops, gate, coins, fourSides, complements, frictions,
+  TYPES, quadra, stack, ops, gate, coins, fourSides, complements, catalysts, frictions,
   type MbtiType,
 } from "../engine/core";
 import {
@@ -11,6 +11,7 @@ import { FN_COLOR, QUADRA_COLOR } from "../engine/palette";
 import WiringSchematic from "../components/WiringSchematic";
 import TypePicker from "../components/TypePicker";
 import { Panel, Row } from "../components/Bits";
+import Term from "../components/Term";
 
 export default function TypeReader() {
   const { type } = useParams();
@@ -28,14 +29,14 @@ export default function TypeReader() {
         <TypePicker label="Read" value={t} onChange={(x) => nav(`/type/${x}`)} />
         <span className="chip">
           <i className="dot" style={{ background: QUADRA_COLOR[quadra(t)] }} />
-          {quadra(t)} quadra
+          <Term>{quadra(t)}</Term> quadra
         </span>
         <span className="chip">{SOCIONICS[t]}</span>
         <span className="chip">{o.primary}-primary</span>
       </div>
 
       <h1>{t}</h1>
-      <p className="lede">{ARCHETYPE[t]} · {GROUP[t]} · {INTERACTION_STYLE[t]}</p>
+      <p className="lede">{ARCHETYPE[t]} · <Term>{GROUP[t]}</Term> · <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term></p>
 
       <div className="grid g-side" style={{ marginTop: 22, alignItems: "start" }}>
         <Panel title="The wiring">
@@ -49,7 +50,7 @@ export default function TypeReader() {
 
         <div className="grid" style={{ gap: 14 }}>
           <Panel title="Growth gate">
-            <h2>{g.gate}</h2>
+            <h2><Term>{g.gate}</Term></h2>
             <Row k="Fear" v={g.fear} />
             <Row k="The cave" v={g.cave} />
             <Row k="The treasure" v={g.treasure} />
@@ -61,8 +62,8 @@ export default function TypeReader() {
           <Panel title="OPS signature — energy overlay, not the stack">
             <Row k="Saviors" v={<span className="mono">{o.saviorObs} · {o.saviorDec}</span>} />
             <Row k="Demons" v={<span className="mono">{o.demonObs} · {o.demonDec}</span>} />
-            <Row k="Primary animal" v={o.primary} />
-            <Row k="Demon animal" v={o.demon} />
+            <Row k="Primary animal" v={<Term>{o.primary}</Term>} />
+            <Row k="Demon animal" v={<Term>{o.demon}</Term>} />
             <Row k="Middles" v={<span className="small">{o.middles.join(" / ")} — order deferred</span>} />
             <Row k="Animal stack" v={<span className="mono">{o.stack}</span>} />
           </Panel>
@@ -78,10 +79,15 @@ export default function TypeReader() {
 
       <div className="grid g3" style={{ marginTop: 14 }}>
         <Panel title="Structural fit">
-          <Row k="Complements" v={<Links list={complements(t)} />} />
+          <Row k={<Term id="complement">Complements</Term>}
+               v={<Links list={complements(t)} />} />
+          <Row k={<Term id="catalyst">Catalysts</Term>}
+               v={<Links list={catalysts(t)} />} />
           <Row k="Frictions" v={<Links list={frictions(t)} />} />
           <p className="small" style={{ marginTop: 10 }}>
-            Complements are Dual + Activity; frictions are Conflict + Super-Ego. Both derived, not curated.
+            Complements (Dual + Activity) supply your Inferior {st[3]} — restful. Catalysts lead
+            with your Nemesis {st[4]} — stimulating, and something you argue with. Frictions are
+            Conflict + Super-Ego. All three derived, none curated.
           </p>
         </Panel>
 
@@ -112,7 +118,9 @@ export default function TypeReader() {
         <div className="grid g2">
           {st.map((fn, i) => (
             <div key={fn} className="row" style={{ alignItems: "flex-start" }}>
-              <dt style={{ color: FN_COLOR[fn], minWidth: 74 }}>{SLOT_NAMES[i]} {fn}</dt>
+              <dt style={{ color: FN_COLOR[fn], minWidth: 74 }}>
+                <Term>{SLOT_NAMES[i]}</Term> <Term>{fn}</Term>
+              </dt>
               <dd style={{ textAlign: "left", fontSize: 12.5, color: "#aab3c0" }}>
                 {i < 4 ? FN_LONG[fn] : FN_SHADOW[fn]}
               </dd>
@@ -123,7 +131,7 @@ export default function TypeReader() {
 
       <p className="small" style={{ marginTop: 20 }}>
         Virtue to appeal to: <b style={{ color: "#e7eaef" }}>{virtue}</b> · vice to avoid triggering:{" "}
-        <b style={{ color: "#e7eaef" }}>{vice}</b> · romance style: {ROMANCE[t]}.
+        <b style={{ color: "#e7eaef" }}>{vice}</b> · romance style: <Term>{ROMANCE[t]}</Term>.
       </p>
     </>
   );

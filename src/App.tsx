@@ -4,6 +4,7 @@ import PairReader from "./views/PairReader";
 import Calculator from "./views/Calculator";
 import Network from "./views/Network";
 import Matrix from "./views/Matrix";
+import Lexicon from "./views/Lexicon";
 
 const TABS: [string, string][] = [
   ["/calculator", "Determine"],
@@ -11,6 +12,7 @@ const TABS: [string, string][] = [
   ["/pair/ENTP/ENFJ", "Read a pair"],
   ["/network", "Compose"],
   ["/matrix", "Matrix"],
+  ["/lexicon", "Lexicon"],
 ];
 
 export default function App() {
@@ -35,6 +37,8 @@ export default function App() {
         <Route path="/pair/:a/:b" element={<PairReader />} />
         <Route path="/network" element={<Network />} />
         <Route path="/matrix" element={<Matrix />} />
+        <Route path="/lexicon" element={<Lexicon />} />
+        <Route path="/lexicon/:id" element={<Lexicon />} />
         <Route path="*" element={<Navigate to="/calculator" replace />} />
       </Routes>
     </div>

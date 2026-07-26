@@ -13,7 +13,7 @@ export function Panel({ title, children, style, className }: {
   );
 }
 
-export function Row({ k, v }: { k: string; v: ReactNode }) {
+export function Row({ k, v }: { k: ReactNode; v: ReactNode }) {
   return <div className="row"><dt>{k}</dt><dd>{v}</dd></div>;
 }
 

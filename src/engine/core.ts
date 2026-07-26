@@ -100,6 +100,18 @@ export const complements = (t: MbtiType): MbtiType[] =>
 export const frictions = (t: MbtiType): MbtiType[] =>
   TYPES.filter((p) => REL[t][p] === "CF").concat(TYPES.filter((p) => REL[t][p] === "SE"));
 
+/**
+ * The two types whose Hero is your Nemesis function.
+ * Always resolves to your Extinguishment and Mirage partners, because both are
+ * built from alpha(dominant) -- which is exactly slot 5. Where Complements supply
+ * the function you FEAR, Catalysts supply the one you are consciously reaching
+ * for and reflexively arguing with: stimulating rather than restful.
+ */
+export const catalysts = (t: MbtiType): MbtiType[] => {
+  const nemesis = stack(t)[4];
+  return TYPES.filter((p) => DOM_AUX[p][0] === nemesis);
+};
+
 /* ------------------------------- OPS ------------------------------- */
 export type Animal = "Play" | "Blast" | "Consume" | "Sleep";
 

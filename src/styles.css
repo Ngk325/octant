@@ -205,3 +205,40 @@ ul.plain li:last-child { border-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ---------------------------------------------------------- lexicon */
+.term-wrap { position: relative; display: inline; }
+.term {
+  background: none; border: 0; padding: 0; margin: 0; cursor: help;
+  font: inherit; letter-spacing: inherit; text-transform: none; color: inherit;
+  border-bottom: 1px dashed #3f4a58; border-radius: 0;
+}
+.term:hover { color: #c9a0ff; border-bottom-color: #c9a0ff; }
+.term-pop {
+  position: absolute; z-index: 50; left: 0; top: calc(100% + 8px);
+  width: min(320px, 78vw); padding: 12px 14px;
+  background: #12161d; border: 1px solid #2a323e; border-radius: 3px;
+  box-shadow: 0 12px 34px rgba(0,0,0,.6); text-align: left; white-space: normal;
+  display: block; font-family: var(--body); font-size: 13px; line-height: 1.55;
+}
+.term-pop b { font-family: var(--display); font-size: 17px; font-weight: 400; }
+
+.lex-entry { scroll-margin-top: 20px; }
+.lex-entry h3 {
+  font-family: var(--display); font-weight: 400; font-size: 20px; margin: 0 0 2px;
+}
+.lex-def { color: var(--ink-2); font-size: 13.5px; line-height: 1.62; margin: 8px 0 0; }
+.lex-meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.lex-nav { display: flex; flex-wrap: wrap; gap: 4px; margin: 14px 0 20px; }
+.lex-nav button { font-size: 10px; padding: 6px 10px; }
+.lex-nav button.on { color: var(--ink); border-color: #4b5f7a; background: #141b25; }
+
+.aspect { border-bottom: 1px solid var(--rule-soft); padding: 14px 0; }
+.aspect:last-child { border-bottom: 0; }
+.aspect-head {
+  display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+}
+.aspect-head .lbl { color: var(--muted); text-transform: uppercase; min-width: 152px; }
+.aspect-body { margin-top: 7px; font-size: 13.5px; color: var(--ink-2); line-height: 1.6; }
+.aspect-body b { color: var(--ink); font-family: var(--display); font-weight: 400; font-size: 15px; }

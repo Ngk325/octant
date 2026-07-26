@@ -2,6 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TYPES, REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/data";
 import { playbook } from "../engine/playbook";
+import { compareAspects } from "../engine/lexicon";
+import Term from "../components/Term";
 import { FN_COLOR, easeColor, QUADRA_COLOR } from "../engine/palette";
 import TypePicker from "../components/TypePicker";
 import { Panel, Row, Score, EaseBar } from "../components/Bits";
@@ -88,6 +90,34 @@ export default function PairReader() {
           </Panel>
         </div>
       </div>
+
+      <Panel title="Aspect by aspect" style={{ marginTop: 14 }}>
+        <p className="small" style={{ marginTop: 0, marginBottom: 6 }}>
+          Every comparable dimension, and what this specific combination does. Click any term
+          for its full definition.
+        </p>
+        {compareAspects(target, persp).map((r) => (
+          <div key={r.aspect} className="aspect">
+            <div className="aspect-head">
+              <span className="lbl">
+                {r.aspect}
+                {r.determining === true && <b style={{ color: "#c9a0ff" }}> ·det</b>}
+              </span>
+              <span>
+                <Term id={r.aId}>{r.aLabel}</Term>
+                <span style={{ color: "var(--dim)" }}>{"  →  "}</span>
+                <Term id={r.bId}>{r.bLabel}</Term>
+              </span>
+              {r.pairing && (
+                <b style={{ color: "#c9a0ff", fontFamily: "var(--mono)", fontSize: 11 }}>
+                  {r.pairing.headline}
+                </b>
+              )}
+            </div>
+            {r.pairing && <div className="aspect-body">{r.pairing.body}</div>}
+          </div>
+        ))}
+      </Panel>
 
       <Panel title={`How ${target} sits with all sixteen`} style={{ marginTop: 14 }}>
         <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(158px,1fr))", gap: 8 }}>
