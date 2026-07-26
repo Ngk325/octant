@@ -96,3 +96,26 @@ describe("the grain overlay is gone", () => {
     expect(base).not.toMatch(/z-index:\s*9999/);
   });
 });
+
+describe("the assistant is always reachable", () => {
+  const css = readFileSync(new URL("../src/styles/components.css", import.meta.url), "utf8");
+
+  /**
+   * Regression: `.rail-launch` shipped as `display: none` with an un-hide only
+   * under `max-width: 1180px`. The launcher is rendered ONLY when the rail is
+   * closed, so on a desktop viewport closing the rail left no way to reopen it —
+   * and the open/closed state persists to localStorage, so it stayed shut.
+   */
+  it("never hides the launcher that reopens a closed rail", () => {
+    const block = css.slice(css.indexOf(".rail-launch {"));
+    const rule = block.slice(0, block.indexOf("}"));
+    expect(rule).toMatch(/display:\s*inline-flex/);
+    expect(rule).not.toMatch(/display:\s*none/);
+  });
+
+  it("has no media query that hides the launcher", () => {
+    for (const m of css.matchAll(/\.rail-launch\s*\{[^}]*\}/g)) {
+      expect(m[0]).not.toMatch(/display:\s*none/);
+    }
+  });
+});

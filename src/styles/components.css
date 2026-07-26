@@ -584,6 +584,8 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 }
 .rail-suggest button:hover { background: var(--surface-2); color: var(--ink); }
 
+/* Rendered only when the rail is closed — see ChatRail. Must therefore be
+   visible at EVERY width: it is the only way back in once you close the rail. */
 .rail-launch {
   position: fixed;
   right: var(--s5);
@@ -592,7 +594,7 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   border-radius: 999px;
   padding: 12px 20px;
   box-shadow: var(--shadow-lg);
-  display: none;
+  display: inline-flex;
 }
 
 .caret {
@@ -614,7 +616,6 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
     width: min(var(--rail), 100vw);
     box-shadow: var(--shadow-lg);
   }
-  .rail-launch { display: inline-flex; }
 }
 
 @media (max-width: 900px) {

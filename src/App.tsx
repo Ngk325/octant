@@ -10,6 +10,7 @@ import Network from "./views/Network";
 import Matrix from "./views/Matrix";
 import Lexicon from "./views/Lexicon";
 import ChatRail from "./chat/ChatRail";
+import { useChatCtx } from "./chat/ChatContext";
 import { usePalette } from "./components/Theme";
 
 const TABS: [string, string][] = [
@@ -30,6 +31,7 @@ export default function App() {
   const { pathname } = useLocation();
   const [menu, setMenu] = useState(false);
   const { theme, toggle } = usePalette();
+  const { open: chatOpen, toggle: toggleChat } = useChatCtx();
 
   useEffect(() => {
     setMenu(false);
@@ -58,6 +60,15 @@ export default function App() {
             </nav>
 
             <div className="mast-actions">
+              <button
+                className="icon-btn"
+                onClick={toggleChat}
+                aria-pressed={chatOpen}
+                aria-label={chatOpen ? "Close the assistant" : "Open the assistant"}
+                title={chatOpen ? "Close the assistant" : "Ask about this page"}
+              >
+                ?
+              </button>
               <button
                 className="icon-btn"
                 onClick={toggle}
