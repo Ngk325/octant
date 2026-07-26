@@ -6,8 +6,8 @@ Source: `typology-photos-normalized 2.zip`, committed to `main` (0dafb68).
 2025-08-28 pair); neither is in the normalized set. Worth checking whether they were dropped
 during conversion — the catalog notes they were mislabelled JPEGs.
 
-**12 of 21 vision-passed: all of Group A (4) and all of Group C (8).** The nine Group B screenshots
-are pending — see the note at the end.
+**13 of 21 vision-passed: all of Group A (4), all of Group C (8), and one of Group B.** Eight Group B
+screenshots remain — see the note at the end.
 
 ---
 
@@ -22,7 +22,7 @@ relations page, and a function tree from erictb.info. The only original content 
 handwritten function-role labels and some circling of the photographer's own coins.
 
 **No Hawkins, no KWML, no water-based emotion taxonomy, and no Astrolabe / Periplus / Calibration
-Codex content appears anywhere in the twelve images read.** Which lines up with your instruction to
+Codex content appears anywhere in the thirteen images read.** Which lines up with your instruction to
 keep those three out — the photos do not contain them in the first place.
 
 Consequence: Guardrail 2 ("treat anything that looks like personal/original notes as provisional")
@@ -51,7 +51,7 @@ does not bind here. What does bind instead is **third-party copyright** — see 
 | `IMG_6094.JPG` | B | unknown | — | ⏳ pending | Cropped excerpt |
 | `IMG_6095.JPG` | B | unknown | — | ⏳ pending | Square-ish crop |
 | `IMG_6097.JPG` | B | unknown | — | ⏳ pending | Landscape crop |
-| `IMG_6099.PNG` | B | unknown | — | ⏳ pending | Diagram/chart |
+| `IMG_6099.PNG` | B | `mbti_type_profile` | high | ✅ transcribed | **Empirical 16×16 compatibility matrix**, personalitydata.org, CC BY 4.0. Contradicts the derived model — see below |
 | `screenshot_2025-12-23.png` | B | unknown | — | ⏳ pending | 3058×588 stitched capture |
 | `Screenshot_20230703_081513_Photos.jpg` | B | unknown | — | ⏳ pending | 2023-07-03 08:15:13 |
 | `Screenshot_20230703_081539_Photos.jpg` | B | unknown | — | ⏳ pending | 2023-07-03 08:15:39 |
@@ -94,9 +94,26 @@ system needs its own namespace rather than merging into the existing lexicon.
 
 ---
 
-## Group B — still pending
+## The empirical matrix — a substantive disagreement worth surfacing
 
-The nine Group B screenshots have not been vision-passed yet. They are the lowest-value group on
+`IMG_6099` is a full 16×16 **survey-derived** compatibility matrix (personalitydata.org, CC BY 4.0
+— the only reusable-by-licence item in the batch). Compared against the engine, computed:
+
+- **Pearson r = −0.154.** Slightly *negatively* correlated with the app's derived ease.
+- **Duality pairs: app rates 100, survey mean 7.4%.** All six largest disagreements are Duals.
+- **Identity pairs: app rates 74, survey mean 92.6%.**
+- The survey matrix is perfectly symmetric; the app's is asymmetric by design.
+
+They measure different things. The survey captures self-reported *liking*, and people report
+liking people like themselves. Socionics duality claims *structural low friction* — which is not
+the same claim, and is arguably in tension with it, since the Dual supplies the very function you
+are most defensive about. Neither is thereby wrong. But it is a quantified disagreement between a
+structural and an empirical model, and the app's own stated posture is to show such divergences
+rather than smooth them over. See plan §A10.
+
+## Group B — mostly still pending
+
+Eight of the nine Group B screenshots have not been vision-passed yet. They are the lowest-value group on
 the catalog's own description (saved articles, cropped excerpts, re-shared graphics) and the least
 likely to contain structured data, but they have not been ruled out — `screenshot_2025-12-23.png`
 in particular (3058×588, a stitched capture) is worth a look. Nothing in the plan depends on them.

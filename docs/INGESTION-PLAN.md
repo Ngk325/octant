@@ -7,7 +7,7 @@ arrived on `main` (0dafb68) and were vision-passed.
 from type to anything. Astrolabe / Periplus / Calibration Codex is out of scope for this app.
 Everything below is written to that.
 
-Companion documents: `classification-report.md` (all 21 images), `transcripts/` (12 verbatim),
+Companion documents: `classification-report.md` (all 21 images), `transcripts/` (13 verbatim),
 `research-notes.md` (external research; its Hawkins and KWML sections are now moot but retained
 as the record of what was checked).
 
@@ -21,7 +21,7 @@ They are not: eight photographs of printed pages in a ring binder — Linda Bere
 Joseph's Type Grid, an OPS coin sheet, a "Type Logic" relations page, and a function tree from
 erictb.info. The only original content is marginalia.
 
-**Nothing in the twelve images read contains Hawkins, KWML, or water/emotion-taxonomy material** —
+**Nothing in the thirteen images read contains Hawkins, KWML, or water/emotion-taxonomy material** —
 so your "keep them out" instruction costs nothing here. It removes work that was never supported
 by the source in the first place.
 
@@ -113,6 +113,21 @@ from four letters** — the first question anyone arriving with "I'm an INTJ" ha
 asserts the mapping instead of deriving it. Pairs with A7: the Function Tree derives the eight
 functions, this derives which two of them lead.
 
+### A10 · The empirical compatibility matrix — as an honest counterweight
+From `IMG_6099` (personalitydata.org, **CC BY 4.0** — the only item in the batch whose licence
+permits reuse). A survey-derived 16×16 compatibility matrix that **disagrees with the engine**:
+Pearson r = −0.154; Duality pairs the app rates 100 average **7.4%** in the survey; Identity pairs
+the app rates 74 average **92.6%**.
+
+They measure different things — self-reported liking versus structural friction, and people report
+liking people like themselves. But the app already says, in its README, that where two instruments
+disagree "that divergence is the content, not an error to smooth over." This is the sharpest
+available instance of that, it is quantified, and it is legally reusable.
+
+Proposal: show the empirical figure alongside the derived score on `/pair/:a/:b`, with one
+paragraph on why they differ and which question each is answering. It costs one number per cell
+and makes the app markedly more honest about the limits of its own model.
+
 ### A9 · `/types` roster page
 Closes the "MBTI types.jpg" gap: all sixteen as cards with quadra colour, plain one-liner, hero and
 inferior, gate, and the naming systems from A4.
@@ -162,4 +177,5 @@ If they matter, they need re-exporting.
 Only one left, and it is a scoping question rather than a blocker: **how much of the batch do you
 actually want in the app?** A1, A2 and A6 are clear wins. A3–A5 add naming systems and detail that
 make the app more complete but also denser — and density was the original complaint. I would take
-A1, A2, A6, A7, A8 and A9, and treat A3–A5 as optional. Tell me if you would rather have all of it.
+A1, A2, A6, A7, A8, A9 and A10, and treat A3–A5 as optional. A10 in particular I think is the
+single most interesting thing in the batch. Tell me if you would rather have all of it.
