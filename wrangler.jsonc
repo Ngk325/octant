@@ -41,23 +41,19 @@
     // thing standing between the app and the public internet.
     "run_worker_first": true
   },
-  // Google sign-in needs a KV namespace bound as USERS, holding who is pending,
-  // approved or blocked. Add it HERE, not in the dashboard:
+  // Google sign-in stores who is pending, approved or blocked in this
+  // namespace. It lives here rather than in the dashboard because Workers
+  // Builds deploys from this file, which makes it authoritative — a binding
+  // added only in the dashboard is removed by the next push. The id is an
+  // identifier, not a credential: useless without account access, and
+  // Cloudflare expects it committed.
   //
-  //   npx wrangler kv namespace create USERS
-  //
-  //   "kv_namespaces": [
-  //     { "binding": "USERS", "id": "<the id it prints>" }
-  //   ],
-  //
-  // It has to be in this file because Workers Builds deploys from it, which
-  // makes it authoritative — a binding added only in the dashboard is removed
-  // by the next push. The id is an identifier, not a credential: useless
-  // without account access, and Cloudflare expects it committed.
-  //
-  // Until it is here, googleAvailable() is false: the Google button does not
-  // render and the wall falls back to invite codes. It degrades, it does not
-  // fail open. Full steps in docs/COWORK-SETUP-RUNBOOK.md, task 4.
+  // Without it, googleAvailable() is false: the Google button does not render
+  // and the wall falls back to invite codes. It degrades, it does not fail
+  // open.
+  "kv_namespaces": [
+    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
+  ],
 
   "observability": { "enabled": true }
   // GEMINI_API_KEY is a secret, never a var:  npx wrangler secret put GEMINI_API_KEY
