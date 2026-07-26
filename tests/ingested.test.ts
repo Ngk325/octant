@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import { TYPES, stack, ease, REL } from "../src/engine/core";
 import { ARCHETYPE, FN_FULL, type Fn, type MbtiType } from "../src/engine/data";
 import {
-  FN_ROLE, FN_VERBS, FN_SAYS, FN_WANTS, FN_SATISFACTION, FN_STARVATION, FN_PRACTICE,
+  FN_ROLE, FN_KEYWORD, FN_KEYWORD_GLOSS, FN_VERBS, FN_SAYS, FN_WANTS,
+  FN_SATISFACTION, FN_STARVATION, FN_PRACTICE,
 } from "../src/engine/functions";
 import { SAVIOR_MARKERS, DEMON_MARKERS } from "../src/engine/ops";
+import { fourSides } from "../src/engine/sides";
 import { empirical, divergence, correlation, surveyMeanFor } from "../src/engine/empirical";
 
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
@@ -81,9 +83,26 @@ describe("per-function depth", () => {
     }
   });
 
-  it("gives every function a distinct one-word role and want", () => {
+  it("gives every function a distinct one-word role, keyword and want", () => {
     expect(new Set(Object.values(FN_ROLE)).size).toBe(8);
+    expect(new Set(Object.values(FN_KEYWORD)).size).toBe(8);
     expect(new Set(Object.values(FN_WANTS)).size).toBe(8);
+  });
+
+  it("carries the keyword gloss from the owner's whiteboards, with an explanation each", () => {
+    // Transcribed from IMG_0314; several are counter-intuitive (Ni = Willpower,
+    // Ne = Metaphysics) so each keyword must ship with a gloss.
+    expect(FN_KEYWORD.Ni).toBe("Willpower");
+    expect(FN_KEYWORD.Ne).toBe("Metaphysics");
+    expect(FN_KEYWORD.Se).toBe("Physics");
+    expect(FN_KEYWORD.Si).toBe("Duty");
+    for (const f of FNS) expect(FN_KEYWORD_GLOSS[f].length, f).toBeGreaterThan(50);
+  });
+
+  it("keeps FN_ROLE and FN_KEYWORD as genuinely different cuts", () => {
+    // One names what the function does, the other the domain it claims. If any
+    // pair collided, one of the two tables would be redundant.
+    for (const f of FNS) expect(FN_ROLE[f]).not.toBe(FN_KEYWORD[f]);
   });
 
   it("keeps every catchphrase short enough to be recognisable in speech", () => {
@@ -317,5 +336,35 @@ Sd Cg Sv- Rq- Cf QI Ex Se Mg Cp Sv+ Rq+ Mr Ac Du Id`
     }
     expect(seen.size).toBe(16);
     for (const [label, codes] of seen) expect([...codes], `${label}`).toHaveLength(1);
+  });
+});
+
+
+/**
+ * CS Joseph's four "Temples" turn out to be fully derivable: the four-sides
+ * operation partitions the sixteen types into exactly four closed classes of
+ * four, and the class containing ENTP is {ENTP, INTJ, ESFP, ISFJ} — which he
+ * names the Heart Temple. Recorded here now; surfacing it is next-build work.
+ */
+describe("the four-sides operation partitions the sixteen types", () => {
+  it("yields exactly four closed classes of four", () => {
+    const seen = new Set<string>();
+    const groups: string[][] = [];
+    for (const t of TYPES) {
+      if (seen.has(t)) continue;
+      const g = [...fourSides(t)].sort();
+      g.forEach((x) => seen.add(x));
+      groups.push(g);
+    }
+    expect(groups).toHaveLength(4);
+    for (const g of groups) {
+      expect(g).toHaveLength(4);
+      // closed: every member's own four sides is the same set
+      for (const t of g) expect([...fourSides(t as MbtiType)].sort()).toEqual(g);
+    }
+  });
+
+  it("puts ENTP in the class CS Joseph calls the Heart Temple", () => {
+    expect([...fourSides("ENTP")].sort()).toEqual(["ENTP", "ESFP", "INTJ", "ISFJ"]);
   });
 });

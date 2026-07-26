@@ -11,7 +11,8 @@ import type { Fn } from "./data";
  * are the data and cannot be paraphrased without destroying them.
  *
  * What each table answers, and why the app needed it:
- *   FN_ROLE         one word for the function        — labels, chips, diagrams
+ *   FN_ROLE         one word for what it DOES        — labels, chips, diagrams
+ *   FN_KEYWORD      one word for the DOMAIN it claims — CS Joseph's terminology
  *   FN_VERBS        what it is actually doing        — recognising it in yourself
  *   FN_SAYS         what it sounds like out loud     — recognising it in others
  *   FN_SATISFACTION what feeds it                    — the missing half of growth advice
@@ -29,6 +30,37 @@ export const FN_ROLE: Record<Fn, string> = {
   Te: "Systemizing",
   Si: "Preserving",
   Se: "Doing",
+};
+
+/**
+ * A second one-word handle, from the owner's own four-sides whiteboards
+ * (docs/transcripts/IMG_0314-four-sides-whiteboards.md). CS Joseph's
+ * terminology, and a genuinely different cut from FN_ROLE: FN_ROLE names what
+ * the function is *doing* (Knowing, Creating), FN_KEYWORD names the *domain it
+ * claims authority over* (Willpower, Metaphysics). Both are useful; neither
+ * replaces the other.
+ */
+export const FN_KEYWORD: Record<Fn, string> = {
+  Ti: "Logic",
+  Te: "Rationale",
+  Fi: "Morals",
+  Fe: "Ethics",
+  Si: "Duty",
+  Se: "Physics",
+  Ni: "Willpower",
+  Ne: "Metaphysics",
+};
+
+/** What each keyword actually means, since several are counter-intuitive. */
+export const FN_KEYWORD_GLOSS: Record<Fn, string> = {
+  Ti: "Whether it holds together. Internal consistency, checked against itself rather than against the world.",
+  Te: "Whether it works. Publicly checkable reasoning — evidence, method, results you can point at.",
+  Fi: "What is right for me. A private standard, held whether or not anyone else shares it.",
+  Fe: "What is right for us. The shared code a group runs on, and the cost of breaking it.",
+  Si: "What is owed and what has held. Precedent, maintenance, the obligations that carry forward.",
+  Se: "What is physically the case. Force, distance, timing — the world as it actually is right now.",
+  Ni: "Where this is going, and the will to hold a line to get there. Singular focus over a long arc.",
+  Ne: "What else this could be. The space of possibility above and beyond the given case.",
 };
 
 /** The five things this function is doing when it runs. Structure after Berens (IMG_7534/7535). */

@@ -6,7 +6,8 @@ import {
   type Subtype, type Animal,
 } from "../engine/ops";
 import {
-  FN_ROLE, FN_SAYS, FN_WANTS, FN_SATISFACTION, FN_STARVATION, FN_PRACTICE,
+  FN_ROLE, FN_KEYWORD, FN_KEYWORD_GLOSS, FN_SAYS, FN_WANTS,
+  FN_SATISFACTION, FN_STARVATION, FN_PRACTICE,
 } from "../engine/functions";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import {
@@ -109,6 +110,7 @@ export default function TypeReader() {
               <b className="mono" style={{ color: p.fn(fn), fontSize: "var(--t-lg)" }}>{fn}</b>
               <Term>{SLOT_NAMES[i]}</Term>
               <span className="chip">{FN_ROLE[fn]}</span>
+              <span className="chip" title={FN_KEYWORD_GLOSS[fn]}>{FN_KEYWORD[fn]}</span>
             </div>
             <Explain plain={SLOT_PLAIN[SLOT_NAMES[i]]}>
               <p style={{ marginBottom: "var(--s2)" }}>

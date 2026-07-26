@@ -4,7 +4,7 @@ import { stack, quadra } from "../engine/core";
 import { ops } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
-import { FN_ROLE, FN_SAYS } from "../engine/functions";
+import { FN_ROLE, FN_KEYWORD, FN_SAYS } from "../engine/functions";
 import { SLOT_NAMES, FN_FULL, type Fn, type MbtiType } from "../engine/data";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
@@ -98,7 +98,7 @@ export const STAGES: Stage[] = [
           {FNS.map((f) => (
             <div key={f} className="row stacked">
               <dt>
-                <Term>{f}</Term> · {FN_ROLE[f]}
+                <Term>{f}</Term> · {FN_ROLE[f]} · {FN_KEYWORD[f]}
               </dt>
               <dd className="small">
                 &ldquo;{FN_SAYS[f][0]}&rdquo; &middot; &ldquo;{FN_SAYS[f][1]}&rdquo;
