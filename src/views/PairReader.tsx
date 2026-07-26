@@ -1,17 +1,19 @@
-import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TYPES, REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/data";
 import { REL_PLAIN, CONCEPT_PLAIN, SLOT_PLAIN } from "../engine/plain";
 import { playbook } from "../engine/playbook";
 import { compareAspects } from "../engine/lexicon";
-import { divergence, EMPIRICAL_SOURCE } from "../engine/empirical";
+import { correlation, divergence, EMPIRICAL_SOURCE } from "../engine/empirical";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Term from "../components/Term";
 import TypePicker from "../components/TypePicker";
 import Explain from "../components/Explain";
-import { Panel, Row, Score, EaseBar } from "../components/Bits";
+import { FnTag, Panel, Row, EaseBar, Tile } from "../components/Bits";
+import Figure from "../components/Figure";
+import DivergingEase from "../components/DivergingEase";
+import RelationLanding from "../components/RelationLanding";
 
 /**
  * Two types: the relation, both directional ease scores, the composed playbook, and
@@ -21,7 +23,6 @@ export default function PairReader() {
   const { a, b } = useParams();
   const nav = useNavigate();
   const p = usePalette();
-  const [allAspects, setAllAspects] = useState(false);
 
   const target = (TYPES.includes(a as MbtiType) ? a : "ENTP") as MbtiType;
   const persp = (TYPES.includes(b as MbtiType) ? b : "INFJ") as MbtiType;
@@ -37,8 +38,12 @@ export default function PairReader() {
   const [pHero, pParent] = DOM_AUX[persp];
   const landing = [pHero, pParent].map((fn) => ({ fn, slot: SLOT_NAMES[tStack.indexOf(fn)] }));
 
+  /* Sixteen aspects, two families. The first build rendered them as one
+     undifferentiated wall with the top ten hidden behind a ghost button. */
   const aspects = compareAspects(target, persp).filter((r) => r.pairing);
-  const shown = allAspects ? aspects : aspects.slice(0, 6);
+  const taxonomy = aspects.filter((r) => !r.aspect.startsWith("Coin"));
+  const coinRows = aspects.filter((r) => r.aspect.startsWith("Coin"));
+  const decidingCoins = coinRows.filter((r) => r.determining).length;
 
   return (
     <>
@@ -55,52 +60,69 @@ export default function PairReader() {
         <p>{REL_DEF[code]}</p>
       </Explain>
 
-      <div className="grid g-side" style={{ marginTop: "var(--s6)", alignItems: "start" }}>
-        <Panel title={`How ${persp} should handle ${target}`}>
-          <p style={{ fontSize: "var(--t-lg)", lineHeight: 1.55 }}>{playbook(persp, target)}</p>
+      {/* The mechanism first: this picture IS the relation. Everything below
+          — both scores, the playbook, the aspect list — is downstream of
+          where these two arrows land. */}
+      <Figure
+        minWidth={480}
+        label="Why this pairing behaves the way it does."
+        caption={
+          <>
+            {persp}&rsquo;s <FnTag fn={pHero} /> lands on {target}&rsquo;s <b>{landing[0].slot}</b>{" "}
+            and their <FnTag fn={pParent} /> on {target}&rsquo;s <b>{landing[1].slot}</b>. Which
+            slots get hit is the whole story: land on the Inferior and you are relief; land on
+            the Trickster and neither of you can tell what is happening.
+          </>
+        }
+      >
+        <RelationLanding a={target} b={persp} />
+      </Figure>
+
+      {/* The data-dense panel takes the wide column; the one-paragraph
+          playbook takes the narrow one. The first build had it backwards —
+          a short quote floating in 1.35fr beside a packed sidebar. */}
+      <div className="grid g-side" style={{ marginTop: "var(--s5)", alignItems: "start" }}>
+        <Panel title="How easy is it — both ways">
+          <p className="small">{CONCEPT_PLAIN.directional}</p>
+          <div style={{ margin: "var(--s4) 0" }}>
+            <DivergingEase
+              toward={easeTarget}
+              from={easePersp}
+              labels={[`${target} being around ${persp}`, `${persp} being around ${target}`]}
+            />
+          </div>
+
+          {!symmetric && (
+            <p className="note warn" style={{ marginBottom: 0 }}>
+              <b>This one runs differently in each direction.</b> {persp} is {target}&rsquo;s{" "}
+              {REL_NAME[code]}, while {target} is {persp}&rsquo;s {REL_NAME[RECIPROCAL[code]]}.
+              Whoever is on the heavier side usually cannot tell it is happening.
+            </p>
+          )}
+
+          {landing.map(({ fn, slot }) => (
+            <Row
+              key={fn}
+              stacked
+              k={<span>{fn === pHero ? "Their strongest" : "Their second"} — <FnTag fn={fn} /> lands on {target}&rsquo;s <b>{slot}</b></span>}
+              v={<span className="small">{SLOT_PLAIN[slot]}</span>}
+            />
+          ))}
+          <Row
+            k="Quadras"
+            v={
+              <span className="cluster" style={{ justifyContent: "flex-end" }}>
+                <span className="chip"><i className="dot" style={{ background: p.quadra(quadra(target)) }} />{quadra(target)}</span>
+                <span className="chip"><i className="dot" style={{ background: p.quadra(quadra(persp)) }} />{quadra(persp)}</span>
+              </span>
+            }
+          />
+          <Row k="Relation code" v={<span className="mono">{code} · reciprocal {RECIPROCAL[code]}</span>} />
         </Panel>
 
-        <div className="stack-v">
-          <Panel title="How easy is it — both ways">
-            <p className="small">{CONCEPT_PLAIN.directional}</p>
-            <div className="stat" style={{ margin: "var(--s4) 0" }}>
-              <Score value={easeTarget} caption={`${target} being around ${persp}`} />
-              <Score value={easePersp} caption={`${persp} being around ${target}`} />
-            </div>
-            <EaseBar value={easeTarget} />
-            <div style={{ height: 8 }} />
-            <EaseBar value={easePersp} />
-
-            {!symmetric && (
-              <p className="note warn" style={{ marginTop: "var(--s4)", marginBottom: 0 }}>
-                <b>This one runs differently in each direction.</b> {persp} is {target}&rsquo;s{" "}
-                {REL_NAME[code]}, while {target} is {persp}&rsquo;s {REL_NAME[RECIPROCAL[code]]}.
-                Whoever is on the heavier side usually cannot tell it is happening.
-              </p>
-            )}
-          </Panel>
-
-          <Panel title={`Where ${persp}'s strengths land in ${target}`}>
-            {landing.map(({ fn, slot }) => (
-              <Row
-                key={fn}
-                stacked
-                k={<span>{fn === pHero ? "Their strongest" : "Their second"} — <b className="mono" style={{ color: p.fn(fn) }}>{fn}</b> lands on {target}&rsquo;s <b>{slot}</b></span>}
-                v={<span className="small">{SLOT_PLAIN[slot]}</span>}
-              />
-            ))}
-            <Row
-              k="Quadras"
-              v={
-                <span className="cluster" style={{ justifyContent: "flex-end" }}>
-                  <span className="chip"><i className="dot" style={{ background: p.quadra(quadra(target)) }} />{quadra(target)}</span>
-                  <span className="chip"><i className="dot" style={{ background: p.quadra(quadra(persp)) }} />{quadra(persp)}</span>
-                </span>
-              }
-            />
-            <Row k="Relation code" v={<span className="mono">{code} · reciprocal {RECIPROCAL[code]}</span>} />
-          </Panel>
-        </div>
+        <Panel title={`How ${persp} should handle ${target}`}>
+          <p style={{ fontSize: "var(--t-lg)", lineHeight: 1.55, marginBottom: 0 }}>{playbook(persp, target)}</p>
+        </Panel>
       </div>
 
       <h2>What people actually report</h2>
@@ -116,7 +138,9 @@ export default function PairReader() {
             {EMPIRICAL_SOURCE.licence}
           </a>
           . Across all 256 pairs the two measures correlate
-          at <b>r = −0.15</b> — very slightly <i>negatively</i>. That is not a defect in either.
+          at <b>r = {correlation(TYPES).toFixed(2)}</b> — very slightly <i>negatively</i>. That
+          is a number this page computes from both datasets at render, not a claim it repeats.
+          It is not a defect in either.
           They answer different questions: the survey measures who people say they get on with,
           and this app measures how the wiring meshes. People report liking people like
           themselves, so Identity pairs top the survey while the model rates them mid-table; and
@@ -127,7 +151,7 @@ export default function PairReader() {
         </p>
       </Explain>
 
-      <Panel>
+      <Panel title="Derived vs. reported">
         {(() => {
           const d = divergence(target, persp);
           return (
@@ -157,32 +181,27 @@ export default function PairReader() {
       <h2>Aspect by aspect</h2>
       <p className="prose">
         Every dimension the two share, and what this specific combination does with it. Order
-        matters — reading someone is not the same as being read by them.
+        matters — reading someone is not the same as being read by them. Two families: the
+        taxonomy both types sit in, and the coins that build the types themselves.
       </p>
 
-      <Panel>
-        {shown.map((r) => (
-          <div key={r.aspect} className="aspect">
-            <div className="aspect-head">
-              <span className="lbl">
-                {r.aspect}
-                {r.determining === true && <b style={{ color: "var(--accent-ink)" }}> · decides the type</b>}
-              </span>
-              <span>
-                <Term id={r.aId}>{r.aLabel}</Term>
-                <span className="muted">{"  →  "}</span>
-                <Term id={r.bId}>{r.bLabel}</Term>
-              </span>
-              <span className="headline">{r.pairing!.headline}</span>
-            </div>
-            <div className="aspect-body">{r.pairing!.body}</div>
+      <Panel title="The taxonomy they share">
+        {taxonomy.map((r) => <AspectLine key={r.aspect} r={r} />)}
+      </Panel>
+
+      <Panel style={{ marginTop: "var(--s4)" }}>
+        <details>
+          <summary
+            className="card-title"
+            style={{ cursor: "pointer", marginBottom: 0 }}
+          >
+            The coins underneath — {coinRows.length} aspects
+            {decidingCoins > 0 && `, ${decidingCoins} of which decide the type`}
+          </summary>
+          <div style={{ marginTop: "var(--s3)" }}>
+            {coinRows.map((r) => <AspectLine key={r.aspect} r={r} />)}
           </div>
-        ))}
-        {aspects.length > 6 && (
-          <button className="btn ghost" style={{ marginTop: "var(--s4)" }} onClick={() => setAllAspects((v) => !v)}>
-            {allAspects ? "Show fewer" : `Show all ${aspects.length} aspects`}
-          </button>
-        )}
+        </details>
       </Panel>
 
       <h2>How {target} sits with all sixteen</h2>
@@ -190,28 +209,38 @@ export default function PairReader() {
         {TYPES.map((x) => {
           const v = ease(target, x);
           return (
-            <Link
-              key={x}
-              to={`/pair/${target}/${x}`}
-              style={{
-                display: "block",
-                padding: "var(--s3)",
-                border: "1px solid var(--rule)",
-                borderRadius: "var(--radius)",
-                background: x === persp ? "var(--accent-soft)" : "var(--surface)",
-                textDecoration: "none",
-              }}
-            >
+            <Tile key={x} to={`/pair/${target}/${x}`} selected={x === persp} style={{ padding: "var(--s3)" }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span className="mono">{x}</span>
                 <span className="mono" style={{ color: p.ease(v) }}>{v}</span>
               </div>
               <div className="small muted" style={{ margin: "2px 0 6px" }}>{REL_NAME[REL[target][x]]}</div>
               <EaseBar value={v} />
-            </Link>
+            </Tile>
           );
         })}
       </div>
     </>
+  );
+}
+
+/** One aspect row: label, the two terms, the pairing's headline and body. */
+function AspectLine({ r }: { r: ReturnType<typeof compareAspects>[number] }) {
+  return (
+    <div className="aspect">
+      <div className="aspect-head">
+        <span className="lbl">
+          {r.aspect}
+          {r.determining === true && <b style={{ color: "var(--accent-ink)" }}> · decides the type</b>}
+        </span>
+        <span>
+          <Term id={r.aId}>{r.aLabel}</Term>
+          <span className="muted">{"  →  "}</span>
+          <Term id={r.bId}>{r.bLabel}</Term>
+        </span>
+        <span className="headline">{r.pairing!.headline}</span>
+      </div>
+      <div className="aspect-body">{r.pairing!.body}</div>
+    </div>
   );
 }

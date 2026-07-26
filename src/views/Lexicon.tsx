@@ -8,6 +8,7 @@ import { FN_ROLE, FN_KEYWORD, FN_KEYWORD_GLOSS, FN_SAYS, FN_WANTS, FN_VERBS } fr
 import type { Fn } from "../engine/data";
 import Explain from "../components/Explain";
 import { Panel } from "../components/Bits";
+import { lexiconFigure } from "../components/lexicon-figures";
 
 /** Every defined term, searchable and filterable, with per-category pairing. */
 export default function Lexicon() {
@@ -31,11 +32,22 @@ export default function Lexicon() {
     return cat === "All" ? base : base.filter((e) => e.category === cat);
   }, [q, cat]);
 
+  /* Every category, in canonical order, every render — empty ones are simply
+     not shown. The first build derived the heading list from the filtered
+     results, so the page's skeleton mutated under the reader on every
+     keystroke. */
   const grouped = useMemo(() => {
     const m = new Map<Category, Entry[]>();
     results.forEach((e) => m.set(e.category, [...(m.get(e.category) ?? []), e]));
-    return [...m.entries()].sort((a, b) => CATEGORIES.indexOf(a[0]) - CATEGORIES.indexOf(b[0]));
+    return CATEGORIES.map((c) => [c, m.get(c) ?? []] as const).filter(([, list]) => list.length > 0);
   }, [results]);
+
+  /** Entry count per category, for the filter chips — which double as the index. */
+  const counts = useMemo(() => {
+    const m = new Map<Category, number>();
+    ENTRIES.forEach((e) => m.set(e.category, (m.get(e.category) ?? 0) + 1));
+    return m;
+  }, []);
 
   return (
     <>
@@ -46,8 +58,8 @@ export default function Lexicon() {
         they do.
       </p>
 
-      {focused && <FocusedEntry entry={focused} />}
-
+      {/* The controls come before the focused entry: landing on a deep link
+          must not bury the way to everything else below the fold. */}
       <div className="cluster" style={{ marginTop: "var(--s6)" }}>
         <input
           type="text"
@@ -63,17 +75,25 @@ export default function Lexicon() {
       <div className="lex-nav">
         <button className={`chip${cat === "All" ? " on" : ""}`} onClick={() => setCat("All")}>All</button>
         {CATEGORIES.map((c) => (
-          <button key={c} className={`chip${cat === c ? " on" : ""}`} onClick={() => setCat(c)}>{c}</button>
+          <button key={c} className={`chip${cat === c ? " on" : ""}`} onClick={() => setCat(c)}>
+            {c} · {counts.get(c) ?? 0}
+          </button>
         ))}
       </div>
+
+      {focused && <FocusedEntry entry={focused} />}
 
       {grouped.map(([category, entries]) => (
         <section key={category} style={{ marginBottom: "var(--s6)" }}>
           <h2 style={{ marginTop: "var(--s5)" }}>{category}</h2>
           <div className="grid g2">
             {entries.map((e) => (
-              <Panel key={e.id}>
-                <div className="lex-entry" id={e.id}>
+              /* The anchor id and scroll margin live on the Panel itself, so a
+                 deep link lands with the whole card visible — with the id on
+                 an inner div, the card's own top padding and border were
+                 clipped under the masthead. */
+              <Panel key={e.id} className="lex-entry" id={e.id}>
+                <div>
                   <h3 style={{ marginTop: 0 }}>
                     <Link to={`/lexicon/${e.id}`}>{e.term}</Link>
                   </h3>
@@ -89,6 +109,7 @@ export default function Lexicon() {
                     )}
                   </Explain>
 
+                  {lexiconFigure(e)}
                   {e.category === "Function" && <FunctionExtras fn={e.term as Fn} />}
 
                   <p className="small muted" style={{ margin: 0 }}>

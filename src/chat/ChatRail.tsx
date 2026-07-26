@@ -17,6 +17,7 @@ export default function ChatRail() {
   const { context, open, setOpen } = useChatCtx();
   const { messages, streaming, error, send, stop, reset } = useChat(context);
   const [draft, setDraft] = useState("");
+  const overlay = useMatchMedia("(max-width: 1180px)");
   const logRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLTextAreaElement>(null);
 
@@ -24,6 +25,24 @@ export default function ChatRail() {
     const el = logRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, streaming]);
+
+  /* In overlay mode the rail covers the page, so the page must stop being a
+     live thing underneath it: lock body scroll, and give the overlay the two
+     standard exits — Escape, and clicking the scrim. Everything restores when
+     the rail closes or the viewport grows past the breakpoint. */
+  useEffect(() => {
+    if (!(open && overlay)) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, overlay, setOpen]);
 
   useEffect(() => {
     const el = boxRef.current;
@@ -54,7 +73,15 @@ export default function ChatRail() {
   const label = describe(context);
 
   return (
-    <aside className="rail" aria-label="Assistant">
+    <>
+      {overlay && (
+        <button
+          className="rail-scrim"
+          aria-label="Close assistant"
+          onClick={() => setOpen(false)}
+        />
+      )}
+      <aside className="rail" aria-label="Assistant">
       <div className="rail-head">
         <h2>Ask</h2>
         {messages.length > 0 && (
@@ -129,8 +156,27 @@ export default function ChatRail() {
           </span>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
+}
+
+/**
+ * Tracks a media query without re-rendering on every resize — only when the
+ * answer changes. SSR-safe: defaults to false where there is no window.
+ */
+function useMatchMedia(query: string): boolean {
+  const [matches, setMatches] = useState<boolean>(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setMatches(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [query]);
+  return matches;
 }
 
 /** A short human label for whatever the reader has on screen, shown above the thread. */

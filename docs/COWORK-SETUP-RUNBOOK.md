@@ -1,198 +1,164 @@
-# Runbook — finish the Octant Google sign-in setup
+# Octant access wall — setup state
 
-**For an agent with browser access and the repo checked out.** Everything in the
-codebase is done, tested and deployed. What remains needs a logged-in browser
-and one repo edit, which the cloud session cannot do.
+**Status: live, enforcing, and fully configured. One open issue: the owner
+notification email has never been delivered.**
 
-Work through the tasks in order. Task 4 is already done — it is kept below
-because it is the one step where doing it *again* would break something.
-
----
-
-## Ground rules
-
-1. **Never paste a secret into chat, a commit, an issue, or any file in the
-   repo.** Copy from the source page, paste straight into the Cloudflare form,
-   move on. If you need to confirm you have the right one, report its shape
-   (`starts GOCSPX-`, `41 characters`), never its value.
-2. **The one exception is the KV namespace id in Task 4.** That is an
-   identifier, not a credential — useless without account access, and Cloudflare
-   expects it committed. It is already in the repo on purpose.
-3. If a step's UI does not match what is written here, Cloudflare or Google has
-   moved it. Find the equivalent, and say so in your report rather than guessing
-   at a different setting.
-4. Do not change `run_worker_first`, `not_found_handling`, or anything under
-   `assets` in `wrangler.jsonc`. That block is the access wall.
+Last updated 26 Jul 2026, against `fdfcf38`. This file replaces the original
+task-list runbook, which told you to create a KV namespace and register a
+redirect URI that now exist — following it verbatim creates a second namespace
+and silently detaches the app from its user list.
 
 ---
 
-## The facts you need
+## Current state
 
 | Thing | Value |
 |---|---|
-| Cloudflare Worker | `typology` |
+| Worker | `typology` |
 | Live URL | `https://typology.stratfield-partners.workers.dev` |
+| Cloudflare account | Stratfield Partners (`b45df299…b5d6`) |
 | Google Cloud project | `stratfield-partners` |
 | OAuth client | `Octant Worker` |
-| `GOOGLE_CLIENT_ID` | `754718810816-oik5c621sgorqk71efp0rka7liagcf14.apps.googleusercontent.com` |
-| `OWNER_EMAIL` | `nick@stratfieldpartners.com` |
-| Repo | `Ngk325/typology`, branch `claude/personality-app-redesign-ax1rdi` (PR #3) |
+| KV namespace | `USERS`, id `8d35bff308f84ce9b1e98b4770d21daf` |
 
----
+**Secrets on the Worker** — all seven present, none in this repo:
 
-## Task 1 · Google client secret → Cloudflare
+`ACCESS_CODES` · `AUTH_SECRET` · `GEMINI_API_KEY` · `GOOGLE_CLIENT_ID` ·
+`GOOGLE_CLIENT_SECRET` · `OWNER_EMAIL` · `RESEND_API_KEY`
 
-1. Open <https://console.cloud.google.com/auth/clients?project=stratfield-partners>
-2. Click the client named **Octant Worker**.
-3. Copy the **Client secret** (starts `GOCSPX-`). If the panel only shows a
-   masked value, use **Add secret** to mint a new one and copy that — old
-   secrets keep working, so this is safe.
-4. Go to the Cloudflare dashboard → **Workers & Pages** → **typology** →
-   **Settings** → **Variables and Secrets** → **Add**.
-   - Type: **Secret** (not Text)
-   - Name: `GOOGLE_CLIENT_SECRET`
-   - Value: the secret you just copied
-   - **Save**
+**Registered redirect URIs** on `Octant Worker`:
 
-**While you are on that Google page, check one thing.** The project also
-contains an older OAuth client authorised for `sdvfjzkkosqevgbyafhu.supabase.co`.
-Renaming the consent screen to "Octant" changed what *that* app's users see at
-sign-in too. Report whether that Supabase app looks live and user-facing. Do not
-rename anything — it is the owner's call, and both options have a cost.
-
----
-
-## Task 2 · Resend → Cloudflare
-
-Skip this task entirely if the owner would rather not get emails. Everything
-else works without it; they would just check `/admin` themselves.
-
-1. Sign up at <https://resend.com>. Free tier, no card, no domain needed.
-2. **API Keys** → **Create API Key**. Permission: **Sending access**.
-3. Copy the key (starts `re_`) — it is shown once.
-4. Cloudflare → **typology** → **Settings** → **Variables and Secrets** →
-   **Add**, type **Secret**, name `RESEND_API_KEY`, paste, **Save**.
-
-No domain verification is required. The app sends from Resend's shared
-`onboarding@resend.dev` address to one inbox, which needs no DNS.
-
----
-
-## Task 3 · The two remaining secrets
-
-Same place, both as type **Secret**:
-
-| Name | Value |
-|---|---|
-| `GOOGLE_CLIENT_ID` | `754718810816-oik5c621sgorqk71efp0rka7liagcf14.apps.googleusercontent.com` |
-| `OWNER_EMAIL` | `nick@stratfieldpartners.com` |
-
-Then confirm these three are **already present** and leave them alone:
-`ACCESS_CODES`, `AUTH_SECRET`, `GEMINI_API_KEY`. If any is missing, stop and
-report it — the site will be serving a "Not configured" page.
-
----
-
-## Task 4 · KV namespace — ✅ already done, do not repeat
-
-**This task is complete.** The `USERS` namespace exists and its id is committed
-in `wrangler.jsonc`:
-
-```jsonc
-  "kv_namespaces": [
-    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
-  ],
 ```
-
-**Do not run `wrangler kv namespace create USERS`.** That command does not check
-whether one already exists — it makes a *second*, empty namespace with the same
-name. Pointing the Worker at that one would silently discard the real user list:
-everyone already approved would come back as a stranger, waiting for approval
-again, with no error anywhere to say why.
-
-All you need to do here is **confirm it is still there**:
-
-```sh
-cd <repo>
-git checkout claude/personality-app-redesign-ax1rdi
-git pull origin claude/personality-app-redesign-ax1rdi
-grep -A2 kv_namespaces wrangler.jsonc
-```
-
-If the binding is present, this task is done — move on to Task 5. If it is
-somehow missing, say so in your report rather than creating one; the id above is
-the right value and belongs in `wrangler.jsonc`, never in the dashboard bindings
-panel.
-
-**Why the file and not the dashboard:** this Worker deploys from `wrangler.jsonc`
-via Workers Builds, which makes that file authoritative. A binding added only in
-the dashboard is removed the next time anything is pushed.
-
-Tasks 1–3 set secrets, which apply without a deploy. If you want to force one
-anyway, an empty commit is enough:
-
-```sh
-npm test          # expect 498 passed
-npm run build     # expect no errors
-git commit --allow-empty -m "Redeploy to pick up the new secrets"
-git push origin claude/personality-app-redesign-ax1rdi
+https://typology.stratfield-partners.workers.dev/api/auth/google/callback
+http://localhost:8788/api/auth/google/callback
 ```
 
 ---
 
-## Task 5 · Verify the deploy
+## Verified working
 
-Wait for the Cloudflare check on PR #3 to go green (about a minute), then:
+Checked against the live deployment on 26 Jul:
 
-```sh
-curl -si https://typology.stratfield-partners.workers.dev/ | head -1
+- **The wall holds.** Signed out, `GET /` returns **401** with `server: cloudflare`,
+  and "Continue with Google" appears exactly once.
+- **OAuth round trip works.** No `redirect_uri_mismatch` after the fix below.
+- **Owner auto-approval works.** `nick@stratfieldpartners.com` signed in at
+  21:09:48 and was written to KV as `status: approved`, `owner: true`, in one
+  step — no waiting page, as designed.
+- **Non-owner gating works.** `ngk325@gmail.com` signed in at 21:11:00, was
+  written `status: pending`, and gets the "Waiting for approval" page with
+  **403** on both `/` and `/admin`.
+
+Current KV contents:
+
+```
+user:nick@stratfieldpartners.com  → approved, owner: true
+user:ngk325@gmail.com             → pending
 ```
 
-**Expected: `HTTP/2 401`.** That is correct — the wall is working and you are
-not signed in. A `200` means the wall is bypassed; stop and report it.
-
-```sh
-curl -s https://typology.stratfield-partners.workers.dev/ | grep -c "Continue with Google"
-```
-
-**Expected: `1`.** A `0` means `googleAvailable()` is false — one of
-`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `AUTH_SECRET` or the `USERS` binding
-did not land. Check all four before doing anything else.
+> **You cannot verify any of this from a cloud sandbox.** The Cowork container
+> sits behind an egress allowlist that returns a bare `HTTP/1.1 403` for any
+> host outside it — `workers.dev` and `example.com` alike. That 403 is the
+> proxy, not the Worker; a real response carries a `cf-ray` header. Test from a
+> browser.
 
 ---
 
-## Task 6 · Smoke test the real flow
+## Open issue — the notification email
 
-In a browser:
+`ngk325@gmail.com` went pending at 21:11:00 and no mail arrived. Resend's
+application log showed **no inbound request at all** for that sign-in.
 
-1. Open <https://typology.stratfield-partners.workers.dev> in a **private
-   window**. You should see the Octant access page with a **Continue with
-   Google** button and an access-code field.
-2. Click **Continue with Google** and sign in as
-   `nick@stratfieldpartners.com`.
-3. **Expected:** straight into the app — the owner is auto-approved by design,
-   so this account never sees the waiting page.
-4. Go to `/admin`. You should see yourself listed as **Has access**, tagged
-   `you`, with no Block button (the owner cannot be blocked).
+**First cause, fixed in `fdfcf38`.** `waitUntil` was read off the `Request`
+rather than the `ExecutionContext`, which the `fetch` signature never declared.
+The check was always false, so every send took the fire-and-forget path and the
+runtime cancelled it as the redirect went out. That commit declares `Ctx`,
+threads it through `handleGoogle`, and awaits when no context is present.
 
-**To test the approval flow properly you need a second Google account**, because
-the consent screen is in Testing mode and only lists one user:
+**Second cause, still open.** `src/worker/notify.ts` sends from Resend's shared
+testing address:
 
-1. Google Cloud → **APIs & Services** → **OAuth consent screen** → **Audience**
-   → **Test users** → **Add users**. Add a second address you control.
-2. In another private window, sign in with that account.
-3. **Expected:** a "Waiting for approval" page and nothing else — no app shell,
-   no navigation.
-4. If `RESEND_API_KEY` is set, an email should arrive at
-   `nick@stratfieldpartners.com` within a minute, with **Approve** and **Deny**
-   buttons.
-5. Click **Approve**. Then reload the second window — it should now show the app.
-6. Back in `/admin` as the owner, click **Block** on that account. Reload the
-   second window: it should return to a "No access" page.
+```ts
+const FROM = "Octant <onboarding@resend.dev>";
+```
 
-If step 6 does not take effect immediately, wait up to a minute and reload.
-The user list is in KV, which is eventually consistent — this is expected and
-documented, not a bug.
+to `env.OWNER_EMAIL` — `nick@stratfieldpartners.com`. Resend restricts
+`onboarding@resend.dev` to the address the Resend account is registered under.
+That account is **`nick@neins.co`** (workspace NEINS), so this send should come
+back **403**, and `notifyOwnerOfSignup` swallows non-2xx into a silent
+`{ sent: false }`.
+
+The original runbook's claim that this "needs no DNS" holds only when
+`OWNER_EMAIL` equals the Resend signup address. It does not.
+
+**Options**, best first:
+
+1. Verify a domain you own for this app in Resend and send from it — e.g.
+   `octant@stratfieldpartners.com`. Correct long term, needs DNS records.
+2. Send from the already-verified `insuranceprosct.com`. Works today with zero
+   setup, but it is a client's domain and will look wrong in the owner's inbox.
+3. Point `OWNER_EMAIL` at `nick@neins.co`. Unblocks with no DNS, but
+   `OWNER_EMAIL` also decides who owns `/admin` — do not change it for mail
+   routing alone.
+
+**To retest:** the mail only fires on a user's *first* sign-in (`if (isNew…)`).
+`ngk325@gmail.com` is already in KV, so signing in again will not retrigger it.
+Delete that key from the `USERS` namespace to re-arm.
+
+**While diagnosing**, surface the reason instead of dropping it — `reason`
+already carries `resend <status>`, and observability is enabled on this Worker:
+
+```ts
+const r = await notifyOwnerOfSignup(...);
+if (!r.sent) console.error("notify failed:", r.reason);
+```
+
+---
+
+## Fixed during setup
+
+**The production redirect URI was missing.** The `Octant Worker` client listed
+only `http://localhost:8788/api/auth/google/callback` plus one invalid entry.
+Every production sign-in would have failed with `redirect_uri_mismatch`.
+
+**Chrome autofill corrupts the Google console URI fields.** It types a saved
+username into the first empty URI field on the OAuth client pages, on every
+load — that is where the invalid entry came from, and it recurs on both clients
+in this project. **Read every field before you press Save on those pages.**
+
+---
+
+## Traps
+
+**The `assets` block in `wrangler.jsonc` is the access wall.** Do not touch
+`run_worker_first`, `not_found_handling`, or anything else inside it. With
+`run_worker_first: false` or a route list, static assets are served without
+invoking the Worker at all, and the site is public while reporting itself
+private. The comment in that file explains the invocation-cost trade-off; read
+it before deciding the cost is worth optimising away.
+
+**KV bindings belong in `wrangler.jsonc`, not the dashboard.** Workers Builds
+deploys from that file, which makes it authoritative — a binding added only via
+the dashboard survives until the next push, then vanishes. The namespace id is
+an identifier, not a credential; committing it is correct.
+
+**KV is eventually consistent.** Approve and Block can take up to a minute.
+
+**Consent screen is in Testing.** External, one listed test user — yet
+`ngk325@gmail.com` completed sign-in without being on that list. Do not treat
+Testing mode as an access control. The app's own wall is what stops people.
+
+---
+
+## The older Supabase OAuth client — resolved, no action needed
+
+The project holds a second client, `stratfield-partners` (Apr 2025), whose only
+redirect URI is `https://sdvfjzkkosqevgbyafhu.supabase.co/auth/v1/callback`.
+
+Renaming the shared consent screen to "Octant" changed what that app's users
+would see. **It cost nothing.** The consent screen's lifetime OAuth counter
+reads *1 user (1 test, 0 other)* — no non-test user has ever authorised it.
+There was no audience to confuse. Left unchanged.
 
 ---
 
@@ -200,30 +166,22 @@ documented, not a bug.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `redirect_uri_mismatch` | The URI Google received is not byte-identical to a registered one | In the Google client, confirm `https://typology.stratfield-partners.workers.dev/api/auth/google/callback` exactly — no trailing slash, `https` not `http` |
-| "Not configured" page | `AUTH_SECRET` missing, or no way in configured at all | Check `AUTH_SECRET` and `ACCESS_CODES` both exist as secrets |
+| No approval email | Sender restriction (see above) | Send from a domain you have verified in Resend |
+| `redirect_uri_mismatch` | URI not byte-identical to a registered one | Compare against the list above. Check autofill did not overwrite the field |
+| "Not configured" page | `AUTH_SECRET` missing, or no way in at all | Confirm `AUTH_SECRET` and `ACCESS_CODES` both exist |
 | No Google button, code field only | `googleAvailable()` false | One of `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `AUTH_SECRET`, `USERS` is missing |
-| "Google sign-in is not configured" JSON | Same, but you hit `/api/auth/google/start` directly | As above |
-| `403` "This page is for the owner" at `/admin` | Signed in as a non-owner, or `OWNER_EMAIL` does not match the signed-in address | Check `OWNER_EMAIL` matches exactly, lowercase-insensitively |
-| Access-denied screen from Google | The account is not a Test user | Add it under **Audience → Test users**, or publish the app |
-| Deploy fails on the KV binding | The id is wrong or belongs to another account | Check the id against **Storage & Databases → KV** in the dashboard and report a mismatch — do not create a new namespace, that loses the user list |
-| Everyone approved is suddenly pending again | The Worker is pointed at a second, empty `USERS` namespace | Restore the id in `wrangler.jsonc` to the one holding the records, and delete the empty duplicate |
-| Emails never arrive | `RESEND_API_KEY` missing or wrong | Check the secret; failed sends are deliberately silent so they cannot break a sign-in |
+| Waiting page for the owner | Signed in with the wrong Google account | Use **Switch account**. Far more likely than an `OWNER_EMAIL` fault |
+| `403` at `/admin` while signed in | Not the owner, or `OWNER_EMAIL` mismatch | Compare to `OWNER_EMAIL`; case-insensitive but otherwise exact |
+| Approve/Block seems ignored | KV lag | Wait a minute, reload |
+| Deploy fails on the KV binding | Wrong id, or another account's | Compare to the id above; it is in the namespace's dashboard URL |
+| Bare `403`, no `cf-ray` | Calling from a sandboxed environment | Not the Worker. Test from a browser |
 
 ---
 
-## What to report back
+## Commands
 
-Please include, in this order:
-
-1. Which of Tasks 1–3 completed, and any that did not, with the error. For
-   Task 4, just confirm the binding is still in `wrangler.jsonc`.
-2. The two Task 5 curl results, verbatim.
-3. Whether the Task 6 flow worked end to end — and if you added a second test
-   account, say which one, so it can be blocked afterwards if it was a throwaway.
-4. Whether the notification email arrived.
-5. **The Supabase consent-screen question from Task 1** — is that older OAuth
-   client live and user-facing?
-6. Anything you had to do differently from these instructions.
-
-**Do not include any secret value in the report.** Shapes and confirmations only.
+```sh
+npm test          # 540 tests, all passing
+npm run build     # tsc -b && vite build
+cp .dev.vars.example .dev.vars   # local dev fails closed without this
+```

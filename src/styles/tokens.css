@@ -37,6 +37,40 @@
   --shell: 1240px;
   --rail: 384px;
 
+  /* The masthead's fixed height. Every scroll offset in the app — anchored
+     headings, the lexicon's deep links, the calculator's sticky column — is
+     derived from this one value with calc(), never written as a literal.
+     It holds because the tab row collapses to the menu button at 1100px,
+     BEFORE it would ever need a second line; tests/styles.test.ts greps for
+     stray hard-coded offsets. */
+  --masthead-h: 64px;
+
+  /* ---- breakpoints ----
+   *
+   * CSS custom properties cannot appear inside @media, so these exist as a
+   * contract rather than as variables: every media query in components.css
+   * must use one of exactly these widths, and tests/styles.test.ts fails the
+   * build on any other value. One place to read the whole responsive story:
+   *
+   *   1180px  chat rail: sticky column -> fixed overlay (with scrim)
+   *   1100px  .g3 3 -> 2 columns
+   *    900px  .g-side stacks; page padding tightens; body text steps down
+   *    700px  .g2 stacks
+   *    640px  .g3 -> 1 column; rows stack; vertical labels un-rotate
+   *    480px  chat rail goes full-screen
+   *
+   * The masthead is different: whether the tab row fits depends on the
+   * masthead's own width — the docked chat rail takes 384px of it — so its
+   * two thresholds are CONTAINER queries on the `masthead` container, not
+   * viewport media queries:
+   *
+   *   1399px  the wordmark tagline hides
+   *   1239px  tabs collapse to the menu button
+   *
+   * The grids deliberately do NOT all collapse at once — .g3 and .g2 step
+   * down before .g-side so a tablet gets intermediate layouts instead of
+   * jumping straight from desktop to phone. */
+
   /* ---- space ---- */
   --s1: 4px;
   --s2: 8px;

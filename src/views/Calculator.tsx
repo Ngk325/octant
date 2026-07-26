@@ -7,7 +7,7 @@ import { COIN_PLAIN } from "../engine/plain";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
-import { Panel } from "../components/Bits";
+import { ChoiceCard, Panel } from "../components/Bits";
 
 const PROMPTS: [string, string][] = [
   ["I take things in first and make up my mind later.",
@@ -32,6 +32,7 @@ const PROMPTS: [string, string][] = [
 export default function Calculator() {
   const [answers, setAnswers] = useState<(string | null)[]>(Array(8).fill(null));
   const result = useMemo(() => calculate(answers), [answers]);
+  const answered = answers.filter(Boolean).length;
   const p = usePalette();
   /** Is this one of the four coins that actually fixes the type? */
   const isDetermining = (i: number) => (DETERMINING as readonly number[]).includes(i);
@@ -69,41 +70,25 @@ export default function Calculator() {
               <p style={{ fontSize: "var(--t-lg)", marginBottom: "var(--s2)" }}>
                 {i + 1}. {COIN_PLAIN[i]}
               </p>
-              <p className="small muted" style={{ marginBottom: "var(--s4)" }}>
-                {COIN_LABELS[i]} ·{" "}
-                {isDetermining(i)
-                  ? <b style={{ color: "var(--accent-ink)" }}>decides your type</b>
-                  : "cross-check"}
+              <p className="small muted" style={{ marginBottom: "var(--s4)", display: "flex", gap: "var(--s2)", alignItems: "center", flexWrap: "wrap" }}>
+                {COIN_LABELS[i]}
+                <span className={`chip${isDetermining(i) ? " on" : ""}`}>
+                  {isDetermining(i) ? "decides your type" : "cross-check"}
+                </span>
               </p>
 
               <div className="grid g2" style={{ gap: "var(--s3)" }}>
                 {([[A, PROMPTS[i][0]], [B, PROMPTS[i][1]]] as const).map(([val, prompt]) => (
-                  <button
-                    key={val}
-                    className={`btn${answers[i] === val ? " primary" : ""}`}
-                    aria-pressed={answers[i] === val}
-                    onClick={() => set(i, val)}
-                    style={{
-                      textAlign: "left",
-                      display: "block",
-                      padding: "var(--s3) var(--s4)",
-                      lineHeight: 1.45,
-                    }}
-                  >
+                  <ChoiceCard key={val} selected={answers[i] === val} onClick={() => set(i, val)}>
                     {prompt}
-                  </button>
+                  </ChoiceCard>
                 ))}
               </div>
             </Panel>
           ))}
-
-          <button className="btn ghost" style={{ justifySelf: "start" }}
-                  onClick={() => setAnswers(Array(8).fill(null))}>
-            Clear all
-          </button>
         </div>
 
-        <div className="stack-v" style={{ position: "sticky", top: 88 }}>
+        <div className="stack-v" style={{ position: "sticky", top: "calc(var(--masthead-h) + var(--s5))" }}>
           {result.best && (
             <Panel title="Your type">
               <div className="cluster" style={{ gap: "var(--s4)" }}>
@@ -134,6 +119,12 @@ export default function Calculator() {
 
           <Panel title="Still possible">
             <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
+              {answered > 0 && (
+                <button className="btn ghost" style={{ marginLeft: "auto", order: 2 }}
+                        onClick={() => setAnswers(Array(8).fill(null))}>
+                  Clear all
+                </button>
+              )}
               {result.field.map((t) => (
                 <Link key={t} to={`/type/${t}`} className="chip mono">
                   <i className="dot" style={{ background: p.quadra(quadra(t)) }} />
@@ -166,6 +157,27 @@ export default function Calculator() {
           </p>
         </div>
       </div>
+
+      {/* The feedback loop, kept alive on phones. Below 900px the results
+          column renders after all eight questions, which silently killed the
+          one thing this page is for — answer, watch the field narrow. The
+          dock pins the current state to the bottom of the screen instead. */}
+      {answered > 0 && (
+        <div className="calc-dock" role="status">
+          {result.best ? (
+            <>
+              <span>
+                Best fit so far: <b className="mono">{result.best}</b>
+              </span>
+              <Link to={`/type/${result.best}`} className="btn primary">Read it →</Link>
+            </>
+          ) : (
+            <span>
+              {result.field.length} of 16 left · {result.determiningAnswered}/4 deciding answered
+            </span>
+          )}
+        </div>
+      )}
     </>
   );
 }

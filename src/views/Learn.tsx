@@ -59,7 +59,7 @@ export default function Learn() {
   const markDone = (slug: string) =>
     setDone((d) => (d.includes(slug) ? d : [...d, slug]));
 
-  if (!current) return <Index done={done} />;
+  if (!current) return <Index done={done} example={example} setExample={setExample} />;
 
   const prev = i > 0 ? STAGES[i - 1] : null;
   const next = i < STAGES.length - 1 ? STAGES[i + 1] : null;
@@ -79,19 +79,13 @@ export default function Learn() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: "var(--s4)", alignItems: "baseline", flexWrap: "wrap" }}>
-        <p className="small muted" style={{ margin: 0 }}>
-          Stage {i + 1} of {STAGES.length}
-        </p>
-        <label className="small" style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
-          Examples use
-          <select value={example} onChange={(e) => setExample(e.target.value as MbtiType)} aria-label="Example type">
-            {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </label>
-      </div>
+      <p className="small muted" style={{ margin: "0 0 var(--s2)" }}>
+        Stage {i + 1} of {STAGES.length}
+      </p>
 
       <h1>{current.title}</h1>
+
+      <ExampleControl example={example} setExample={setExample} />
 
       {current.body(example)}
 
@@ -132,23 +126,54 @@ export default function Learn() {
   );
 }
 
+/**
+ * The worked-example control. This is the most consequential input on the
+ * course — it rewires every figure in every stage — so it renders as a real
+ * labelled control on both the index and each stage, not a small select
+ * hidden above the heading.
+ */
+function ExampleControl({ example, setExample }: {
+  example: MbtiType;
+  setExample(t: MbtiType): void;
+}) {
+  return (
+    <p className="note" style={{ display: "flex", gap: "var(--s3)", alignItems: "center", flexWrap: "wrap" }}>
+      <label className="small" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <b style={{ fontFamily: "var(--sans)" }}>Worked example</b>
+        <select value={example} onChange={(e) => setExample(e.target.value as MbtiType)} aria-label="Example type">
+          {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </label>
+      <span className="small muted">
+        Every diagram in the course is drawn for this type. Set it to yours.
+      </span>
+    </p>
+  );
+}
+
 /** The course contents page, with progress. */
-function Index({ done }: { done: string[] }) {
+function Index({ done, example, setExample }: {
+  done: string[];
+  example: MbtiType;
+  setExample(t: MbtiType): void;
+}) {
   const complete = done.length >= STAGES.length;
   return (
     <>
       <h1>Learn this from scratch</h1>
       <p className="lede">
-        Ten stages, in order, each one assuming only what the ones before it taught. Plain English
-        first; the precise version is always one click underneath, so you can see the vocabulary
-        you are growing into rather than being handed it.
+        {STAGES.length} stages, in order, each one assuming only what the ones before it taught.
+        Plain English first; the precise version is always one click underneath, so you can see
+        the vocabulary you are growing into rather than being handed it.
       </p>
+
+      <ExampleControl example={example} setExample={setExample} />
 
       <p>
         <Link to={`/learn/${STAGES[0].slug}`} className="btn primary">
           {done.length ? "Continue" : "Start at the beginning"} →
         </Link>
-        {complete && <span className="chip" style={{ marginLeft: 12 }}>All ten done</span>}
+        {complete && <span className="chip" style={{ marginLeft: 12 }}>All {STAGES.length} done</span>}
       </p>
 
       <div className="grid g2" style={{ marginTop: "var(--s6)" }}>

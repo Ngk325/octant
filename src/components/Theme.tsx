@@ -32,7 +32,22 @@ const systemTheme = (): Theme =>
 
 /**
  * Resolves light or dark, keeps `data-theme` in sync, and exposes the palette to any
- * component that needs literal colour values (SVG cannot read CSS custom properties).
+ * component that needs literal colour values.
+ *
+ * THE COLOUR CONVENTION FOR DIAGRAMS, written down because every new diagram
+ * must follow it and it was previously tribal knowledge:
+ *
+ *   - SEMANTIC colour — a function's hue, a quadra's dot, the ease ramp —
+ *     comes from usePalette() as literal hex. These values are per-theme
+ *     records in engine/palette.ts, asserted against WCAG AA in
+ *     tests/palette.test.ts, and there is no CSS variable for them.
+ *   - CHROME — rules, muted text, surfaces, the accent — is written as CSS
+ *     custom properties directly in SVG attributes (fill="var(--muted)").
+ *     Inline SVG resolves var() like any other element, and both paths flip
+ *     together when data-theme changes.
+ *
+ * Use the right path for the right kind of colour: palette hex where the
+ * colour MEANS something, var() where it is furniture.
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [preference, setPref] = useState<Theme | null>(() => {

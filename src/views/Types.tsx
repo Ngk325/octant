@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { TYPES, quadra, stack, gate } from "../engine/core";
 import { ARCHETYPE, GROUP, type MbtiType } from "../engine/data";
 import { FN_WANTS, FN_ROLE } from "../engine/functions";
@@ -7,6 +6,7 @@ import { typePlain } from "../engine/plain";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
+import { FnTag, Tile } from "../components/Bits";
 
 type SortBy = "quadra" | "temperament" | "alpha";
 
@@ -64,19 +64,7 @@ export default function Types() {
             {list.map((t) => {
               const st = stack(t);
               return (
-                <Link
-                  key={t}
-                  to={`/type/${t}`}
-                  style={{
-                    display: "block",
-                    padding: "var(--s4)",
-                    border: "1px solid var(--rule)",
-                    borderRadius: "var(--radius-lg)",
-                    background: "var(--surface)",
-                    textDecoration: "none",
-                    boxShadow: "var(--shadow)",
-                  }}
-                >
+                <Tile key={t} to={`/type/${t}`}>
                   <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s2)" }}>
                     <b className="mono" style={{ fontSize: "var(--t-lg)" }}>{t}</b>
                     <i
@@ -98,14 +86,14 @@ export default function Types() {
                     <div className="small" style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                       <span className="muted">Leads with</span>
                       <span>
-                        <b className="mono" style={{ color: p.fn(st[0]) }}>{st[0]}</b>{" "}
+                        <FnTag fn={st[0]} />{" "}
                         <span className="muted">{FN_ROLE[st[0]].toLowerCase()}</span>
                       </span>
                     </div>
                     <div className="small" style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                       <span className="muted">Sore spot</span>
                       <span>
-                        <b className="mono" style={{ color: p.fn(st[3]) }}>{st[3]}</b>{" "}
+                        <FnTag fn={st[3]} />{" "}
                         <span className="muted">wants {FN_WANTS[st[3]].toLowerCase()}</span>
                       </span>
                     </div>
@@ -114,7 +102,7 @@ export default function Types() {
                       <span>{gate(t).gate.replace("Gate of ", "")}</span>
                     </div>
                   </div>
-                </Link>
+                </Tile>
               );
             })}
           </div>
