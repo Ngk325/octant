@@ -261,3 +261,61 @@ Sdl Cmp Sp< Bn< Cnf Qid Cnt Ego Ill Lkl Sp> Bn> Mrr Act Dlt Idn`
     }
   });
 });
+
+
+/**
+ * A third published relations table (IMG_6097), keyed in plain MBTI notation.
+ * Because it needs no Socionics letter conversion, it isolates the relation
+ * logic itself rather than the notation mapping.
+ */
+describe("MBTI-notation intertype table (third external validation)", () => {
+  const ORDER: MbtiType[] = ["ENTP", "ISFJ", "ESFJ", "INTP", "ENFJ", "ISTP", "ESTP", "INFJ",
+                             "ESFP", "INTJ", "ENTJ", "ISFP", "ESTJ", "INFP", "ENFP", "ISTJ"];
+  const CHART = `Id Du Ac Mr Rq+ Sv+ Cp Mg Se Ex QI Cf Rq- Sv- Cg Sd
+Du Id Mr Ac Sv+ Rq+ Mg Cp Ex Se Cf QI Sv- Rq- Sd Cg
+Ac Mr Id Du Cg Sd Rq- Sv- QI Cf Se Ex Cp Mg Rq+ Sv+
+Mr Ac Du Id Sd Cg Sv- Rq- Cf QI Ex Se Mg Cp Sv+ Rq+
+Rq- Sv- Cg Sd Id Du Ac Mr Rq+ Sv+ Cp Mg Se Ex QI Cf
+Sv- Rq- Sd Cg Du Id Mr Ac Sv+ Rq+ Mg Cp Ex Se Cf QI
+Cp Mg Rq+ Sv+ Ac Mr Id Du Cg Sd Rq- Sv- QI Cf Se Ex
+Mg Cp Sv+ Rq+ Mr Ac Du Id Sd Cg Sv- Rq- Cf QI Ex Se
+Se Ex QI Cf Rq- Sv- Cg Sd Id Du Ac Mr Rq+ Sv+ Cp Mg
+Ex Se Cf QI Sv- Rq- Sd Cg Du Id Mr Ac Sv+ Rq+ Mg Cp
+QI Cf Se Ex Cp Mg Rq+ Sv+ Ac Mr Id Du Cg Sd Rq- Sv-
+Cf QI Ex Se Mg Cp Sv+ Rq+ Mr Ac Du Id Sd Cg Sv- Rq-
+Rq+ Sv+ Cp Mg Se Ex QI Cf Rq- Sv- Cg Sd Id Du Ac Mr
+Sv+ Rq+ Mg Cp Ex Se Cf QI Sv- Rq- Sd Cg Du Id Mr Ac
+Cg Sd Rq- Sv- QI Cf Se Ex Cp Mg Rq+ Sv+ Ac Mr Id Du
+Sd Cg Sv- Rq- Cf QI Ex Se Mg Cp Sv+ Rq+ Mr Ac Du Id`
+    .trim().split("\n").map((r) => r.trim().split(/\s+/));
+
+  const MAP: Record<string, string> = {
+    Id: "ID", Du: "DU", Ac: "AC", Mr: "MI", Sd: "HD", Mg: "MG", QI: "QI",
+    Ex: "EX", Se: "SE", Cf: "CF",
+    Cp: "BU", Cg: "KD",              // "Cooperation" / "Congenerity" in this sheet's names
+    "Rq+": "BR", "Rq-": "BE", "Sv+": "SV", "Sv-": "SR",
+  };
+
+  it("agrees with the engine on all 256 cells", () => {
+    let matched = 0;
+    const misses: string[] = [];
+    for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) {
+      const actual = REL[ORDER[i]][ORDER[j]];
+      if (actual === MAP[CHART[i][j]]) matched++;
+      else misses.push(`${ORDER[i]}/${ORDER[j]}: chart ${CHART[i][j]}, engine ${actual}`);
+    }
+    expect(misses.slice(0, 5)).toEqual([]);
+    expect(matched).toBe(256);
+  });
+
+  it("maps each label onto exactly one engine code", () => {
+    const seen = new Map<string, Set<string>>();
+    for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) {
+      const set = seen.get(CHART[i][j]) ?? new Set<string>();
+      set.add(REL[ORDER[i]][ORDER[j]]);
+      seen.set(CHART[i][j], set);
+    }
+    expect(seen.size).toBe(16);
+    for (const [label, codes] of seen) expect([...codes], `${label}`).toHaveLength(1);
+  });
+});

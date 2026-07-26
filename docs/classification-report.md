@@ -6,8 +6,7 @@ Source: `typology-photos-normalized 2.zip`, committed to `main` (0dafb68).
 2025-08-28 pair); neither is in the normalized set. Worth checking whether they were dropped
 during conversion — the catalog notes they were mislabelled JPEGs.
 
-**15 of 21 vision-passed: all of Group A (4), all of Group C (8), and three of Group B.** Six Group B
-screenshots remain — see the note at the end.
+**All 21 images vision-passed.** Transcripts in `transcripts/`, one per image.
 
 ---
 
@@ -22,7 +21,7 @@ relations page, and a function tree from erictb.info. The only original content 
 handwritten function-role labels and some circling of the photographer's own coins.
 
 **No Hawkins, no KWML, no water-based emotion taxonomy, and no Astrolabe / Periplus / Calibration
-Codex content appears anywhere in the fifteen images read.** Which lines up with your instruction to
+Codex content appears anywhere in any of the 21 images.** Which lines up with your instruction to
 keep those three out — the photos do not contain them in the first place.
 
 Consequence: Guardrail 2 ("treat anything that looks like personal/original notes as provisional")
@@ -46,19 +45,19 @@ does not bind here. What does bind instead is **third-party copyright** — see 
 | `MBTI types.jpg` | A | `mbti_type_profile` | high | ✅ transcribed | Keirsey 4×4 grid + ST/SF/NT/NF mottos. Confirms `ARCHETYPE`'s 2nd entry is Keirsey |
 | `INTJ (2).jpg` | A | `mbti_cognitive_functions` | high | ✅ transcribed | **Not** a profile card — a letters→stack derivation. Fills a real course gap |
 | `24c1bfb77d03d05638ceca1740d6056f.jpg` | A | `mbti_cognitive_functions` | high | ✅ transcribed | Jung derivation tree, © Julie A Hoy PhD. Beginner version of IMG_8413 |
-| `IMG_0314.JPG` | B | unknown | — | ⏳ pending | Text screenshot |
-| `IMG_6093.jpg` | B | unknown | — | ⏳ pending | Full-height phone screenshot |
-| `IMG_6094.JPG` | B | unknown | — | ⏳ pending | Cropped excerpt |
+| `IMG_0314.JPG` | B | `photographed_notes` | high | ✅ transcribed | **Sixteen four-sides whiteboards — the only original material. Confirms `sides()`** |
+| `IMG_6093.jpg` | B | `unlabeled_general_typology` (OPS) | high | ✅ transcribed | OPS coin tells. ⚠️ contains a named third party — redacted |
+| `IMG_6094.JPG` | B | `unlabeled_general_typology` | high | ✅ transcribed | Fourth relations table. **Uses the app's own Kindred/Business naming** |
 | `IMG_6095.JPG` | B | `unlabeled_general_typology` | high | ✅ transcribed | **Socionics 16×16 relations chart. Validates all 256 engine cells** |
-| `IMG_6097.JPG` | B | unknown | — | ⏳ pending | Landscape crop |
+| `IMG_6097.JPG` | B | `unlabeled_general_typology` | high | ✅ transcribed | **Third relations table, MBTI notation. Validates all 256 cells** |
 | `IMG_6099.PNG` | B | `mbti_type_profile` | high | ✅ transcribed | **Empirical 16×16 compatibility matrix**, personalitydata.org, CC BY 4.0. Contradicts the derived model — see below |
 | `screenshot_2025-12-23.png` | B | `unlabeled_general_typology` (OPS) | high | ✅ transcribed | **Confirms the Play/Consume animal correction** |
-| `Screenshot_20230703_081513_Photos.jpg` | B | unknown | — | ⏳ pending | 2023-07-03 08:15:13 |
-| `Screenshot_20230703_081539_Photos.jpg` | B | unknown | — | ⏳ pending | 2023-07-03 08:15:39 |
+| `Screenshot_20230703_081513_Photos.jpg` | B | `mbti_type_profile` | high | ✅ transcribed | Adioma/Keirsey wheel. Held back with A3–A5 |
+| `Screenshot_20230703_081539_Photos.jpg` | B | `mbti_type_profile` | high | ✅ transcribed | Unsourced pop compatibility chart. ⛔ deliberately not ingested |
 
 ---
 
-## Four engine validations that fell out
+## Five engine validations that fell out
 
 Both run against the live engine, not eyeballed:
 
@@ -84,6 +83,11 @@ Both run against the live engine, not eyeballed:
    states Play = De+Oe and Consume = Di+Oe, exactly as corrected in `src/engine/ops.ts`. The fix
    was originally made from published OPS definitions found by web research; this is a second,
    independent source for the same fact, and it was in the batch all along.
+
+5. **The sixteen whiteboards (`IMG_0314`) confirm `sides()`.** 45 of 46 legible entries match;
+   the one miss is a transcription error of mine, since the function list written under that panel
+   agrees with the engine. This is the owner's own working material, and it agrees with the
+   derived four sides for every type.
 
 Also already present, discovered by comparison: the app's OPS coin definitions and even the
 Calculator's prompt wording derive from `IMG_7589`; and the app's coin 8 (Control/Movement) is the
@@ -123,12 +127,25 @@ are most defensive about. Neither is thereby wrong. But it is a quantified disag
 structural and an empirical model, and the app's own stated posture is to show such divergences
 rather than smooth them over. See plan §A10.
 
-## Group B — mostly still pending
+## Group B — complete, and it held the two best things in the batch
 
-Six of the nine Group B screenshots have not been vision-passed yet. They are the lowest-value group on
-the catalog's own description (saved articles, cropped excerpts, re-shared graphics) and the least
-likely to contain structured data, but they have not been ruled out — `screenshot_2025-12-23.png`
-in particular (3058×588, a stitched capture) is worth a look. Nothing in the plan depends on them.
+Nine screenshots, all now read. Two were more valuable than the catalog suggested:
+
+- **`IMG_0314` is the only genuinely original material in the whole batch** — sixteen handwritten
+  four-sides whiteboards, one per type. They agree with `sides()` on every legible entry, and they
+  carry a function-keyword gloss (Ti Logic, Te Rationale, Fi Morals, Fe Ethics, Si Duty/Past
+  memory, Se Physics, Ni Willpower, Ne Metaphysics) that is not in the app. Per Guardrail 2 it is
+  surfaced for a decision rather than merged.
+- **`IMG_6097` validates all 256 relations in plain MBTI notation**, needing no Socionics
+  conversion at all.
+
+Two are recorded but deliberately not ingested: the Adioma/Keirsey wheel (it is the A3–A5
+naming detail held back by agreement) and an unsourced pop compatibility chart (no method, no
+attribution, and it contradicts both the engine and the survey).
+
+One carries a **named private individual's** typing; the name is redacted from the transcript and
+nothing identifying is proposed for the app.
+
 
 ## Late Group A findings
 

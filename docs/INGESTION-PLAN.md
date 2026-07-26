@@ -7,7 +7,7 @@ arrived on `main` (0dafb68) and were vision-passed.
 from type to anything. Astrolabe / Periplus / Calibration Codex is out of scope for this app.
 Everything below is written to that.
 
-Companion documents: `classification-report.md` (all 21 images), `transcripts/` (13 verbatim),
+Companion documents: `classification-report.md` (all 21 images), `transcripts/` (21 — one per image, complete),
 `research-notes.md` (external research; its Hawkins and KWML sections are now moot but retained
 as the record of what was checked).
 
@@ -21,7 +21,7 @@ They are not: eight photographs of printed pages in a ring binder — Linda Bere
 Joseph's Type Grid, an OPS coin sheet, a "Type Logic" relations page, and a function tree from
 erictb.info. The only original content is marginalia.
 
-**Nothing in the thirteen images read contains Hawkins, KWML, or water/emotion-taxonomy material** —
+**Nothing in any of the 21 images contains Hawkins, KWML, or water/emotion-taxonomy material** —
 so your "keep them out" instruction costs nothing here. It removes work that was never supported
 by the source in the first place.
 
@@ -172,7 +172,24 @@ Joseph. Your call, not mine.
 `IMG_8405.HEIC` (the 2025-08-28 pair, catalogued as mislabelled JPEGs) did not survive conversion.
 If they matter, they need re-exporting.
 
-## 7 · Open question
+## 7 · One thing found late, awaiting your call
+
+`IMG_0314` — sixteen handwritten four-sides whiteboards — is the only genuinely original material
+in the batch, and it **agrees with the engine on every legible entry**. It also carries a
+per-function keyword gloss that is not in the app and is a different handle from the Berens verbs
+already ingested:
+
+| Fn | Keyword | Fn | Keyword |
+|---|---|---|---|
+| Ti | Logic | Te | Rationale |
+| Fi | Morals | Fe | Ethics |
+| Si | Duty / Past memory | Se | Physics |
+| Ni | Willpower | Ne | Metaphysics |
+
+Per the instructions' Guardrail 2, original conceptual material is surfaced rather than merged.
+Say the word and it goes in beside `FN_ROLE` as `FN_KEYWORD` — it is about ten lines.
+
+## 8 · Open question
 
 Only one left, and it is a scoping question rather than a blocker: **how much of the batch do you
 actually want in the app?** A1, A2 and A6 are clear wins. A3–A5 add naming systems and detail that
