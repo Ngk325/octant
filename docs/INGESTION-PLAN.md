@@ -1,228 +1,150 @@
-# Photo ingestion & framework integration — status and plan
+# Photo ingestion — findings and plan
 
-Response to `typology-photo-catalog.md` and `claudecodeinstructions.md`.
+Response to `typology-photo-catalog.md` and `claudecodeinstructions.md`, revised after the images
+arrived on `main` (0dafb68) and were vision-passed.
 
-**Short answer: no, most of it is not in the application yet.** The MBTI/Jungian half is fully
-covered and then some. The three additional frameworks the instructions name — Hawkins
-calibration, KWML archetypes, and the 8-category water emotion taxonomy — are entirely absent,
-and the Astrolabe / Periplus / Calibration Codex material has no representation at all.
+**Decisions taken (yours):** Hawkins, KWML and the emotion taxonomy are **out**. No derived mapping
+from type to anything. Astrolabe / Periplus / Calibration Codex is out of scope for this app.
+Everything below is written to that.
 
-Separately: **the 23 images did not arrive.** Only the two `.md` files were uploaded. That blocks
-the transcription and classification work outright; it does not block everything else.
+Companion documents: `classification-report.md` (all 21 images), `transcripts/` (9 verbatim),
+`research-notes.md` (external research; its Hawkins and KWML sections are now moot but retained
+as the record of what was checked).
 
 ---
 
-## 1 · Audit — what is and is not in the app today
+## 1 · Headline finding
 
-| From the catalog / instructions | In the app? | Where |
+**Group C turned out to be photographed third-party training material, not original notes.** The
+catalog guessed these were handwritten conceptual work, possibly early Astrolabe/Periplus drafts.
+They are not: eight photographs of printed pages in a ring binder — Linda Berens handouts, CS
+Joseph's Type Grid, an OPS coin sheet, a "Type Logic" relations page, and a function tree from
+erictb.info. The only original content is marginalia.
+
+**Nothing in the nine images read contains Hawkins, KWML, or water/emotion-taxonomy material** —
+so your "keep them out" instruction costs nothing here. It removes work that was never supported
+by the source in the first place.
+
+## 2 · Status against the original audit
+
+| | Then | Now |
 |---|---|---|
-| Jungian 8 cognitive functions | ✅ Complete | `data.ts` `FN_LONG`/`FN_SHADOW`/`FN_FULL`, `plain.ts` `FN_PLAIN`/`FN_HANDLE`, lexicon entries `ne`…`fi` |
-| Function stacks per type | ✅ Derived, not listed | `core.ts` `stack()` — generated from three involutions |
-| Shadow functions | ✅ Complete | slots 5–8, `SLOT_NAMES`/`SLOT_TAGS`, plus the four-sides build-out |
-| 16-type roster ("MBTI types.jpg") | ⚠️ Partial | `/matrix` and the type pickers cover it functionally; there is no single "all 16 at a glance" browse page |
-| Single-type profile card ("INTJ (2).jpg") | ✅ Exceeds it | `/type/:type` is far richer than a social-media profile card |
-| **"What makes each cognitive function happy"** | ❌ **Missing** | Nine per-function tables exist; none of them is *what satisfies / nourishes this function*. See §3.1 |
-| **Hawkins Map of Consciousness** | ❌ Absent | zero references in `src/`, `tests/`, or docs |
-| **KWML archetypes** | ❌ Absent | zero references. Note the naming collision in §3.3 |
-| **8-category water emotion taxonomy** | ❌ Absent **and undefined** | not in the repo in any form. See §4, question 2 |
-| Astrolabe / Periplus / Calibration Codex | ❌ Absent | no reference anywhere |
-| "The Undercurrent" tracker | ❌ Absent | no reference anywhere |
-| Provenance fields on reference data | ❌ Absent | nothing in the schema records source file, capture date or confidence |
-| `transcripts/`, `classification-report.md` | ⛔ Blocked | needs the images |
+| Jungian functions & stacks | ✅ | ✅ — and now **independently validated**: Berens' published 16 Type Patterns table matches `stack()` on 128/128 slots |
+| CS Joseph archetype names | ❓ | ✅ **already in the app**, all sixteen, as `ARCHETYPE[t]`'s 4th entry — but unattributed |
+| OPS coins | ✅ | ✅ — `IMG_7589` is evidently their source; the Calculator's prompt wording is near-verbatim from it |
+| "What makes each function happy" | ❌ | ❌ still missing — and the image confirms it is worth adding |
+| Hawkins / KWML / emotion taxonomy | ❌ | **Dropped by your decision, and absent from the source anyway** |
 
-The instructions' Step 4.2 says *"don't create a parallel schema; extend the existing one."*
-Section 3 below is written to that constraint.
+## 3 · What is genuinely new and worth adding
 
----
+Everything here is per-function or per-type data that extends tables the app already has. None of
+it touches the derived core.
 
-## 2 · The blocker, precisely
+### A1 · Function satisfaction — the one gap the audit predicted
+From `what-makes-each-cognitive-function-happy`. The engine has nine per-function tables and not
+one answers *what does this function want*, which is exactly what the Growth surfaces need when
+they tell someone to develop their Inferior.
 
-`claudecodeinstructions.md` Step 1 requires a vision pass over 23 images. The catalog says
-*"All 23 originals + normalized JPEG copies are included"* — they were not in this upload. The
-session directory contains only the two markdown files, and a filesystem sweep found no image
-files other than screenshots this session produced.
+- `FN_SATISFACTION: Record<Fn, string>` — headline + what feeds it
+  (Se Experience · Si Immersion · Ne Ideas · Ni Meaning · Te Accomplishment · Ti Precision ·
+  Fe Unity · Fi Individuality)
+- `FN_STARVATION: Record<Fn, string>` — what chronic under-feeding looks like
+- `FN_PRACTICE: Record<Fn, string[]>` — 3–4 concrete things to try this week
 
-| Step | Status |
-|---|---|
-| 1 · Inventory & vision/OCR pass | ⛔ Blocked — no images |
-| 2 · Classify against frameworks | ⛔ Blocked — depends on Step 1 |
-| 3 · Research pass | ✅ Done, unblocked — see §3 and `docs/research-notes.md` |
-| 4 · Integration | ⚠️ Partially plannable — schema work can start; content cannot |
-| 5 · `transcripts/`, `classification-report.md` | ⛔ Blocked |
-| 5 · `research-notes.md` | ✅ Delivered |
+Surfaced on `/type/:type` under **Growth** against the Inferior and Nemesis, in each function's
+lexicon entry, and in course stage 6.
 
-**Group C matters most and is entirely blocked.** The instructions flag those ten camera photos as
-possibly the project's *own* conceptual notes, and Guardrail 2 says to treat them as provisional
-and confirm before integrating. Nothing in this plan proposes merging them; §5 is where they land.
+### A2 · Function roles and characteristics
+From `IMG_7533`, `IMG_7534`, `IMG_7535` — the richest material in the set.
 
-To unblock: drag the images into the chat, or commit them to the repo (e.g. `source-images/`) and
-tell me the path.
+- `FN_ROLE: Record<Fn, string>` — one verb each: Knowing, Creating, Empathizing, Persuading,
+  Contemplating, Systemizing, Preserving, Doing. Short enough for diagram labels and chips, which
+  the app currently has no good short handle for.
+- `FN_VERBS: Record<Fn, string[]>` — the five verb-phrases per function.
+- `FN_SAYS: Record<Fn, [string, string]>` — the two catchphrases per function ("This is what is." /
+  "What's next?"). These are the single most useful thing in the whole batch for the plain layer:
+  they let a reader **recognise a function in speech**, which no current table does.
 
----
+### A3 · Berens Type Themes
+From `IMG_7570`. Sixteen two-word themes (ENTP "Explorer Inventor", INTJ "Conceptualizer Director",
+…). Adds a fourth naming system alongside the three already in `ARCHETYPE`.
 
-## 3 · What can be built now, without the images
-
-### 3.1 The function-satisfaction layer — the one real content gap in Group A
-
-`what-makes-each-cognitive-function-happy` is the only Group A item with no counterpart in the
-app. The engine has nine per-function tables and not one of them answers *what does this function
-want*:
-
-| Existing table | Answers |
-|---|---|
-| `FN_FULL` | what it is called |
-| `FN_LONG` / `FN_PLAIN` | what it does |
-| `FN_SHADOW` | how it fails |
-| `FN_INSTRUMENT` | how to lead with it at someone |
-| `CHILD_HOOK` | how to delight it *in the Child slot* |
-| `INFERIOR_GUARD` | how not to threaten it *in the Inferior slot* |
-| `TRICKSTER_BLIND` | what it cannot see |
-
-`CHILD_HOOK` is the closest, but it is slot-conditioned — it answers "how do I open this person
-up", not "what does Ti itself find nourishing wherever it sits". That distinction matters,
-because satisfaction data is what makes the growth surfaces actionable: the whole four-sides
-argument is *develop your Inferior*, and the app currently says which function to develop without
-ever saying what that function actually enjoys.
-
-**Proposed:**
-
-- `FN_SATISFACTION: Record<Fn, string>` in `data.ts` — what genuinely feeds this function.
-- `FN_STARVATION: Record<Fn, string>` — what it looks like when the function is chronically unfed.
-- `FN_PRACTICE: Record<Fn, string[]>` — 3–4 concrete things you could do this week. This is the
-  piece that turns the Growth section from a diagnosis into an instruction.
-- Surfaced on `/type/:type` under **Growth** (against the Inferior and the Nemesis specifically),
-  in the lexicon entry for each function, and in course stage 6 where the gateway work is taught.
-- Written against mainstream function theory, and cross-checked against the reference chart once
-  the image arrives — divergences noted rather than silently reconciled, matching the posture the
-  app already takes on CSJ vs OPS.
-
-This is worth doing whether or not the images turn up.
-
-### 3.2 A `/types` roster page
-
-Small, and it closes the "MBTI types.jpg" gap: all sixteen as cards — quadra colour, plain-language
-one-liner from `typePlain()`, hero/inferior, gate. Sortable by quadra or temperament. Roughly one
-view file reusing components that already exist.
-
-### 3.3 A reference/provenance layer
-
-Step 4.4 asks for provenance on every ingested record. Nothing in the schema supports it today.
+### A4 · Attribution for the naming systems
+`ARCHETYPE[t]` is currently four slash-separated names with no indication of provenance. With the
+Type Grid confirming the 4th is CS Joseph's, this should become structured:
 
 ```ts
-// src/engine/references.ts
-export interface Reference {
-  id: string;
-  sourceFile: string;              // "what-makes-each-cognitive-function-happy-410x1024.png"
-  sourceType: "diagram_reference" | "screenshot_text" | "photographed_notes";
-  framework: Framework[];          // the catalog's taxonomy tags
-  captureDate?: string;            // EXIF, else undefined — never guessed
-  confidence: "high" | "medium" | "low" | "illegible";
-  transcript?: string;             // verbatim, from the vision pass
-  status: "reference" | "provisional" | "canon";   // Group C starts and stays "provisional"
-}
+NAMES: Record<MbtiType, { sixteenPersonalities: string; keirsey: string; other: string; csJoseph: string; berensTheme: string }>
 ```
 
-Lexicon `Entry` gains an optional `references?: string[]`, so any claim in the app can point at
-the image it came from. That is additive — no existing entry changes.
+Rendered with its source next to each name. Small change, meaningful honesty improvement, and it
+finally explains why the type page says "Rogue".
 
-### 3.4 The three new frameworks: a separate layer, deliberately
+### A5 · Temperament detail
+From `IMG_7482`. Population shares (SJ 40% · SP 30% · NT 15% · NF 15%) and the attribute triples
+(SJ Concrete/Affiliative/Systematic · SP Concrete/Pragmatic/Interest · NT Abstract/Pragmatic/
+Systematic · NF Abstract/Affiliative/Interest). Extends the four `Temperament` lexicon entries.
 
-**This is the most important architectural call in the plan, and I want your sign-off on it.**
+Also worth documenting: the app's coin 8 (Control/Movement) is the same axis as the grid's
+Outcome/Progression, and CSJ's Structure/Starter/Finisher/Background are the same four interaction
+styles the app names Berens-style. Both are alias notes in the lexicon, not new data.
 
-The app's whole value is that it is a *pure function of sixteen (dominant, auxiliary) pairs*.
-Every relation, score, playbook, side and animal is computed, so nothing can drift out of sync.
-Hawkins levels, KWML archetypes and an emotion taxonomy **are not derivable from a type**, and
-they are not the same kind of thing:
+### A6 · OPS savior/demon markers
+From `IMG_7589`. Saviors present as **Responsible · Confidence · Obvious**; demons as
+**Tidalwaves** ("I'm not responsible, someone else is") · **Fear/Pain** ("why does this keep
+happening to me?") · **Peacocking** ("I secretly want to be good at this"). Sharper and more
+recognisable than the current `SAVIOR_STATE`/`DEMON_STATE` prose, and directly usable in the OPS
+section on `/type/:type`.
 
-- **Type is structure.** It does not change. It is a running order.
-- **Calibration level and emotional state are states.** They change hourly. Two ENTPs can sit at
-  opposite ends of the Hawkins scale, and the same ENTP can sit at both ends in one week.
+### A7 · The Function Tree — for course stage 1
+From `IMG_8413`. Derives all eight functions from one root (Consciousness → Yes/No → involuntary
+Observation vs willed Determination → Is/Isn't and Right/Wrong → S/N and T/F → × Environment/
+Individual). Course stage 1 currently asserts "there are eight" without showing where eight comes
+from; this is the missing derivation, and it matches the app's own derived-not-listed posture.
 
-So a `type → Hawkins level` mapping would be pseudo-precision, and I will not invent one. The
-same goes for `type → KWML archetype`: KWML is a model of four energies every man carries, not a
-four-way partition of people, and jamming it onto sixteen types would misrepresent both.
+### A8 · `/types` roster page
+Closes the "MBTI types.jpg" gap: all sixteen as cards with quadra colour, plain one-liner, hero and
+inferior, gate, and the naming systems from A4.
 
-**Proposed shape** — a parallel `src/state/` layer with its own routes, its own data model, and
-an explicit statement in the UI that it measures something different:
+## 4 · Deliberately not proposed
 
-| Layer | Question it answers | Keyed to |
+- **Hawkins, KWML, emotion taxonomy, Astrolabe/Periplus/Codex** — your call, and unsupported by the
+  images regardless.
+- **The "Type Logic" relation system** (`IMG_8412`). A complete third 16×16 system based on letter
+  patterns rather than function operators. I would *not* ingest it: it collides head-on with the
+  app's vocabulary — its **Complement** means Quasi-identity where the app's means Dual + Activity,
+  near-opposite readings — and a second full relation matrix would undercut the app's central claim
+  that its 256 cells are derived from one small piece of structure. Worth one lexicon entry noting
+  the system exists and that its terms are false friends. Say the word if you want it properly.
+- **Verbatim republication of the copyrighted tables** — see §6.
+
+## 5 · Phasing
+
+| Phase | Work | Blocked? |
 |---|---|---|
-| `src/engine/` (existing) | *How is this person wired?* | type — fixed |
-| `src/state/` (new) | *Where is this person right now?* | a reading at a point in time |
+| **A** | A1, A2, A6 — the per-function tables. Highest value, all extend existing schema | No |
+| **B** | A3, A4, A5, A8 — naming systems with attribution, temperament detail, roster page | No |
+| **C** | A7 — Function Tree into course stage 1 | No |
+| **D** | Vision-pass the remaining 12 (Group B screenshots + 3 Group A), extend the report | No |
+| **E** | Provenance layer: `Reference` records tying each ingested claim to its source image | No |
 
-The two connect only where there is something defensible to say — e.g. "your Inferior is the
-gateway to your subconscious, and its characteristic starvation state looks like *this* on the
-emotional taxonomy" — and each such bridge gets written as an explicit, sourced claim, not as a
-derived table. That keeps the 256-cell core untouched, exactly as the README's "fixed 4-bit head,
-extensible tail" note prescribes.
+Nothing is blocked any more. Phase A is where I would start.
 
-**Naming collision to resolve:** the lexicon already uses `Category = "Archetype"` for the eight
-Beebe slots (Hero, Parent, Child, Inferior, Nemesis, Critic, Trickster, Demon). KWML's four are
-also "archetypes" and are a different thing entirely. Options: add a distinct
-`"Masculine Archetype"` category, or rename the Beebe set to `"Slot"` and free the word. I lean
-toward the first — renaming churns 8 entries and every `<Term>` reference for a cosmetic win.
+## 6 · Two cautions
 
-### 3.5 Honest labelling for Hawkins
+**Copyright.** `IMG_7482` is © CSJ Ventures LLC 2021–2022; the Berens sheets are commercial
+training material. Transcribing to a private repo is fine; shipping the tables verbatim in a
+deployed app is a different question. Recommendation: ingest the *structure* and write the prose
+fresh in the app's own voice with attribution — exactly what the app already does for OPS and CS
+Joseph. Your call, not mine.
 
-Hawkins' calibration numbers are derived from applied-kinesiology muscle testing, which has not
-survived controlled testing — a fact worth stating plainly once rather than discovering later.
-That is not a reason to leave it out. The app already has exactly the right posture for this in
-its README: *"OPS and CS Joseph are named as interpretive lenses and attributed for vocabulary,
-not cited as authority."* I would apply the same sentence to Hawkins, visibly in the UI rather
-than only in the repo, and present the scale as a vocabulary for describing states rather than as
-a measurement. Everything else in the app is derived and checkable; this layer would not be, and
-the app should say so where a reader can see it.
+**Two images are missing.** The catalog lists 23; the zip has 21. `IMG_8404.HEIC` and
+`IMG_8405.HEIC` (the 2025-08-28 pair, catalogued as mislabelled JPEGs) did not survive conversion.
+If they matter, they need re-exporting.
 
----
+## 7 · Open question
 
-## 4 · Phasing
-
-| Phase | Work | Needs images? |
-|---|---|---|
-| **A** | Function-satisfaction layer (§3.1) + `/types` roster (§3.2) | No |
-| **B** | Reference/provenance schema (§3.3), no records yet | No |
-| **C** | Vision pass → `transcripts/` → `classification-report.md` | **Yes** |
-| **D** | Group A reference data ingested with provenance; reference chart cross-checked against §3.1 | **Yes** |
-| **E** | `src/state/` layer: Hawkins + KWML + emotion taxonomy | Needs answers to §5 |
-| **F** | Group C conceptual material — review session with you, nothing merged unprompted | **Yes** + your call |
-
-Phases A and B are unblocked and are the ones I would start on.
-
----
-
-## 5 · Questions I need answered
-
-1. **The images.** Can you re-upload them, or commit them to the repo? Everything in phases C, D
-   and F depends on it, and Group C is the material the instructions care most about.
-
-2. **The 8-category water-based emotion taxonomy — what are the eight categories?** Step 3.4 says
-   to cross-check against "the project's existing docs/code for this taxonomy's defined
-   categories." It is not in this repo, in any form. I am not going to invent eight water
-   metaphors and present them as your framework. If it lives in another repo or a doc, point me
-   at it; if it only exists in the photographed notes, this is blocked on question 1.
-
-3. **Scope: is Astrolabe / Periplus / Calibration Codex meant to live in *this* application?**
-   They are described as a consciousness-mapping framework built with Rache Brand, with "The
-   Undercurrent" as a tracker product on top. A tracker is a fundamentally different application
-   shape — time-series state capture, per-user history, longitudinal charts — from what this app
-   is, which is a stateless structural reference. It may well belong here as a second layer
-   (§3.4), or it may want to be its own thing that imports this engine. That decision changes
-   phase E substantially.
-
-4. **Do you intend any relationship between type and calibration level?** My strong
-   recommendation is no derived mapping, for the reasons in §3.4 — but if you have a specific
-   claim in mind (e.g. "each type's Inferior has a characteristic low-calibration failure mode"),
-   that is a defensible bridge and I will build it as an authored, sourced claim rather than a
-   computed table.
-
----
-
-## 6 · What I have not done, and why
-
-- **Not transcribed anything.** No images.
-- **Not invented the water taxonomy.** Instructions Step 3.4 and Guardrail 1 both forbid it.
-- **Not merged any Group C material.** Guardrail 2, and it does not exist here yet.
-- **Not asserted Hawkins' full level table as fact.** The publisher's own page does not list the
-  levels; the widely-reproduced figures (shame 20, fear 100, courage 200, love 500, peace 600)
-  are in `docs/research-notes.md` with that caveat attached. Before any of it ships as app
-  content it should be checked against a Hawkins primary text, not a secondary summary.
+Only one left, and it is a scoping question rather than a blocker: **how much of the batch do you
+actually want in the app?** A1, A2 and A6 are clear wins. A3–A5 add naming systems and detail that
+make the app more complete but also denser — and density was the original complaint. I would take
+A1, A2, A6, A7 and A8, and treat A3–A5 as optional. Tell me if you would rather have all of it.
