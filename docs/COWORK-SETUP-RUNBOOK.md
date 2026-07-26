@@ -1,11 +1,10 @@
 # Octant access wall — setup state
 
-**Status: live, enforcing, and fully configured. One open issue: the owner
-notification email has never been delivered.**
+**Status: live, enforcing, sign-in verified end to end. The notification
+sender is configurable in code; one secret completes it.**
 
-Last updated 26 Jul 2026, against `fdfcf38`. This file replaces the original
-task-list runbook, which told you to create a KV namespace and register a
-redirect URI that now exist — following it verbatim creates a second namespace
+Last updated 26 Jul 2026. This file replaces the original task-list runbook —
+its tasks are done, and following it verbatim creates a second KV namespace
 and silently detaches the app from its user list.
 
 ---
@@ -21,10 +20,13 @@ and silently detaches the app from its user list.
 | OAuth client | `Octant Worker` |
 | KV namespace | `USERS`, id `8d35bff308f84ce9b1e98b4770d21daf` |
 
-**Secrets on the Worker** — all seven present, none in this repo:
+**Secrets on the Worker** — none of them in this repo:
 
 `ACCESS_CODES` · `AUTH_SECRET` · `GEMINI_API_KEY` · `GOOGLE_CLIENT_ID` ·
 `GOOGLE_CLIENT_SECRET` · `OWNER_EMAIL` · `RESEND_API_KEY`
+
+**One more to set** once this branch deploys: `NOTIFY_FROM` =
+`Octant <octant@insuranceprosct.com>` — see the notification section below.
 
 **Registered redirect URIs** on `Octant Worker`:
 
@@ -39,15 +41,15 @@ http://localhost:8788/api/auth/google/callback
 
 Checked against the live deployment on 26 Jul:
 
-- **The wall holds.** Signed out, `GET /` returns **401** with `server: cloudflare`,
-  and "Continue with Google" appears exactly once.
+- **The wall holds.** Signed out, app routes return **401** with
+  `server: cloudflare`, and no app markup or bundle is served.
 - **OAuth round trip works.** No `redirect_uri_mismatch` after the fix below.
-- **Owner auto-approval works.** `nick@stratfieldpartners.com` signed in at
-  21:09:48 and was written to KV as `status: approved`, `owner: true`, in one
-  step — no waiting page, as designed.
-- **Non-owner gating works.** `ngk325@gmail.com` signed in at 21:11:00, was
-  written `status: pending`, and gets the "Waiting for approval" page with
-  **403** on both `/` and `/admin`.
+- **Owner auto-approval works.** `nick@stratfieldpartners.com` signed in and
+  was written to KV as `status: approved`, `owner: true`, in one step — no
+  waiting page, as designed.
+- **Non-owner gating works.** `ngk325@gmail.com` signed in, was written
+  `status: pending`, and gets the "Waiting for approval" page with **403** on
+  both `/` and `/admin`.
 
 Current KV contents:
 
@@ -56,62 +58,49 @@ user:nick@stratfieldpartners.com  → approved, owner: true
 user:ngk325@gmail.com             → pending
 ```
 
-> **You cannot verify any of this from a cloud sandbox.** The Cowork container
-> sits behind an egress allowlist that returns a bare `HTTP/1.1 403` for any
-> host outside it — `workers.dev` and `example.com` alike. That 403 is the
-> proxy, not the Worker; a real response carries a `cf-ray` header. Test from a
-> browser.
+> **You cannot verify any of this from a cloud sandbox.** Cowork containers
+> sit behind an egress allowlist that returns a bare `HTTP/1.1 403` for any
+> host outside it — `workers.dev` included. That 403 is the proxy, not the
+> Worker; a real response carries a `cf-ray` header. Test from a browser.
 
 ---
 
-## Open issue — the notification email
+## The notification email
 
-`ngk325@gmail.com` went pending at 21:11:00 and no mail arrived. Resend's
-application log showed **no inbound request at all** for that sign-in.
+No approval email had ever reached the owner. Three causes; all now addressed
+in code, one secret still to set.
 
-**First cause, fixed in `fdfcf38`.** `waitUntil` was read off the `Request`
-rather than the `ExecutionContext`, which the `fetch` signature never declared.
-The check was always false, so every send took the fire-and-forget path and the
-runtime cancelled it as the redirect went out. That commit declares `Ctx`,
-threads it through `handleGoogle`, and awaits when no context is present.
+1. **`waitUntil` on the wrong object** — fixed in `fdfcf38`. It was read off
+   the Request instead of the ExecutionContext, so every send was cancelled as
+   the redirect went out.
+2. **The sender address.** `notify.ts` used to hardcode
+   `onboarding@resend.dev`, which Resend delivers to exactly one recipient:
+   the address the Resend account is registered under (`nick@neins.co`,
+   workspace NEINS). Every send to `OWNER_EMAIL` returned 403 — silently.
+   The sender is now the **`NOTIFY_FROM`** env var (with `NOTIFY_EMAIL` as an
+   optional recipient override, defaulting to `OWNER_EMAIL`). They are
+   deliberately separate from `OWNER_EMAIL`: that one decides who owns
+   `/admin`, which is an authorisation question; where the mail lands is not.
+3. **Silent failure.** Non-2xx from Resend is now logged via `console.error`
+   (observability is enabled on this Worker) instead of vanishing into
+   `{ sent: false }`.
 
-**Second cause, still open.** `src/worker/notify.ts` sends from Resend's shared
-testing address:
+**To finish:** set the Cloudflare secret `NOTIFY_FROM` to
+`Octant <octant@insuranceprosct.com>` — the one verified domain on the Resend
+account; a direct send from it to `nick@stratfieldpartners.com` was tested on
+26 Jul and came back **delivered**. Leave `OWNER_EMAIL` alone.
 
-```ts
-const FROM = "Octant <onboarding@resend.dev>";
-```
+Why that seemingly-unrelated domain: Resend free tier. `onboarding@resend.dev`
+only delivers to the Resend signup address, which is not `OWNER_EMAIL`, and
+`insuranceprosct.com` is the account's one verified domain.
 
-to `env.OWNER_EMAIL` — `nick@stratfieldpartners.com`. Resend restricts
-`onboarding@resend.dev` to the address the Resend account is registered under.
-That account is **`nick@neins.co`** (workspace NEINS), so this send should come
-back **403**, and `notifyOwnerOfSignup` swallows non-2xx into a silent
-`{ sent: false }`.
+### The trap that will make you think it is still broken
 
-The original runbook's claim that this "needs no DNS" holds only when
-`OWNER_EMAIL` equals the Resend signup address. It does not.
-
-**Options**, best first:
-
-1. Verify a domain you own for this app in Resend and send from it — e.g.
-   `octant@stratfieldpartners.com`. Correct long term, needs DNS records.
-2. Send from the already-verified `insuranceprosct.com`. Works today with zero
-   setup, but it is a client's domain and will look wrong in the owner's inbox.
-3. Point `OWNER_EMAIL` at `nick@neins.co`. Unblocks with no DNS, but
-   `OWNER_EMAIL` also decides who owns `/admin` — do not change it for mail
-   routing alone.
-
-**To retest:** the mail only fires on a user's *first* sign-in (`if (isNew…)`).
-`ngk325@gmail.com` is already in KV, so signing in again will not retrigger it.
-Delete that key from the `USERS` namespace to re-arm.
-
-**While diagnosing**, surface the reason instead of dropping it — `reason`
-already carries `resend <status>`, and observability is enabled on this Worker:
-
-```ts
-const r = await notifyOwnerOfSignup(...);
-if (!r.sent) console.error("notify failed:", r.reason);
-```
+**The notification only fires on a user's FIRST sign-in** — the call is
+guarded by `if (isNew && !user.owner)`. `ngk325@gmail.com` is already in KV,
+so signing in with it again will never produce an email, no matter how correct
+the config is. Delete `user:ngk325@gmail.com` from the `USERS` namespace to
+re-arm the test.
 
 ---
 
@@ -123,24 +112,26 @@ Every production sign-in would have failed with `redirect_uri_mismatch`.
 
 **Chrome autofill corrupts the Google console URI fields.** It types a saved
 username into the first empty URI field on the OAuth client pages, on every
-load — that is where the invalid entry came from, and it recurs on both clients
-in this project. **Read every field before you press Save on those pages.**
+load — that is where the invalid entry came from, and it recurs on both
+clients in this project. **Read every field before you press Save.**
 
 ---
 
 ## Traps
 
 **The `assets` block in `wrangler.jsonc` is the access wall.** Do not touch
-`run_worker_first`, `not_found_handling`, or anything else inside it. With
-`run_worker_first: false` or a route list, static assets are served without
-invoking the Worker at all, and the site is public while reporting itself
-private. The comment in that file explains the invocation-cost trade-off; read
-it before deciding the cost is worth optimising away.
+`run_worker_first`, `not_found_handling`, or anything else inside it. With a
+route list there instead of `true`, static assets are served without invoking
+the Worker at all, and the site is public while reporting itself private.
 
 **KV bindings belong in `wrangler.jsonc`, not the dashboard.** Workers Builds
-deploys from that file, which makes it authoritative — a binding added only via
-the dashboard survives until the next push, then vanishes. The namespace id is
-an identifier, not a credential; committing it is correct.
+deploys from that file, which makes it authoritative — a dashboard-only
+binding vanishes on the next push. The namespace id is an identifier, not a
+credential; committing it is correct.
+
+**Do not run `wrangler kv namespace create USERS`.** It does not check for an
+existing namespace — it creates a second, empty one, and pointing the Worker
+at it silently discards the user list.
 
 **KV is eventually consistent.** Approve and Block can take up to a minute.
 
@@ -152,13 +143,11 @@ Testing mode as an access control. The app's own wall is what stops people.
 
 ## The older Supabase OAuth client — resolved, no action needed
 
-The project holds a second client, `stratfield-partners` (Apr 2025), whose only
-redirect URI is `https://sdvfjzkkosqevgbyafhu.supabase.co/auth/v1/callback`.
-
+The project holds a second client, `stratfield-partners` (Apr 2025), whose
+only redirect URI is `https://sdvfjzkkosqevgbyafhu.supabase.co/auth/v1/callback`.
 Renaming the shared consent screen to "Octant" changed what that app's users
-would see. **It cost nothing.** The consent screen's lifetime OAuth counter
-reads *1 user (1 test, 0 other)* — no non-test user has ever authorised it.
-There was no audience to confuse. Left unchanged.
+would see — but its lifetime OAuth counter reads *1 user (1 test, 0 other)*,
+so there was no audience to confuse. Left unchanged.
 
 ---
 
@@ -166,7 +155,7 @@ There was no audience to confuse. Left unchanged.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| No approval email | Sender restriction (see above) | Send from a domain you have verified in Resend |
+| No approval email | `NOTIFY_FROM` unset / unverified sender, or the user is not new | Set `NOTIFY_FROM` to an address on a Resend-verified domain; delete their `user:` key to re-arm |
 | `redirect_uri_mismatch` | URI not byte-identical to a registered one | Compare against the list above. Check autofill did not overwrite the field |
 | "Not configured" page | `AUTH_SECRET` missing, or no way in at all | Confirm `AUTH_SECRET` and `ACCESS_CODES` both exist |
 | No Google button, code field only | `googleAvailable()` false | One of `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `AUTH_SECRET`, `USERS` is missing |
@@ -181,7 +170,7 @@ There was no audience to confuse. Left unchanged.
 ## Commands
 
 ```sh
-npm test          # 540 tests, all passing
+npm test          # all passing
 npm run build     # tsc -b && vite build
 cp .dev.vars.example .dev.vars   # local dev fails closed without this
 ```
