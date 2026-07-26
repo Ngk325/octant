@@ -250,7 +250,7 @@ is a test rather than a matter of taste.
 npm install
 cp .dev.vars.example .dev.vars   # add a Gemini key to use the assistant locally
 npm run dev        # http://localhost:5173 — serves /api/* with the Worker's own handler
-npm test           # 454 tests
+npm test           # 459 tests
 npm run build      # → dist/
 ```
 

@@ -283,38 +283,71 @@ describe("auth routing", () => {
  * ------------------------------------------------------------------ */
 
 describe("the Worker is actually in front of the assets", () => {
-  const config = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
-  const noComments = config.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
-
   /**
-   * The single line the whole access wall depends on. `true` means every
-   * request is routed through the Worker; a list means only those paths are,
-   * and everything else bypasses the gate entirely.
+   * PARSED, not pattern-matched. A regex over the file text would pass on a
+   * `"run_worker_first": true` appearing anywhere — including under some other
+   * key, or in a comment — while `assets.run_worker_first` was still a route
+   * list and the wall still bypassable. For the one assertion the whole
+   * security property rests on, that is not good enough.
    */
+  const config: {
+    main?: string;
+    assets?: { binding?: string; not_found_handling?: string; run_worker_first?: unknown };
+  } = (() => {
+    const raw = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
+    const json = raw
+      .replace(/\/\*[\s\S]*?\*\//g, "")   // block comments
+      .replace(/^\s*\/\/.*$/gm, "")        // whole-line // comments
+      .replace(/,(\s*[}\]])/g, "$1");      // trailing commas JSONC allows
+    return JSON.parse(json);
+  })();
+
   it("routes EVERY request through the Worker, not just /api/*", () => {
-    expect(noComments).toMatch(/"run_worker_first"\s*:\s*true/);
-    expect(noComments, "a route list here leaves every other path ungated")
-      .not.toMatch(/"run_worker_first"\s*:\s*\[/);
+    expect(
+      config.assets?.run_worker_first,
+      "assets.run_worker_first must be exactly true — a route list, false or an " +
+        "omission leaves every path outside that list served straight from the " +
+        "asset store, with the access wall never invoked",
+    ).toBe(true);
   });
 
   it("still keeps the SPA fallback and the assets binding", () => {
-    expect(noComments).toMatch(/"not_found_handling"\s*:\s*"single-page-application"/);
-    expect(noComments).toMatch(/"binding"\s*:\s*"ASSETS"/);
-    expect(noComments).toMatch(/"main"\s*:\s*"src\/worker\/index\.ts"/);
+    expect(config.assets?.not_found_handling).toBe("single-page-application");
+    expect(config.assets?.binding).toBe("ASSETS");
+    expect(config.main).toBe("src/worker/index.ts");
   });
 });
 
 describe("the Worker entry point", () => {
-  /** A stub asset binding that records whether it was ever reached. */
+  const SHELL = "<!doctype html><script type=\"module\" src=\"/assets/app.js\">";
+  const PRESENT = ["/index.html", "/assets/app.js"];
+
+  /**
+   * A stub asset binding that records every path it was asked for.
+   *
+   * It models Cloudflare's documented behaviour for the two cases this Worker
+   * depends on: a path that exists is returned, and a path that does not falls
+   * back to the shell, which is what `not_found_handling: single-page-application`
+   * does. Returning 200 for literally everything would have let this suite pass
+   * while a deep link 404'd in production.
+   *
+   * What it CANNOT prove is that Cloudflare actually behaves this way — a test
+   * against a mock only tests the mock. That half is verified against the real
+   * runtime with `wrangler dev`; DEPLOY.md step 2 has the commands, and they are
+   * what caught the routing bug this file exists because of.
+   */
   const stubAssets = () => {
     const calls: string[] = [];
     return {
       calls,
       binding: {
         fetch: async (req: Request) => {
-          calls.push(new URL(req.url).pathname);
-          return new Response("<!doctype html><script type=\"module\" src=\"/assets/app.js\">", {
-            headers: { "content-type": "text/html" },
+          const path = new URL(req.url).pathname;
+          calls.push(path);
+          const hit = path === "/" || PRESENT.includes(path);
+          return new Response(SHELL, {
+            status: 200,
+            headers: { "content-type": "text/html", "x-stub-asset": hit ? "hit" : "spa-fallback" },
           });
         },
       },
@@ -331,12 +364,28 @@ describe("the Worker entry point", () => {
     expect(calls, "the asset binding must not be touched by an anonymous request").toEqual([]);
   });
 
-  it("serves the assets once signed in", async () => {
+  it("serves a real asset once signed in", async () => {
     const { calls, binding } = stubAssets();
     const cookie = await signIn("river-oak-8821");
-    const res = await worker.fetch(get("/type/ENTP", cookie), { ...ENV, ASSETS: binding } as never);
+    const res = await worker.fetch(get("/assets/app.js", cookie), { ...ENV, ASSETS: binding } as never);
     expect(res.status).toBe(200);
-    expect(calls).toEqual(["/type/ENTP"]);
+    expect(res.headers.get("x-stub-asset")).toBe("hit");
+    expect(calls).toEqual(["/assets/app.js"]);
+  });
+
+  /**
+   * Deep links are the case a naive gate breaks: /type/ENTP is not a file, so it
+   * only works if the Worker forwards the ORIGINAL request and lets the asset
+   * layer apply its SPA fallback. Rewriting the path here would silently send
+   * every deep link to the wrong place.
+   */
+  it("forwards a deep link unchanged so the SPA fallback can apply", async () => {
+    const { calls, binding } = stubAssets();
+    const cookie = await signIn("river-oak-8821");
+    const res = await worker.fetch(get("/pair/ENTP/INFJ", cookie), { ...ENV, ASSETS: binding } as never);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("x-stub-asset")).toBe("spa-fallback");
+    expect(calls, "the path must reach the asset layer as-is").toEqual(["/pair/ENTP/INFJ"]);
   });
 
   it("keeps the auth routes reachable without a session", async () => {

@@ -25,8 +25,20 @@
     //
     // `true` routes EVERY request through this Worker first. Assets are still
     // served, but only after requireAuth() has let the request past, via
-    // env.ASSETS.fetch(). The cost is one Worker invocation per asset request,
-    // which for an invite-only app is not a consideration.
+    // env.ASSETS.fetch().
+    //
+    // This is not free, and the cost is worth stating rather than waving away:
+    // every asset request — each JS chunk, each font, each favicon — is now a
+    // billable Worker invocation instead of a free asset hit. A cold page load
+    // is a handful of them. Cloudflare's own guidance is that once a plan's
+    // invocation limit is reached the response is a 429, so the failure mode of
+    // getting this wrong at scale is the site going down, not a bigger bill.
+    //
+    // For an invite-only instrument with a handful of readers that is a
+    // rounding error. It stops being one if this ever opens up, and the honest
+    // answer then is a cache-control policy on the assets and an eye on the
+    // invocation graph — not quietly reverting this line, which is the only
+    // thing standing between the app and the public internet.
     "run_worker_first": true
   },
   "observability": { "enabled": true }
