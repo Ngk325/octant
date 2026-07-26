@@ -41,13 +41,19 @@
     // thing standing between the app and the public internet.
     "run_worker_first": true
   },
-  // The user list for Google sign-in: who is pending, approved or blocked.
-  // Create it once with `npx wrangler kv namespace create USERS` and paste the
-  // id it prints below. Without this binding Google sign-in is unavailable and
-  // the wall falls back to invite codes alone — it does not fail open.
-  "kv_namespaces": [
-    { "binding": "USERS", "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
-  ],
+  // NOTE: there is deliberately no `kv_namespaces` block here.
+  //
+  // Google sign-in needs a KV namespace bound as USERS, holding who is pending,
+  // approved or blocked. That binding is added in the Cloudflare dashboard
+  // (Settings -> Bindings -> KV namespace, variable name USERS) rather than
+  // committed here, for one practical reason: a namespace id is per-account, so
+  // whatever was written here would be wrong for everybody except one account,
+  // and a placeholder id fails the deploy outright — taking the live site's
+  // build red for a feature that is not even configured yet.
+  //
+  // Without the binding, googleAvailable() is false: the Google button does not
+  // render and the wall falls back to invite codes. It degrades, it does not
+  // fail open. See docs/GOOGLE-SETUP.md step 4.
 
   "observability": { "enabled": true }
   // GEMINI_API_KEY is a secret, never a var:  npx wrangler secret put GEMINI_API_KEY

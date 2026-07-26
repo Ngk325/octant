@@ -86,18 +86,21 @@ they are — invite codes keep working alongside Google.
 
 ## 4 · The KV namespace
 
-The user list has to live somewhere. One command, once:
+The user list has to live somewhere. Do this **in the dashboard**, not in
+`wrangler.jsonc`:
 
-```sh
-npx wrangler kv namespace create USERS
-```
+1. **Storage & Databases** → **KV** → **Create a namespace**, call it `USERS`.
+2. **Workers & Pages** → **typology** → **Settings** → **Bindings** → **Add** →
+   **KV namespace**. Variable name `USERS`, and pick the namespace from step 1.
 
-It prints an `id`. Paste it into `wrangler.jsonc` under `kv_namespaces`,
-replacing `REPLACE_WITH_YOUR_KV_NAMESPACE_ID`, then commit and push.
+It is done there rather than committed because a namespace id belongs to one
+Cloudflare account — anything written into the repo would be wrong for everyone
+else, and a placeholder id fails the deploy outright, taking the live site's
+build red over a feature that is not configured yet.
 
-Or in the dashboard: **Storage & Databases** → **KV** → **Create**, name it
-`USERS`, then **Workers & Pages** → **typology** → **Settings** → **Bindings**
-→ **Add** → **KV namespace**, variable name `USERS`.
+**Until this exists, nothing breaks.** `googleAvailable()` is false, the Google
+button does not render, and the wall falls back to invite codes. It degrades; it
+does not fail open.
 
 ---
 
