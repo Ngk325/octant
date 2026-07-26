@@ -409,6 +409,14 @@ table.matrix th {
   font-family: var(--sans);
 }
 table.matrix td { text-align: center; padding: 1px; }
+/* The row-header column stays put while the table scrolls sideways —
+   without this, scrolling to the right-hand quadras loses who each row IS. */
+table.matrix tbody th[scope="row"] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
+}
 table.matrix td a {
   display: block;
   padding: 7px 3px;
@@ -461,6 +469,26 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 .term-pop.flip { left: auto; right: 0; }
 
 .lex-entry { scroll-margin-top: calc(var(--masthead-h) + var(--s5)); }
+
+/* ----------------------- calculator dock ----------------------------- */
+/* Hidden on desktop, where the sticky results column does this job. */
+.calc-dock {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) calc(var(--s4) + 74px) var(--s3) var(--s4);
+  background: color-mix(in srgb, var(--canvas) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+}
+.calc-dock .btn { margin-left: auto; }
 
 /* ------------------------ diverging ease bars ------------------------ */
 /* Two directions of ease growing away from a shared centre axis — see
@@ -830,6 +858,11 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   .g-side { grid-template-columns: minmax(0, 1fr); }
   .main { padding-left: var(--s4); padding-right: var(--s4); }
   .masthead { margin-left: calc(var(--s4) * -1); margin-right: calc(var(--s4) * -1); padding-left: var(--s4); padding-right: var(--s4); }
+  /* The calculator's live result, pinned while the sticky column is stacked
+     below the questions. Clears the chat launcher on the right. Only the
+     page that renders a dock gets the extra bottom padding. */
+  .calc-dock { display: flex; }
+  .main:has(.calc-dock) { padding-bottom: calc(var(--s9) + 64px); }
 }
 
 @media (max-width: 700px) {

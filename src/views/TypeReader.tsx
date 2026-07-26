@@ -31,14 +31,25 @@ import TypePicker from "../components/TypePicker";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
 import { FnTag, Panel, Row } from "../components/Bits";
+import { SectionNav } from "../components/Section";
 import Term from "../components/Term";
+import LettersToStack from "../components/LettersToStack";
+import GatewayPath from "../components/GatewayPath";
+import SaviorDemonGrid from "../components/SaviorDemonGrid";
+import RelationLanding from "../components/RelationLanding";
 
+/* The page's outline, and therefore its anchor nav — one array, so the two
+   cannot drift apart. The two "your …" entries are the page's interactive
+   forms; they were previously buried at 60% and 85% depth with no way to
+   reach them but scrolling. */
 const SECTIONS = [
   ["slots", "The eight slots"],
-  ["sides", "Four sides of the mind"],
+  ["sides", "Four sides"],
   ["ops", "The OPS overlay"],
+  ["ops-coins", "Your coins"],
   ["growth", "Growth"],
   ["octagram", "The Octagram"],
+  ["theme", "Your theme"],
   ["fit", "Who you fit"],
 ] as const;
 
@@ -97,11 +108,7 @@ export default function TypeReader() {
         <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term> · <Term>{ROMANCE[t]}</Term> romance style
       </p>
 
-      <nav className="cluster" style={{ margin: "var(--s5) 0 var(--s6)" }}>
-        {SECTIONS.map(([id, label]) => (
-          <a key={id} href={`#${id}`} className="chip">{label}</a>
-        ))}
-      </nav>
+      <SectionNav items={SECTIONS} />
 
       {/* ------------------------------------------------ slots */}
       <h2 id="slots" className="sec">The eight slots</h2>
@@ -116,6 +123,13 @@ export default function TypeReader() {
       </Explain>
 
       <Figure
+        label={`Where ${t} comes from.`}
+        caption="The four letters are not the type — they are the recipe for the ordering below."
+      >
+        <LettersToStack type={t} />
+      </Figure>
+
+      <Figure
         minWidth={660}
         label="Strongest at the top."
         caption={
@@ -123,32 +137,49 @@ export default function TypeReader() {
             Two regions are marked. CS Joseph puts the growth point at the <b>Inferior</b> alone.
             OPS marks a wider pair — the tertiary <i>and</i> the inferior — as its demons. They
             agree on slot 4 and disagree about slot 3, which CS Joseph treats as a delight and OPS
-            treats as neglected. Neither reading is corrected into the other.
+            treats as neglected. Neither reading is corrected into the other. The dashed arcs
+            pair each ego slot with its shadow mirror: same capacity, facing the other way.
           </>
         }
       >
-        <WiringSchematic type={t} />
+        <WiringSchematic type={t} showCorrespondence />
       </Figure>
 
-      <div className="grid g2">
-        {st.map((fn, i) => (
-          <Panel key={fn} title={`${i + 1}. ${SLOT_NAMES[i]}`}>
-            <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
-              <FnTag fn={fn} size="var(--t-lg)" />
-              <Term>{SLOT_NAMES[i]}</Term>
-              <span className="chip">{FN_ROLE[fn]}</span>
-              <span className="chip" title={FN_KEYWORD_GLOSS[fn]}>{FN_KEYWORD[fn]}</span>
-            </div>
-            <Explain plain={SLOT_PLAIN[SLOT_NAMES[i]]}>
-              <p style={{ marginBottom: "var(--s2)" }}>
-                <b>{fn}:</b> {i < 4 ? FN_LONG[fn] : FN_SHADOW[fn]}
-              </p>
-              <p className="small" style={{ margin: 0 }}>{FN_PLAIN[fn]}</p>
-            </Explain>
-            <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
-              Sounds like: &ldquo;{FN_SAYS[fn][0]}&rdquo; &middot; &ldquo;{FN_SAYS[fn][1]}&rdquo;
-            </p>
-          </Panel>
+      {/* The two blocks as two labeled RANK-ORDERED columns. The first build
+          put all eight in one 2-column grid, which sat slot 1 beside slot 2 —
+          visually flattening the exact ordering the figure above asserts.
+          Here each column IS a rank order, and the columns are the ego/shadow
+          split the schematic draws. */}
+      <div className="grid g2" style={{ alignItems: "start" }}>
+        {[
+          { label: "The ego block — slots 1–4, “me”", slots: [0, 1, 2, 3] },
+          { label: "The shadow block — slots 5–8, “what happens to me”", slots: [4, 5, 6, 7] },
+        ].map(({ label, slots }) => (
+          <div key={label} className="stack-v">
+            <h3 style={{ margin: "var(--s2) 0 0" }}>{label}</h3>
+            {slots.map((i) => {
+              const fn = st[i];
+              return (
+                <Panel key={fn} title={`${i + 1}. ${SLOT_NAMES[i]}`}>
+                  <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
+                    <FnTag fn={fn} size="var(--t-lg)" />
+                    <Term>{SLOT_NAMES[i]}</Term>
+                    <span className="chip">{FN_ROLE[fn]}</span>
+                    <span className="chip" title={FN_KEYWORD_GLOSS[fn]}>{FN_KEYWORD[fn]}</span>
+                  </div>
+                  <Explain plain={SLOT_PLAIN[SLOT_NAMES[i]]}>
+                    <p style={{ marginBottom: "var(--s2)" }}>
+                      <b>{fn}:</b> {i < 4 ? FN_LONG[fn] : FN_SHADOW[fn]}
+                    </p>
+                    <p className="small" style={{ margin: 0 }}>{FN_PLAIN[fn]}</p>
+                  </Explain>
+                  <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+                    Sounds like: &ldquo;{FN_SAYS[fn][0]}&rdquo; &middot; &ldquo;{FN_SAYS[fn][1]}&rdquo;
+                  </p>
+                </Panel>
+              );
+            })}
+          </div>
         ))}
       </div>
 
@@ -182,6 +213,20 @@ export default function TypeReader() {
         <FourSidesDiagram type={t} />
       </Figure>
 
+      <Figure
+        label="One door each, in order."
+        caption={
+          <>
+            Every side is entered through one function of your own ego stack, and the order is
+            not optional — the superego&rsquo;s door opens <i>you</i> if you go there before the
+            other three are developed. This is the same journey the Growth section below is
+            about.
+          </>
+        }
+      >
+        <GatewayPath type={t} />
+      </Figure>
+
       {SIDE_ORDER.map((k) => {
         const side = s[k];
         return (
@@ -201,17 +246,15 @@ export default function TypeReader() {
             <Row k="If you never do" v={<span className="small">{side.forced}</span>} stacked />
             <Row k="What it pays out" v={<span className="small">{side.produces}</span>} stacked />
 
-            <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
-              <div className="note">
-                <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Developed</b>
-                <br />
-                <span className="small">{side.developed}</span>
-              </div>
-              <div className="note warn">
-                <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Undeveloped</b>
-                <br />
-                <span className="small">{side.undeveloped}</span>
-              </div>
+            {/* Two notes, stacked — not a grid inside a card inside a grid.
+                They are a contrast to read in sequence, not columns. */}
+            <div className="note" style={{ marginTop: "var(--s4)" }}>
+              <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Developed</b>{" "}
+              <span className="small">{side.developed}</span>
+            </div>
+            <div className="note warn" style={{ marginTop: "var(--s2)" }}>
+              <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Undeveloped</b>{" "}
+              <span className="small">{side.undeveloped}</span>
             </div>
           </Panel>
         );
@@ -237,15 +280,27 @@ export default function TypeReader() {
         </p>
       </Explain>
 
-      <div className="grid g2">
-        <Panel title={`Saviors — ${o.saviorObs} + ${o.saviorDec}`}>
-          <p style={{ fontSize: "var(--t-base)" }}>{CONCEPT_PLAIN.savior}</p>
-          <p className="small muted" style={{ margin: 0 }}>{SAVIOR_STATE}</p>
-        </Panel>
-        <Panel title={`Demons — ${o.demonObs} + ${o.demonDec}`}>
-          <p style={{ fontSize: "var(--t-base)" }}>{CONCEPT_PLAIN.demon}</p>
-          <p className="small muted" style={{ margin: 0 }}>{DEMON_STATE}</p>
-        </Panel>
+      <Figure
+        label="One structure, two axes."
+        caption={
+          <>
+            {CONCEPT_PLAIN.savior} {CONCEPT_PLAIN.demon} The demons sit in the same rows as
+            their saviors — same axis, everything else flipped.
+          </>
+        }
+      >
+        <SaviorDemonGrid type={t} sub={sub} />
+      </Figure>
+
+      <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
+        <p className="note" style={{ margin: 0 }}>
+          <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Savior state.</b>{" "}
+          <span className="small">{SAVIOR_STATE}</span>
+        </p>
+        <p className="note warn" style={{ margin: 0 }}>
+          <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Demon state.</b>{" "}
+          <span className="small">{DEMON_STATE}</span>
+        </p>
       </div>
 
       <Panel title="How to tell which is which, in yourself" style={{ marginTop: "var(--s4)" }}>
@@ -299,6 +354,7 @@ export default function TypeReader() {
         <AnimalStack sig={o} />
       </Figure>
 
+      <h3 id="ops-coins" className="sec">Your coins</h3>
       <Panel title="Subtype coins — self-reported, not derived">
         <p className="small">
           OPS reaches 512 types by adding coins this app&rsquo;s sixteen-type core does not carry.
@@ -438,24 +494,6 @@ export default function TypeReader() {
         </div>
       </Panel>
 
-      <Panel title="Behavioural profile" style={{ marginTop: "var(--s4)" }}>
-        <div className="grid g2">
-          <div>
-            <Row k="Motivation" v={b.motivation} stacked />
-            <Row k="Decides by" v={b.decisionStyle} stacked />
-            <Row k="Speaks" v={b.commsStyle} stacked />
-          </div>
-          <div>
-            <Row k="Under stress" v={b.stressResponse} stacked />
-            <Row k="Deal breaker" v={b.dealBreaker} stacked />
-            <Row k="Flaw" v={b.commsFlaw} stacked />
-          </div>
-        </div>
-        <p className="small" style={{ marginTop: "var(--s4)", marginBottom: 0 }}>
-          Appeal to <b>{virtue}</b>. Avoid triggering <b>{vice}</b>.
-        </p>
-      </Panel>
-
       {/* ------------------------------------------------ octagram */}
       <h2 id="octagram" className="sec">The Octagram</h2>
 
@@ -495,21 +533,19 @@ export default function TypeReader() {
             </p>
           </Panel>
 
-          <Panel title={`Origin — ${wheel.origin}`}>
-            <p style={{ fontSize: "var(--t-base)", margin: 0 }}>{wheel.originPlain}</p>
-          </Panel>
-
-          <Panel title={`Living virtue — ${wheel.livingVirtue}`}>
-            <p className="small" style={{ margin: 0 }}>{wheel.virtuePlain}</p>
-          </Panel>
-
-          <Panel title={`Deadly sin — ${wheel.deadlySin}`}>
-            <p className="small" style={{ margin: 0 }}>{wheel.sinPlain}</p>
+          {/* One panel for the wheel's three readings — the figure beside it
+              already carries the words; this carries what they mean. The
+              first build stated the origin three separate times in one row. */}
+          <Panel title="Reading the wheel">
+            <Row stacked k={`Origin — ${wheel.origin}`} v={<span className="small">{wheel.originPlain}</span>} />
+            <Row stacked k={`Living virtue — ${wheel.livingVirtue}`} v={<span className="small">{wheel.virtuePlain}</span>} />
+            <Row stacked k={`Deadly sin — ${wheel.deadlySin}`} v={<span className="small">{wheel.sinPlain}</span>} />
           </Panel>
         </div>
       </div>
 
-      <Panel title="Your theme — self-reported, not derived" style={{ marginTop: "var(--s5)" }}>
+      <h3 id="theme" className="sec" style={{ marginTop: "var(--s5)" }}>Your theme</h3>
+      <Panel title="Self-reported, not derived">
         <Explain
           plain="Two questions about your life rather than your wiring. Nobody can read these off a four-letter type, which is the whole reason the layer exists: two people of the same type with different childhoods end up in different places."
         >
@@ -563,7 +599,32 @@ export default function TypeReader() {
       {/* ------------------------------------------------ fit */}
       <h2 id="fit" className="sec">Who you fit</h2>
 
-      <div className="grid g3">
+      <Explain
+        big
+        plain={`Fit is mechanical before it is chemical: how easy someone is for ${t} to be around depends on which of ${t}'s slots their strengths land in.`}
+      >
+        <p>
+          The figure shows the best case — {t}&rsquo;s Dual, whose Hero and Parent land exactly on{" "}
+          {t}&rsquo;s Inferior and Child. Every pairing below is the same picture with different
+          landing spots; open one to see its version.
+        </p>
+      </Explain>
+
+      <Figure
+        label={`The best case: ${complements(t)[0]}.`}
+        caption={
+          <>
+            {complements(t)[0]}&rsquo;s strengths arrive on {t}&rsquo;s <b>Inferior</b> and{" "}
+            <b>Child</b> — supplying the feared thing and delighting the playful one. That is
+            what &ldquo;restful&rdquo; means mechanically.
+          </>
+        }
+        minWidth={480}
+      >
+        <RelationLanding a={t} b={complements(t)[0]} />
+      </Figure>
+
+      <div className="grid g3" style={{ marginTop: "var(--s5)" }}>
         <Panel title="Complements — restful">
           <p className="small">{CONCEPT_PLAIN.complement}</p>
           <Links list={complements(t)} from={t} />
@@ -586,6 +647,26 @@ export default function TypeReader() {
           <Links list={frictions(t)} from={t} />
         </Panel>
       </div>
+
+      {/* Fit-with-others content, so it lives in the fit section — it used to
+          sit under Growth, which is about the self. */}
+      <Panel title="Working with them" style={{ marginTop: "var(--s4)" }}>
+        <div className="grid g2">
+          <div>
+            <Row k="Motivation" v={b.motivation} stacked />
+            <Row k="Decides by" v={b.decisionStyle} stacked />
+            <Row k="Speaks" v={b.commsStyle} stacked />
+          </div>
+          <div>
+            <Row k="Under stress" v={b.stressResponse} stacked />
+            <Row k="Deal breaker" v={b.dealBreaker} stacked />
+            <Row k="Flaw" v={b.commsFlaw} stacked />
+          </div>
+        </div>
+        <p className="small" style={{ marginTop: "var(--s4)", marginBottom: 0 }}>
+          Appeal to <b>{virtue}</b>. Avoid triggering <b>{vice}</b>.
+        </p>
+      </Panel>
 
       <Panel title="Coin signature" style={{ marginTop: "var(--s4)" }}>
         <p className="small">

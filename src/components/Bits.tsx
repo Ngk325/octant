@@ -3,14 +3,16 @@ import { Link } from "react-router-dom";
 import { usePalette } from "./Theme";
 
 /** A titled box. The app's only container primitive. */
-export function Panel({ title, children, style, className }: {
+export function Panel({ title, children, style, className, id }: {
   title?: ReactNode;
   children: ReactNode;
   style?: CSSProperties;
   className?: string;
+  /** Anchor id — put deep-link targets on the card, not inside it, so the whole card scrolls into view. */
+  id?: string;
 }) {
   return (
-    <section className={`card${className ? ` ${className}` : ""}`} style={style}>
+    <section className={`card${className ? ` ${className}` : ""}`} style={style} id={id}>
       {title && <h3 className="card-title">{title}</h3>}
       {children}
     </section>

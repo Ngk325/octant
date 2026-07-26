@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { stack, quadra } from "../engine/core";
+import { stack, quadra, TYPES, REL, ease } from "../engine/core";
 import { ops } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { wheelOf, templeOf } from "../engine/octagram";
@@ -19,6 +19,9 @@ import OctagramWheel from "../components/OctagramWheel";
 import ThemeSeasons from "../components/ThemeSeasons";
 import { Panel, Row } from "../components/Bits";
 import Term from "../components/Term";
+import QuadraFunctionGrid from "../components/QuadraFunctionGrid";
+import RelationLanding from "../components/RelationLanding";
+import DivergingEase from "../components/DivergingEase";
 
 /* ------------------------------------------------------------------ *
  * The course.
@@ -434,6 +437,20 @@ export const STAGES: Stage[] = [
           </p>
         </Explain>
 
+        <Figure
+          label="Four value clubs over eight functions."
+          caption={
+            <>
+              Yours is picked out. Read down the columns: two quadras sharing a function pair —
+              Alpha and Delta on <b>Ne/Si</b>, Alpha and Beta on <b>Ti/Fe</b> — feel adjacent;
+              two sharing nothing feel opposite. The feeling of &ldquo;my people&rdquo; has a
+              structure.
+            </>
+          }
+        >
+          <QuadraFunctionGrid highlight={quadra(t)} />
+        </Figure>
+
         <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
           {(["Alpha", "Beta", "Gamma", "Delta"] as const).map((q) => (
             <Panel key={q} title={<><Term>{q}</Term>{quadra(t) === q ? " — yours" : ""}</>}>
@@ -475,6 +492,20 @@ export const STAGES: Stage[] = [
           and you will not be able to tell which is happening without knowing the wiring.
         </p>
 
+        <Figure
+          minWidth={480}
+          label="The landing, drawn."
+          caption={
+            <>
+              {t} being read by INFJ — the pair the button below opens. The arrows are INFJ&rsquo;s
+              Hero and Parent arriving in {t}&rsquo;s stack; the lit rows are where they land.
+              Every one of the 256 relations is this same picture with different landing spots.
+            </>
+          }
+        >
+          <RelationLanding a={t} b="INFJ" />
+        </Figure>
+
         <Panel title="Three worth knowing" style={{ marginTop: "var(--s5)" }}>
           <Row stacked k={<Term id="rel-du">Duality</Term>} v={<span className="small">{REL_PLAIN.DU}</span>} />
           <Row stacked k={<Term id="rel-sr">Supervision</Term>} v={<span className="small">{REL_PLAIN.SR}</span>} />
@@ -499,7 +530,7 @@ export const STAGES: Stage[] = [
     slug: "groups",
     title: "More than two",
     blurb: "A team is a weighted graph. That makes questions a grid cannot answer into arithmetic.",
-    body: () => (
+    body: (t) => (
       <>
         <Explain
           big
@@ -518,6 +549,28 @@ export const STAGES: Stage[] = [
           cause of a team where one person is quietly always slightly wrong.
         </p>
 
+        {(() => {
+          const sup = TYPES.find((x) => REL[t][x] === "SR")!;
+          return (
+            <Figure
+              label="One asymmetric edge, drawn."
+              caption={
+                <>
+                  {sup} supervises {t}: the same relationship costs the two of them different
+                  amounts, and the diverging bars are that fact. In a group view every line
+                  carries two of these numbers — the graph is made of edges like this one.
+                </>
+              }
+            >
+              <DivergingEase
+                toward={ease(t, sup)}
+                from={ease(sup, t)}
+                labels={[`${t} being around ${sup}`, `${sup} being around ${t}`]}
+              />
+            </Figure>
+          );
+        })()}
+
         <p className="note">
           A last word before you go and use this on people. This is a lens, not a measurement.
           It describes how wiring tends to mesh — not who is capable, who is good, or who to
@@ -535,8 +588,8 @@ export const STAGES: Stage[] = [
 
   {
     slug: "octagram",
-    title: "The Octagram",
-    blurb: "The advanced layer: what your wiring has been chasing, and what your childhood did to how you chase it.",
+    title: "The Octagram — the wheels",
+    blurb: "The advanced layer begins: what your wiring has been chasing, and the wheel it shares.",
     body: (t) => {
       const w = wheelOf(t);
       const temple = templeOf(t);
@@ -548,14 +601,15 @@ export const STAGES: Stage[] = [
               derived from four bits. The Octagram adds the two things structure cannot give you —
               a lifelong <Term id="cognitive-origin">cognitive origin</Term>, and the mark a
               particular upbringing left on how that origin gets pursued. It is the hardest
-              material in the app, so this stage does one layer at a time.
+              material in the app, so it gets two stages: this one is the structure, the next is
+              the childhood.
             </p>
           </Explain>
 
           <p className="note">
-            Read this stage last, and read it lightly. It is newer and less settled than anything
-            before it, and the app says explicitly where the sourcing runs thin rather than
-            smoothing over it.
+            Read these two last, and read them lightly. This layer is newer and less settled than
+            anything before it, and the app says explicitly where the sourcing runs thin rather
+            than smoothing over it.
           </p>
 
           <h3>One: eight wheels, not sixteen</h3>
@@ -614,10 +668,34 @@ export const STAGES: Stage[] = [
             traditional contrary virtue. That is not a coincidence anyone has to take on trust; it
             is a check. A garbled table would not land on that set.
           </p>
+        </>
+      );
+    },
+    check:
+      "What is your origin, and can you name a time you reached for the counterfeit version of it instead?",
+  },
 
-          <h3>Three: what your childhood did</h3>
+  {
+    slug: "octagram-theme",
+    title: "The Octagram — your childhood",
+    blurb: "The second layer: what being fed or denied early did to how you chase what you want.",
+    body: (t) => {
+      const w = wheelOf(t);
+      return (
+        <>
+          <Explain
+            big
+            plain="The wheel said what you want and the honest way to get it. This layer says what your particular childhood did to how you go about it — and no four-letter type can tell you that."
+          >
+            <p>
+              Two coins, and neither is readable off the type. They are self-reported in the same
+              posture as the OPS subtype coins: nothing here changes a relation, a score or a
+              playbook.
+            </p>
+          </Explain>
+
           <p>
-            Two coins, and neither is readable off a four-letter type. The first is{" "}
+            The first is{" "}
             <Term id="subconscious-development">development</Term>: was the subconscious side of
             you fed when you were small, or denied? It is set early and it mostly stays put. The
             second is <Term id="octagram-focus">focus</Term>: which half of you is doing the work
@@ -665,7 +743,7 @@ export const STAGES: Stage[] = [
       );
     },
     check:
-      "What is your origin, and can you name a time you reached for the counterfeit version of it instead?",
+      "Which of the four themes are you living in right now — and which pole of your wheel does your development lean you toward?",
   },
 ];
 

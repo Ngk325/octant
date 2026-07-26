@@ -29,11 +29,6 @@ export default function Matrix() {
         </p>
       </Explain>
 
-      <p className="note">
-        Because the grid is asymmetric, it is worth reading a row <i>and</i> its column. Green
-        across a row with red down the same column means that type finds everyone easy while
-        everyone finds them hard.
-      </p>
 
       <Panel style={{ marginTop: "var(--s5)" }}>
         <div className="matrix-wrap">
@@ -75,7 +70,12 @@ export default function Matrix() {
       </Panel>
 
       <h2>The sixteen relations</h2>
-      <div className="grid g2">
+      <p className="small muted" style={{ marginTop: "calc(var(--s3) * -1)" }}>
+        Sorted by ease, highest first — the order of the scores, not of importance.
+      </p>
+      {/* One column on purpose: each card is a disclosure, and in a grid,
+          opening one stretched its row and shifted the neighbour. */}
+      <div className="stack-v" style={{ maxWidth: "var(--measure-wide)" }}>
         {codes.map((c) => (
           <Panel key={c}>
             <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
@@ -91,6 +91,15 @@ export default function Matrix() {
       </div>
 
       <Panel title="Reading the numbers" style={{ marginTop: "var(--s5)" }}>
+        <Row
+          stacked
+          k="The grid is asymmetric on purpose"
+          v={<span className="small">
+            Supervision and benefit run one way, so cell (a, b) and cell (b, a) genuinely differ.
+            Read a row <i>and</i> its column: green across a row with red down the same column
+            means that type finds everyone easy while everyone finds them hard.
+          </span>}
+        />
         <Row
           stacked
           k="Ease is not compatibility"
