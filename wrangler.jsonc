@@ -12,9 +12,49 @@
     "binding": "ASSETS",
     // Deep links like /pair/ENTP/ENFJ must serve index.html, not 404.
     "not_found_handling": "single-page-application",
-    // Without this, SPA fallback would answer /api/* before the Worker ever ran.
-    "run_worker_first": ["/api/*"]
+
+    // MUST be `true`, not a list of routes. This is the access wall's whole
+    // security property.
+    //
+    // With Static Assets, a request that matches an asset is served by the
+    // Asset Worker WITHOUT invoking this Worker at all. The previous value here
+    // was ["/api/*"], which meant the gate in src/worker/index.ts ran for the
+    // API and for nothing else — so /, /index.html and every JS chunk were
+    // served straight from the asset store to anyone who asked. The site was
+    // public while reporting itself private.
+    //
+    // `true` routes EVERY request through this Worker first. Assets are still
+    // served, but only after requireAuth() has let the request past, via
+    // env.ASSETS.fetch().
+    //
+    // This is not free, and the cost is worth stating rather than waving away:
+    // every asset request — each JS chunk, each font, each favicon — is now a
+    // billable Worker invocation instead of a free asset hit. A cold page load
+    // is a handful of them. Cloudflare's own guidance is that once a plan's
+    // invocation limit is reached the response is a 429, so the failure mode of
+    // getting this wrong at scale is the site going down, not a bigger bill.
+    //
+    // For an invite-only instrument with a handful of readers that is a
+    // rounding error. It stops being one if this ever opens up, and the honest
+    // answer then is a cache-control policy on the assets and an eye on the
+    // invocation graph — not quietly reverting this line, which is the only
+    // thing standing between the app and the public internet.
+    "run_worker_first": true
   },
+  // Google sign-in stores who is pending, approved or blocked in this
+  // namespace. It lives here rather than in the dashboard because Workers
+  // Builds deploys from this file, which makes it authoritative — a binding
+  // added only in the dashboard is removed by the next push. The id is an
+  // identifier, not a credential: useless without account access, and
+  // Cloudflare expects it committed.
+  //
+  // Without it, googleAvailable() is false: the Google button does not render
+  // and the wall falls back to invite codes. It degrades, it does not fail
+  // open.
+  "kv_namespaces": [
+    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
+  ],
+
   "observability": { "enabled": true }
   // GEMINI_API_KEY is a secret, never a var:  npx wrangler secret put GEMINI_API_KEY
 }

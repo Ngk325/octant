@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import worker from "../src/worker/index";
 import {
   parseCodes, isConfigured, handleAuth, requireAuth, readSession, type AuthEnv,
 } from "../src/worker/auth";
@@ -247,10 +249,16 @@ describe("auth routing", () => {
 
   it("reports who you are, and says so honestly when nobody", async () => {
     expect(await (await handleAuth(get("/api/auth/me"), ENV, NOW))!.json())
-      .toEqual({ signedIn: false, label: null });
+      .toMatchObject({ signedIn: false, label: null, kind: null, email: null, owner: false });
     const cookie = await signIn("river-oak-8821");
     expect(await (await handleAuth(get("/api/auth/me", cookie), ENV, NOW))!.json())
-      .toEqual({ signedIn: true, label: "nick" });
+      .toMatchObject({ signedIn: true, label: "nick", kind: "code", email: null });
+  });
+
+  /** Google has its own handler; this one must not swallow those paths. */
+  it("leaves the Google routes to google.ts", async () => {
+    expect(await handleAuth(get("/api/auth/google/start"), ENV, NOW)).toBeNull();
+    expect(await handleAuth(get("/api/auth/google/callback?code=x"), ENV, NOW)).toBeNull();
   });
 
   it("clears the cookie on logout", async () => {
@@ -260,5 +268,139 @@ describe("auth routing", () => {
 
   it("404s an unknown auth route rather than falling through", async () => {
     expect((await handleAuth(get("/api/auth/nope"), ENV, NOW))!.status).toBe(404);
+  });
+});
+
+/* ------------------------------------------------------------------ *
+ * ROUTING — the part that was actually broken in production.
+ *
+ * Everything above tests requireAuth() in isolation, and all of it
+ * passed while the deployed site was completely public. The gate was
+ * correct; it was never being CALLED for anything except /api/*.
+ *
+ * With Cloudflare Static Assets, a request matching an asset is served
+ * by the Asset Worker without invoking the user Worker at all. Which
+ * requests reach the user Worker is decided by ONE line of config —
+ * `assets.run_worker_first` — and it was set to ["/api/*"]. So /,
+ * /index.html and every JS chunk went straight from the asset store to
+ * anyone who asked, while the app reported itself private.
+ *
+ * A unit test of a function cannot catch that. These two can.
+ * ------------------------------------------------------------------ */
+
+describe("the Worker is actually in front of the assets", () => {
+  /**
+   * PARSED, not pattern-matched. A regex over the file text would pass on a
+   * `"run_worker_first": true` appearing anywhere — including under some other
+   * key, or in a comment — while `assets.run_worker_first` was still a route
+   * list and the wall still bypassable. For the one assertion the whole
+   * security property rests on, that is not good enough.
+   */
+  const config: {
+    main?: string;
+    assets?: { binding?: string; not_found_handling?: string; run_worker_first?: unknown };
+  } = (() => {
+    const raw = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
+    const json = raw
+      .replace(/\/\*[\s\S]*?\*\//g, "")   // block comments
+      .replace(/^\s*\/\/.*$/gm, "")        // whole-line // comments
+      .replace(/,(\s*[}\]])/g, "$1");      // trailing commas JSONC allows
+    return JSON.parse(json);
+  })();
+
+  it("routes EVERY request through the Worker, not just /api/*", () => {
+    expect(
+      config.assets?.run_worker_first,
+      "assets.run_worker_first must be exactly true — a route list, false or an " +
+        "omission leaves every path outside that list served straight from the " +
+        "asset store, with the access wall never invoked",
+    ).toBe(true);
+  });
+
+  it("still keeps the SPA fallback and the assets binding", () => {
+    expect(config.assets?.not_found_handling).toBe("single-page-application");
+    expect(config.assets?.binding).toBe("ASSETS");
+    expect(config.main).toBe("src/worker/index.ts");
+  });
+});
+
+describe("the Worker entry point", () => {
+  const SHELL = "<!doctype html><script type=\"module\" src=\"/assets/app.js\">";
+  const PRESENT = ["/index.html", "/assets/app.js"];
+
+  /**
+   * A stub asset binding that records every path it was asked for.
+   *
+   * It models Cloudflare's documented behaviour for the two cases this Worker
+   * depends on: a path that exists is returned, and a path that does not falls
+   * back to the shell, which is what `not_found_handling: single-page-application`
+   * does. Returning 200 for literally everything would have let this suite pass
+   * while a deep link 404'd in production.
+   *
+   * What it CANNOT prove is that Cloudflare actually behaves this way — a test
+   * against a mock only tests the mock. That half is verified against the real
+   * runtime with `wrangler dev`; DEPLOY.md step 2 has the commands, and they are
+   * what caught the routing bug this file exists because of.
+   */
+  const stubAssets = () => {
+    const calls: string[] = [];
+    return {
+      calls,
+      binding: {
+        fetch: async (req: Request) => {
+          const path = new URL(req.url).pathname;
+          calls.push(path);
+          const hit = path === "/" || PRESENT.includes(path);
+          return new Response(SHELL, {
+            status: 200,
+            headers: { "content-type": "text/html", "x-stub-asset": hit ? "hit" : "spa-fallback" },
+          });
+        },
+      },
+    };
+  };
+
+  it("never reaches the assets for an anonymous request", async () => {
+    const { calls, binding } = stubAssets();
+    for (const path of ["/", "/index.html", "/assets/app.js", "/type/ENTP"]) {
+      const res = await worker.fetch(get(path), { ...ENV, ASSETS: binding } as never);
+      expect(res.status, path).toBe(401);
+      expect(await res.text(), path).not.toContain("<script type=\"module\"");
+    }
+    expect(calls, "the asset binding must not be touched by an anonymous request").toEqual([]);
+  });
+
+  it("serves a real asset once signed in", async () => {
+    const { calls, binding } = stubAssets();
+    const cookie = await signIn("river-oak-8821");
+    const res = await worker.fetch(get("/assets/app.js", cookie), { ...ENV, ASSETS: binding } as never);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("x-stub-asset")).toBe("hit");
+    expect(calls).toEqual(["/assets/app.js"]);
+  });
+
+  /**
+   * Deep links are the case a naive gate breaks: /type/ENTP is not a file, so it
+   * only works if the Worker forwards the ORIGINAL request and lets the asset
+   * layer apply its SPA fallback. Rewriting the path here would silently send
+   * every deep link to the wrong place.
+   */
+  it("forwards a deep link unchanged so the SPA fallback can apply", async () => {
+    const { calls, binding } = stubAssets();
+    const cookie = await signIn("river-oak-8821");
+    const res = await worker.fetch(get("/pair/ENTP/INFJ", cookie), { ...ENV, ASSETS: binding } as never);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("x-stub-asset")).toBe("spa-fallback");
+    expect(calls, "the path must reach the asset layer as-is").toEqual(["/pair/ENTP/INFJ"]);
+  });
+
+  it("keeps the auth routes reachable without a session", async () => {
+    const { calls, binding } = stubAssets();
+    const res = await worker.fetch(
+      post("/api/auth/login", { code: "river-oak-8821" }, undefined, "entry-point-test"),
+      { ...ENV, ASSETS: binding } as never,
+    );
+    expect(res.status).toBe(200);
+    expect(calls).toEqual([]);
   });
 });
