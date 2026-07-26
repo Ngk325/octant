@@ -40,7 +40,8 @@ not smuggle back the jargon it exists to replace.
 |---|---|
 | `/learn` · `/learn/:stage` | Ten stages, in order, from "what is a cognitive function" to composing a group. Each assumes only what the ones before it taught. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
-| `/type/:type` | The eight slots, all four sides of the mind built out, the OPS overlay with its subtype coins, growth gate, behavioural profile. |
+| `/types` | All sixteen at a glance, grouped by quadra or temperament. |
+| `/type/:type` | The eight slots, all four sides of the mind built out, the OPS overlay with its subtype coins, growth gate, behavioural profile, and what each function actually wants. |
 | `/pair/:a/:b` | Relation, **both** directional ease scores, and the composed playbook. Shareable URL. |
 | `/network` | The reason this is software and not a spreadsheet: group as a weighted digraph. |
 | `/matrix` | All 256 cells, colour-scaled, every cell a link into the pair reader. |
@@ -97,6 +98,21 @@ relation table generate the sides. So each side stands in a fixed relation to th
 *superego* land on the same type. The Demon sits in the Inferior slot of the unconscious and the
 **Hero slot of the superego**, which is exactly why that side reads as a parasite persona.
 Verified against CS Joseph's own worked INTP example in `tests/sides.test.ts`.
+
+## Externally validated
+
+The engine derives its output rather than storing it, which makes independent published tables a
+real test. Three from the source-image batch (`docs/transcripts/`), all asserted in
+`tests/ingested.test.ts`:
+
+- **Berens' "16 Type Patterns"** agrees with `stack()` on **128/128 slots**, all sixteen types.
+- **A Socionics intertype chart** agrees with `REL` on **all 256 cells**, and each of its sixteen
+  labels maps onto exactly one engine code — a clean bijection. Two naming conventions differ and
+  are documented rather than reconciled: that chart's *Look-a-like* is this app's Business and its
+  *Comparative* is this app's Kindred.
+- **An OPS slide** independently confirms the Play/Consume correction below.
+
+And one that deliberately does **not** agree — see "The empirical counterweight".
 
 ## Two corrections to the OPS layer
 
@@ -165,7 +181,7 @@ is a test rather than a matter of taste.
 npm install
 cp .dev.vars.example .dev.vars   # add a Gemini key to use the assistant locally
 npm run dev        # http://localhost:5173 — serves /api/* with the Worker's own handler
-npm test           # 304 tests
+npm test           # 355 tests
 npm run build      # → dist/
 ```
 

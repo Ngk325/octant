@@ -25,7 +25,7 @@ export default function Home() {
       <div className="cluster" style={{ gap: "var(--s3)", marginTop: "var(--s6)" }}>
         <Link to="/learn" className="btn primary">Start the course →</Link>
         <Link to="/calculator" className="btn">Find your type</Link>
-        <Link to="/type/ENTP" className="btn ghost">Just show me a type</Link>
+        <Link to="/types" className="btn ghost">Browse all sixteen</Link>
       </div>
 
       <h2>Where to go</h2>

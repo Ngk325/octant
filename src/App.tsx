@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./views/Home";
 import Learn from "./views/Learn";
+import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
 import PairReader from "./views/PairReader";
 import Calculator from "./views/Calculator";
@@ -14,6 +15,7 @@ import { usePalette } from "./components/Theme";
 const TABS: [string, string][] = [
   ["/learn", "Learn"],
   ["/calculator", "Find your type"],
+  ["/types", "All sixteen"],
   ["/type/ENTP", "A type"],
   ["/pair/ENTP/INFJ", "A pair"],
   ["/network", "A group"],
@@ -82,6 +84,7 @@ export default function App() {
             <Route path="/learn" element={<Learn />} />
             <Route path="/learn/:stage" element={<Learn />} />
             <Route path="/calculator" element={<Calculator />} />
+            <Route path="/types" element={<Types />} />
             <Route path="/type/:type" element={<TypeReader />} />
             <Route path="/pair/:a/:b" element={<PairReader />} />
             <Route path="/network" element={<Network />} />

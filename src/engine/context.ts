@@ -4,6 +4,8 @@ import {
 import { ops, coins } from "./ops";
 import { sides, SIDE_ORDER } from "./sides";
 import { playbook } from "./playbook";
+import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./functions";
+import { empirical, divergence, EMPIRICAL_SOURCE } from "./empirical";
 import { compareAspects } from "./lexicon";
 import {
   SLOT_NAMES, REL_NAME, REL_DEF, RECIPROCAL, COIN_LABELS, DETERMINING,
@@ -76,6 +78,11 @@ export function typeFacts(t: MbtiType): string[] {
     line("Communication flaw", b.commsFlaw),
     line("Appeal to", virtue),
     line("Avoid triggering", vice),
+    line(`Inferior ${st[3]} — what it wants`, `${FN_WANTS[st[3]]}. ${FN_SATISFACTION[st[3]]}`),
+    line(`Inferior ${st[3]} — practices`, FN_PRACTICE[st[3]].join("; ")),
+    line(`Nemesis ${st[4]} — what it wants`, `${FN_WANTS[st[4]]}. ${FN_SATISFACTION[st[4]]}`),
+    line("Function roles", st.slice(0, 4).map((fn) => `${fn}=${FN_ROLE[fn]}`).join(" · ")),
+    line("How the ego functions sound", st.slice(0, 4).map((fn) => `${fn}: "${FN_SAYS[fn][0]}"`).join(" · ")),
   ];
 }
 
@@ -100,6 +107,11 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
     line(`Ease for ${b} of being around ${a}`, `${ease(b, a)}/100`),
     line(`Where ${b}'s instruments land in ${a}`, `their Hero ${bHero} → ${a}'s ${slotOf(bHero)}; their Parent ${bParent} → ${a}'s ${slotOf(bParent)}`),
     line(`Playbook written to ${b} about ${a}`, playbook(b, a)),
+    line(
+      "Empirical cross-check",
+      `A ${EMPIRICAL_SOURCE.what} (${EMPIRICAL_SOURCE.name}) rates this pairing ${empirical(a, b)}%, ` +
+      `against this model's derived ${ease(a, b)}. ${divergence(a, b).reading}`,
+    ),
     line("Quadras", `${a} is ${quadra(a)}, ${b} is ${quadra(b)}`),
     `Aspect by aspect (${a} → ${b}):`,
     ...aspects,
@@ -135,6 +147,10 @@ THE MODEL IN BRIEF
   Consume = Oe+Di are the information animals.
 - CSJ AND OPS ARE NOT RECONCILED HERE, deliberately. They model a different number of psychic
   parts. Say so when it matters rather than blending them.
+- AN EMPIRICAL COUNTERWEIGHT is carried alongside the derived scores: a self-reported
+  compatibility survey that correlates at r = -0.15 with this model. Where the two disagree, say
+  so and say why — the survey measures who people report liking (so same-type pairs top it), and
+  this model measures how the wiring meshes (so Duals top it). Neither settles the other.
 - COMPLEMENT vs CATALYST. Complements (Dual + Activity) supply your Inferior — restful.
   Catalysts lead with your Nemesis — stimulating and slightly abrasive.
 

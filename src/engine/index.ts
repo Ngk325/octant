@@ -2,6 +2,8 @@ export * from "./core";
 export * from "./data";
 export * from "./ops";
 export * from "./sides";
+export * from "./functions";
+export * from "./empirical";
 export { playbook } from "./playbook";
 export * from "./palette";
 export * from "./network";

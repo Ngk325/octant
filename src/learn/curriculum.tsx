@@ -4,10 +4,13 @@ import { stack, quadra } from "../engine/core";
 import { ops } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
+import { FN_ROLE, FN_SAYS } from "../engine/functions";
 import { SLOT_NAMES, FN_FULL, type Fn, type MbtiType } from "../engine/data";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
 import WiringSchematic from "../components/WiringSchematic";
+import FunctionTree from "../components/FunctionTree";
+import LettersToStack from "../components/LettersToStack";
 import FourSidesDiagram from "../components/FourSidesDiagram";
 import AnimalStack from "../components/AnimalStack";
 import { Panel, Row } from "../components/Bits";
@@ -68,6 +71,42 @@ export const STAGES: Stage[] = [
           </Panel>
         </div>
 
+        <h3>Why eight, and not seven or nine</h3>
+        <Explain plain="Eight is not a number someone picked. It falls out of three yes-or-no questions asked one after another.">
+          <p>
+            After the function-tree derivation in the source material: consciousness resolves as
+            yes/no; that resolution is either involuntary (observing) or willed (deciding); each
+            splits by what it attends to; and each of those runs either outward or inward.
+            Two × two × two = eight.
+          </p>
+        </Explain>
+
+        <Figure
+          label="Three splits, eight results."
+          caption="Read downward. Each level is one binary choice, and the eight at the bottom are every combination of them — which is why the list is exactly this long."
+        >
+          <FunctionTree />
+        </Figure>
+
+        <h3>What each one sounds like</h3>
+        <p>
+          The fastest way to spot these in real life is not to analyse someone — it is to notice
+          what they say.
+        </p>
+
+        <div className="grid g2">
+          {FNS.map((f) => (
+            <div key={f} className="row stacked">
+              <dt>
+                <Term>{f}</Term> · {FN_ROLE[f]}
+              </dt>
+              <dd className="small">
+                &ldquo;{FN_SAYS[f][0]}&rdquo; &middot; &ldquo;{FN_SAYS[f][1]}&rdquo;
+              </dd>
+            </div>
+          ))}
+        </div>
+
         <p className="note" style={{ marginTop: "var(--s5)" }}>
           Nobody is missing any of these. If they were, the rest of the system would not work —
           the interesting part is not <i>which</i> you have, it is what <i>order</i> they run in.
@@ -108,6 +147,22 @@ export const STAGES: Stage[] = [
             }
           >
             <WiringSchematic type={t} />
+          </Figure>
+
+          <h3>How four letters become that order</h3>
+          <Explain plain="If you already know your four letters, here is how they turn into the stack above — one step at a time.">
+            <p>
+              The four-letter code does not name your functions directly. It names an attitude, a
+              perceiving preference, a judging preference, and which of the two you show outwardly
+              — and those four facts pin down the whole stack.
+            </p>
+          </Explain>
+
+          <Figure
+            label={`Worked through for ${t}.`}
+            caption="Change the type at the top of the page and this rederives. Note the third step: the last letter describes what you show people, not what you lead with — which is why so many descriptions of J and P types get this backwards."
+          >
+            <LettersToStack type={t} />
           </Figure>
 
           <p>

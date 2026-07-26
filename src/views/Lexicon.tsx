@@ -4,6 +4,8 @@ import {
   ENTRIES, CATEGORIES, BY_ID, search, pairTerms, type Category, type Entry,
 } from "../engine/lexicon";
 import { usePublishContext } from "../chat/ChatContext";
+import { FN_ROLE, FN_SAYS, FN_WANTS, FN_VERBS } from "../engine/functions";
+import type { Fn } from "../engine/data";
 import Explain from "../components/Explain";
 import { Panel } from "../components/Bits";
 
@@ -86,6 +88,8 @@ export default function Lexicon() {
                     )}
                   </Explain>
 
+                  {e.category === "Function" && <FunctionExtras fn={e.term as Fn} />}
+
                   <p className="small muted" style={{ margin: 0 }}>
                     {e.source && <>Source: {e.source}. </>}
                     {e.seeAlso?.length ? (
@@ -136,5 +140,33 @@ function FocusedEntry({ entry }: { entry: Entry }) {
         being read by them.
       </p>
     </Panel>
+  );
+}
+
+/** The per-function depth ingested from the source batch, shown on Function entries. */
+function FunctionExtras({ fn }: { fn: Fn }) {
+  if (!FN_ROLE[fn]) return null;
+  return (
+    <div
+      style={{
+        margin: "0 0 var(--s3)",
+        paddingTop: "var(--s3)",
+        borderTop: "1px solid var(--rule)",
+      }}
+    >
+      <p className="small" style={{ marginBottom: 4 }}>
+        <b style={{ fontFamily: "var(--sans)" }}>In one word: </b>
+        {FN_ROLE[fn]} &middot; <b style={{ fontFamily: "var(--sans)" }}>wants </b>
+        {FN_WANTS[fn].toLowerCase()}
+      </p>
+      <p className="small" style={{ marginBottom: 4 }}>
+        <b style={{ fontFamily: "var(--sans)" }}>Doing: </b>
+        {FN_VERBS[fn].slice(0, 4).join(" · ")}
+      </p>
+      <p className="small" style={{ marginBottom: 0 }}>
+        <b style={{ fontFamily: "var(--sans)" }}>Sounds like: </b>
+        &ldquo;{FN_SAYS[fn][0]}&rdquo; &middot; &ldquo;{FN_SAYS[fn][1]}&rdquo;
+      </p>
+    </div>
   );
 }

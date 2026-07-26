@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { quadra, stack, gate, complements, catalysts, frictions } from "../engine/core";
-import { ops, coins, SAVIOR_STATE, DEMON_STATE, type Subtype, type Animal } from "../engine/ops";
+import {
+  ops, coins, SAVIOR_STATE, DEMON_STATE, SAVIOR_MARKERS, DEMON_MARKERS,
+  type Subtype, type Animal,
+} from "../engine/ops";
+import {
+  FN_ROLE, FN_SAYS, FN_WANTS, FN_SATISFACTION, FN_STARVATION, FN_PRACTICE,
+} from "../engine/functions";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import {
   TYPES, ARCHETYPE, GROUP, SOCIONICS, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE,
@@ -102,13 +108,17 @@ export default function TypeReader() {
             <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
               <b className="mono" style={{ color: p.fn(fn), fontSize: "var(--t-lg)" }}>{fn}</b>
               <Term>{SLOT_NAMES[i]}</Term>
+              <span className="chip">{FN_ROLE[fn]}</span>
             </div>
-            <Explain plain={i < 4 ? SLOT_PLAIN[SLOT_NAMES[i]] : SLOT_PLAIN[SLOT_NAMES[i]]}>
+            <Explain plain={SLOT_PLAIN[SLOT_NAMES[i]]}>
               <p style={{ marginBottom: "var(--s2)" }}>
                 <b>{fn}:</b> {i < 4 ? FN_LONG[fn] : FN_SHADOW[fn]}
               </p>
               <p className="small" style={{ margin: 0 }}>{FN_PLAIN[fn]}</p>
             </Explain>
+            <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+              Sounds like: &ldquo;{FN_SAYS[fn][0]}&rdquo; &middot; &ldquo;{FN_SAYS[fn][1]}&rdquo;
+            </p>
           </Panel>
         ))}
       </div>
@@ -208,6 +218,36 @@ export default function TypeReader() {
           <p className="small muted" style={{ margin: 0 }}>{DEMON_STATE}</p>
         </Panel>
       </div>
+
+      <Panel title="How to tell which is which, in yourself" style={{ marginTop: "var(--s4)" }}>
+        <p className="small">
+          Easier than the descriptions above: listen for what you say about an area of your life.
+        </p>
+        <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
+          <div>
+            <h4 style={{ marginTop: 0 }}>Savior tells</h4>
+            {SAVIOR_MARKERS.map((m) => (
+              <Row
+                key={m.name}
+                stacked
+                k={<span><b>{m.name}</b> — &ldquo;{m.says}&rdquo;</span>}
+                v={<span className="small">{m.note}</span>}
+              />
+            ))}
+          </div>
+          <div>
+            <h4 style={{ marginTop: 0 }}>Demon tells</h4>
+            {DEMON_MARKERS.map((m) => (
+              <Row
+                key={m.name}
+                stacked
+                k={<span><b>{m.name}</b> — &ldquo;{m.says}&rdquo;</span>}
+                v={<span className="small">{m.note}</span>}
+              />
+            ))}
+          </div>
+        </div>
+      </Panel>
 
       <h3>Your four animals</h3>
       <Explain plain={CONCEPT_PLAIN.animal}>
@@ -333,6 +373,41 @@ export default function TypeReader() {
           />
         </Panel>
       </div>
+
+      <Panel title={`What ${st[3]} actually wants`} style={{ marginTop: "var(--s4)" }}>
+        <Explain
+          plain={`Everything above says to develop your Inferior ${st[3]}. This is what that function is actually chasing — and what to go and do about it.`}
+        >
+          <p style={{ margin: 0 }}>
+            Structure from &ldquo;What Makes Each Cognitive Function Happy&rdquo;
+            (psychologyjunkie.com), rewritten here. Growth advice that names a function without
+            saying what feeds it is not actionable.
+          </p>
+        </Explain>
+
+        <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
+          {[st[3], st[4]].map((fn, n) => (
+            <div key={fn}>
+              <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
+                <b className="mono" style={{ color: p.fn(fn), fontSize: "var(--t-lg)" }}>{fn}</b>
+                <span className="chip">{n === 0 ? "Inferior" : "Nemesis"}</span>
+                <span className="chip">wants {FN_WANTS[fn].toLowerCase()}</span>
+              </div>
+              <Row stacked k="What feeds it" v={<span className="small">{FN_SATISFACTION[fn]}</span>} />
+              <Row stacked k="Starved, it looks like" v={<span className="small">{FN_STARVATION[fn]}</span>} />
+              <Row
+                stacked
+                k="Try this week"
+                v={
+                  <ul style={{ margin: 0, fontSize: "var(--t-sm)", color: "var(--ink-2)" }}>
+                    {FN_PRACTICE[fn].map((x) => <li key={x}>{x}</li>)}
+                  </ul>
+                }
+              />
+            </div>
+          ))}
+        </div>
+      </Panel>
 
       <Panel title="Behavioural profile" style={{ marginTop: "var(--s4)" }}>
         <div className="grid g2">

@@ -74,6 +74,31 @@ export const DEMON_STATE =
   "Nervous, awkward, showing off, proving yourself. You do not feel responsible for it, you " +
   "put it off until later, and criticism of it lands as a verdict on you rather than the work.";
 
+/**
+ * The three tells for each side, which are far easier to spot in yourself than
+ * the general descriptions above. Structure from the OPS coin sheet (IMG_7589);
+ * see docs/transcripts/IMG_7589-ops-coins.md.
+ */
+export interface Marker { name: string; says: string; note: string }
+
+export const SAVIOR_MARKERS: Marker[] = [
+  { name: "Responsible", says: "I'm responsible, so this is where I spend my time.",
+    note: "You take ownership here without being asked, and without noticing you did." },
+  { name: "Confidence", says: "I can work through the struggles here.",
+    note: "Difficulty in this area reads as a problem to solve, not as evidence about you." },
+  { name: "Obvious", says: "Let me just do that for you — thank me later.",
+    note: "It is so easy you assume anyone could, which is exactly why you undervalue it." },
+];
+
+export const DEMON_MARKERS: Marker[] = [
+  { name: "Tidalwaves", says: "I'm not responsible for this — someone else is.",
+    note: "The whole area feels like weather happening to you rather than something you steer." },
+  { name: "Fear / Pain", says: "Why does this keep happening to me?",
+    note: "The same failure recurs and reads as fate rather than as a skill you have not built." },
+  { name: "Peacocking", says: "I secretly want to be good at this.",
+    note: "You show off here rather than work here — the wanting is real, the practice is not." },
+];
+
 export interface Subtype {
   /**
    * OPS's other sixteen. A jumper's saviors are dominant + TERTIARY rather than

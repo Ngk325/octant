@@ -5,6 +5,7 @@ import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/da
 import { REL_PLAIN, CONCEPT_PLAIN, SLOT_PLAIN } from "../engine/plain";
 import { playbook } from "../engine/playbook";
 import { compareAspects } from "../engine/lexicon";
+import { divergence, EMPIRICAL_SOURCE } from "../engine/empirical";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Term from "../components/Term";
@@ -97,6 +98,50 @@ export default function PairReader() {
           </Panel>
         </div>
       </div>
+
+      <h2>What people actually report</h2>
+
+      <Explain
+        big
+        plain="Everything above is derived from how the two wirings mesh. This is what a survey of real people said about the same pairing — and the two do not always agree."
+      >
+        <p>
+          Compatibility percentages from {EMPIRICAL_SOURCE.name}, a {EMPIRICAL_SOURCE.what},
+          used under {EMPIRICAL_SOURCE.licence}. Across all 256 pairs the two measures correlate
+          at <b>r = −0.15</b> — very slightly <i>negatively</i>. That is not a defect in either.
+          They answer different questions: the survey measures who people say they get on with,
+          and this app measures how the wiring meshes. People report liking people like
+          themselves, so Identity pairs top the survey while the model rates them mid-table; and
+          Duality pairs, which the model rates highest, sit near the bottom of the survey.
+        </p>
+      </Explain>
+
+      <Panel>
+        {(() => {
+          const d = divergence(target, persp);
+          return (
+            <>
+              <div className="stat" style={{ marginBottom: "var(--s4)" }}>
+                <div>
+                  <b style={{ color: p.ease(d.derived) }}>{d.derived}</b>
+                  <div className="small">Derived — structural ease for {target}</div>
+                </div>
+                <div>
+                  <b style={{ color: p.ease(d.survey) }}>{d.survey}%</b>
+                  <div className="small">Reported — {EMPIRICAL_SOURCE.name} survey</div>
+                </div>
+                <div>
+                  <b>{d.delta > 0 ? "+" : ""}{d.delta}</b>
+                  <div className="small">
+                    Gap · {d.size === "agree" ? "they agree" : d.size === "opposite" ? "near-opposite readings" : `${d.size} disagreement`}
+                  </div>
+                </div>
+              </div>
+              <p style={{ marginBottom: 0 }}>{d.reading}</p>
+            </>
+          );
+        })()}
+      </Panel>
 
       <h2>Aspect by aspect</h2>
       <p className="prose">

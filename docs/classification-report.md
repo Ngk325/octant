@@ -6,7 +6,7 @@ Source: `typology-photos-normalized 2.zip`, committed to `main` (0dafb68).
 2025-08-28 pair); neither is in the normalized set. Worth checking whether they were dropped
 during conversion — the catalog notes they were mislabelled JPEGs.
 
-**13 of 21 vision-passed: all of Group A (4), all of Group C (8), and one of Group B.** Eight Group B
+**15 of 21 vision-passed: all of Group A (4), all of Group C (8), and three of Group B.** Six Group B
 screenshots remain — see the note at the end.
 
 ---
@@ -22,7 +22,7 @@ relations page, and a function tree from erictb.info. The only original content 
 handwritten function-role labels and some circling of the photographer's own coins.
 
 **No Hawkins, no KWML, no water-based emotion taxonomy, and no Astrolabe / Periplus / Calibration
-Codex content appears anywhere in the thirteen images read.** Which lines up with your instruction to
+Codex content appears anywhere in the fifteen images read.** Which lines up with your instruction to
 keep those three out — the photos do not contain them in the first place.
 
 Consequence: Guardrail 2 ("treat anything that looks like personal/original notes as provisional")
@@ -49,16 +49,16 @@ does not bind here. What does bind instead is **third-party copyright** — see 
 | `IMG_0314.JPG` | B | unknown | — | ⏳ pending | Text screenshot |
 | `IMG_6093.jpg` | B | unknown | — | ⏳ pending | Full-height phone screenshot |
 | `IMG_6094.JPG` | B | unknown | — | ⏳ pending | Cropped excerpt |
-| `IMG_6095.JPG` | B | unknown | — | ⏳ pending | Square-ish crop |
+| `IMG_6095.JPG` | B | `unlabeled_general_typology` | high | ✅ transcribed | **Socionics 16×16 relations chart. Validates all 256 engine cells** |
 | `IMG_6097.JPG` | B | unknown | — | ⏳ pending | Landscape crop |
 | `IMG_6099.PNG` | B | `mbti_type_profile` | high | ✅ transcribed | **Empirical 16×16 compatibility matrix**, personalitydata.org, CC BY 4.0. Contradicts the derived model — see below |
-| `screenshot_2025-12-23.png` | B | unknown | — | ⏳ pending | 3058×588 stitched capture |
+| `screenshot_2025-12-23.png` | B | `unlabeled_general_typology` (OPS) | high | ✅ transcribed | **Confirms the Play/Consume animal correction** |
 | `Screenshot_20230703_081513_Photos.jpg` | B | unknown | — | ⏳ pending | 2023-07-03 08:15:13 |
 | `Screenshot_20230703_081539_Photos.jpg` | B | unknown | — | ⏳ pending | 2023-07-03 08:15:39 |
 
 ---
 
-## Two engine validations that fell out
+## Four engine validations that fell out
 
 Both run against the live engine, not eyeballed:
 
@@ -72,6 +72,18 @@ Both run against the live engine, not eyeballed:
    Cavalier, Duelist, Bard, Archivist, Artificer, Paladin, Druid, Mystic). Verified all sixteen.
    They are unattributed and unexplained; the app shows them as one of four slash-separated names
    with no indication of which system each comes from.
+
+3. **A Socionics intertype chart (`IMG_6095`) agrees with the engine on all 256 cells**, and each
+   of its sixteen labels maps onto exactly one engine code — a clean bijection. The engine computes
+   those cells from three involutions; the chart is a hand-built table from another tradition.
+   Two naming conventions differ and are documented rather than "fixed": the chart's *Look-a-like*
+   is this app's Business and its *Comparative* is this app's Kindred (English Socionics sources
+   genuinely disagree on those two labels), and it writes Benefit/Supervision from the actor's side.
+
+4. **`screenshot_2025-12-23.png` independently confirms the Play/Consume correction.** The slide
+   states Play = De+Oe and Consume = Di+Oe, exactly as corrected in `src/engine/ops.ts`. The fix
+   was originally made from published OPS definitions found by web research; this is a second,
+   independent source for the same fact, and it was in the batch all along.
 
 Also already present, discovered by comparison: the app's OPS coin definitions and even the
 Calculator's prompt wording derive from `IMG_7589`; and the app's coin 8 (Control/Movement) is the
@@ -113,7 +125,7 @@ rather than smooth them over. See plan §A10.
 
 ## Group B — mostly still pending
 
-Eight of the nine Group B screenshots have not been vision-passed yet. They are the lowest-value group on
+Six of the nine Group B screenshots have not been vision-passed yet. They are the lowest-value group on
 the catalog's own description (saved articles, cropped excerpts, re-shared graphics) and the least
 likely to contain structured data, but they have not been ruled out — `screenshot_2025-12-23.png`
 in particular (3058×588, a stitched capture) is worth a look. Nothing in the plan depends on them.
