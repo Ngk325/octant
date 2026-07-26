@@ -21,7 +21,7 @@ They are not: eight photographs of printed pages in a ring binder — Linda Bere
 Joseph's Type Grid, an OPS coin sheet, a "Type Logic" relations page, and a function tree from
 erictb.info. The only original content is marginalia.
 
-**Nothing in the nine images read contains Hawkins, KWML, or water/emotion-taxonomy material** —
+**Nothing in the twelve images read contains Hawkins, KWML, or water/emotion-taxonomy material** —
 so your "keep them out" instruction costs nothing here. It removes work that was never supported
 by the source in the first place.
 
@@ -102,7 +102,18 @@ Observation vs willed Determination → Is/Isn't and Right/Wrong → S/N and T/F
 Individual). Course stage 1 currently asserts "there are eight" without showing where eight comes
 from; this is the missing derivation, and it matches the app's own derived-not-listed posture.
 
-### A8 · `/types` roster page
+### A8 · Letters → stack, the derivation the course skips
+From `INTJ (2).jpg`, which turned out not to be a profile card at all but a worked derivation:
+Introvert ⇒ dominant is introverted; Judger ⇒ the introverted dominant is a *perceiving* function
+⇒ Ni; the judging letter gets extraverted as the auxiliary ⇒ Te; inferior is opposite in both
+nature and direction ⇒ Se; tertiary is the opposite of the auxiliary ⇒ Fi.
+
+`stack()` takes (dominant, auxiliary) as given. Nothing in the app explains **how you get there
+from four letters** — the first question anyone arriving with "I'm an INTJ" has. Course stage 2
+asserts the mapping instead of deriving it. Pairs with A7: the Function Tree derives the eight
+functions, this derives which two of them lead.
+
+### A9 · `/types` roster page
 Closes the "MBTI types.jpg" gap: all sixteen as cards with quadra colour, plain one-liner, hero and
 inferior, gate, and the naming systems from A4.
 
@@ -110,6 +121,10 @@ inferior, gate, and the naming systems from A4.
 
 - **Hawkins, KWML, emotion taxonomy, Astrolabe/Periplus/Codex** — your call, and unsupported by the
   images regardless.
+- **The ST/SF/NT/NF grouping** from `MBTI types.jpg` (Valuing / Visioning / Relating / Directing).
+  Legitimate, but it is a *different* four-way split from the SJ/SP/NT/NF temperaments the app
+  already carries, and running both would be exactly the kind of density the redesign set out to
+  remove. One lexicon note that it exists, no more, unless you want it.
 - **The "Type Logic" relation system** (`IMG_8412`). A complete third 16×16 system based on letter
   patterns rather than function operators. I would *not* ingest it: it collides head-on with the
   app's vocabulary — its **Complement** means Quasi-identity where the app's means Dual + Activity,
@@ -123,8 +138,8 @@ inferior, gate, and the naming systems from A4.
 | Phase | Work | Blocked? |
 |---|---|---|
 | **A** | A1, A2, A6 — the per-function tables. Highest value, all extend existing schema | No |
-| **B** | A3, A4, A5, A8 — naming systems with attribution, temperament detail, roster page | No |
-| **C** | A7 — Function Tree into course stage 1 | No |
+| **B** | A3, A4, A5, A9 — naming systems with attribution, temperament detail, roster page | No |
+| **C** | A7 + A8 — Function Tree into course stage 1, letters→stack into stage 2 | No |
 | **D** | Vision-pass the remaining 12 (Group B screenshots + 3 Group A), extend the report | No |
 | **E** | Provenance layer: `Reference` records tying each ingested claim to its source image | No |
 
@@ -147,4 +162,4 @@ If they matter, they need re-exporting.
 Only one left, and it is a scoping question rather than a blocker: **how much of the batch do you
 actually want in the app?** A1, A2 and A6 are clear wins. A3–A5 add naming systems and detail that
 make the app more complete but also denser — and density was the original complaint. I would take
-A1, A2, A6, A7 and A8, and treat A3–A5 as optional. Tell me if you would rather have all of it.
+A1, A2, A6, A7, A8 and A9, and treat A3–A5 as optional. Tell me if you would rather have all of it.
