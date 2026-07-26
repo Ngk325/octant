@@ -3,7 +3,7 @@
   // No Worker script: this is an assets-only deployment, so `main` is omitted.
   // Adding an API later means adding `main` and a routing rule -- no migration.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "stratfield-typology",
+  "name": "typology",
   "compatibility_date": "2026-07-01",
   "assets": {
     "directory": "./dist",
