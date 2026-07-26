@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { lookup, BY_ID, type Entry } from "../engine/lexicon";
 
 /**
- * Inline glossary term. Click reveals the short definition and a link to the
- * full entry. Falls back to plain text if the term is not in the lexicon.
+ * Inline glossary term. Click reveals the plain-language gloss first, then the
+ * short technical definition, then a link to the full entry. Falls back to
+ * plain text if the term is not in the lexicon.
  */
 export default function Term({
   id, children, className,
@@ -28,9 +29,14 @@ export default function Term({
       </button>
       {open && (
         <span className="term-pop" id={popId} role="tooltip">
-          <span className="eyebrow" style={{ marginBottom: 6 }}>{entry.category}</span>
+          <span className="small muted" style={{ display: "block", marginBottom: 4 }}>
+            {entry.category}
+          </span>
           <b>{entry.term}</b>
-          <span className="small" style={{ display: "block", margin: "4px 0 8px" }}>
+          {entry.plain && (
+            <span style={{ display: "block", margin: "6px 0" }}>{entry.plain}</span>
+          )}
+          <span className="small muted" style={{ display: "block", margin: "4px 0 10px" }}>
             {entry.short}
           </span>
           <Link to={`/lexicon/${entry.id}`} className="chip" onMouseDown={(e) => e.preventDefault()}>

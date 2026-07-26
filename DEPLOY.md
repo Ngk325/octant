@@ -26,14 +26,42 @@ Working directory is the repo root — the folder containing `package.json` and 
 
 ```sh
 npm install
-npm test          # expect: 32 passed
+npm test          # expect: 304 passed
 npm run build     # expect: dist/ written, no TypeScript errors
 ```
 
 **Do not proceed if `npm test` fails.** The suite is not cosmetic: it asserts the engine
 reproduces its verified reference exactly, including all 256 playbooks character for character,
-and that every lexicon cross-reference and every aspect pairing resolves. A failure means the
-data model is wrong, not that a test is flaky.
+and that every lexicon cross-reference and every aspect pairing resolves. It also asserts the
+four-sides derivation, the OPS animal definitions, and that every colour in the design system
+clears WCAG AA on its own canvas in both themes. A failure means the data model or the reading
+surface is wrong, not that a test is flaky.
+
+### The assistant's API key
+
+`/api/chat` is served by a Worker (`src/worker/index.ts`) that proxies Gemini. The key is a
+**secret** — never a `var`, never in the client bundle, never committed.
+
+```sh
+cp .dev.vars.example .dev.vars     # local only; .dev.vars is gitignored
+# put your key in it, then:
+npm run dev                        # Vite serves /api/* with the same handler the Worker runs
+npx wrangler dev                   # or run the real Worker + assets locally
+```
+
+For production, once per environment:
+
+```sh
+npx wrangler secret put GEMINI_API_KEY
+```
+
+Verify the key never ships: `npm run build && grep -r "GEMINI\|AIza\|AQ\." dist/` must find
+nothing. Without the secret set, the app still works everywhere else — the rail simply reports
+itself unconfigured.
+
+**Rate limiting.** `handleChat` throttles per IP, but only within a single Worker isolate, so it
+slows a runaway client rather than a determined one. Before pointing real traffic at this,
+add a KV namespace and move the counter there.
 
 Optional smoke check:
 

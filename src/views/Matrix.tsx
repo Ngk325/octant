@@ -1,64 +1,111 @@
+import { Link } from "react-router-dom";
 import { TYPES, REL, ease, quadra } from "../engine/core";
 import { REL_NAME, REL_SCORE, REL_DEF, type RelCode } from "../engine/data";
-import { easeColor, QUADRA_COLOR } from "../engine/palette";
-import { Panel } from "../components/Bits";
+import { REL_PLAIN } from "../engine/plain";
+import { usePalette } from "../components/Theme";
+import { usePublishContext } from "../chat/ChatContext";
+import Explain from "../components/Explain";
+import { Panel, Row } from "../components/Bits";
 
 export default function Matrix() {
+  const p = usePalette();
   const codes = (Object.keys(REL_SCORE) as RelCode[]).sort((a, b) => REL_SCORE[b] - REL_SCORE[a]);
+
+  usePublishContext(() => ({ kind: "matrix" }), []);
+
   return (
     <>
-      <h1>The matrix</h1>
-      <p className="lede">
-        256 cells, all derived. Row is the target; column is the perspective. The value is ease
-        for the row type, so the grid is deliberately not symmetric — supervision and benefit
-        run one way.
+      <h1>Every pair at once</h1>
+
+      <Explain
+        big
+        plain="All 256 combinations in one grid. Find the row for one person and the column for the other, and the colour tells you how easy it is — for the person in the row."
+      >
+        <p>
+          Row is the target, column the perspective, value is ease for the row type. The grid is
+          deliberately not symmetric: supervision and benefit run one way, so cell (a, b) and
+          cell (b, a) genuinely differ for four of the sixteen relations.
+        </p>
+      </Explain>
+
+      <p className="note">
+        Because the grid is asymmetric, it is worth reading a row <i>and</i> its column. Green
+        across a row with red down the same column means that type finds everyone easy while
+        everyone finds them hard.
       </p>
 
-      <Panel style={{ marginTop: 18, overflowX: "auto" }}>
-        <table className="matrix">
-          <thead>
-            <tr>
-              <th />
-              {TYPES.map((p) => (
-                <th key={p} style={{ color: QUADRA_COLOR[quadra(p)] }}>{p}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {TYPES.map((t) => (
-              <tr key={t}>
-                <th style={{ textAlign: "right", paddingRight: 6, color: QUADRA_COLOR[quadra(t)] }}>{t}</th>
-                {TYPES.map((p) => {
-                  const v = ease(t, p);
-                  return (
-                    <td key={p} style={{ background: easeColor(v) }}>
-                      <a href={`/pair/${t}/${p}`}
-                         title={`${p} is ${t}'s ${REL_NAME[REL[t][p]]} — ease ${v}`}>
-                        {REL[t][p]}
-                      </a>
-                    </td>
-                  );
-                })}
+      <Panel style={{ marginTop: "var(--s5)" }}>
+        <div className="matrix-wrap">
+          <table className="matrix">
+            <caption className="small muted" style={{ captionSide: "top", textAlign: "left", paddingBottom: "var(--s3)" }}>
+              Ease for the row type, 0–100. Click any cell for the full reading.
+            </caption>
+            <thead>
+              <tr>
+                <th />
+                {TYPES.map((x) => (
+                  <th key={x} scope="col" style={{ color: p.quadra(quadra(x)) }}>{x}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {TYPES.map((t) => (
+                <tr key={t}>
+                  <th scope="row" style={{ textAlign: "right", paddingRight: 8, color: p.quadra(quadra(t)) }}>{t}</th>
+                  {TYPES.map((x) => {
+                    const v = ease(t, x);
+                    return (
+                      <td key={x} style={{ background: p.fill(v) }}>
+                        <Link
+                          to={`/pair/${t}/${x}`}
+                          style={{ color: p.onFill }}
+                          title={`${x} is ${t}'s ${REL_NAME[REL[t][x]]} — ease ${v} for ${t}`}
+                        >
+                          {v}
+                        </Link>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Panel>
 
-      <Panel title="The sixteen relations" style={{ marginTop: 14 }}>
-        <div className="grid g2">
-          {codes.map((c) => (
-            <div key={c} className="row" style={{ alignItems: "flex-start" }}>
-              <dt style={{ minWidth: 128 }}>
-                <span style={{ color: easeColor(REL_SCORE[c]) }}>{c}</span>{" "}
-                {REL_NAME[c]} · {REL_SCORE[c]}
-              </dt>
-              <dd style={{ textAlign: "left", fontSize: 12.5, color: "#aab3c0" }}>
-                {REL_DEF[c]}
-              </dd>
+      <h2>The sixteen relations</h2>
+      <div className="grid g2">
+        {codes.map((c) => (
+          <Panel key={c}>
+            <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
+              <h3 style={{ margin: 0, fontSize: "var(--t-lg)" }}>{REL_NAME[c]}</h3>
+              <span className="chip mono" style={{ color: p.ease(REL_SCORE[c]) }}>{REL_SCORE[c]}</span>
+              <span className="chip mono">{c}</span>
             </div>
-          ))}
-        </div>
+            <Explain plain={REL_PLAIN[c]}>
+              <p style={{ margin: 0 }}>{REL_DEF[c]}</p>
+            </Explain>
+          </Panel>
+        ))}
+      </div>
+
+      <Panel title="Reading the numbers" style={{ marginTop: "var(--s5)" }}>
+        <Row
+          stacked
+          k="Ease is not compatibility"
+          v={<span className="small">
+            A high number means low friction, not a good relationship. Some of the most valuable
+            pairings in the model sit in the middle, because friction is where growth comes from.
+          </span>}
+        />
+        <Row
+          stacked
+          k="Nobody is stuck with their row"
+          v={<span className="small">
+            These describe defaults, not ceilings. Every relation in the grid is workable once both
+            people can see what it is doing.
+          </span>}
+        />
       </Panel>
     </>
   );

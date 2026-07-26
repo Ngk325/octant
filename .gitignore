@@ -5,3 +5,8 @@ dist
 .DS_Store
 .vscode
 *.tsbuildinfo
+
+# Local secrets for `npm run dev` and `wrangler dev`. Never commit.
+.dev.vars
+.env
+.env.*

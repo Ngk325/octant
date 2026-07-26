@@ -1,4 +1,6 @@
-import { alpha, beta, omega, quadra, ops, coins, gate, stack, type MbtiType } from "./core";
+import { alpha, beta, omega, quadra, gate, stack, type MbtiType } from "./core";
+import { ops, coins } from "./ops";
+import { PLAIN_BY_ID } from "./plain";
 import {
   REL_NAME, REL_DEF, REL_SCORE, FN_FULL, COIN_LABELS,
   INTERACTION_STYLE, ROMANCE, GROUP, type Fn, type RelCode,
@@ -13,6 +15,8 @@ export interface Entry {
   id: string;
   term: string;
   category: Category;
+  /** Plain English, no vocabulary. Attached from plain.ts when ENTRIES is built. */
+  plain: string;
   short: string;
   definition: string;
   inSystem?: string;
@@ -22,10 +26,12 @@ export interface Entry {
 
 export interface Pairing { headline: string; body: string }
 
-const E = (e: Entry) => e;
+/** Authored without `plain`; it is attached from PLAIN_BY_ID when ENTRIES is built. */
+type Draft = Omit<Entry, "plain">;
+const E = (e: Draft) => e;
 
 /* ══════════════════════════════ FUNCTIONS ══════════════════════════════ */
-const FUNCTIONS: Entry[] = [
+const FUNCTIONS: Draft[] = [
   E({ id: "ne", term: "Ne", category: "Function",
     short: "Extraverted Intuition — branching possibility read off the outside world.",
     definition:
@@ -77,7 +83,7 @@ const FUNCTIONS: Entry[] = [
 ];
 
 /* ══════════════════════════════ ARCHETYPES ══════════════════════════════ */
-const ARCHETYPES: Entry[] = [
+const ARCHETYPES: Draft[] = [
   E({ id: "hero", term: "Hero", category: "Archetype",
     short: "Slot 1. The function you are best at and most identified with.",
     definition:
@@ -128,7 +134,7 @@ const QUADRA_ELEMENTS: Record<string, Fn[]> = {
   Alpha: ["Ne", "Si", "Ti", "Fe"], Beta: ["Se", "Ni", "Ti", "Fe"],
   Gamma: ["Se", "Ni", "Te", "Fi"], Delta: ["Ne", "Si", "Te", "Fi"],
 };
-const QUADRAS: Entry[] = [
+const QUADRAS: Draft[] = [
   E({ id: "alpha", term: "Alpha", category: "Quadra",
     short: "Ne · Si · Ti · Fe. Open enquiry inside a comfortable, unhierarchical group.",
     definition:
@@ -153,7 +159,7 @@ const QUADRAS: Entry[] = [
 ];
 
 /* ══════════════════════════════ ANIMALS ══════════════════════════════ */
-const ANIMALS: Entry[] = [
+const ANIMALS: Draft[] = [
   E({ id: "play", term: "Play", category: "Animal",
     short: "Extraverted observing + introverted deciding. Interactive, exploratory, low-stakes.",
     definition:
@@ -181,7 +187,7 @@ const ANIMALS: Entry[] = [
 ];
 
 /* ══════════════════════════════ ROMANCE STYLES ══════════════════════════════ */
-const ROMANCE_STYLES: Entry[] = [
+const ROMANCE_STYLES: Draft[] = [
   E({ id: "infantile", term: "Infantile", category: "Romance Style",
     short: "Relates through play. Wants delight and lightness, and resists being managed.",
     definition:
@@ -209,7 +215,7 @@ const ROMANCE_STYLES: Entry[] = [
 ];
 
 /* ══════════════════════════════ INTERACTION STYLES ══════════════════════════════ */
-const INTERACTION_STYLES: Entry[] = [
+const INTERACTION_STYLES: Draft[] = [
   E({ id: "in-charge", term: "In-Charge", category: "Interaction Style",
     short: "Initiating + Directing. Moves first and says what to do.",
     definition:
@@ -237,7 +243,7 @@ const INTERACTION_STYLES: Entry[] = [
 ];
 
 /* ══════════════════════════════ GATES ══════════════════════════════ */
-const GATES: Entry[] = [
+const GATES: Draft[] = [
   E({ id: "gate-of-chaos", term: "Gate of Chaos", category: "Gate",
     short: "IxxJ. Fear of the unplanned. Opens onto freedom.",
     definition:
@@ -261,7 +267,7 @@ const GATES: Entry[] = [
 ];
 
 /* ══════════════════════════════ TEMPERAMENTS ══════════════════════════════ */
-const TEMPERAMENTS: Entry[] = [
+const TEMPERAMENTS: Draft[] = [
   E({ id: "nt", term: "Intellectuals (NT)", category: "Temperament",
     short: "Competence. Wants to understand the system well enough to command it.",
     definition: "ENTP, INTP, ENTJ, INTJ. Organised around mastery and models: the point of a thing is to understand its mechanism well enough to predict or command it. Status is conferred by being right and by knowing why, and competence is assumed until disproved. Impatient with claims that cannot be defended, and with process observed for its own sake.",
@@ -315,14 +321,14 @@ const COIN_POLES: [string, string, string, string][] = [
   ["movement", "Movement", "Optimises for continued progress.",
    "Keeps things moving and repairs later. A derived coin: true when Initiating and Direct disagree."],
 ];
-const COINS_E: Entry[] = COIN_POLES.map(([id, term, short, definition], i) =>
+const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) =>
   E({ id, term, category: "Coin", short, definition,
       inSystem: `Coin ${Math.floor(i / 2) + 1} — ${COIN_LABELS[Math.floor(i / 2)]}. ` +
         ([0, 2, 3, 4].includes(Math.floor(i / 2)) ? "Determining." : "Confirming: derivable from the determining coins."),
       source: "Objective Personality System; CS Joseph", seeAlso: ["coin", "savior"] }));
 
 /* ══════════════════════════════ CONCEPTS ══════════════════════════════ */
-const CONCEPTS: Entry[] = [
+const CONCEPTS: Draft[] = [
   E({ id: "complement", term: "Complement", category: "Concept",
     short: "Your Dual and your Activity partner. They supply the function you fear.",
     definition:
@@ -428,7 +434,7 @@ const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
   SE: "Your ego block lands on their super-ego block — the positions they are conscious of being bad at. You are effortlessly demonstrating the exact competence they feel judged for lacking, and they are doing the same to you. At distance this reads as impressive and intriguing; in sustained contact it reads as a standing rebuke neither of you intended.",
   CF: "Their leading function lands on your most defended weakness and yours on theirs. Maximum friction, and usually mutual bafflement about why.",
 };
-const RELATIONS: Entry[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
+const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
   E({ id: `rel-${c.toLowerCase()}`, term: REL_NAME[c], category: "Relation",
      short: REL_DEF[c].split(".")[0] + ".",
      definition: RELATION_EXTRA[c] ?? REL_DEF[c],
@@ -437,10 +443,13 @@ const RELATIONS: Entry[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
          ? "Asymmetric — the reciprocal relation is different." : "Symmetric."}`,
      source: "Augustinavičiūtė", seeAlso: ["relation", "ease", "model-a"] }));
 
-export const ENTRIES: Entry[] = [
+const DRAFTS: Draft[] = [
   ...FUNCTIONS, ...ARCHETYPES, ...QUADRAS, ...ANIMALS, ...ROMANCE_STYLES,
   ...INTERACTION_STYLES, ...GATES, ...TEMPERAMENTS, ...COINS_E, ...CONCEPTS, ...RELATIONS,
 ];
+
+/** Every entry carries its plain-language gloss. Completeness is asserted in tests. */
+export const ENTRIES: Entry[] = DRAFTS.map((d) => ({ ...d, plain: PLAIN_BY_ID[d.id] ?? "" }));
 
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -465,6 +474,7 @@ export function search(q: string): Entry[] {
   if (!t) return ENTRIES;
   return ENTRIES.filter((e) =>
     e.term.toLowerCase().includes(t) || e.short.toLowerCase().includes(t) ||
+    e.plain.toLowerCase().includes(t) ||
     e.definition.toLowerCase().includes(t) || e.category.toLowerCase().includes(t));
 }
 
