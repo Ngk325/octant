@@ -7,6 +7,7 @@ import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
 import { Panel, Row } from "../components/Bits";
 
+/** All 256 cells, colour-scaled, every cell a link into the pair reader. */
 export default function Matrix() {
   const p = usePalette();
   const codes = (Object.keys(REL_SCORE) as RelCode[]).sort((a, b) => REL_SCORE[b] - REL_SCORE[a]);

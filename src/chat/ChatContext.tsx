@@ -15,6 +15,10 @@ interface ChatCtxValue {
 const C = createContext<ChatCtxValue | null>(null);
 const OPEN_KEY = "stratfield.chat.open";
 
+/**
+ * Holds the assistant's open/closed state and whatever the current view has published
+ * about what is on screen.
+ */
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [context, setContext] = useState<Ctx>({ kind: "home" });
   const [open, setOpen] = useState<boolean>(() => {

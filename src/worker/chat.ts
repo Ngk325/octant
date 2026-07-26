@@ -21,11 +21,13 @@ export const MODELS = {
   fast: "gemini-3.6-flash",
   deep: "gemini-3.1-pro-preview",
 } as const;
+/** The allowlisted models. A request naming anything else is rejected. */
 export type ModelKey = keyof typeof MODELS;
 
 const MAX_MESSAGES = 40;
 const MAX_CHARS = 24_000;
 
+/** One turn of conversation as it arrives from the client. */
 export interface ChatTurn {
   role: "user" | "model";
   text: string;
@@ -61,6 +63,14 @@ function rateLimited(ip: string, now: number): boolean {
   return recent.length > MAX_PER_WINDOW;
 }
 
+/**
+ * The /api/chat handler, and the app's entire server surface.
+ *
+ * Validates the request (method, body size, turn count, allowlisted model), calls
+ * Gemini with the caller's grounding, and streams plain text back. The Worker and
+ * the Vite dev server both call THIS function, so local and deployed behaviour
+ * cannot drift apart. The API key is read from env and never reaches the client.
+ */
 export async function handleChat(request: Request, env: Env, now = Date.now()): Promise<Response> {
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
   if (request.method !== "POST") return json({ error: "Use POST." }, 405);

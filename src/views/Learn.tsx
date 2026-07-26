@@ -17,6 +17,7 @@ const readDone = (): string[] => {
   }
 };
 
+/** The course. Renders the index or one stage, and remembers progress locally. */
 export default function Learn() {
   const { stage } = useParams();
   const nav = useNavigate();

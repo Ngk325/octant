@@ -27,7 +27,9 @@ const BY_PAIR = new Map<string, MbtiType>(
 /** The type that leads with `d` and supports with `x`. Every (dom, aux) pair is a type. */
 export const fromPair = (d: Fn, x: Fn): MbtiType => BY_PAIR.get(`${d}|${x}`)!;
 
+/** Is this a perceiving function? Ne, Ni, Se and Si observe; the rest decide. */
 export const isObserver = (f: Fn) => f[0] === "N" || f[0] === "S";
+/** Does this function face outward? The second letter is the attitude. */
 export const isExtraverted = (f: Fn) => f[1] === "e";
 
 /** Full eight-slot Beebe stack: Hero Parent Child Inferior | Nemesis Critic Trickster Demon */
@@ -36,7 +38,9 @@ export function stack(t: MbtiType): Fn[] {
   return [d, x, omega[x], omega[d], alpha[d], alpha[x], beta[x], beta[d]];
 }
 
+/** One of four value clubs. The four types in a quadra share the same four ego functions. */
 export type Quadra = "Alpha" | "Beta" | "Gamma" | "Delta";
+/** Which quadra a type belongs to, derived from its dominant and auxiliary. */
 export function quadra(t: MbtiType): Quadra {
   const ego = new Set(stack(t).slice(0, 4));
   const has = (...f: Fn[]) => f.every((x) => ego.has(x));
@@ -84,6 +88,11 @@ export const REL: Record<MbtiType, Record<MbtiType, RelCode>> = (() => {
   return out;
 })();
 
+/**
+ * The intertype relation between two types, as a two-letter code. Symmetric for
+ * twelve of the sixteen; the four asymmetric ones read differently from each side,
+ * which is why both arguments are named rather than being a and b.
+ */
 export const relation = (target: MbtiType, perspective: MbtiType): RelCode =>
   REL[target][perspective];
 
@@ -91,9 +100,14 @@ export const relation = (target: MbtiType, perspective: MbtiType): RelCode =>
 export const ease = (target: MbtiType, perspective: MbtiType): number =>
   REL_SCORE[REL[target][perspective]];
 
+/**
+ * The two types that supply this one's Inferior — its Dual and its Activity
+ * partner. Restful company: effortlessly good at the thing you are afraid of.
+ */
 export const complements = (t: MbtiType): MbtiType[] =>
   TYPES.filter((p) => REL[t][p] === "DU").concat(TYPES.filter((p) => REL[t][p] === "AC"));
 
+/** The types this one finds hardest, by ease score. Not enemies — just expensive. */
 export const frictions = (t: MbtiType): MbtiType[] =>
   TYPES.filter((p) => REL[t][p] === "CF").concat(TYPES.filter((p) => REL[t][p] === "SE"));
 
@@ -114,6 +128,10 @@ export const catalysts = (t: MbtiType): MbtiType[] => {
 /* ------------------------------ gates ------------------------------ */
 export interface Gate { gate: string; fear: string; cave: string; treasure: string }
 
+/**
+ * The growth gate: the structural fear a type is organised around, the function that
+ * guards it, and the capability on the other side.
+ */
 export function gate(t: MbtiType): Gate {
   const grp = `${t[0]}${t[3]}`;
   const inf = stack(t)[3];

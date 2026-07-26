@@ -1,5 +1,6 @@
 import type { Fn } from "./data";
 
+/** Light or dark. There is no third value — `data-theme` always carries a resolved one. */
 export type Theme = "light" | "dark";
 
 /* ------------------------------------------------------------------ *
@@ -18,6 +19,10 @@ export const CANVAS: Record<Theme, string> = {
   dark: "#141310",
 };
 
+/**
+ * Per-theme function colours. Every entry clears WCAG AA on both canvas and surface,
+ * asserted in tests/palette.test.ts.
+ */
 export const FN_COLOR: Record<Theme, Record<Fn, string>> = {
   light: {
     Ne: "#6B3BC4", Ni: "#4B2A8F",
@@ -33,6 +38,7 @@ export const FN_COLOR: Record<Theme, Record<Fn, string>> = {
   },
 };
 
+/** Low-alpha versions of FN_COLOR, for fills and halos rather than text. */
 export const FN_GLOW: Record<Theme, Record<Fn, string>> = {
   light: {
     Ne: "rgba(107,59,196,.20)", Ni: "rgba(75,42,143,.18)",
@@ -48,6 +54,7 @@ export const FN_GLOW: Record<Theme, Record<Fn, string>> = {
   },
 };
 
+/** Per-theme quadra colours, also contrast-checked as text. */
 export const QUADRA_COLOR: Record<Theme, Record<string, string>> = {
   light: { Alpha: "#6B3BC4", Beta: "#AE3355", Gamma: "#0D6560", Delta: "#8A5410" },
   dark: { Alpha: "#C9A0FF", Beta: "#FF8FB0", Gamma: "#5FE0D6", Delta: "#FFC15E" },
@@ -124,6 +131,7 @@ const channel = (v: number) => {
   return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
 };
 
+/** Relative luminance per WCAG 2.1 — the input to contrastRatio. */
 export function luminance(c: string): number {
   const [r, g, b] = parseColor(c);
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);

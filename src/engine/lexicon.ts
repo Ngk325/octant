@@ -6,11 +6,16 @@ import {
   INTERACTION_STYLE, ROMANCE, GROUP, type Fn, type RelCode,
 } from "./data";
 
+/** The kind of thing an entry is. Drives filtering and the pairing logic. */
 export type Category =
   | "Function" | "Archetype" | "Relation" | "Quadra" | "Animal"
   | "Romance Style" | "Interaction Style" | "Gate" | "Coin"
   | "Temperament" | "Concept";
 
+/**
+ * One defined term: plain gloss, short definition, full definition, and where it sits
+ * in this app's own model.
+ */
 export interface Entry {
   id: string;
   term: string;
@@ -24,6 +29,7 @@ export interface Entry {
   seeAlso?: string[];
 }
 
+/** What happens when two terms of the same category meet. */
 export interface Pairing { headline: string; body: string }
 
 /** Authored without `plain`; it is attached from PLAIN_BY_ID when ENTRIES is built. */
@@ -580,14 +586,17 @@ export const BY_ID = (() => {
   for (const e of ENTRIES) { const a = slugify(e.term); if (!m.has(a)) m.set(a, e); }
   return m;
 })();
+/** Every category present in ENTRIES, for the lexicon's filter row. */
 export const CATEGORIES: Category[] = [
   "Function", "Archetype", "Relation", "Quadra", "Animal", "Romance Style",
   "Interaction Style", "Gate", "Coin", "Temperament", "Concept",
 ];
 const slug = slugify;
+/** Find an entry by term or alias, case-insensitively. Used by inline <Term> tags. */
 export const lookup = (name: string): Entry | undefined =>
   BY_ID.get(slug(name)) ?? ENTRIES.find((e) => e.term.toLowerCase() === name.toLowerCase());
 
+/** Free-text search across term, gloss and definition. */
 export function search(q: string): Entry[] {
   const t = q.trim().toLowerCase();
   if (!t) return ENTRIES;

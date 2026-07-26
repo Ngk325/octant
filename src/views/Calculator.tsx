@@ -28,6 +28,7 @@ const PROMPTS: [string, string][] = [
    "I focus on progress, and would rather keep moving and fix things later."],
 ];
 
+/** Eight either-or questions. Four decide the type; four cross-check it. */
 export default function Calculator() {
   const [answers, setAnswers] = useState<(string | null)[]>(Array(8).fill(null));
   const result = useMemo(() => calculate(answers), [answers]);

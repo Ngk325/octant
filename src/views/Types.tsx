@@ -10,6 +10,7 @@ import Explain from "../components/Explain";
 
 type SortBy = "quadra" | "temperament" | "alpha";
 
+/** All sixteen at a glance, grouped by quadra or temperament. */
 export default function Types() {
   const p = usePalette();
   const [sortBy, setSortBy] = useState<SortBy>("quadra");

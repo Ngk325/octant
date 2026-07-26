@@ -54,6 +54,7 @@ import { TYPES, type MbtiType } from "./data";
 
 export type TempleName = "Soul" | "Mind" | "Heart" | "Body";
 
+/** One of the four temples, with its four member types — derived, not listed. */
 export interface Temple {
   name: TempleName;
   /** What this temple is about. */
@@ -64,6 +65,7 @@ export interface Temple {
   types: MbtiType[];
 }
 
+/** One temple wheel: a dyad, its origin, and the four positions around it. */
 export interface Wheel {
   /** The two types: a type and its subconscious, i.e. a Dual pair. Derived. */
   pair: [MbtiType, MbtiType];
@@ -269,8 +271,10 @@ export function wheels(): Wheel[] {
 export type Development = "SD" | "UD";
 /** Which side are you running on now? Mutable. */
 export type Focus = "SF" | "UF";
+/** The season a life is currently in. Development crossed with focus. */
 export type Theme = "Joy" | "Decay" | "Hope" | "Despair";
 
+/** One theme, with the two coins that produce it and what tends to move someone out. */
 export interface ThemeInfo {
   theme: Theme;
   development: Development;
@@ -282,6 +286,7 @@ export interface ThemeInfo {
   movement: string;
 }
 
+/** All four themes. Everyone has lived in all of them; none is a verdict. */
 export const THEMES: ThemeInfo[] = [
   {
     theme: "Joy", development: "SD", focus: "SF", season: "Summer",
@@ -305,6 +310,7 @@ export const THEMES: ThemeInfo[] = [
   },
 ];
 
+/** The theme produced by a given development and focus. */
 export const themeFor = (d: Development, f: Focus): ThemeInfo =>
   THEMES.find((t) => t.development === d && t.focus === f)!;
 

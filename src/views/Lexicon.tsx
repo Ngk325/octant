@@ -9,6 +9,7 @@ import type { Fn } from "../engine/data";
 import Explain from "../components/Explain";
 import { Panel } from "../components/Bits";
 
+/** Every defined term, searchable and filterable, with per-category pairing. */
 export default function Lexicon() {
   const { id } = useParams();
   const [q, setQ] = useState("");

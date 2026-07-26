@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { usePalette } from "./Theme";
 
+/** A titled box. The app's only container primitive. */
 export function Panel({ title, children, style, className }: {
   title?: ReactNode;
   children: ReactNode;
@@ -15,6 +16,7 @@ export function Panel({ title, children, style, className }: {
   );
 }
 
+/** A key/value row. `stacked` puts the value under the key for long text. */
 export function Row({ k, v, stacked }: { k: ReactNode; v: ReactNode; stacked?: boolean }) {
   return (
     <div className={`row${stacked ? " stacked" : ""}`}>
@@ -24,6 +26,7 @@ export function Row({ k, v, stacked }: { k: ReactNode; v: ReactNode; stacked?: b
   );
 }
 
+/** A horizontal ease score, coloured by the same ramp the matrix uses. */
 export function EaseBar({ value }: { value: number }) {
   const p = usePalette();
   return (
@@ -33,6 +36,7 @@ export function EaseBar({ value }: { value: number }) {
   );
 }
 
+/** A large number with a caption under it. */
 export function Score({ value, caption }: { value: number; caption: string }) {
   const p = usePalette();
   return (

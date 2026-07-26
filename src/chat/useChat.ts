@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatContext } from "../engine/context";
 
+/** One message in a thread, as stored and rendered. */
 export interface Message {
   role: "user" | "model";
   text: string;

@@ -32,6 +32,7 @@ import {
  * ------------------------------------------------------------------ */
 
 export type Animal = "Play" | "Blast" | "Consume" | "Sleep";
+/** Whether an animal moves energy or moves information. Two of each. */
 export type AnimalKind = "Energy" | "Information";
 
 /**
@@ -49,10 +50,12 @@ export function animalOf(obs: Fn, dec: Fn): Animal {
   return "Consume";
 }
 
+/** Which kind each animal is. Play and Sleep move energy; Blast and Consume move information. */
 export const ANIMAL_KIND: Record<Animal, AnimalKind> = {
   Play: "Energy", Sleep: "Energy", Blast: "Information", Consume: "Information",
 };
 
+/** One line on what each animal is actually doing, for labels and diagrams. */
 export const ANIMAL_DOES: Record<Animal, string> = {
   Play: "Expends energy outward with people. Doing the thing, together, now.",
   Sleep: "Conserves and processes energy alone. Recharging, digesting, sitting with it.",
@@ -60,6 +63,7 @@ export const ANIMAL_DOES: Record<Animal, string> = {
   Consume: "Pulls information in. Learning, researching, taking it all in before moving.",
 };
 
+/** OPS's single-letter abbreviations, used when printing a full code. */
 export const ANIMAL_LETTER: Record<Animal, string> = {
   Play: "P", Blast: "B", Consume: "C", Sleep: "S",
 };
@@ -70,6 +74,7 @@ export const SAVIOR_STATE =
   "Obvious, easy, matter-of-fact. You can do it again tomorrow, you feel responsible for it, " +
   "and criticism of it slides off — you already know you are fine here.";
 
+/** What a demon function looks like from outside when it has not been worked on. */
 export const DEMON_STATE =
   "Nervous, awkward, showing off, proving yourself. You do not feel responsible for it, you " +
   "put it off until later, and criticism of it lands as a verdict on you rather than the work.";
@@ -81,6 +86,10 @@ export const DEMON_STATE =
  */
 export interface Marker { name: string; says: string; note: string }
 
+/**
+ * The three tells that a function is a savior: responsibility, confidence, obviousness.
+ * Quoted from OPS and attributed, because the phrasing is the data.
+ */
 export const SAVIOR_MARKERS: Marker[] = [
   { name: "Responsible", says: "I'm responsible, so this is where I spend my time.",
     note: "You take ownership here without being asked, and without noticing you did." },
@@ -90,6 +99,7 @@ export const SAVIOR_MARKERS: Marker[] = [
     note: "It is so easy you assume anyone could, which is exactly why you undervalue it." },
 ];
 
+/** The three tells that a function is a demon, and the mirror image of SAVIOR_MARKERS. */
 export const DEMON_MARKERS: Marker[] = [
   { name: "Tidalwaves", says: "I'm not responsible for this — someone else is.",
     note: "The whole area feels like weather happening to you rather than something you steer." },
@@ -99,6 +109,11 @@ export const DEMON_MARKERS: Marker[] = [
     note: "You show off here rather than work here — the wanting is real, the practice is not." },
 ];
 
+/**
+ * The self-reported OPS coins. None of these is derivable from a four-letter
+ * type — they are the layer where OPS's 512 types leave this app's sixteen
+ * behind, so they are asked for rather than inferred.
+ */
 export interface Subtype {
   /**
    * OPS's other sixteen. A jumper's saviors are dominant + TERTIARY rather than
@@ -116,6 +131,10 @@ export interface Subtype {
   decider?: "M" | "F";
 }
 
+/**
+ * One position in the four-animal stack: which animal, which two functions make it,
+ * and what role that position plays.
+ */
 export interface AnimalSlot {
   animal: Animal;
   obs: Fn;
@@ -130,6 +149,10 @@ export interface AnimalSlot {
   note: string;
 }
 
+/**
+ * Everything OPS reads off one type: both saviors, both demons, the ordered animal
+ * stack, and which kind of information dominates.
+ */
 export interface OpsSignature {
   saviorObs: Fn;
   saviorDec: Fn;
@@ -159,6 +182,10 @@ export interface OpsSignature {
   demon: Animal;
 }
 
+/**
+ * The full OPS reading for a type. Optional subtype coins refine the middle of the
+ * animal stack; without them the two middle positions are reported as open.
+ */
 export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
   const [d, x] = DOM_AUX[t];
   const st = stack(t);
@@ -278,6 +305,7 @@ const DIRECTING = new Set<MbtiType>([
   "ESTJ", "ENTJ", "ISTJ", "INTJ", "ESTP", "ISTP", "ENFJ", "INFJ",
 ]);
 
+/** All eight coin values for a type. Four determine it and four are derivable checks. */
 export function coins(t: MbtiType): string[] {
   const [d] = DOM_AUX[t];
   const o = ops(t);
@@ -292,12 +320,17 @@ export function coins(t: MbtiType): string[] {
   return [c1, c2, c3, c4, c5, c6, c7, c8];
 }
 
+/** The two poles of each coin, in coin order, for rendering a picker. */
 export const COIN_OPTIONS: [string, string][] = [
   ["Observer", "Decider"], ["Identity", "Tribe"], ["Organize", "Gather"],
   ["Thinking", "Feeling"], ["Sensing", "iNtuition"], ["Initiating", "Responding"],
   ["Direct", "Informative"], ["Control", "Movement"],
 ];
 
+/**
+ * The outcome of scoring self-reported coins: a ranking, the surviving field, and
+ * any conflicts between what was said and what the structure predicts.
+ */
 export interface CalcResult {
   ranked: { type: MbtiType; determining: number; confirming: number; score: number }[];
   best: MbtiType | null;

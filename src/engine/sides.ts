@@ -40,6 +40,10 @@ export type SideKey = "ego" | "subconscious" | "unconscious" | "superego";
 export type SideRole = "Hero" | "Parent" | "Child" | "Inferior";
 const SIDE_ROLES: SideRole[] = ["Hero", "Parent", "Child", "Inferior"];
 
+/**
+ * One slot within a side: the function, what it is called here, and what it is called
+ * in the ego. The second name is what makes the sides legible as one mind.
+ */
 export interface SideSlot {
   /** The function itself. */
   fn: Fn;
@@ -64,6 +68,10 @@ export interface SideStructure {
   gateway: { fn: Fn; egoSlot: SlotName };
 }
 
+/**
+ * One of the four sides, complete: its own type and stack, its gateway, what blocks
+ * and opens that gateway, and what developed and undeveloped look like.
+ */
 export interface Side extends SideStructure {
   /** Plain language, one sentence, no jargon. */
   plain: string;
@@ -301,6 +309,7 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
   return { ego, subconscious, unconscious, superego };
 }
 
+/** The order the sides are always presented in: ego, subconscious, unconscious, superego. */
 export const SIDE_ORDER: SideKey[] = ["ego", "subconscious", "unconscious", "superego"];
 
 /** The four gateway functions of a type, in the order you are meant to develop them. */

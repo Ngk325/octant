@@ -9,6 +9,10 @@ function contextLabel(kind: string, detail: string): string {
   return detail ? `${kind} · ${detail}` : kind;
 }
 
+/**
+ * The docked assistant. Renders the launcher when closed and the thread when open —
+ * the launcher is never hidden, at any width, because hiding it stranded people.
+ */
 export default function ChatRail() {
   const { context, open, setOpen } = useChatCtx();
   const { messages, streaming, error, send, stop, reset } = useChat(context);

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { usePublishContext } from "../chat/ChatContext";
 import { Panel } from "../components/Bits";
 
+/** The orientation page: what this is, and the two ways in. */
 export default function Home() {
   usePublishContext(() => ({ kind: "home" }), []);
 

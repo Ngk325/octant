@@ -230,6 +230,10 @@ export function contextBlock(ctx: ChatContext): string {
   }
 }
 
+/**
+ * The assistant's whole system prompt: this app's rules, then the derived facts for
+ * whatever the reader currently has on screen.
+ */
 export function buildSystemInstruction(ctx: ChatContext): string {
   return `${MODEL_PRIMER}\n\n---\nCURRENT SCREEN\n\n${contextBlock(ctx)}`;
 }

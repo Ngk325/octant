@@ -13,6 +13,10 @@ import TypePicker from "../components/TypePicker";
 import Explain from "../components/Explain";
 import { Panel, Row, Score, EaseBar } from "../components/Bits";
 
+/**
+ * Two types: the relation, both directional ease scores, the composed playbook, and
+ * the empirical counterweight.
+ */
 export default function PairReader() {
   const { a, b } = useParams();
   const nav = useNavigate();
@@ -107,12 +111,19 @@ export default function PairReader() {
       >
         <p>
           Compatibility percentages from {EMPIRICAL_SOURCE.name}, a {EMPIRICAL_SOURCE.what},
-          used under {EMPIRICAL_SOURCE.licence}. Across all 256 pairs the two measures correlate
+          used under{" "}
+          <a href={EMPIRICAL_SOURCE.licenceUrl} target="_blank" rel="noreferrer noopener">
+            {EMPIRICAL_SOURCE.licence}
+          </a>
+          . Across all 256 pairs the two measures correlate
           at <b>r = −0.15</b> — very slightly <i>negatively</i>. That is not a defect in either.
           They answer different questions: the survey measures who people say they get on with,
           and this app measures how the wiring meshes. People report liking people like
           themselves, so Identity pairs top the survey while the model rates them mid-table; and
           Duality pairs, which the model rates highest, sit near the bottom of the survey.
+        </p>
+        <p className="small muted" style={{ marginBottom: 0 }}>
+          Changes: {EMPIRICAL_SOURCE.changes}
         </p>
       </Explain>
 

@@ -14,6 +14,7 @@ const SEED: Member[] = [
   { id: "3", name: "Third", type: "ISFJ" },
 ];
 
+/** A whole group as a weighted digraph. */
 export default function Network() {
   const [members, setMembers] = useState<Member[]>(SEED);
   const report = useMemo(() => analyse(members), [members]);

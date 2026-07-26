@@ -1,10 +1,16 @@
 import { TYPES, REL, ease, quadra, type MbtiType } from "./core";
 import { REL_NAME, type RelCode } from "./data";
 
+/** One person in a composed group. */
 export interface Member { id: string; name: string; type: MbtiType }
+/** One directed relationship: how `from` finds `to`, which is not how `to` finds `from`. */
 export interface Edge {
   from: Member; to: Member; code: RelCode; label: string; ease: number;
 }
+/**
+ * What a group looks like as a weighted digraph: mean ease, the extreme edges,
+ * supervision chains, and the best single addition.
+ */
 export interface NetworkReport {
   edges: Edge[];
   meanEase: number;

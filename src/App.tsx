@@ -27,6 +27,10 @@ const TABS: [string, string][] = [
 /** Highlight "A type" for any /type/* route, not just the one in the tab href. */
 const sectionOf = (path: string) => "/" + (path.split("/")[1] ?? "");
 
+/**
+ * Routes, masthead and the assistant rail. Scrolls to the top on navigation unless the
+ * URL names an anchor.
+ */
 export default function App() {
   const { pathname, hash } = useLocation();
   const [menu, setMenu] = useState(false);

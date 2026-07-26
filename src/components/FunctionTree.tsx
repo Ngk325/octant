@@ -43,6 +43,10 @@ const ORIENTATION: Record<Fn, string> = {
   Fi: "you settle what is good",
 };
 
+/**
+ * The eight functions as a tree: perceiving versus judging, then each split by attitude.
+ * The orientation figure for anyone meeting the vocabulary for the first time.
+ */
 export default function FunctionTree() {
   const p = usePalette();
 

@@ -42,6 +42,7 @@ const SECTIONS = [
   ["fit", "Who you fit"],
 ] as const;
 
+/** One type, read in full: slots, four sides, OPS, growth, the Octagram, and fit. */
 export default function TypeReader() {
   const { type } = useParams();
   const nav = useNavigate();

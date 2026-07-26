@@ -27,10 +27,23 @@ import { REL_NAME, type MbtiType } from "./data";
  * sharpest instance of that available, and it is quantified.
  * ------------------------------------------------------------------ */
 
+/**
+ * Attribution for the survey matrix, carried in the BUNDLE rather than only in
+ * docs — the doc is not what gets distributed, the app is.
+ *
+ * CC BY 4.0 asks for three things and all three are here: credit the source,
+ * link the licence, and state whether the material was changed. It was: the
+ * numbers are unmodified, but the app derives figures from them that the source
+ * does not publish (row means, per-pair deltas against this engine's own ease
+ * score, and a correlation across all 256 ordered pairs).
+ */
 export const EMPIRICAL_SOURCE = {
   name: "personalitydata.org",
   licence: "CC BY 4.0",
+  licenceUrl: "https://creativecommons.org/licenses/by/4.0/",
   what: "self-reported compatibility survey",
+  changes:
+    "Percentages are reproduced unchanged. Row means, per-pair deltas against this app's derived ease score, and a correlation across all 256 ordered pairs are computed here and are not part of the original.",
 } as const;
 
 /** Row/column order of the published table. */
@@ -68,6 +81,7 @@ export function empirical(a: MbtiType, b: MbtiType): number {
   return M[INDEX.get(a)!][INDEX.get(b)!];
 }
 
+/** Both readings of one pair and an honest sentence about the gap between them. */
 export interface Divergence {
   /** This app's derived ease for (a, b). */
   derived: number;

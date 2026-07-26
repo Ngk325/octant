@@ -28,6 +28,10 @@ const systemTheme = (): Theme =>
     ? "dark"
     : "light";
 
+/**
+ * Resolves light or dark, keeps `data-theme` in sync, and exposes the palette to any
+ * component that needs literal colour values (SVG cannot read CSS custom properties).
+ */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [preference, setPref] = useState<Theme | null>(() => {
     try {
@@ -92,6 +96,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return <ThemeCtx.Provider value={value}>{children}</ThemeCtx.Provider>;
 }
 
+/** The resolved theme and its colour accessors. Throws outside a ThemeProvider. */
 export function usePalette(): Ctx {
   const c = useContext(ThemeCtx);
   if (!c) throw new Error("usePalette must be used inside ThemeProvider");

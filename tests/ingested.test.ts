@@ -7,7 +7,9 @@ import {
 } from "../src/engine/functions";
 import { SAVIOR_MARKERS, DEMON_MARKERS } from "../src/engine/ops";
 import { fourSides } from "../src/engine/sides";
-import { empirical, divergence, correlation, surveyMeanFor } from "../src/engine/empirical";
+import {
+  empirical, divergence, correlation, surveyMeanFor, EMPIRICAL_SOURCE,
+} from "../src/engine/empirical";
 
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
 
@@ -133,6 +135,19 @@ describe("OPS savior/demon markers", () => {
 });
 
 describe("the empirical compatibility matrix", () => {
+  /**
+   * CC BY 4.0 is the only licence in this repo that permits reproducing a
+   * source table, and it asks for three things in return. The attribution has
+   * to live in the BUNDLE, not just in docs/ — the doc is not what gets
+   * distributed. This asserts all three survive refactoring.
+   */
+  it("carries the three things CC BY 4.0 asks for, in the shipped code", () => {
+    expect(EMPIRICAL_SOURCE.name).toBe("personalitydata.org");
+    expect(EMPIRICAL_SOURCE.licence).toMatch(/CC BY 4\.0/);
+    expect(EMPIRICAL_SOURCE.licenceUrl).toMatch(/^https:\/\/creativecommons\.org\/licenses\/by\/4\.0\//);
+    expect(EMPIRICAL_SOURCE.changes.length).toBeGreaterThan(60);
+  });
+
   it("is symmetric, as published", () => {
     for (const a of TYPES) for (const b of TYPES) {
       expect(empirical(a, b), `${a}/${b}`).toBe(empirical(b, a));

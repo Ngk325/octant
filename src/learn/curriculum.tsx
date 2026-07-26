@@ -41,6 +41,7 @@ export interface Stage {
 
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
 
+/** The course, in order. Each stage assumes only what the ones before it taught. */
 export const STAGES: Stage[] = [
   {
     slug: "functions",
@@ -666,5 +667,6 @@ export const STAGES: Stage[] = [
   },
 ];
 
+/** Position of a stage by slug, or 0 if it is not a real stage. */
 export const stageIndex = (slug?: string) =>
   Math.max(0, STAGES.findIndex((s) => s.slug === slug));

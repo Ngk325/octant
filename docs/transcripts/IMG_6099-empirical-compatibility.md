@@ -6,8 +6,13 @@
 
 A full 16×16 matrix of **empirical, survey-derived** compatibility percentages. Unlike the other
 material in this batch, the licence permits reuse — including reproduction of the table itself —
-provided the source is credited and the licence named. Both are done here, in
-`src/engine/empirical.ts`, and on the surfaces that render the numbers.
+on three conditions: credit the source, link the licence, and say whether the material was
+changed. All three are satisfied here, in `EMPIRICAL_SOURCE` (`src/engine/empirical.ts`), and on
+the pair reader, which is the surface that renders the numbers to a reader.
+
+**Changes made:** the percentages themselves are reproduced unchanged. This app additionally
+computes figures the source does not publish — row means, per-pair deltas against its own derived
+ease score, and a Pearson correlation across all 256 ordered pairs (r = −0.154).
 
 Column/row order: ENFJ ENFP ENTJ ENTP ESFJ ESFP ESTJ ESTP INFJ INFP INTJ INTP ISFJ ISFP ISTJ ISTP
 

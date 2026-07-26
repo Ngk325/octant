@@ -73,6 +73,7 @@ export const REL_PLAIN: Record<RelCode, string> = {
   CF: "The hardest match. What you are best at is exactly what they are most defensive about, and vice versa.",
 };
 
+/** Each quadra in one jargon-free sentence. */
 export const QUADRA_PLAIN: Record<Quadra, string> = {
   Alpha: "Ideas for their own sake, in a warm room. Debate is friendly and nothing has to be useful.",
   Beta: "Intensity and belief. Big feelings, a clear leader, and a cause worth arguing about.",
@@ -80,6 +81,7 @@ export const QUADRA_PLAIN: Record<Quadra, string> = {
   Delta: "Craft and quiet decency. Do good work, look after your people, skip the drama.",
 };
 
+/** Each growth gate in one jargon-free sentence. */
 export const GATE_PLAIN: Record<string, string> = {
   "Gate of Chaos": "You grow by letting things be unpredictable instead of pinning them down.",
   "Gate of Obligation": "You grow by finishing what you started, even after it stops being interesting.",
@@ -87,6 +89,7 @@ export const GATE_PLAIN: Record<string, string> = {
   "Gate of the Self": "You grow by sitting alone with yourself and finding that someone is there.",
 };
 
+/** Each coin as a question a person could actually answer about themselves. */
 export const COIN_PLAIN: string[] = [
   "Do you take in information first, or make up your mind first?",
   "Do you check decisions against your own values, or against the group's?",
