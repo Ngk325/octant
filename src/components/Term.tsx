@@ -44,7 +44,9 @@ export default function Term({
         {children}
       </button>
       {open && (
-        <span className="term-pop" id={popId} role="tooltip">
+        /* A disclosure, not a tooltip: it holds a link, and the trigger carries
+           aria-expanded. role="tooltip" would contradict both. */
+        <span className="term-pop" id={popId} role="group" aria-label={`About ${entry.term}`}>
           <span className="small muted" style={{ display: "block", marginBottom: 4 }}>
             {entry.category}
           </span>

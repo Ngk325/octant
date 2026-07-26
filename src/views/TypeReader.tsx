@@ -11,6 +11,10 @@ import {
 } from "../engine/functions";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import {
+  wheelOf, templeOf, themeFor, poleFor, UNSETTLED,
+  type Development, type Focus,
+} from "../engine/octagram";
+import {
   TYPES, ARCHETYPE, GROUP, SOCIONICS, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE,
   BEHAVIOURAL, COIN_LABELS, DETERMINING, FN_LONG, FN_SHADOW, SLOT_NAMES,
   type MbtiType,
@@ -21,6 +25,8 @@ import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
 import FourSidesDiagram from "../components/FourSidesDiagram";
 import AnimalStack from "../components/AnimalStack";
+import OctagramWheel from "../components/OctagramWheel";
+import ThemeSeasons from "../components/ThemeSeasons";
 import TypePicker from "../components/TypePicker";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
@@ -32,6 +38,7 @@ const SECTIONS = [
   ["sides", "Four sides of the mind"],
   ["ops", "The OPS overlay"],
   ["growth", "Growth"],
+  ["octagram", "The Octagram"],
   ["fit", "Who you fit"],
 ] as const;
 
@@ -47,14 +54,21 @@ export default function TypeReader() {
      attributes your answer to a type you never answered for. React keeps this
      component mounted across /type/X → /type/Y, so the reset is explicit. */
   const [sub, setSub] = useState<Subtype>({});
+  /* The Octagram coins are kept SEPARATE from the OPS ones rather than bolted
+     onto Subtype. The two systems are not reconciled anywhere else in this app
+     and merging their self-report into one object would quietly imply they are. */
+  const [oct, setOct] = useState<{ development?: Development; focus?: Focus }>({});
   const [subFor, setSubFor] = useState<MbtiType>(t);
   if (subFor !== t) {
     setSubFor(t);
     setSub({});
+    setOct({});
   }
 
   const st = stack(t);
   const o = ops(t, sub);
+  const wheel = wheelOf(t);
+  const temple = templeOf(t);
   const g = gate(t);
   const s = sides(t);
   const c = coins(t);
@@ -438,6 +452,110 @@ export default function TypeReader() {
         <p className="small" style={{ marginTop: "var(--s4)", marginBottom: 0 }}>
           Appeal to <b>{virtue}</b>. Avoid triggering <b>{vice}</b>.
         </p>
+      </Panel>
+
+      {/* ------------------------------------------------ octagram */}
+      <h2 id="octagram" style={{ scrollMarginTop: 88 }}>The Octagram</h2>
+
+      <Explain big plain={CONCEPT_PLAIN.octagram}>
+        <p>
+          Two layers. The wheel layer is structural and derived here rather than looked up: your{" "}
+          <Term id="temple-wheel">wheel</Term> is you and your <Term id="subconscious">subconscious</Term>,
+          which is your <Term id="rel-du">Dual</Term>, and your <Term id="temple">temple</Term> is your
+          full four-sides orbit. Both match CS Joseph&rsquo;s published lists exactly, 16 of 16, with no
+          table anywhere in the engine. The theme layer is biographical, so it is set below rather
+          than computed.
+        </p>
+      </Explain>
+
+      <div className="grid g-side" style={{ marginTop: "var(--s5)", alignItems: "start" }}>
+        <Figure
+          label={`${t}'s wheel: ${wheel.origin}.`}
+          caption={`Shared with ${wheel.pair[1]}. Origin at the centre, the honest route above it, the counterfeit below, and the two ways people drift out to the sides.`}
+        >
+          <OctagramWheel wheel={wheel} development={oct.development} />
+        </Figure>
+
+        <div className="stack-v">
+          <Panel title={`${temple.name} temple`}>
+            <p style={{ fontSize: "var(--t-base)", marginTop: 0 }}>{temple.plain}</p>
+            <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
+              {temple.types.map((x) => (
+                <Link key={x} to={`/type/${x}`} className={`chip mono${x === t ? " on" : ""}`}>
+                  <i className="dot" style={{ background: p.quadra(quadra(x)) }} />
+                  {x}
+                </Link>
+              ))}
+            </div>
+            <p className="small muted" style={{ margin: 0 }}>
+              Those four are your ego, subconscious, unconscious and superego. A temple is not a
+              group of similar people — it is one mind seen from four sides.
+            </p>
+          </Panel>
+
+          <Panel title={`Origin — ${wheel.origin}`}>
+            <p style={{ fontSize: "var(--t-base)", margin: 0 }}>{wheel.originPlain}</p>
+          </Panel>
+
+          <Panel title={`Living virtue — ${wheel.livingVirtue}`}>
+            <p className="small" style={{ margin: 0 }}>{wheel.virtuePlain}</p>
+          </Panel>
+
+          <Panel title={`Deadly sin — ${wheel.deadlySin}`}>
+            <p className="small" style={{ margin: 0 }}>{wheel.sinPlain}</p>
+          </Panel>
+        </div>
+      </div>
+
+      <Panel title="Your theme — self-reported, not derived" style={{ marginTop: "var(--s5)" }}>
+        <Explain
+          plain="Two questions about your life rather than your wiring. Nobody can read these off a four-letter type, which is the whole reason the layer exists: two people of the same type with different childhoods end up in different places."
+        >
+          <p style={{ margin: 0 }}>
+            Development is described as set early and largely fixed; focus is mutable and is what
+            the growth section above is actually about. Held in the same posture as the OPS subtype
+            coins — nothing is stored, and nothing is inferred.
+          </p>
+        </Explain>
+
+        <div style={{ marginTop: "var(--s4)" }}>
+          <ThemeSeasons
+            development={oct.development}
+            focus={oct.focus}
+            onPick={(d, f) =>
+              setOct((v) =>
+                v.development === d && v.focus === f ? {} : { development: d, focus: f })
+            }
+          />
+        </div>
+
+        {oct.development && oct.focus ? (
+          <div className="note" style={{ marginTop: "var(--s4)" }}>
+            <p style={{ marginTop: 0 }}>
+              <b>{themeFor(oct.development, oct.focus).theme}</b> —{" "}
+              {themeFor(oct.development, oct.focus).movement}
+            </p>
+            <p className="small" style={{ marginBottom: 0 }}>
+              On your wheel, {oct.development} leans toward{" "}
+              <b>{poleFor(wheel, oct.development).name}</b>:{" "}
+              {poleFor(wheel, oct.development).plain}
+            </p>
+          </div>
+        ) : (
+          <p className="small muted" style={{ marginTop: "var(--s4)", marginBottom: 0 }}>
+            Pick a square to see which pole of your wheel it leans toward. Pick it again to clear it.
+          </p>
+        )}
+      </Panel>
+
+      <Panel title="Where this app stops" style={{ marginTop: "var(--s4)" }}>
+        <p className="small" style={{ marginTop: 0 }}>
+          The Octagram is recent and unevenly published. Rather than filling the gaps with
+          plausible-sounding material, they are written down:
+        </p>
+        {UNSETTLED.map((u) => (
+          <Row key={u.what} stacked k={u.what} v={<span className="small">{u.why}</span>} />
+        ))}
       </Panel>
 
       {/* ------------------------------------------------ fit */}

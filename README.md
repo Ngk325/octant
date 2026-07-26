@@ -14,16 +14,17 @@ src/engine/
   core.ts       α / β / ω involutions · stacks · quadras · relations · gates
   sides.ts      the four sides of the mind: stacks, gateways, development states
   ops.ts        OPS overlay: saviors/demons, the animal stack, coins, calculator
+  octagram.ts   the Octagram: eight temple wheels, cognitive origins, four themes
   playbook.ts   per-pair composition from where the reader's functions land in the target's stack
   network.ts    n-person weighted digraph analysis
   plain.ts      the plain-language layer — one gloss for every term the system uses
   context.ts    derived grounding for the assistant
   palette.ts    per-theme palette + contrast maths, asserted in tests
   verify.ts     the structural assertions, runnable at any time
-  lexicon.ts    88 term definitions + pairing logic for every category
+  lexicon.ts    103 term definitions + pairing logic for every category
   data.ts       GENERATED copy tables (see "Provenance")
 src/worker/     Cloudflare Worker: /api/chat proxies Gemini, assets fall through
-src/learn/      the ten-stage course
+src/learn/      the eleven-stage course
 ```
 
 ## Plain first, technical underneath
@@ -31,21 +32,21 @@ src/learn/      the ten-stage course
 Every surface leads with plain English and puts the precise version one click below it, in a
 disclosure labelled *The exact mechanics*. Nothing is hidden from either reader: a newcomer gets
 a sentence they can act on, and can see exactly which vocabulary they are growing into.
-`tests/plain.test.ts` asserts all 88 lexicon entries carry a gloss and that the plain layer does
+`tests/plain.test.ts` asserts all 103 lexicon entries carry a gloss and that the plain layer does
 not smuggle back the jargon it exists to replace.
 
 ## Surfaces
 
 | Route | What it does |
 |---|---|
-| `/learn` · `/learn/:stage` | Ten stages, in order, from "what is a cognitive function" to composing a group. Each assumes only what the ones before it taught. |
+| `/learn` · `/learn/:stage` | Eleven stages, in order, from "what is a cognitive function" to the Octagram. Each assumes only what the ones before it taught. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
 | `/types` | All sixteen at a glance, grouped by quadra or temperament. |
-| `/type/:type` | The eight slots, all four sides of the mind built out, the OPS overlay with its subtype coins, growth gate, behavioural profile, and what each function actually wants. |
+| `/type/:type` | The eight slots, all four sides of the mind built out, the OPS overlay with its subtype coins, growth gate, the Octagram wheel and theme grid, behavioural profile, and what each function actually wants. |
 | `/pair/:a/:b` | Relation, **both** directional ease scores, and the composed playbook. Shareable URL. |
 | `/network` | The reason this is software and not a spreadsheet: group as a weighted digraph. |
 | `/matrix` | All 256 cells, colour-scaled, every cell a link into the pair reader. |
-| `/lexicon` | 88 defined terms, searchable and filterable; `/lexicon/:id` shows one term paired against every other member of its category. |
+| `/lexicon` | 103 defined terms, searchable and filterable; `/lexicon/:id` shows one term paired against every other member of its category. |
 
 ## The lexicon
 
@@ -99,11 +100,49 @@ relation table generate the sides. So each side stands in a fixed relation to th
 **Hero slot of the superego**, which is exactly why that side reads as a parasite persona.
 Verified against CS Joseph's own worked INTP example in `tests/sides.test.ts`.
 
+## The Octagram
+
+CS Joseph's advanced layer, and the hardest material the app carries. It goes in as two
+layers with a hard line between them, because the sourcing is not uniform.
+
+**The wheel layer is derived, not looked up.** Sixteen types pair off into eight *dyads* — a
+type together with its subconscious, which is its Dual — and two dyads make a *temple*, which
+turns out to be exactly one orbit of the four-sides operation. So `src/engine/octagram.ts`
+contains no membership table at all: `wheelOf()` and `templeOf()` compute it from
+`fourSides()`. `tests/octagram.test.ts` then checks the result against CS Joseph's published
+lists, and it matches **16/16 dyad memberships and 16/16 temple memberships**. That makes the
+Octagram the app's fourth external validation, and the cleanest one — the published structure
+is reproduced by an operator that was in the engine before the Octagram was read about.
+
+| Temple | Wheels | Origins |
+|---|---|---|
+| Soul — identity and character | ENFP·ISTJ, ESTP·INFJ | Justification, Intimacy |
+| Mind — knowledge and judgement | ESTJ·INFP, ENFJ·ISTP | Authority, Validation |
+| Heart — desire and regard | ENTP·ISFJ, ESFP·INTJ | Satisfaction, Reverence |
+| Body — action and legacy | ESFJ·INTP, ENTJ·ISFP | Discovery, Purpose |
+
+Each wheel carries a Living Virtue above its origin and a Deadly Sin below it. Those eight
+sins are the classical eight of the Evagrian tradition — wrath, lust, envy, vainglory, sloth,
+pride, gluttony, greed — each paired with its traditional contrary virtue, which is a strong
+internal check that the authored table was transcribed correctly.
+
+**The theme layer is biographical and is not derived from anything.** Subconscious
+development (SD/UD, set in childhood) crossed with focus (SF/UF, mutable) gives Joy, Decay,
+Hope and Despair. It is a self-reported control on the type page, in exactly the same posture
+as the OPS subtype coins, and the assistant is instructed never to guess it from a type.
+
+**What is not settled is written down.** `UNSETTLED` in `octagram.ts` records three gaps,
+the sharpest being that published summaries disagree about which of a wheel's two poles is the
+shadow and which the aspirational; the orientation used here is cross-checked on two wheels of
+eight and is presented as such rather than asserted. Three original diagrams carry the layer —
+an eight-point ring, a single wheel, and the theme grid — all built from the engine, so none
+of them can drift out of agreement with it.
+
 ## Externally validated
 
 The engine derives its output rather than storing it, which makes independent published tables a
 real test. Three from the source-image batch (`docs/transcripts/`), all asserted in
-`tests/ingested.test.ts`:
+`tests/ingested.test.ts` — plus the Octagram partition above, asserted in `tests/octagram.test.ts`:
 
 - **Berens' "16 Type Patterns"** agrees with `stack()` on **128/128 slots**, all sixteen types.
 - **A Socionics intertype chart** agrees with `REL` on **all 256 cells**, and each of its sixteen
@@ -181,7 +220,7 @@ is a test rather than a matter of taste.
 npm install
 cp .dev.vars.example .dev.vars   # add a Gemini key to use the assistant locally
 npm run dev        # http://localhost:5173 — serves /api/* with the Worker's own handler
-npm test           # 366 tests
+npm test           # 423 tests
 npm run build      # → dist/
 ```
 

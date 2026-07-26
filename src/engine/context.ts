@@ -3,6 +3,7 @@ import {
 } from "./core";
 import { ops, coins } from "./ops";
 import { sides, SIDE_ORDER } from "./sides";
+import { wheelOf, templeOf } from "./octagram";
 import { playbook } from "./playbook";
 import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./functions";
 import { empirical, divergence, EMPIRICAL_SOURCE } from "./empirical";
@@ -45,6 +46,8 @@ export function typeFacts(t: MbtiType): string[] {
   const g = gate(t);
   const s = sides(t);
   const c = coins(t);
+  const w = wheelOf(t);
+  const temple = templeOf(t);
   const [virtue, vice] = VIRTUE_VICE[t];
   const b = BEHAVIOURAL[t];
 
@@ -67,6 +70,11 @@ export function typeFacts(t: MbtiType): string[] {
     line("OPS animals", o.animals.map((a) => `${a.animal} = ${a.obs}+${a.dec} [${a.role}]`).join(" · ")),
     line("OPS dominance", `${o.dominance}-dominant`),
     line("Growth gate", `${g.gate} — fears ${g.fear}; the cave is ${g.cave}; the treasure is ${g.treasure}`),
+    line("Octagram temple", `${temple.name} — ${temple.about} Holds ${temple.types.join(", ")}, which are this type's four sides.`),
+    line("Octagram wheel", `Origin ${w.origin} (shared with ${w.pair[1]}). ${w.originPlain} ` +
+      `Living virtue ${w.livingVirtue}; deadly sin ${w.deadlySin}; ` +
+      `shadow pole ${w.shadowPole} (where UD drifts); aspirational pole ${w.aspirationalPole} (where SD drifts).`),
+    line("Octagram theme", "NOT DERIVABLE — depends on this person's childhood (SD/UD) and current focus (SF/UF). Ask or answer conditionally."),
     line("Coins", c.map((v, i) => `${COIN_LABELS[i].split(" vs ")[0]}=${v}${(DETERMINING as readonly number[]).includes(i) ? "*" : ""}`).join(" · ") + "  (* = determining)"),
     line("Complements (restful, supply the Inferior)", complements(t).join(", ")),
     line("Catalysts (stimulating, lead with the Nemesis)", catalysts(t).join(", ")),
@@ -146,6 +154,17 @@ THE MODEL IN BRIEF
   not reach into the shadow block. Animals pair one observer attitude with one decider
   attitude: Play = Oe+De and Sleep = Oi+Di are the energy animals; Blast = Oi+De and
   Consume = Oe+Di are the information animals.
+- THE OCTAGRAM (CS Joseph's advanced layer). Sixteen types pair off into eight DYADS — a type
+  and its subconscious, i.e. a Dual pair — and each dyad shares one COGNITIVE ORIGIN, the thing
+  it has been after its whole life. Two dyads make a TEMPLE, which is exactly one four-sides
+  orbit: Soul (identity), Mind (knowledge and judgement), Heart (desire and regard), Body
+  (action and legacy). Each origin is drawn as a wheel: LIVING VIRTUE above it (the honest,
+  costly route), DEADLY SIN below it (the counterfeit — the classical eight, one per wheel),
+  and two POLES either side, which are two distortions rather than a good and a bad option.
+  A second layer is biographical and NOT derivable from type: subconscious DEVELOPMENT (SD/UD,
+  set in childhood) crossed with FOCUS (SF/UF, mutable) gives four THEMES — Joy, Decay, Hope,
+  Despair. Never guess someone's theme from their type; ask, or answer conditionally.
+  Say plainly that the shadow/aspirational labelling is the least certain part of this layer.
 - CSJ AND OPS ARE NOT RECONCILED HERE, deliberately. They model a different number of psychic
   parts. Say so when it matters rather than blending them.
 - AN EMPIRICAL COUNTERWEIGHT is carried alongside the derived scores: a self-reported

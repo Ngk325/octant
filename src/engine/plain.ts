@@ -136,6 +136,46 @@ export const CONCEPT_PLAIN: Record<string, string> = {
   catalyst:
     "The two types who lead with the thing you are consciously reaching for. Being around them is " +
     "stimulating and slightly annoying, which is the point.",
+
+  /* --- the Octagram layer. Written to be readable cold, because the source
+     material for this part is genuinely difficult and nobody should need the
+     technical version first. --- */
+  octagram:
+    "A second layer on top of your type. Your type says how you are wired; the Octagram says what " +
+    "you have been chasing your whole life with that wiring, and what your childhood did to the way " +
+    "you chase it. Two people of the same type can sit in completely different places here.",
+  temple:
+    "One of four departments of a life: who you are, what you understand, what you want, and what " +
+    "you do. Four types share each one. They are not four types who are alike — they are the four " +
+    "sides of one mind, which is why they belong together.",
+  wheel:
+    "You and one other type share a single lifelong want. The wheel is a picture of it: the want in " +
+    "the middle, the honest way to get it above, the fake version below, and the two ways people " +
+    "actually go wrong out to the sides.",
+  origin:
+    "The one thing you have been after since before you could name it. Not a goal — you do not " +
+    "finish it. It is what is underneath the goals.",
+  "living-virtue":
+    "The honest way to get what you are after. It is usually the harder route and it usually " +
+    "involves giving somebody else some of the thing you want.",
+  "deadly-sin":
+    "The counterfeit. It looks like the thing you want, it is much easier to get, and it leaves you " +
+    "hungrier than before.",
+  "shadow-pole":
+    "If you did not get what you needed as a child, this is the direction you drift. It is a " +
+    "strategy that once worked, running long after the situation that needed it.",
+  "aspirational-pole":
+    "If you did get what you needed as a child, this is the direction you drift. Being given " +
+    "something early has its own distortion, and this is what it looks like.",
+  development:
+    "Whether the part of you that is your opposite was fed when you were small. It is set early and " +
+    "it mostly does not change. It is not a verdict — it is a starting position.",
+  focus:
+    "Which half of you is doing the work at the moment. Unlike the childhood part, this one moves, " +
+    "and moving it is most of what growth actually is.",
+  theme:
+    "Where those two answers put you: the season you are living in. There are four, everyone has " +
+    "been in all of them, and none of them is permanent.",
 };
 
 /* ------------------------------------------------------------------ *
@@ -223,6 +263,27 @@ export const PLAIN_BY_ID: Record<string, string> = {
   relation: "What you get when you line up two people's orders and see where each one's strongest habit lands in the other.",
   gate: "The one thing you have to get better at to stop running in circles. It is always the thing you least want to do.",
   "fine-coins": "Extra detail some systems add on top of the sixteen. Useful, but not something a four-letter type can tell you — you have to report it yourself.",
+
+  /* the other three sides */
+  subconscious: SIDE_PLAIN.subconscious,
+  unconscious: SIDE_PLAIN.unconscious,
+  superego: SIDE_PLAIN.superego,
+  "midlife-crisis":
+    "Somewhere around forty, the version of you that you never became stops waiting politely. " +
+    "It is not a breakdown. It is a bill arriving.",
+
+  /* octagram */
+  octagram: CONCEPT_PLAIN.octagram,
+  temple: CONCEPT_PLAIN.temple,
+  "temple-wheel": CONCEPT_PLAIN.wheel,
+  "cognitive-origin": CONCEPT_PLAIN.origin,
+  "living-virtue": CONCEPT_PLAIN["living-virtue"],
+  "deadly-sin": CONCEPT_PLAIN["deadly-sin"],
+  "shadow-pole": CONCEPT_PLAIN["shadow-pole"],
+  "aspirational-pole": CONCEPT_PLAIN["aspirational-pole"],
+  "subconscious-development": CONCEPT_PLAIN.development,
+  "octagram-focus": CONCEPT_PLAIN.focus,
+  "octagram-theme": CONCEPT_PLAIN.theme,
 
   /* relations */
   "rel-du": REL_PLAIN.DU, "rel-ac": REL_PLAIN.AC, "rel-hd": REL_PLAIN.HD, "rel-mg": REL_PLAIN.MG,

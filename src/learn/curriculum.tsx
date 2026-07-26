@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { stack, quadra } from "../engine/core";
 import { ops } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
+import { wheelOf, templeOf } from "../engine/octagram";
 import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
 import { FN_ROLE, FN_KEYWORD, FN_SAYS } from "../engine/functions";
 import { SLOT_NAMES, FN_FULL, type Fn, type MbtiType } from "../engine/data";
@@ -13,6 +14,9 @@ import FunctionTree from "../components/FunctionTree";
 import LettersToStack from "../components/LettersToStack";
 import FourSidesDiagram from "../components/FourSidesDiagram";
 import AnimalStack from "../components/AnimalStack";
+import OctagramMap from "../components/OctagramMap";
+import OctagramWheel from "../components/OctagramWheel";
+import ThemeSeasons from "../components/ThemeSeasons";
 import { Panel, Row } from "../components/Bits";
 import Term from "../components/Term";
 
@@ -525,6 +529,140 @@ export const STAGES: Stage[] = [
       </>
     ),
     check: "Who in a group you are part of might be on the receiving end of a supervision edge?",
+  },
+
+  {
+    slug: "octagram",
+    title: "The Octagram",
+    blurb: "The advanced layer: what your wiring has been chasing, and what your childhood did to how you chase it.",
+    body: (t) => {
+      const w = wheelOf(t);
+      const temple = templeOf(t);
+      return (
+        <>
+          <Explain big plain={CONCEPT_PLAIN.octagram}>
+            <p>
+              Everything up to here has been structural: the same sixteen wirings for everybody,
+              derived from four bits. The Octagram adds the two things structure cannot give you —
+              a lifelong <Term id="cognitive-origin">cognitive origin</Term>, and the mark a
+              particular upbringing left on how that origin gets pursued. It is the hardest
+              material in the app, so this stage does one layer at a time.
+            </p>
+          </Explain>
+
+          <p className="note">
+            Read this stage last, and read it lightly. It is newer and less settled than anything
+            before it, and the app says explicitly where the sourcing runs thin rather than
+            smoothing over it.
+          </p>
+
+          <h3>One: eight wheels, not sixteen</h3>
+          <p>
+            You do not get your own origin. You share one with your{" "}
+            <Term id="subconscious">subconscious</Term> — the type you become when you develop
+            through your <Term id="inferior">Inferior</Term>, which is also your{" "}
+            <Term id="rel-du">Dual</Term>. Sixteen types, paired off, make eight. Two of those
+            wheels make a <Term id="temple">temple</Term>, and a temple turns out to be exactly the
+            four sides of one mind: your ego, your subconscious, your unconscious and your superego
+            are all in it. That is why the picture has eight points and four arcs.
+          </p>
+
+          <p>
+            Yours is the <b>{temple.name}</b> temple — {temple.plain.toLowerCase()} The other three
+            types in it are the three you already met as your four sides:{" "}
+            {temple.types.filter((x) => x !== t).join(", ")}.
+          </p>
+
+          <Figure
+            label="The Octagram."
+            caption="Eight origins around the ring, two per temple. Your temple is picked out. Nothing in this diagram is a lookup table — the eight pairs and the four groups are computed from the four-sides operation, and they match the published ones exactly."
+          >
+            <OctagramMap highlight={t} />
+          </Figure>
+
+          <h3>Two: what a wheel says</h3>
+          <p>
+            The thing you want sits in the middle. Straight up is the honest way to get it — and
+            it is always the expensive way, usually involving giving somebody else some of what you
+            are short of. Straight down is the counterfeit: faster, convincing, and it leaves you
+            hungrier. Left and right are not good and bad. They are the two ways people actually
+            drift, and which one you drift toward was decided a long time ago.
+          </p>
+
+          <Figure
+            label={`${t}'s wheel: ${w.origin}.`}
+            caption={`${w.pair.join(" and ")} share this one. ${w.originPlain}`}
+          >
+            <OctagramWheel wheel={w} />
+          </Figure>
+
+          <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
+            <Panel title={`Living virtue — ${w.livingVirtue}`}>
+              <p className="small" style={{ margin: 0 }}>{w.virtuePlain}</p>
+            </Panel>
+            <Panel title={`Deadly sin — ${w.deadlySin}`}>
+              <p className="small" style={{ margin: 0 }}>{w.sinPlain}</p>
+            </Panel>
+          </div>
+
+          <p style={{ marginTop: "var(--s4)" }}>
+            The eight sins are worth a second look: <b>Wrath, Lust, Envy, Vainglory, Sloth, Pride,
+            Gluttony, Greed</b> — the classical eight, one per wheel, each paired with its
+            traditional contrary virtue. That is not a coincidence anyone has to take on trust; it
+            is a check. A garbled table would not land on that set.
+          </p>
+
+          <h3>Three: what your childhood did</h3>
+          <p>
+            Two coins, and neither is readable off a four-letter type. The first is{" "}
+            <Term id="subconscious-development">development</Term>: was the subconscious side of
+            you fed when you were small, or denied? It is set early and it mostly stays put. The
+            second is <Term id="octagram-focus">focus</Term>: which half of you is doing the work
+            right now. That one moves, and moving it is what the whole growth stage was about.
+          </p>
+
+          <Figure
+            label="The four themes."
+            caption="Development down the side, focus across the top. Everyone has lived in all four. None of them is a verdict — the winter one least of all."
+          >
+            <ThemeSeasons />
+          </Figure>
+
+          <p>
+            Development also decides which side of the wheel you drift toward: fed early and you
+            lean to the <Term id="aspirational-pole">aspirational pole</Term>, denied and you lean
+            to the <Term id="shadow-pole">shadow pole</Term>. Both are distortions of the same
+            want. Being given what you needed is not the same as coming out undamaged — it just
+            damages differently.
+          </p>
+
+          <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
+            <Panel title={`Shadow pole — ${w.shadowPole}`}>
+              <p className="small" style={{ margin: 0 }}>{w.shadowPlain}</p>
+            </Panel>
+            <Panel title={`Aspirational pole — ${w.aspirationalPole}`}>
+              <p className="small" style={{ margin: 0 }}>{w.aspirationalPlain}</p>
+            </Panel>
+          </div>
+
+          <p className="note warn" style={{ marginTop: "var(--s5)" }}>
+            <b>What this app does not know.</b> The wheel memberships are derived and verified. The
+            origins, virtues and sins are well sourced. Which of the two poles is the shadow and
+            which the aspirational is <i>not</i> equally certain — published summaries disagree, and
+            only two wheels of eight could be cross-checked. It is presented rather than asserted,
+            and the gap is written down in the code alongside two others.
+          </p>
+
+          <p style={{ marginTop: "var(--s5)" }}>
+            <Link to={`/type/${t}#octagram`} className="btn primary">
+              See {t}&rsquo;s full Octagram →
+            </Link>
+          </p>
+        </>
+      );
+    },
+    check:
+      "What is your origin, and can you name a time you reached for the counterfeit version of it instead?",
   },
 ];
 

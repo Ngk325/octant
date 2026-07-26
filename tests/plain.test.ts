@@ -17,9 +17,18 @@ describe("plain language coverage", () => {
     expect(missing.map((e) => e.id)).toEqual([]);
   });
 
-  it("covers all 88 entries", () => {
-    expect(ENTRIES).toHaveLength(88);
+  it("covers all 103 entries", () => {
+    expect(ENTRIES).toHaveLength(103);
     for (const e of ENTRIES) expect(PLAIN_BY_ID[e.id], e.id).toBeTruthy();
+  });
+
+  /* Added with the Octagram: seeAlso is navigation, so a dangling id is a dead
+     link in the reader's hand, not just untidy data. */
+  it("has no dangling seeAlso reference", () => {
+    const ids = new Set(ENTRIES.map((e) => e.id));
+    const dangling = ENTRIES.flatMap((e) =>
+      (e.seeAlso ?? []).filter((r) => !ids.has(r)).map((r) => `${e.id} → ${r}`));
+    expect(dangling).toEqual([]);
   });
 
   it("covers every function, slot, relation, quadra, gate and coin", () => {
@@ -58,6 +67,16 @@ describe("assistant grounding", () => {
     expect(facts).toContain("gateway Si");           // the Inferior
     expect(facts).toContain("OPS demons: Si");       // corrected demons
     expect(facts).toContain("Energy-dominant");
+  });
+
+  it("carries the Octagram, and refuses to guess the part that is biographical", () => {
+    const facts = typeFacts("ENTP").join("\n");
+    expect(facts).toContain("Heart");                 // ENTP's temple
+    expect(facts).toContain("Origin Satisfaction");   // shared with ISFJ
+    expect(facts).toContain("deadly sin Envy");
+    expect(facts).toMatch(/Octagram theme.*NOT DERIVABLE/);
+    expect(buildSystemInstruction({ kind: "type", type: "ENTP" }))
+      .toContain("Never guess someone's theme from their type");
   });
 
   it("gives both directions of ease for a pair", () => {
