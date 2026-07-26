@@ -18,7 +18,16 @@ import { usePalette } from "./Theme";
  *
  * No text below 14px. Nothing depends on colour alone.
  */
-export default function WiringSchematic({ type }: { type: MbtiType }) {
+export default function WiringSchematic({ type, showCorrespondence }: {
+  type: MbtiType;
+  /**
+   * Draw the four ego↔shadow arcs: 1↔5, 2↔6, 3↔7, 4↔8. Each pair is the same
+   * element with the attitude flipped — the shadow is not a second personality
+   * but the same four capacities facing the other way, and the arcs make that
+   * a fact of the picture instead of a sentence.
+   */
+  showCorrespondence?: boolean;
+}) {
   const p = usePalette();
   const st = stack(type);
   const o = ops(type);
@@ -29,7 +38,9 @@ export default function WiringSchematic({ type }: { type: MbtiType }) {
   const TOP = 44;
   const W = 660;
   const RAIL = 224;
-  const H = TOP + ROW * 8 + 16;
+  const H = TOP + ROW * 8 + 16 + (showCorrespondence ? 24 : 0);
+
+  const rowY = (i: number) => TOP + ROW * i + ROW / 2;
 
   return (
     <svg
@@ -48,6 +59,28 @@ export default function WiringSchematic({ type }: { type: MbtiType }) {
 
       {/* ego / shadow band */}
       <rect x="0" y={TOP - 10} width={W} height={ROW * 4} rx="8" fill="var(--surface-2)" opacity="0.7" />
+
+      {/* ego↔shadow correspondence: same element, attitude flipped. Four
+          parallel arcs in the free lane left of the rail, one per pair, each
+          in its element's colour. Drawn under the nodes. */}
+      {showCorrespondence && (
+        <g aria-hidden="true">
+          {[0, 1, 2, 3].map((i) => (
+            <path
+              key={i}
+              d={`M ${RAIL - 16} ${rowY(i)} C ${RAIL - 84} ${rowY(i)}, ${RAIL - 84} ${rowY(i + 4)}, ${RAIL - 16} ${rowY(i + 4)}`}
+              fill="none"
+              stroke={p.fn(st[i])}
+              strokeOpacity="0.4"
+              strokeWidth="1.5"
+              strokeDasharray="3 4"
+            />
+          ))}
+          <text x="0" y={H - 6} fill="var(--muted)" fontSize="14">
+            1↔5 · 2↔6 · 3↔7 · 4↔8 — each shadow slot is its ego slot&apos;s element, facing the other way
+          </text>
+        </g>
+      )}
 
       {st.map((fn, i) => {
         const y = TOP + ROW * i + ROW / 2;

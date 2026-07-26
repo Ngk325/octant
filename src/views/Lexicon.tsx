@@ -8,6 +8,7 @@ import { FN_ROLE, FN_KEYWORD, FN_KEYWORD_GLOSS, FN_SAYS, FN_WANTS, FN_VERBS } fr
 import type { Fn } from "../engine/data";
 import Explain from "../components/Explain";
 import { Panel } from "../components/Bits";
+import { lexiconFigure } from "../components/lexicon-figures";
 
 /** Every defined term, searchable and filterable, with per-category pairing. */
 export default function Lexicon() {
@@ -89,6 +90,7 @@ export default function Lexicon() {
                     )}
                   </Explain>
 
+                  {lexiconFigure(e)}
                   {e.category === "Function" && <FunctionExtras fn={e.term as Fn} />}
 
                   <p className="small muted" style={{ margin: 0 }}>

@@ -462,6 +462,90 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 
 .lex-entry { scroll-margin-top: calc(var(--masthead-h) + var(--s5)); }
 
+/* ------------------------ diverging ease bars ------------------------ */
+/* Two directions of ease growing away from a shared centre axis — see
+   DivergingEase.tsx. Grid: [from-half | axis | toward-half]. */
+.diverge {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s2);
+}
+.diverge-axis {
+  width: 2px;
+  align-self: stretch;
+  background: var(--rule-strong);
+  border-radius: 1px;
+}
+.diverge-half {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
+}
+.diverge-half.left { align-items: flex-end; text-align: right; }
+.diverge-half.right { align-items: flex-start; }
+.diverge-num { font-size: var(--t-xl); font-weight: 600; line-height: 1; }
+.diverge-bar {
+  display: block;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--sunk);
+  overflow: hidden;
+}
+.diverge-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+}
+/* The `from` bar grows leftward — away from the axis, like its twin. */
+.diverge-half.left .diverge-bar i { margin-left: auto; }
+
+/* -------------------------- gateway path ---------------------------- */
+/* Four ordered steps with connecting arrows — see GatewayPath.tsx. */
+.gpath {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--s2);
+  padding: 0;
+  margin: 0;
+  max-width: none;
+}
+.gpath-step {
+  flex: 1 1 9rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: var(--s3) var(--s4);
+  position: relative;
+}
+.gpath-step + .gpath-step::before {
+  content: "→";
+  position: absolute;
+  left: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: var(--t-base);
+}
+.gpath-door { font-size: var(--t-lg); }
+@media (max-width: 640px) {
+  .gpath { flex-direction: column; }
+  .gpath-step + .gpath-step::before {
+    content: "↓";
+    left: var(--s4);
+    top: -15px;
+    transform: none;
+  }
+}
+
 /* ------------------------- the seasons 2x2 --------------------------- */
 /* ThemeSeasons: development down the side, focus across the top. Lives in
    the stylesheet (not inline) so the 640px collapse below can reach it. */

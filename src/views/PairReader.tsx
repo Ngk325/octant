@@ -5,7 +5,7 @@ import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/da
 import { REL_PLAIN, CONCEPT_PLAIN, SLOT_PLAIN } from "../engine/plain";
 import { playbook } from "../engine/playbook";
 import { compareAspects } from "../engine/lexicon";
-import { divergence, EMPIRICAL_SOURCE } from "../engine/empirical";
+import { correlation, divergence, EMPIRICAL_SOURCE } from "../engine/empirical";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Term from "../components/Term";
@@ -116,7 +116,9 @@ export default function PairReader() {
             {EMPIRICAL_SOURCE.licence}
           </a>
           . Across all 256 pairs the two measures correlate
-          at <b>r = −0.15</b> — very slightly <i>negatively</i>. That is not a defect in either.
+          at <b>r = {correlation(TYPES).toFixed(2)}</b> — very slightly <i>negatively</i>. That
+          is a number this page computes from both datasets at render, not a claim it repeats.
+          It is not a defect in either.
           They answer different questions: the survey measures who people say they get on with,
           and this app measures how the wiring meshes. People report liking people like
           themselves, so Identity pairs top the survey while the model rates them mid-table; and
