@@ -1,8 +1,9 @@
 import { handleChat, type Env as ChatEnv } from "./chat";
 import {
-  handleAuth, requireAuth, readSession, issueSession, setCookie,
+  handleAuth, requireAuth, readSession, issueSession, setCookie, signinPage,
   type AuthEnv,
 } from "./auth";
+import { marketingPage } from "./marketing";
 import {
   startGoogleSignIn, completeGoogleSignIn, googleConfigured, safeReturn,
   type GoogleEnv,
@@ -53,11 +54,29 @@ export default {
       return (await handleAdmin(request, env, { owner: false }, now))!;
     }
 
-    // 4. The wall. Returns a response for everyone not signed in and approved.
-    const blocked = await requireAuth(request, env, now);
-    if (blocked) return blocked;
+    // 4. The sign-in page, at its own public route so the front door can link
+    //    to it. Someone already signed in is sent home instead.
+    if (url.pathname === "/signin" && request.method === "GET") {
+      const session = await readSession(request, env, now);
+      if (session) return new Response(null, { status: 302, headers: { location: "/" } });
+      return signinPage(env, safeReturn(url.searchParams.get("returnTo") ?? "/"));
+    }
 
-    // 5. Past the wall. The rest of /api/admin needs to be the owner.
+    // 5. The wall. Returns a response for everyone not signed in and approved —
+    //    with ONE carve-out: an anonymous GET of the front page gets the public
+    //    marketing page instead of a 401. Only the 401 (no session at all) is
+    //    softened, only for "/", and only for GET; a pending or blocked person
+    //    (403) still sees their status page, and no app markup or asset is ever
+    //    in the marketing response. The wall itself is untouched.
+    const blocked = await requireAuth(request, env, now);
+    if (blocked) {
+      if (url.pathname === "/" && request.method === "GET" && blocked.status === 401) {
+        return marketingPage(url.origin);
+      }
+      return blocked;
+    }
+
+    // 6. Past the wall. The rest of /api/admin needs to be the owner.
     if (url.pathname.startsWith("/api/admin/")) {
       const session = await readSession(request, env, now);
       const user = session?.email ? await getUser(env, session.email) : null;

@@ -362,7 +362,17 @@ describe("the Worker entry point", () => {
 
   it("never reaches the assets for an anonymous request", async () => {
     const { calls, binding } = stubAssets();
-    for (const path of ["/", "/index.html", "/assets/app.js", "/type/ENTP"]) {
+
+    /* The front page is the one anonymous 200: the public marketing page.
+       It sells the app; it must not BE the app — no bundle, no shell, and
+       the asset binding untouched. */
+    const front = await worker.fetch(get("/"), { ...ENV, ASSETS: binding } as never);
+    expect(front.status).toBe(200);
+    const frontHtml = await front.text();
+    expect(frontHtml).toContain("Stratfield Partners");
+    expect(frontHtml).not.toContain("<script type=\"module\"");
+
+    for (const path of ["/index.html", "/assets/app.js", "/type/ENTP"]) {
       const res = await worker.fetch(get(path), { ...ENV, ASSETS: binding } as never);
       expect(res.status, path).toBe(401);
       expect(await res.text(), path).not.toContain("<script type=\"module\"");

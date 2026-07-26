@@ -34,7 +34,9 @@ function devApi(): Plugin {
         void (async () => {
           try {
             const { handleChat } = await server.ssrLoadModule("/src/worker/chat.ts");
-            const { handleAuth, requireAuth } = await server.ssrLoadModule("/src/worker/auth.ts");
+            const { handleAuth, requireAuth, readSession, signinPage } =
+              await server.ssrLoadModule("/src/worker/auth.ts");
+            const { marketingPage } = await server.ssrLoadModule("/src/worker/marketing.ts");
 
             const chunks: Buffer[] = [];
             if (req.method === "POST" || req.method === "PUT") {
@@ -46,9 +48,20 @@ function devApi(): Plugin {
               body: chunks.length ? Buffer.concat(chunks) : undefined,
             });
 
-            // Same order as src/worker/index.ts: auth routes, then the wall.
+            // Same order as src/worker/index.ts: auth routes, the sign-in
+            // page, then the wall — with the same single front-door carve-out.
             let response: Response | null = await handleAuth(request, env);
+            const url = new URL(request.url);
+            if (!response && url.pathname === "/signin" && req.method === "GET") {
+              const session = await readSession(request, env);
+              response = session
+                ? new Response(null, { status: 302, headers: { location: "/" } })
+                : signinPage(env, url.searchParams.get("returnTo") ?? "/");
+            }
             if (!response) response = await requireAuth(request, env);
+            if (response && url.pathname === "/" && req.method === "GET" && response.status === 401) {
+              response = marketingPage(url.origin);
+            }
 
             // Signed in. Only /api/* is ours; everything else is Vite's.
             if (!response) {
