@@ -7,7 +7,7 @@ arrived on `main` (0dafb68) and were vision-passed.
 from type to anything. Astrolabe / Periplus / Calibration Codex is out of scope for this app.
 Everything below is written to that.
 
-Companion documents: `classification-report.md` (all 21 images), `transcripts/` (9 verbatim),
+Companion documents: `classification-report.md` (all 21 images), `transcripts/` (12 verbatim),
 `research-notes.md` (external research; its Hawkins and KWML sections are now moot but retained
 as the record of what was checked).
 
