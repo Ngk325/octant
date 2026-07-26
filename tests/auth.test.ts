@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import worker from "../src/worker/index";
 import {
   parseCodes, isConfigured, handleAuth, requireAuth, readSession, type AuthEnv,
 } from "../src/worker/auth";
@@ -260,5 +262,90 @@ describe("auth routing", () => {
 
   it("404s an unknown auth route rather than falling through", async () => {
     expect((await handleAuth(get("/api/auth/nope"), ENV, NOW))!.status).toBe(404);
+  });
+});
+
+/* ------------------------------------------------------------------ *
+ * ROUTING — the part that was actually broken in production.
+ *
+ * Everything above tests requireAuth() in isolation, and all of it
+ * passed while the deployed site was completely public. The gate was
+ * correct; it was never being CALLED for anything except /api/*.
+ *
+ * With Cloudflare Static Assets, a request matching an asset is served
+ * by the Asset Worker without invoking the user Worker at all. Which
+ * requests reach the user Worker is decided by ONE line of config —
+ * `assets.run_worker_first` — and it was set to ["/api/*"]. So /,
+ * /index.html and every JS chunk went straight from the asset store to
+ * anyone who asked, while the app reported itself private.
+ *
+ * A unit test of a function cannot catch that. These two can.
+ * ------------------------------------------------------------------ */
+
+describe("the Worker is actually in front of the assets", () => {
+  const config = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
+  const noComments = config.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+
+  /**
+   * The single line the whole access wall depends on. `true` means every
+   * request is routed through the Worker; a list means only those paths are,
+   * and everything else bypasses the gate entirely.
+   */
+  it("routes EVERY request through the Worker, not just /api/*", () => {
+    expect(noComments).toMatch(/"run_worker_first"\s*:\s*true/);
+    expect(noComments, "a route list here leaves every other path ungated")
+      .not.toMatch(/"run_worker_first"\s*:\s*\[/);
+  });
+
+  it("still keeps the SPA fallback and the assets binding", () => {
+    expect(noComments).toMatch(/"not_found_handling"\s*:\s*"single-page-application"/);
+    expect(noComments).toMatch(/"binding"\s*:\s*"ASSETS"/);
+    expect(noComments).toMatch(/"main"\s*:\s*"src\/worker\/index\.ts"/);
+  });
+});
+
+describe("the Worker entry point", () => {
+  /** A stub asset binding that records whether it was ever reached. */
+  const stubAssets = () => {
+    const calls: string[] = [];
+    return {
+      calls,
+      binding: {
+        fetch: async (req: Request) => {
+          calls.push(new URL(req.url).pathname);
+          return new Response("<!doctype html><script type=\"module\" src=\"/assets/app.js\">", {
+            headers: { "content-type": "text/html" },
+          });
+        },
+      },
+    };
+  };
+
+  it("never reaches the assets for an anonymous request", async () => {
+    const { calls, binding } = stubAssets();
+    for (const path of ["/", "/index.html", "/assets/app.js", "/type/ENTP"]) {
+      const res = await worker.fetch(get(path), { ...ENV, ASSETS: binding } as never);
+      expect(res.status, path).toBe(401);
+      expect(await res.text(), path).not.toContain("<script type=\"module\"");
+    }
+    expect(calls, "the asset binding must not be touched by an anonymous request").toEqual([]);
+  });
+
+  it("serves the assets once signed in", async () => {
+    const { calls, binding } = stubAssets();
+    const cookie = await signIn("river-oak-8821");
+    const res = await worker.fetch(get("/type/ENTP", cookie), { ...ENV, ASSETS: binding } as never);
+    expect(res.status).toBe(200);
+    expect(calls).toEqual(["/type/ENTP"]);
+  });
+
+  it("keeps the auth routes reachable without a session", async () => {
+    const { calls, binding } = stubAssets();
+    const res = await worker.fetch(
+      post("/api/auth/login", { code: "river-oak-8821" }, undefined, "entry-point-test"),
+      { ...ENV, ASSETS: binding } as never,
+    );
+    expect(res.status).toBe(200);
+    expect(calls).toEqual([]);
   });
 });

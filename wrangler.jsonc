@@ -12,8 +12,22 @@
     "binding": "ASSETS",
     // Deep links like /pair/ENTP/ENFJ must serve index.html, not 404.
     "not_found_handling": "single-page-application",
-    // Without this, SPA fallback would answer /api/* before the Worker ever ran.
-    "run_worker_first": ["/api/*"]
+
+    // MUST be `true`, not a list of routes. This is the access wall's whole
+    // security property.
+    //
+    // With Static Assets, a request that matches an asset is served by the
+    // Asset Worker WITHOUT invoking this Worker at all. The previous value here
+    // was ["/api/*"], which meant the gate in src/worker/index.ts ran for the
+    // API and for nothing else — so /, /index.html and every JS chunk were
+    // served straight from the asset store to anyone who asked. The site was
+    // public while reporting itself private.
+    //
+    // `true` routes EVERY request through this Worker first. Assets are still
+    // served, but only after requireAuth() has let the request past, via
+    // env.ASSETS.fetch(). The cost is one Worker invocation per asset request,
+    // which for an invite-only app is not a consideration.
+    "run_worker_first": true
   },
   "observability": { "enabled": true }
   // GEMINI_API_KEY is a secret, never a var:  npx wrangler secret put GEMINI_API_KEY
