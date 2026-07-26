@@ -11,6 +11,7 @@ export default function Term({
   id, children, className,
 }: { id?: string; children: string; className?: string }) {
   const [open, setOpen] = useState(false);
+  const [flip, setFlip] = useState(false);
   const popId = useId();
   const entry: Entry | undefined = id ? BY_ID.get(id) : lookup(children);
   if (!entry) return <span className={className}>{children}</span>;
@@ -39,14 +40,22 @@ export default function Term({
         className={`term${className ? ` ${className}` : ""}`}
         aria-expanded={open}
         aria-controls={popId}
-        onClick={() => setOpen((o) => !o)}
+        onClick={(e) => {
+          /* The popover hangs from the trigger's left edge by default, which
+             pushes it off-screen for a term near the right margin — measured
+             here, and flipped to hang from the right edge instead. */
+          const rect = e.currentTarget.getBoundingClientRect();
+          const popWidth = Math.min(340, window.innerWidth * 0.8);
+          setFlip(rect.left + popWidth > window.innerWidth - 8);
+          setOpen((o) => !o);
+        }}
       >
         {children}
       </button>
       {open && (
         /* A disclosure, not a tooltip: it holds a link, and the trigger carries
            aria-expanded. role="tooltip" would contradict both. */
-        <span className="term-pop" id={popId} role="group" aria-label={`About ${entry.term}`}>
+        <span className={`term-pop${flip ? " flip" : ""}`} id={popId} role="group" aria-label={`About ${entry.term}`}>
           <span className="small muted" style={{ display: "block", marginBottom: 4 }}>
             {entry.category}
           </span>

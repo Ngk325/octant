@@ -51,6 +51,7 @@ export default function Network() {
 
       <div className="grid g-side" style={{ marginTop: "var(--s6)", alignItems: "start" }}>
         <Figure
+          minWidth={440}
           label="Each line is a relationship."
           caption="Thickness is distance from neutral; colour is ease. Hover a line for the relation and both directions."
         >

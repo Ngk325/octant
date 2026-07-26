@@ -142,6 +142,7 @@ export const STAGES: Stage[] = [
           </p>
 
           <Figure
+            minWidth={660}
             label="Read top to bottom."
             caption={
               <>
@@ -575,6 +576,7 @@ export const STAGES: Stage[] = [
           </p>
 
           <Figure
+            minWidth={560}
             label="The Octagram."
             caption="Eight origins around the ring, two per temple. Your temple is picked out. Nothing in this diagram is a lookup table — the eight pairs and the four groups are computed from the four-sides operation, and they match the published ones exactly."
           >

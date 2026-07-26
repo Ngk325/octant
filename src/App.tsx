@@ -42,6 +42,16 @@ export default function App() {
      The lexicon links to `/lexicon#gateway` and the course links into stages
      by id; forcing the top would silently discard the part of the link that
      said where to go. */
+  /* The collapsed nav menu closes on Escape as well as on navigation. */
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenu(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menu]);
+
   useEffect(() => {
     setMenu(false);
     if (hash) {

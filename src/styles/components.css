@@ -38,6 +38,9 @@
   display: flex;
   align-items: center;
   gap: var(--s5);
+  /* The collapsed nav dropdown anchors to this box (right: 0), so it opens
+     under the menu button rather than at the viewport edge. */
+  position: relative;
 }
 
 .wordmark {
@@ -408,8 +411,37 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   font-weight: 500;
   display: block;
 }
+/* Applied by Term.tsx when a popover would run past the right edge of the
+   viewport — it flips to hang from the trigger's right side instead. */
+.term-pop.flip { left: auto; right: 0; }
 
-.lex-entry { scroll-margin-top: 88px; }
+.lex-entry { scroll-margin-top: calc(var(--masthead-h) + var(--s5)); }
+
+/* ------------------------- the seasons 2x2 --------------------------- */
+/* ThemeSeasons: development down the side, focus across the top. Lives in
+   the stylesheet (not inline) so the 640px collapse below can reach it. */
+.seasons {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: var(--s2);
+  align-items: stretch;
+}
+.seasons-collabel { text-align: center; padding-bottom: 4px; }
+.seasons-rowlabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  padding-right: 4px;
+}
+.seasons-cell {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  border-radius: var(--radius-lg);
+  padding: var(--s4);
+}
 .lex-nav { display: flex; flex-wrap: wrap; gap: var(--s1); margin: var(--s4) 0 var(--s5); }
 
 .aspect { border-bottom: 1px solid var(--rule); padding: var(--s4) 0; }
@@ -492,6 +524,19 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 .check > p:first-child { font-weight: 500; }
 
 /* ----------------------------- chat rail ---------------------------- */
+
+/* Below 1180px the rail is position:fixed and overlays the page. The scrim
+   makes that state legible and escapable: it dims what the rail covers, and
+   clicking it closes the rail. Rendered by ChatRail only in overlay mode. */
+.rail-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: color-mix(in srgb, var(--ink) 32%, transparent);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
 
 .rail {
   position: sticky;
@@ -607,7 +652,13 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* ---------------------------- responsive ---------------------------- */
+/* ---------------------------- responsive ----------------------------
+ *
+ * The breakpoint set is a contract — the six widths below are documented in
+ * tokens.css and asserted by tests/styles.test.ts. The grids step down one
+ * at a time (g3 at 1100, g2 at 700, g-side at 900, g3 to one column at 640)
+ * so a tablet gets intermediate layouts rather than jumping from desktop
+ * straight to phone. */
 
 @media (max-width: 1180px) {
   .rail {
@@ -615,20 +666,24 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
     inset: 0 0 0 auto;
     width: min(var(--rail), 100vw);
     box-shadow: var(--shadow-lg);
+    z-index: 50;
   }
 }
 
-@media (max-width: 900px) {
-  :root { --t-body: 18px; }
-  .g2, .g3, .g-side { grid-template-columns: minmax(0, 1fr); }
-  .main { padding-left: var(--s4); padding-right: var(--s4); }
-  .masthead { margin-left: calc(var(--s4) * -1); margin-right: calc(var(--s4) * -1); padding-left: var(--s4); padding-right: var(--s4); }
+@media (max-width: 1100px) {
+  /* Collapse the tabs BEFORE they would wrap to a second line — eight tabs
+     need ~744px, which stops fitting around 1210px with the shell padding.
+     Keeping the masthead single-line at every width is what lets
+     --masthead-h be a constant, and every scroll offset derives from it. */
   .menu-toggle { display: inline-grid; }
+  /* nav.tabs carried the auto margin that pushed the actions right; when it
+     leaves the flow the actions inherit the job. */
+  .mast-actions { margin-left: auto; }
   nav.tabs {
     display: none;
     position: absolute;
     top: 100%;
-    right: var(--s4);
+    right: 0; /* anchored to .masthead-inner, i.e. under the button that opens it */
     flex-direction: column;
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -638,10 +693,39 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
     min-width: 200px;
   }
   nav.tabs.open { display: flex; }
+  .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  :root { --t-body: 18px; }
+  .g-side { grid-template-columns: minmax(0, 1fr); }
+  .main { padding-left: var(--s4); padding-right: var(--s4); }
+  .masthead { margin-left: calc(var(--s4) * -1); margin-right: calc(var(--s4) * -1); padding-left: var(--s4); padding-right: var(--s4); }
+}
+
+@media (max-width: 700px) {
+  .g2 { grid-template-columns: minmax(0, 1fr); }
+  /* "Octant" alone fits a 320px phone beside four icon buttons; the italic
+     tagline is what used to force a document-wide horizontal scrollbar. */
+  .wordmark span { display: none; }
+}
+
+@media (max-width: 640px) {
+  .g3 { grid-template-columns: minmax(0, 1fr); }
   .row { flex-direction: column; align-items: stretch; gap: var(--s1); }
   .row dd { text-align: left; }
   .row dt { max-width: none; }
   .aspect-head .lbl { min-width: 0; }
+  /* The 2x2 stacks. Column headers go — each card already names its own
+     SD|SF square — and the rotated row labels become plain headings. */
+  .seasons { grid-template-columns: minmax(0, 1fr); }
+  .seasons-corner, .seasons-collabel { display: none; }
+  .seasons-rowlabel {
+    writing-mode: horizontal-tb;
+    transform: none;
+    text-align: left;
+    padding: var(--s2) 0 0;
+  }
 }
 
 @media (max-width: 480px) {

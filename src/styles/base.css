@@ -6,7 +6,14 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Regression guard: no component may give the DOCUMENT a horizontal
+     scrollbar. Anything wide (the matrix table, big SVG figures) scrolls
+     inside its own overflow-x:auto container instead. `clip` rather than
+     `hidden` so no phantom scroll container is created. */
+  overflow-x: clip;
+}
 
 html,
 body,

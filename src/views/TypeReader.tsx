@@ -116,6 +116,7 @@ export default function TypeReader() {
       </Explain>
 
       <Figure
+        minWidth={660}
         label="Strongest at the top."
         caption={
           <>
