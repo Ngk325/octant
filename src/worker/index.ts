@@ -28,14 +28,17 @@ export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
+/** The third argument the runtime passes to `fetch`. Only `waitUntil` is used. */
+export interface Ctx { waitUntil?(promise: Promise<unknown>): void }
+
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx?: Ctx): Promise<Response> {
     const url = new URL(request.url);
     const now = Date.now();
 
     // 1. Google's two routes, public by necessity — this is how you get a session.
     if (url.pathname.startsWith("/api/auth/google/")) {
-      return handleGoogle(request, env, url, now);
+      return handleGoogle(request, env, url, now, ctx);
     }
 
     // 2. The code login, logout and "who am I". Also public by necessity.
@@ -82,7 +85,9 @@ export default {
  * than signed out — otherwise they would have to re-authenticate every time
  * they checked whether they had been let in.
  */
-async function handleGoogle(request: Request, env: Env, url: URL, now: number): Promise<Response> {
+async function handleGoogle(
+  request: Request, env: Env, url: URL, now: number, ctx?: Ctx,
+): Promise<Response> {
   if (!googleConfigured(env) || !env.USERS) {
     return new Response(JSON.stringify({ error: "Google sign-in is not configured." }), {
       status: 503,
@@ -109,14 +114,22 @@ async function handleGoogle(request: Request, env: Env, url: URL, now: number): 
 
   const { user, isNew } = await recordSignIn(env, result.identity.email, result.identity.name, now);
 
-  /* The email is best-effort and must never delay or fail the sign-in. If
-     waitUntil exists the send happens after the response; if not, it is fired
-     and not awaited. Either way the person gets their page. */
+  /* The email is best-effort and must never fail the sign-in — notifyOwnerOfSignup
+     never throws, so neither branch below can.
+
+     waitUntil lives on the ExecutionContext, the THIRD argument to fetch. It was
+     previously read off the Request, where it does not exist: the check was always
+     false, the send was never registered, and the runtime was free to cancel it the
+     moment the redirect went out. The owner could silently never be told anyone had
+     signed up — the one failure mode this whole feature exists to prevent.
+
+     Without a context (a direct call in a test), await instead. Fire-and-forget was
+     the other half of the bug: an unawaited promise in a Worker is not a background
+     task, it is a promise nobody is keeping alive. */
   if (isNew && !user.owner) {
     const send = notifyOwnerOfSignup(env, url.origin, user, now);
-    const ctx = (request as unknown as { waitUntil?: (p: Promise<unknown>) => void }).waitUntil;
-    if (typeof ctx === "function") ctx(send);
-    else void send;
+    if (typeof ctx?.waitUntil === "function") ctx.waitUntil(send);
+    else await send;
   }
 
   const token = await issueSession(user.name, "google", user.email, env.AUTH_SECRET!, now);

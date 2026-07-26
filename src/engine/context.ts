@@ -28,6 +28,7 @@ import {
 
 export type ChatContext =
   | { kind: "home" }
+  | { kind: "admin" }
   | { kind: "catalogue"; sortBy: string }
   | { kind: "learn"; stage: number; title: string }
   | { kind: "type"; type: MbtiType }
@@ -227,6 +228,11 @@ export function contextBlock(ctx: ChatContext): string {
       return "The reader is looking at the full 16x16 relation matrix.";
     case "catalogue":
       return `The reader is browsing all sixteen types, grouped by ${ctx.sortBy}. They have not picked one yet, so answer comparatively rather than assuming a type.`;
+    /* Not a reading surface at all — it is the owner deciding who may sign in.
+       Saying so beats the old behaviour of claiming they are on the home page,
+       which had the assistant answer about a screen they were not looking at. */
+    case "admin":
+      return "The reader is on the access-administration page, which lists who may sign in. Nothing about typology is on screen; answer general questions.";
     default:
       return "The reader is on the home page.";
   }

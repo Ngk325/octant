@@ -38,7 +38,7 @@ export default function Admin() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
-  usePublishContext(() => ({ kind: "home" }), []);
+  usePublishContext(() => ({ kind: "admin" }), []);
 
   const load = useCallback(async () => {
     try {

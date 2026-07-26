@@ -8,6 +8,7 @@ import {
   type KVNamespace, type User,
 } from "../src/worker/users";
 import { handleAdmin } from "../src/worker/admin";
+import { seal, unseal } from "../src/worker/crypto";
 import { actionLink } from "../src/worker/notify";
 import { safeReturn, startGoogleSignIn, completeGoogleSignIn } from "../src/worker/google";
 
@@ -20,16 +21,32 @@ import { safeReturn, startGoogleSignIn, completeGoogleSignIn } from "../src/work
  * "does withdrawing it actually take effect".
  * ------------------------------------------------------------------ */
 
-/** An in-memory KV good enough to be honest about: get, put, delete, list-by-prefix. */
-function memoryKV(): KVNamespace & { store: Map<string, string> } {
+/**
+ * An in-memory KV good enough to be honest about: get, put, delete, and
+ * list-by-prefix — INCLUDING the page limit.
+ *
+ * `pageSize` is tiny rather than KV's real 1000 so a pagination bug is
+ * reachable in a test. A stub that returned everything in one call would
+ * report a paginating implementation and a non-paginating one as identical,
+ * which is the same as not testing it.
+ */
+function memoryKV(pageSize = 1000): KVNamespace & { store: Map<string, string> } {
   const store = new Map<string, string>();
   return {
     store,
     async get(k) { return store.get(k) ?? null; },
     async put(k, v) { store.set(k, v); },
     async delete(k) { store.delete(k); },
-    async list({ prefix = "" } = {}) {
-      return { keys: [...store.keys()].filter((k) => k.startsWith(prefix)).map((name) => ({ name })) };
+    async list({ prefix = "", cursor } = {}) {
+      const all = [...store.keys()].filter((k) => k.startsWith(prefix)).sort();
+      const from = cursor ? Number(cursor) : 0;
+      const slice = all.slice(from, from + pageSize);
+      const done = from + slice.length >= all.length;
+      return {
+        keys: slice.map((name) => ({ name })),
+        list_complete: done,
+        cursor: done ? undefined : String(from + slice.length),
+      };
     },
   };
 }
@@ -44,7 +61,7 @@ beforeEach(() => {
   ENV = {
     AUTH_SECRET: SECRET,
     USERS,
-    OWNER_EMAIL: "nick@stratfieldpartners.com",
+    OWNER_EMAIL: "owner@example.com",
     GOOGLE_CLIENT_ID: "test-client-id.apps.googleusercontent.com",
     GOOGLE_CLIENT_SECRET: "test-client-secret",
   };
@@ -72,10 +89,10 @@ describe("the user list", () => {
   });
 
   it("auto-approves the owner — otherwise nobody could ever approve anybody", async () => {
-    const { user } = await recordSignIn(ENV, "nick@stratfieldpartners.com", "Nick", NOW);
+    const { user } = await recordSignIn(ENV, "owner@example.com", "Owner", NOW);
     expect(user.status).toBe("approved");
     expect(user.owner).toBe(true);
-    expect(isOwner(ENV, "NICK@stratfieldpartners.com")).toBe(true);
+    expect(isOwner(ENV, "OWNER@example.com")).toBe(true);
   });
 
   it("does not reset an existing decision on a later sign-in", async () => {
@@ -89,8 +106,8 @@ describe("the user list", () => {
 
   /** Locking yourself out of the only account that can unlock anything. */
   it("refuses to block the owner", async () => {
-    await recordSignIn(ENV, "nick@stratfieldpartners.com", "Nick", NOW);
-    const after = await setStatus(ENV, "nick@stratfieldpartners.com", "blocked", NOW);
+    await recordSignIn(ENV, "owner@example.com", "Owner", NOW);
+    const after = await setStatus(ENV, "owner@example.com", "blocked", NOW);
     expect(after?.status).toBe("approved");
   });
 
@@ -98,6 +115,20 @@ describe("the user list", () => {
     USERS.store.set("user:broken@example.com", "{not json");
     expect(await getUser(ENV, "broken@example.com")).toBeNull();
     expect(await listUsers(ENV)).toEqual([]);
+  });
+
+  /* KV hands back at most 1000 keys and a cursor for the rest. Reading only the
+     first page would leave someone enforced against but invisible to /admin —
+     still blocked, and with no screen able to un-block them. */
+  it("pages through KV rather than stopping at the first page", async () => {
+    const paged = memoryKV(3);
+    const env = { ...ENV, USERS: paged };
+    for (let i = 0; i < 10; i++) {
+      await recordSignIn(env, `p${i}@example.com`, `Person ${i}`, NOW + i);
+    }
+    const all = await listUsers(env);
+    expect(all).toHaveLength(10);
+    expect(new Set(all.map((u) => u.email)).size).toBe(10);
   });
 });
 
@@ -207,10 +238,36 @@ describe("configuration", () => {
 describe("the signed approve/deny links", () => {
   const origin = "https://example.com";
 
+  /** What the owner's tap on the button in the confirmation page sends. */
+  const confirm = (link: string) => {
+    const token = new URL(link).searchParams.get("t")!;
+    return new Request(`${origin}/api/admin/act`, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ t: token }),
+    });
+  };
+
+  /* Mail clients, link-safety scanners and chat previews fetch every URL in a
+     message before a human sees it. If opening the link decided anything, the
+     decision would be made by whichever scanner reached the inbox first. */
+  it("decides nothing when the link is merely opened", async () => {
+    await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    const link = await actionLink(origin, "jane@example.com", "approve", SECRET, NOW);
+
+    const res = (await handleAdmin(new Request(link), ENV, { owner: false }, NOW))!;
+    expect(res.status).toBe(200);
+
+    const html = await res.text();
+    expect(html).toContain("Let them in?");
+    expect(html).toContain("method=\"POST\"");
+    expect((await getUser(ENV, "jane@example.com"))?.status).toBe("pending");
+  });
+
   it("approves the one person it names, with no session at all", async () => {
     await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
     const link = await actionLink(origin, "jane@example.com", "approve", SECRET, NOW);
-    const res = (await handleAdmin(new Request(link), ENV, { owner: false }, NOW))!;
+    const res = (await handleAdmin(confirm(link), ENV, { owner: false }, NOW))!;
     expect(res.status).toBe(200);
     expect(await res.text()).toContain("Approved");
     expect((await getUser(ENV, "jane@example.com"))?.status).toBe("approved");
@@ -219,8 +276,23 @@ describe("the signed approve/deny links", () => {
   it("blocks from a deny link", async () => {
     await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
     const link = await actionLink(origin, "jane@example.com", "block", SECRET, NOW);
-    await handleAdmin(new Request(link), ENV, { owner: false }, NOW);
+    await handleAdmin(confirm(link), ENV, { owner: false }, NOW);
     expect((await getUser(ENV, "jane@example.com"))?.status).toBe("blocked");
+  });
+
+  /* A display name is chosen by the person being approved, and it lands in the
+     owner's browser on the owner's origin — on the very page they are using to
+     decide whether to trust them. It went in unescaped once. */
+  it("escapes the display name instead of executing it", async () => {
+    const attack = `<script>fetch('/api/admin/users')</script>`;
+    await recordSignIn(ENV, "mallory@example.com", attack, NOW);
+    const link = await actionLink(origin, "mallory@example.com", "approve", SECRET, NOW);
+
+    for (const req of [new Request(link), confirm(link)]) {
+      const html = await (await handleAdmin(req, ENV, { owner: false }, NOW))!.text();
+      expect(html).not.toContain("<script>fetch");
+      expect(html).toContain("&lt;script&gt;");
+    }
   });
 
   it("refuses a tampered link", async () => {
@@ -251,7 +323,7 @@ describe("the signed approve/deny links", () => {
 });
 
 describe("the admin API", () => {
-  const asOwner = { email: "nick@stratfieldpartners.com", owner: true };
+  const asOwner = { email: "owner@example.com", owner: true };
 
   it("lists everyone for the owner", async () => {
     await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
@@ -282,11 +354,11 @@ describe("the admin API", () => {
   });
 
   it("will not block the owner even when asked directly", async () => {
-    await recordSignIn(ENV, "nick@stratfieldpartners.com", "Nick", NOW);
+    await recordSignIn(ENV, "owner@example.com", "Owner", NOW);
     const req = new Request("https://example.com/api/admin/users", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: "nick@stratfieldpartners.com", status: "blocked" }),
+      body: JSON.stringify({ email: "owner@example.com", status: "blocked" }),
     });
     expect((await handleAdmin(req, ENV, asOwner, NOW))!.status).toBe(409);
   });
@@ -294,6 +366,32 @@ describe("the admin API", () => {
   it("is closed to a signed-in non-owner", async () => {
     const res = (await handleAdmin(get("/api/admin/users"), ENV, { email: "jane@example.com", owner: false }, NOW))!;
     expect(res.status).toBe(403);
+  });
+});
+
+/* `atob` returns one character per byte — Latin-1 — but everything here is
+   encoded as UTF-8. Decoding without a TextDecoder mangles every name and
+   address above U+007F, and a mangled email is a KV key that matches nothing:
+   the person signs in successfully and is then a stranger on every request. */
+describe("non-ASCII names and addresses survive the round trip", () => {
+  const NAME = "José Müller 文字";
+  const EMAIL = "josé@example.com";
+
+  it("through a sealed value", async () => {
+    const sealed = await seal({ email: EMAIL, action: "approve" }, SECRET, 600, NOW);
+    expect(await unseal(sealed, SECRET, NOW)).toEqual({ email: EMAIL, action: "approve" });
+  });
+
+  it("through a session cookie", async () => {
+    const token = await issueSession(NAME, "google", EMAIL, SECRET, NOW);
+    const session = await readSession(get("/", `octant_session=${token}`), ENV, NOW);
+    expect(session).toMatchObject({ label: NAME, email: EMAIL });
+  });
+
+  it("through the user list, so the record is findable again", async () => {
+    const { user } = await recordSignIn(ENV, EMAIL, NAME, NOW);
+    expect(user.name).toBe(NAME);
+    expect((await getUser(ENV, EMAIL))?.name).toBe(NAME);
   });
 });
 

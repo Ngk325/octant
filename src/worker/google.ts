@@ -1,4 +1,4 @@
-import { randomToken, pkceChallenge, seal, unseal } from "./crypto";
+import { randomToken, pkceChallenge, seal, unseal, unb64url } from "./crypto";
 
 /* ------------------------------------------------------------------ *
  * GOOGLE SIGN-IN
@@ -31,6 +31,9 @@ export interface GoogleEnv {
 
 const AUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
+
+/** Google normally answers in well under a second; this is a stall guard. */
+const TOKEN_TIMEOUT_MS = 10_000;
 
 const STATE_COOKIE = "octant_oauth";
 /** Long enough to sign in unhurriedly, short enough to be useless if leaked. */
@@ -132,6 +135,11 @@ export async function completeGoogleSignIn(
         grant_type: "authorization_code",
         code_verifier: state.v,
       }),
+      /* Without this the exchange inherits the Worker's own wall-clock limit,
+         so a Google outage that accepts connections and then stalls holds the
+         request open until the runtime kills it — the person sees a hang and
+         no explanation. Ten seconds, then the readable failure below. */
+      signal: AbortSignal.timeout(TOKEN_TIMEOUT_MS),
     });
     if (!res.ok) return { ok: false, error: "Google would not complete the sign-in." };
     const body = (await res.json()) as { id_token?: string };
@@ -163,11 +171,16 @@ export async function completeGoogleSignIn(
 
 /* ------------------------------- helpers ------------------------------- */
 
-/** The claims of a JWT, without verifying it. Only ever called on a token fetched over TLS from Google. */
+/**
+ * The claims of a JWT, without verifying it. Only ever called on a token
+ * fetched over TLS from Google.
+ *
+ * Uses the shared base64url decoder rather than a local `atob`, because that
+ * one decodes UTF-8 properly — and `name` is the single most likely field in
+ * this whole Worker to contain a character above U+007F.
+ */
 function decodeJwtPayload(jwt: string): Record<string, unknown> {
-  const part = jwt.split(".")[1] ?? "";
-  const json = atob(part.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(part.length / 4) * 4, "="));
-  return JSON.parse(json) as Record<string, unknown>;
+  return JSON.parse(unb64url(jwt.split(".")[1] ?? "")) as Record<string, unknown>;
 }
 
 /**

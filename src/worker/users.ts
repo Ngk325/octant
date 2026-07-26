@@ -25,7 +25,11 @@ export interface KVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string): Promise<void>;
   delete(key: string): Promise<void>;
-  list(options?: { prefix?: string }): Promise<{ keys: { name: string }[] }>;
+  list(options?: { prefix?: string; cursor?: string }): Promise<{
+    keys: { name: string }[];
+    list_complete?: boolean;
+    cursor?: string;
+  }>;
 }
 
 /**
@@ -129,10 +133,26 @@ export async function setStatus(
   return next;
 }
 
-/** Everyone on the list, newest arrival first. */
+/**
+ * Everyone on the list, newest arrival first.
+ *
+ * KV's `list` returns at most 1000 keys per call and hands back a cursor for
+ * the rest. Reading only the first page would silently drop user 1001 from
+ * /admin — they would still be enforced against on every request, but would be
+ * invisible to the only screen that can un-block them. Unlikely at this scale;
+ * a page nobody can reach is not the kind of bug to leave for later.
+ */
 export async function listUsers(env: UserEnv): Promise<User[]> {
   if (!env.USERS) return [];
-  const { keys } = await env.USERS.list({ prefix: "user:" });
+
+  const keys: { name: string }[] = [];
+  let cursor: string | undefined;
+  do {
+    const page = await env.USERS.list({ prefix: "user:", cursor });
+    keys.push(...page.keys);
+    cursor = page.list_complete === false ? page.cursor : undefined;
+  } while (cursor);
+
   const users = await Promise.all(
     keys.map(async ({ name }) => {
       const raw = await env.USERS!.get(name);

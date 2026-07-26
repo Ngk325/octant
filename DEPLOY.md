@@ -26,7 +26,7 @@ Working directory is the repo root — the folder containing `package.json` and 
 
 ```sh
 npm install
-npm test          # expect: 459 passed
+npm test          # expect: 498 passed
 npm run build     # expect: dist/ written, no TypeScript errors
 ```
 
@@ -145,13 +145,28 @@ npx wrangler dev --port 8788      # in another terminal:
 
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8788/                    # 401
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8788/type/ENTP           # 401
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8788/assets/index-*.js   # 401
+
+# The bundle's filename carries a content hash, so read it out of the build
+# rather than guessing — a wildcard here is expanded by the shell against your
+# local directory, not the server, and silently requests a path that does not
+# exist. A 401 on a nonexistent path would look like a pass and prove nothing.
+JS=$(ls dist/assets/index-*.js | head -1)
+curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:8788/assets/$(basename "$JS")"   # 401
 ```
 
 All three must be **401**. A `200` on any of them means asset requests are
 reaching the asset store without passing the gate — check that
 `assets.run_worker_first` in `wrangler.jsonc` is `true` and not a list of routes.
 `tests/auth.test.ts` asserts that value, but only the runtime proves the effect.
+
+**One caveat, stated rather than buried.** Past the gate, a Google session's
+approval status is re-read from KV on every request *except* static assets —
+see `isAssetPath()` in `src/worker/auth.ts`. Someone who is signed in and then
+blocked can still fetch a JS chunk until their next page load or API call. That
+is deliberate: it avoids a KV read per chunk on every cold load, and an asset is
+useless without the shell, which *is* checked. If you need somebody out with no
+grace at all, rotate `AUTH_SECRET` — that invalidates every session everywhere,
+both kinds, immediately.
 
 **A note on cost.** `run_worker_first: true` makes every asset request a Worker
 invocation rather than a free asset hit. At invite-only scale that is

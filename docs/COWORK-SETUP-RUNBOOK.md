@@ -4,8 +4,8 @@
 codebase is done, tested and deployed. What remains needs a logged-in browser
 and one repo edit, which the cloud session cannot do.
 
-Work through the tasks in order. Task 4 must come last of the four, because it
-triggers the deploy that picks the others up.
+Work through the tasks in order. Task 4 is already done — it is kept below
+because it is the one step where doing it *again* would break something.
 
 ---
 
@@ -17,7 +17,7 @@ triggers the deploy that picks the others up.
    (`starts GOCSPX-`, `41 characters`), never its value.
 2. **The one exception is the KV namespace id in Task 4.** That is an
    identifier, not a credential — useless without account access, and Cloudflare
-   expects it committed. It goes in the repo on purpose.
+   expects it committed. It is already in the repo on purpose.
 3. If a step's UI does not match what is written here, Cloudflare or Google has
    moved it. Find the equivalent, and say so in your report rather than guessing
    at a different setting.
@@ -93,56 +93,50 @@ report it — the site will be serving a "Not configured" page.
 
 ---
 
-## Task 4 · KV namespace, and the one repo edit
+## Task 4 · KV namespace — ✅ already done, do not repeat
 
-This is the step that must go in the repo rather than the dashboard.
+**This task is complete.** The `USERS` namespace exists and its id is committed
+in `wrangler.jsonc`:
 
-**Why:** this Worker deploys from `wrangler.jsonc` via Workers Builds, and that
-file is authoritative. A binding added only in the dashboard is removed the next
-time anything is pushed. The namespace id therefore has to be committed.
+```jsonc
+  "kv_namespaces": [
+    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
+  ],
+```
+
+**Do not run `wrangler kv namespace create USERS`.** That command does not check
+whether one already exists — it makes a *second*, empty namespace with the same
+name. Pointing the Worker at that one would silently discard the real user list:
+everyone already approved would come back as a stranger, waiting for approval
+again, with no error anywhere to say why.
+
+All you need to do here is **confirm it is still there**:
 
 ```sh
 cd <repo>
 git checkout claude/personality-app-redesign-ax1rdi
 git pull origin claude/personality-app-redesign-ax1rdi
-
-npx wrangler kv namespace create USERS
+grep -A2 kv_namespaces wrangler.jsonc
 ```
 
-It prints something like:
+If the binding is present, this task is done — move on to Task 5. If it is
+somehow missing, say so in your report rather than creating one; the id above is
+the right value and belongs in `wrangler.jsonc`, never in the dashboard bindings
+panel.
 
-```
-{ "binding": "USERS", "id": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6" }
-```
+**Why the file and not the dashboard:** this Worker deploys from `wrangler.jsonc`
+via Workers Builds, which makes that file authoritative. A binding added only in
+the dashboard is removed the next time anything is pushed.
 
-Open `wrangler.jsonc`. Find the comment block that begins
-`// NOTE: there is deliberately no kv_namespaces block here.` **Replace that
-whole comment block** with the real binding, keeping it at the same level as
-`"assets"` and `"observability"`:
-
-```jsonc
-  "kv_namespaces": [
-    { "binding": "USERS", "id": "<the id wrangler printed>" }
-  ],
-```
-
-Then:
+Tasks 1–3 set secrets, which apply without a deploy. If you want to force one
+anyway, an empty commit is enough:
 
 ```sh
-npm test          # expect 492 passed
+npm test          # expect 498 passed
 npm run build     # expect no errors
-git add wrangler.jsonc
-git commit -m "Bind the USERS KV namespace for Google sign-in"
+git commit --allow-empty -m "Redeploy to pick up the new secrets"
 git push origin claude/personality-app-redesign-ax1rdi
 ```
-
-The push triggers a deploy that picks up everything from Tasks 1–3 as well.
-
-> If `wrangler kv namespace create` asks you to log in, run `npx wrangler login`
-> first. If it fails on permissions, create the namespace in the dashboard
-> instead (**Storage & Databases** → **KV** → **Create**, name it `USERS`), copy
-> the id from the list, and use that — but still put it in `wrangler.jsonc`, not
-> in the dashboard bindings panel.
 
 ---
 
@@ -212,7 +206,8 @@ documented, not a bug.
 | "Google sign-in is not configured" JSON | Same, but you hit `/api/auth/google/start` directly | As above |
 | `403` "This page is for the owner" at `/admin` | Signed in as a non-owner, or `OWNER_EMAIL` does not match the signed-in address | Check `OWNER_EMAIL` matches exactly, lowercase-insensitively |
 | Access-denied screen from Google | The account is not a Test user | Add it under **Audience → Test users**, or publish the app |
-| Deploy fails on the KV binding | The id is wrong or belongs to another account | Re-run `wrangler kv namespace create USERS` and use the printed id |
+| Deploy fails on the KV binding | The id is wrong or belongs to another account | Check the id against **Storage & Databases → KV** in the dashboard and report a mismatch — do not create a new namespace, that loses the user list |
+| Everyone approved is suddenly pending again | The Worker is pointed at a second, empty `USERS` namespace | Restore the id in `wrangler.jsonc` to the one holding the records, and delete the empty duplicate |
 | Emails never arrive | `RESEND_API_KEY` missing or wrong | Check the secret; failed sends are deliberately silent so they cannot break a sign-in |
 
 ---
@@ -221,7 +216,8 @@ documented, not a bug.
 
 Please include, in this order:
 
-1. Which of Tasks 1–4 completed, and any that did not, with the error.
+1. Which of Tasks 1–3 completed, and any that did not, with the error. For
+   Task 4, just confirm the binding is still in `wrangler.jsonc`.
 2. The two Task 5 curl results, verbatim.
 3. Whether the Task 6 flow worked end to end — and if you added a second test
    account, say which one, so it can be blocked afterwards if it was a throwaway.

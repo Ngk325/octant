@@ -84,28 +84,35 @@ they are — invite codes keep working alongside Google.
 
 ---
 
-## 4 · The KV namespace
+## 4 · The KV namespace — already done
 
-The user list has to live somewhere.
+The user list has to live somewhere, and it does: the namespace exists and its
+id is committed in `wrangler.jsonc`.
+
+```jsonc
+  "kv_namespaces": [
+    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
+  ],
+```
+
+**Do not run `wrangler kv namespace create USERS` on this deployment.** It does
+not check for an existing namespace of that name — it makes a second, empty one.
+Repointing the Worker at that would discard the user list without an error:
+everyone already approved would return as a stranger waiting for approval.
+
+For a fresh deployment that genuinely has no namespace yet:
 
 ```sh
 npx wrangler kv namespace create USERS
 ```
 
-Paste the id it prints into `wrangler.jsonc`, then commit and push:
-
-```jsonc
-  "kv_namespaces": [
-    { "binding": "USERS", "id": "<the id>" }
-  ],
-```
-
+Paste the printed id into `wrangler.jsonc` in the block above, then commit.
 **It has to go in the file, not the dashboard.** Workers Builds deploys from
 `wrangler.jsonc`, which makes that file authoritative — a binding added only in
 the dashboard is removed by the next push. The id is an identifier rather than a
 credential: useless without account access, and Cloudflare expects it committed.
 
-**Until this exists, nothing breaks.** `googleAvailable()` is false, the Google
+**Until it exists, nothing breaks.** `googleAvailable()` is false, the Google
 button does not render, and the wall falls back to invite codes. It degrades; it
 does not fail open.
 

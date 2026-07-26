@@ -11,6 +11,7 @@
  * ------------------------------------------------------------------ */
 
 const enc = new TextEncoder();
+const dec = new TextDecoder();
 
 /** Base64url, unpadded — safe in a cookie, a URL and a query string alike. */
 export function b64url(buf: ArrayBuffer | Uint8Array | string): string {
@@ -22,10 +23,21 @@ export function b64url(buf: ArrayBuffer | Uint8Array | string): string {
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-/** Reverse of b64url, restoring the padding base64 needs. */
+/**
+ * Reverse of b64url, restoring the padding base64 needs.
+ *
+ * The TextDecoder is not decoration. `atob` returns a string of code points
+ * 0–255 — one character per byte, i.e. Latin-1 — but `b64url` encoded UTF-8.
+ * Reading the result straight back mangles every multi-byte character, so a
+ * session for `José` or `文` would round-trip to mojibake and, once it reached
+ * a KV lookup keyed on that value, simply not be found.
+ */
 export function unb64url(s: string): string {
   const t = s.replace(/-/g, "+").replace(/_/g, "/");
-  return atob(t + (t.length % 4 ? "=".repeat(4 - (t.length % 4)) : ""));
+  const binary = atob(t + (t.length % 4 ? "=".repeat(4 - (t.length % 4)) : ""));
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return dec.decode(bytes);
 }
 
 /** HMAC-SHA256 over the payload, base64url encoded. */

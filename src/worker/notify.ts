@@ -1,4 +1,5 @@
 import { seal } from "./crypto";
+import { escapeHtml } from "./html";
 import type { User } from "./users";
 
 /* ------------------------------------------------------------------ *
@@ -103,10 +104,3 @@ const signupEmail = (user: User, approve: string, block: string, origin: string)
     time from <a href="${origin}/admin" style="color:#6B3BC4">${origin}/admin</a>.
   </p>
 </div>`;
-
-/** Escape anything a person controls before it goes into HTML. */
-export function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-}

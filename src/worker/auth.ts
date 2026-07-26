@@ -1,4 +1,5 @@
 import { b64url, unb64url, sign, digest, sameDigest, signatureMatches } from "./crypto";
+import { escapeHtml } from "./html";
 import { getUser, isOwner, type UserEnv } from "./users";
 
 /* ------------------------------------------------------------------ *
@@ -454,10 +455,3 @@ const unconfiguredPage = () => SHELL("Octant — not configured", `
   <code>npx wrangler secret put AUTH_SECRET</code><br>
   <code>npx wrangler secret put ACCESS_CODES</code><br><br>
   Full instructions are in <code>DEPLOY.md</code>, step 2.</p>`);
-
-/** Escape anything a person controls before it goes into HTML. */
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-}
