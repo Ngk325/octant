@@ -30,6 +30,7 @@ export default function Network() {
     [members.map((m) => `${m.name}:${m.type}`).join("|")],
   );
 
+  /** Patch one member of the group. */
   const update = (id: string, patch: Partial<Member>) =>
     setMembers((ms) => ms.map((m) => (m.id === id ? { ...m, ...patch } : m)));
 
@@ -210,6 +211,7 @@ export default function Network() {
   );
 }
 
+/** The group as a ring, every pair joined by a line coloured and weighted by ease. */
 function Ring({ members, report }: { members: Member[]; report: ReturnType<typeof analyse> }) {
   const p = usePalette();
   const S = 440, C = S / 2, R = S / 2 - 72;

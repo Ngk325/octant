@@ -129,6 +129,7 @@ export default function Types() {
   );
 }
 
+/** All sixteen, grouped by the reader's chosen axis. */
 function groupTypes(by: SortBy): [string, MbtiType[]][] {
   if (by === "alpha") return [["", [...TYPES].sort()]];
   if (by === "quadra") {

@@ -22,6 +22,7 @@ export interface NetworkReport {
   suggestions: { type: MbtiType; meanEase: number; delta: number }[];
 }
 
+/** Arithmetic mean, or 0 for an empty group rather than NaN. */
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
 
 /** Directed edge from -> to reads: "how `from` experiences `to`". */

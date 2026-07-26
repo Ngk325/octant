@@ -43,6 +43,7 @@ export type Quadra = "Alpha" | "Beta" | "Gamma" | "Delta";
 /** Which quadra a type belongs to, derived from its dominant and auxiliary. */
 export function quadra(t: MbtiType): Quadra {
   const ego = new Set(stack(t).slice(0, 4));
+  /** Does this type carry that function anywhere in its stack? */
   const has = (...f: Fn[]) => f.every((x) => ego.has(x));
   if (has("Ne", "Si", "Ti", "Fe")) return "Alpha";
   if (has("Se", "Ni", "Ti", "Fe")) return "Beta";

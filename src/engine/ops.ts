@@ -229,12 +229,14 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
     ordered = [doubleSavior, secondSavior, third!, doubleDemon];
   }
 
+  /** The 1-4 position of an animal once the free coins allow it, or null while still open. */
   const posOf = (a: Animal): number | null => {
     if (!secondSavior) return a === doubleDemon ? 4 : null;
     const i = ordered.indexOf(a);
     return i < 0 ? null : i + 1;
   };
 
+  /** What a position means in OPS: savior pair, activated hobby, or last and missing. */
   const roleOf = (a: Animal): AnimalSlot["role"] => {
     if (a === doubleDemon) return "last";
     if (a === doubleSavior) return "savior";
@@ -271,6 +273,7 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
   // info-dominant. That is exactly the line this app's 16-type core sits on.
   const dominance: AnimalKind = ANIMAL_KIND[doubleDemon] === "Information" ? "Energy" : "Information";
 
+  /** Single-letter animal abbreviation, for printing a full OPS code. */
   const L = (a: Animal | undefined) => (a ? ANIMAL_LETTER[a] : "?");
   const stackCode = secondSavior
     ? `${L(ordered[0])}${L(ordered[1])}/${L(ordered[2])}(${L(ordered[3])})`

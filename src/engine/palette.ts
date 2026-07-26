@@ -88,6 +88,10 @@ const EASE_FILL: Record<Theme, Stop[]> = {
   ],
 };
 
+/**
+ * Interpolate along an ease ramp. Both endpoints are contrast-checked, so every
+ * value between them is too.
+ */
 function ramp(stops: Stop[], v: number): string {
   if (v <= stops[0][0]) return `rgb(${stops[0][1].join(",")})`;
   for (let i = 1; i < stops.length; i++) {
@@ -126,6 +130,7 @@ export function parseColor(c: string): [number, number, number] {
   return [parts[0], parts[1], parts[2]];
 }
 
+/** One sRGB channel, linearised for the luminance calculation. */
 const channel = (v: number) => {
   const s = v / 255;
   return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;

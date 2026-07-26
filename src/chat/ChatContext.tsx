@@ -41,6 +41,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   return <C.Provider value={value}>{children}</C.Provider>;
 }
 
+/** The assistant's shared state. Throws outside a ChatProvider. */
 function useChatCtx(): ChatCtxValue {
   const v = useContext(C);
   if (!v) throw new Error("useChatCtx must be used inside ChatProvider");

@@ -610,6 +610,7 @@ export default function TypeReader() {
   );
 }
 
+/** A row of type chips linking into their own pages, quadra-coloured. */
 function Links({ list, from }: { list: MbtiType[]; from: MbtiType }) {
   return (
     <div className="cluster">

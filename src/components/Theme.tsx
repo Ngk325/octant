@@ -24,6 +24,7 @@ interface Ctx {
 
 const ThemeCtx = createContext<Ctx | null>(null);
 
+/** What the operating system currently prefers. Used when there is no stored choice. */
 const systemTheme = (): Theme =>
   typeof matchMedia === "function" && matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
@@ -47,6 +48,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof matchMedia !== "function") return;
     const mq = matchMedia("(prefers-color-scheme: dark)");
+    /** Re-read the OS preference when it changes under us. */
     const on = () => setSystem(mq.matches ? "dark" : "light");
     mq.addEventListener("change", on);
     return () => mq.removeEventListener("change", on);

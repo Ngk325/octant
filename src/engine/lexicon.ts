@@ -34,6 +34,10 @@ export interface Pairing { headline: string; body: string }
 
 /** Authored without `plain`; it is attached from PLAIN_BY_ID when ENTRIES is built. */
 type Draft = Omit<Entry, "plain">;
+/**
+ * Identity helper that types an entry draft at the point of authoring, so a typo in a
+ * field name fails here rather than silently producing an entry with a missing field.
+ */
 const E = (e: Draft) => e;
 
 /* ══════════════════════════════ FUNCTIONS ══════════════════════════════ */
@@ -576,6 +580,7 @@ const DRAFTS: Draft[] = [
 /** Every entry carries its plain-language gloss. Completeness is asserted in tests. */
 export const ENTRIES: Entry[] = DRAFTS.map((d) => ({ ...d, plain: PLAIN_BY_ID[d.id] ?? "" }));
 
+/** A stable, url-safe id from a term. */
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /** Canonical id -> entry, plus an alias for each entry's term name.
@@ -721,6 +726,7 @@ const ANIMAL_TEXT: Record<string, (a: string, b: string) => Pairing> = {
     body: `Opposite on both axes. One of you is doing outward what the other does inward, in both perceiving and judging. Genuinely complementary coverage, and the highest tempo mismatch available — neither will find the other's default speed natural.` }),
 };
 
+/** Whether a function observes or decides — the split every function pairing turns on. */
 function fnClass(a: Fn, b: Fn): "same" | "alpha" | "beta" | "omega" | "unrelated" {
   if (a === b) return "same";
   if (alpha[a] === b) return "alpha";
@@ -729,6 +735,7 @@ function fnClass(a: Fn, b: Fn): "same" | "alpha" | "beta" | "omega" | "unrelated
   return "unrelated";
 }
 
+/** What happens when two cognitive functions meet, derived from their kinds and attitudes. */
 function functionPair(a: Fn, b: Fn): Pairing {
   switch (fnClass(a, b)) {
     case "same": return { headline: `${a} meets ${a}`,
@@ -744,7 +751,9 @@ function functionPair(a: Fn, b: Fn): Pairing {
   }
 }
 
+/** What happens when two archetype slots meet. */
 function slotPair(a: string, b: string): Pairing {
+  /** The ego-block position of a slot, used to pitch the pairing text. */
   const ego = (s: string) => ["Hero", "Parent", "Child", "Inferior"].includes(s);
   if (a === b) return { headline: `${a} meets ${a}`,
     body: `The same position on both sides, so the same function is being used with the same degree of awareness. Mutual recognition, and no correction available in either direction.` };
@@ -778,6 +787,7 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
         : QUADRA_TEXT.opposite(a.term, b.term);
     }
     case "Animal": {
+      /** Attitude of a function as a word, for interpolating into pairing prose. */
       const att = (t: string): [boolean, boolean] =>
         ({ Play: [true, false], Blast: [false, true], Consume: [true, true], Sleep: [false, false] } as const)[
           t as "Play"] as [boolean, boolean];
@@ -815,12 +825,17 @@ export interface AspectRow {
   aLabel: string; bLabel: string; pairing: Pairing | null; determining?: boolean;
 }
 
+/** The lexicon id for one pole of one coin. */
 const coinPoleId = (v: string) =>
   COIN_POLES.find(([, term]) => term === v)?.[0] ?? slug(v);
 
 /** Every comparable aspect of two types, with the pairing text for that combination. */
 export function compareAspects(a: MbtiType, b: MbtiType): AspectRow[] {
   const rows: AspectRow[] = [];
+  /**
+   * Add an entry, guarding against a duplicate id — two entries with one id would make
+   * one of them unreachable from every link in the app.
+   */
   const push = (aspect: string, aId: string, bId: string, aLabel: string, bLabel: string, determining?: boolean) =>
     rows.push({ aspect, aId, bId, aLabel, bLabel, pairing: pairTerms(aId, bId), determining });
 

@@ -11,17 +11,23 @@ export default function Markdown({ text }: { text: string }) {
   return <>{blocks(text)}</>;
 }
 
+/**
+ * Split the model's markdown into renderable blocks. Deliberately small — headings,
+ * lists, paragraphs and code — because the assistant is told to keep answers plain.
+ */
 function blocks(src: string): ReactNode[] {
   const lines = src.replace(/\r\n/g, "\n").split("\n");
   const out: ReactNode[] = [];
   let para: string[] = [];
   let list: { ordered: boolean; items: string[] } | null = null;
 
+  /** Close the paragraph being accumulated, if any. */
   const flushPara = () => {
     if (!para.length) return;
     out.push(<p key={`p${out.length}`}>{inline(para.join(" "))}</p>);
     para = [];
   };
+  /** Close the list being accumulated, if any. */
   const flushList = () => {
     if (!list) return;
     const items = list.items.map((it, i) => <li key={i}>{inline(it)}</li>);

@@ -51,13 +51,16 @@ const LOGIN_WINDOW_MS = 10 * 60_000;
 const MAX_LOGIN_FAILURES = 10;
 const failures = new Map<string, number[]>();
 
+/** Failed attempts from this address still inside the window. */
 const recentFailures = (ip: string, now: number) =>
   (failures.get(ip) ?? []).filter((t) => now - t < LOGIN_WINDOW_MS);
 
+/** Read-only check. Deliberately does not record, so a success costs nothing. */
 function tooManyFailures(ip: string, now: number): boolean {
   return recentFailures(ip, now).length >= MAX_LOGIN_FAILURES;
 }
 
+/** Note a failed attempt. Only ever called when a code was actually wrong. */
 function recordFailure(ip: string, now: number): void {
   const recent = recentFailures(ip, now);
   recent.push(now);
@@ -69,6 +72,7 @@ function recordFailure(ip: string, now: number): void {
 
 const enc = new TextEncoder();
 
+/** Base64url, unpadded — safe in a cookie value. */
 function b64url(buf: ArrayBuffer | Uint8Array): string {
   const b = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
   let s = "";
@@ -76,17 +80,20 @@ function b64url(buf: ArrayBuffer | Uint8Array): string {
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+/** Reverse of b64url, restoring the padding base64 needs. */
 function unb64url(s: string): string {
   const t = s.replace(/-/g, "+").replace(/_/g, "/");
   return atob(t + (t.length % 4 ? "=".repeat(4 - (t.length % 4)) : ""));
 }
 
+/** Import the signing secret as an HMAC-SHA256 key. */
 async function hmacKey(secret: string): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     "raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
   );
 }
 
+/** HMAC-SHA256 over the payload, base64url encoded. */
 async function sign(payload: string, secret: string): Promise<string> {
   return b64url(await crypto.subtle.sign("HMAC", await hmacKey(secret), enc.encode(payload)));
 }
@@ -142,12 +149,14 @@ async function labelForCode(env: AuthEnv, submitted: string): Promise<string | n
 
 interface Session { label: string; exp: number }
 
+/** Mint a session token: the label and an expiry, signed. Nothing is stored server-side. */
 async function issue(label: string, secret: string, now: number): Promise<string> {
   const exp = Math.floor(now / 1000) + SESSION_DAYS * 86_400;
   const payload = b64url(enc.encode(JSON.stringify({ l: label, e: exp })));
   return `${payload}.${await sign(payload, secret)}`;
 }
 
+/** Verify and decode a session token. Returns null for anything forged, malformed or expired. */
 async function open(token: string, secret: string, now: number): Promise<Session | null> {
   const dot = token.lastIndexOf(".");
   if (dot < 1) return null;
@@ -164,6 +173,7 @@ async function open(token: string, secret: string, now: number): Promise<Session
   }
 }
 
+/** Pull one cookie out of a Cookie header. */
 function cookieValue(header: string | null, name: string): string | null {
   for (const part of (header ?? "").split(";")) {
     const [k, ...rest] = part.trim().split("=");
@@ -187,9 +197,14 @@ const secureFlag = (url: URL) =>
   url.protocol === "https:" || !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(url.hostname)
     ? "; Secure" : "";
 
+/**
+ * The session cookie: HttpOnly so script cannot read it, Lax so it survives a normal
+ * navigation, and Secure everywhere except plain-http localhost.
+ */
 const setCookie = (url: URL, token: string) =>
   `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_DAYS * 86_400}${secureFlag(url)}`;
 
+/** The same cookie with a zero lifetime — how logout works. */
 const clearCookie = (url: URL) =>
   `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secureFlag(url)}`;
 
@@ -281,6 +296,10 @@ export async function requireAuth(
     : page(gatePage(), 401);
 }
 
+/**
+ * An HTML response for the gate. no-store and DENY framing, because this page is the
+ * security boundary and must not be cached or embedded.
+ */
 const page = (html: string, status: number) =>
   new Response(html, {
     status,
@@ -332,6 +351,10 @@ const SHELL = (title: string, body: string) => `<!doctype html>
 </style>
 </head><body><main>${body}</main></body></html>`;
 
+/**
+ * The access page. Self-contained: the stylesheet it would otherwise load is itself
+ * behind this wall.
+ */
 const gatePage = () => SHELL("Octant — access required", `
   <h1>Octant</h1>
   <p>This is a private instrument. Enter the access code you were given.</p>
@@ -369,6 +392,10 @@ const gatePage = () => SHELL("Octant — access required", `
 })();
 </script>`);
 
+/**
+ * Shown when the wall has no codes or no secret. Names the exact commands, because
+ * the person seeing it is the one who has to fix it.
+ */
 const unconfiguredPage = () => SHELL("Octant — not configured", `
   <h1>Not configured</h1>
   <p>This deployment has an access wall but no way through it, so it is refusing

@@ -112,6 +112,7 @@ export default function WiringSchematic({ type }: { type: MbtiType }) {
   );
 }
 
+/** A bracket calling out a region of the stack, with a label. */
 function Marker({ x, y, text, tone }: { x: number; y: number; text: string; tone: string }) {
   return (
     <text x={x} y={y} textAnchor="end" fill={tone} fontSize="14" fontWeight="500">

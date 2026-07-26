@@ -35,6 +35,7 @@ export default function OctagramMap({ highlight }: { highlight?: MbtiType }) {
     ? ordered.findIndex((w) => (w.pair as string[]).includes(highlight))
     : -1;
 
+  /** Polar helper: position i of eight around the ring, at the given radius. */
   const at = (i: number, radius: number) => {
     const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
     return { x: cx + Math.cos(a) * radius, y: cy + Math.sin(a) * radius };

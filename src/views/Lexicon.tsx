@@ -115,6 +115,7 @@ export default function Lexicon() {
   );
 }
 
+/** One entry in full, paired against every other member of its category. */
 function FocusedEntry({ entry }: { entry: Entry }) {
   const siblings = ENTRIES.filter((e) => e.category === entry.category && pairTerms(entry.id, e.id));
   if (!siblings.length) return null;

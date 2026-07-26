@@ -176,6 +176,7 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
     superego: fromPair(beta[d], beta[x]),
   };
 
+  /** Assemble one side from the ego's stack: its four slots, its own type, and its gateway. */
   const build = (key: SideKey): SideStructure => {
     const slots = ORDER[key].map((i, n) => ({
       fn: st[i],

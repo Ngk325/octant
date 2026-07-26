@@ -15,6 +15,7 @@ export function playbook(perspective: MbtiType, target: MbtiType): string {
   const [, , tChild, tInf, , , tTrick, tDemon] = ts;
   const completing = COMPLETING.has(code);
 
+  /** What it means for one person's function to land in a given slot of another's stack. */
   const effect = (slot: string) =>
     slot === "Inferior" && completing
       ? "their fear, and precisely what you are equipped to supply \u2014 offer it as a service, never as a requirement"

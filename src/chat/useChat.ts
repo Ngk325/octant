@@ -11,6 +11,7 @@ export interface Message {
 const KEY = "chat.thread";
 const MAX_STORED = 40;
 
+/** Restore the last thread, dropping anything that is not a well-formed message. */
 function load(): Message[] {
   try {
     const raw = readStored(KEY);

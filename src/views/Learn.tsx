@@ -9,6 +9,7 @@ import { readStored, writeStored } from "../storage";
 const DONE_KEY = "learn.done";
 const TYPE_KEY = "learn.type";
 
+/** Completed stages, tolerating anything unexpected in storage rather than throwing. */
 const readDone = (): string[] => {
   try {
     const v = JSON.parse(readStored(DONE_KEY) ?? "[]");
@@ -54,6 +55,7 @@ export default function Learn() {
     [current?.slug, i],
   );
 
+  /** Mark a stage complete. Persistence happens in an effect, not here. */
   const markDone = (slug: string) =>
     setDone((d) => (d.includes(slug) ? d : [...d, slug]));
 
@@ -130,6 +132,7 @@ export default function Learn() {
   );
 }
 
+/** The course contents page, with progress. */
 function Index({ done }: { done: string[] }) {
   const complete = done.length >= STAGES.length;
   return (

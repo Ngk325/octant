@@ -37,6 +37,7 @@ export type ChatContext =
   | { kind: "lexicon"; term?: string }
   | { kind: "calculator"; best?: MbtiType | null };
 
+/** One `Key: value` line of the grounding block. */
 const line = (k: string, v: string) => `${k}: ${v}`;
 
 /** Everything the engine knows about one type, as flat lines. */
@@ -101,6 +102,7 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
   const rec = RECIPROCAL[code];
   const aStack = stack(a);
   const bHero = stack(b)[0], bParent = stack(b)[1];
+  /** Which of the eight slots this function occupies for that type. */
   const slotOf = (fn: string) => SLOT_NAMES[aStack.indexOf(fn as never)];
 
   const aspects = compareAspects(a, b)

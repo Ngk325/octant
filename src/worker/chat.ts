@@ -39,6 +39,7 @@ interface ChatRequest {
   model?: ModelKey;
 }
 
+/** A JSON response with the right content type. */
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), {
     status,
@@ -55,6 +56,7 @@ const WINDOW_MS = 60_000;
 const MAX_PER_WINDOW = 20;
 const hits = new Map<string, number[]>();
 
+/** Per-isolate throttle. Slows a runaway client rather than a determined one. */
 function rateLimited(ip: string, now: number): boolean {
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
   recent.push(now);
@@ -163,6 +165,7 @@ function toTextStream(): TransformStream<Uint8Array, Uint8Array> {
   const encoder = new TextEncoder();
   let buffer = "";
 
+  /** Push one decoded text chunk to the client as it arrives from Gemini. */
   const emit = (controller: TransformStreamDefaultController<Uint8Array>, payload: string) => {
     for (const raw of payload.split("\n")) {
       const trimmed = raw.trim();

@@ -95,6 +95,7 @@ export interface Divergence {
   reading: string;
 }
 
+/** Bucket a delta into plain language, so the app never asks a reader to interpret a raw number. */
 const sizeOf = (d: number): Divergence["size"] =>
   Math.abs(d) < 15 ? "agree" : Math.abs(d) < 35 ? "mild" : Math.abs(d) < 60 ? "wide" : "opposite";
 
@@ -142,6 +143,7 @@ export function correlation(types: readonly MbtiType[]): number {
     xs.push(empirical(a, b));
     ys.push(ease(a, b));
   }
+  /** Arithmetic mean. Local because it is used twice and nowhere else. */
   const mean = (v: number[]) => v.reduce((s, x) => s + x, 0) / v.length;
   const mx = mean(xs), my = mean(ys);
   const num = xs.reduce((s, _, i) => s + (xs[i] - mx) * (ys[i] - my), 0);

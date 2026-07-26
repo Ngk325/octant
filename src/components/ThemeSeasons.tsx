@@ -17,6 +17,7 @@ export default function ThemeSeasons({
   focus?: Focus;
   onPick?: (d: Development, f: Focus) => void;
 }) {
+  /** The theme sitting at one development/focus intersection. */
   const cell = (d: Development, f: Focus) => THEMES.find((t) => t.development === d && t.focus === f)!;
   const rows: Development[] = ["SD", "UD"];
   const cols: Focus[] = ["SF", "UF"];
@@ -91,6 +92,7 @@ export default function ThemeSeasons({
   );
 }
 
+/** One development row, with its rotated axis label. */
 function Row({ d, children }: { d: Development; children: React.ReactNode }) {
   return (
     <>

@@ -133,6 +133,7 @@ export default function ChatRail() {
   );
 }
 
+/** A short human label for whatever the reader has on screen, shown above the thread. */
 function describe(c: ReturnType<typeof useChatCtx>["context"]): { kind: string; detail: string } {
   switch (c.kind) {
     case "type": return { kind: "type", detail: c.type };

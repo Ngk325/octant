@@ -33,10 +33,12 @@ export default function Calculator() {
   const [answers, setAnswers] = useState<(string | null)[]>(Array(8).fill(null));
   const result = useMemo(() => calculate(answers), [answers]);
   const p = usePalette();
+  /** Is this one of the four coins that actually fixes the type? */
   const isDetermining = (i: number) => (DETERMINING as readonly number[]).includes(i);
 
   usePublishContext(() => ({ kind: "calculator", best: result.best }), [result.best]);
 
+  /** Toggle an answer. Choosing the same pole again clears it, so nothing is unanswerable. */
   const set = (i: number, v: string) =>
     setAnswers((a) => a.map((x, j) => (j === i ? (x === v ? null : v) : x)));
 
