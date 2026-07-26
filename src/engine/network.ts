@@ -1,10 +1,16 @@
 import { TYPES, REL, ease, quadra, type MbtiType } from "./core";
 import { REL_NAME, type RelCode } from "./data";
 
+/** One person in a composed group. */
 export interface Member { id: string; name: string; type: MbtiType }
+/** One directed relationship: how `from` finds `to`, which is not how `to` finds `from`. */
 export interface Edge {
   from: Member; to: Member; code: RelCode; label: string; ease: number;
 }
+/**
+ * What a group looks like as a weighted digraph: mean ease, the extreme edges,
+ * supervision chains, and the best single addition.
+ */
 export interface NetworkReport {
   edges: Edge[];
   meanEase: number;
@@ -16,6 +22,7 @@ export interface NetworkReport {
   suggestions: { type: MbtiType; meanEase: number; delta: number }[];
 }
 
+/** Arithmetic mean, or 0 for an empty group rather than NaN. */
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
 
 /** Directed edge from -> to reads: "how `from` experiences `to`". */

@@ -2,12 +2,18 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import "./styles.css";
+import { ThemeProvider } from "./components/Theme";
+import { ChatProvider } from "./chat/ChatContext";
+import "./styles/index.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <ThemeProvider>
+        <ChatProvider>
+          <App />
+        </ChatProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

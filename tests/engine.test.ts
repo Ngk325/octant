@@ -30,15 +30,22 @@ describe("faithful port of the reference engine", () => {
     expect(complements(t)).toEqual(ref.complements);
     expect(frictions(t)).toEqual(ref.frictions);
 
+    // The reference engine's OPS saviors were right, so they are still checked here.
     const o = ops(t);
     expect(o.saviorObs).toBe(ref.ops.savior_obs);
     expect(o.saviorDec).toBe(ref.ops.savior_dec);
-    expect(o.demonObs).toBe(ref.ops.demon_obs);
-    expect(o.demonDec).toBe(ref.ops.demon_dec);
-    expect(o.primary).toBe(ref.ops.primary);
-    expect(o.demon).toBe(ref.ops.demon);
-    expect(o.middles).toEqual(ref.ops.middles);
-    expect(o.stack).toBe(ref.ops.stack);
+
+    // Its OPS DEMONS and ANIMALS were not, and are deliberately no longer asserted
+    // against the fixture. Two errors, both corrected in src/engine/ops.ts:
+    //   · demons used the attitude-flip (alpha) instead of the Model A opposite
+    //     (omega), which put them in the shadow block. OPS's four functions are
+    //     the ego's top four: savior Ne/Ti demons to Si/Fe, not Ni/Te.
+    //   · Play and Consume were transposed. Play is Oe+De and Consume is Oe+Di,
+    //     so the energy animals are the attitude-pure pair — which means every
+    //     one of the sixteen had its primary animal mislabelled.
+    // The fixture is left untouched as the record of the retired Python engine.
+    // The corrected derivation is asserted from first principles, against the
+    // published OPS definitions, in tests/ops.test.ts.
 
     const g = gate(t);
     expect([g.gate, g.fear, g.cave, g.treasure]).toEqual(ref.gate);

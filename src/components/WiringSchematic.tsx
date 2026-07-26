@@ -1,108 +1,125 @@
-import { stack, ops, type MbtiType } from "../engine/core";
-import { FN_COLOR, FN_GLOW } from "../engine/palette";
+import { stack, type MbtiType } from "../engine/core";
+import { ops } from "../engine/ops";
 import { SLOT_NAMES, SLOT_TAGS, FN_FULL, type Fn } from "../engine/data";
+import { SLOT_PLAIN } from "../engine/plain";
+import { usePalette } from "./Theme";
 
 /**
- * The signal path. Ego block runs live; shadow block runs dim.
- * Two independent faults are marked, because the two instruments disagree:
- *   · CSJ  — the Inferior, the cave (a slot)
- *   · OPS  — the demon animal loop, an open circuit (a pair of functions)
- * They are not the same region. That divergence is the content.
+ * The eight slots as a single readable column.
+ *
+ * Two regions are marked, and with the OPS demons corrected to the Model A
+ * opposites they now OVERLAP rather than sitting in different blocks:
+ *   · CSJ  — the Inferior is the cave (slot 4)
+ *   · OPS  — the demon pair is the tertiary and inferior (slots 3 and 4)
+ * So the two instruments agree that slot 4 is the sore spot and disagree
+ * about slot 3: CS Joseph calls it the Child and treats it as a delight,
+ * OPS calls it a demon and treats it as neglected. That is the real
+ * divergence, and it is more interesting than the one the first build drew.
+ *
+ * No text below 14px. Nothing depends on colour alone.
  */
 export default function WiringSchematic({ type }: { type: MbtiType }) {
+  const p = usePalette();
   const st = stack(type);
   const o = ops(type);
-  const openCircuit = new Set<Fn>([o.demonObs, o.demonDec]);
+  const savior = new Set<Fn>([o.saviorObs, o.saviorDec]);
+  const demon = new Set<Fn>([o.demonObs, o.demonDec]);
 
-  const W = 560, TOP = 34, GAP = 46, RAIL = 96, H = TOP + GAP * 8 + 26;
+  const ROW = 54;
+  const TOP = 44;
+  const W = 660;
+  const RAIL = 224;
+  const H = TOP + ROW * 8 + 16;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img"
-         aria-label={`Wiring schematic for ${type}`}
-         style={{ display: "block", maxWidth: 620 }}>
-      <defs>
-        <filter id="halo" x="-70%" y="-70%" width="240%" height="240%">
-          <feGaussianBlur stdDeviation="4.5" result="b" />
-          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-      </defs>
-
-      <text x="0" y="12" fill="#6f7987" fontFamily="IBM Plex Mono" fontSize="9.5"
-            letterSpacing="1.6">SIGNAL PATH · {type}</text>
-      <text x={W} y="12" fill="#6f7987" fontFamily="IBM Plex Mono" fontSize="9.5"
-            letterSpacing="1.6" textAnchor="end">
-        EGO 1–4 · SHADOW 5–8
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      width="100%"
+      role="img"
+      aria-label={`The eight function slots of ${type}, from Hero down to Demon`}
+      style={{ display: "block", maxWidth: 700, fontFamily: "Inter, system-ui, sans-serif" }}
+    >
+      <text x="0" y="16" fill="var(--muted)" fontSize="14" fontWeight="600">
+        {type} — the eight slots
+      </text>
+      <text x={W} y="16" fill="var(--muted)" fontSize="14" textAnchor="end">
+        1–4 you · 5–8 your shadow
       </text>
 
-      {st.map((fn, i) => {
-        const y = TOP + GAP * i + 18;
-        const shadow = i >= 4;
-        const isInferior = i === 3;
-        const isOpen = openCircuit.has(fn);
-        const col = FN_COLOR[fn];
-        const op = shadow ? 0.5 : 1;
+      {/* ego / shadow band */}
+      <rect x="0" y={TOP - 10} width={W} height={ROW * 4} rx="8" fill="var(--surface-2)" opacity="0.7" />
 
-        // rail segment down to the next node
-        const nextY = y + GAP;
-        const segment =
-          i < 7 ? (
-            <line
-              x1={RAIL} y1={y + 11} x2={RAIL} y2={nextY - 11}
-              stroke={i === 3 ? "#2a323e" : col}
-              strokeOpacity={i === 3 ? 1 : shadow ? 0.28 : 0.5}
-              strokeWidth={i === 3 ? 1 : 1.5}
-              strokeDasharray={i === 3 ? "3 4" : undefined}
-            />
-          ) : null;
+      {st.map((fn, i) => {
+        const y = TOP + ROW * i + ROW / 2;
+        const shadow = i >= 4;
+        const col = p.fn(fn);
+        const isCave = i === 3;
+        const isOpsSavior = !shadow && savior.has(fn);
+        const isOpsDemon = !shadow && demon.has(fn);
 
         return (
           <g key={fn}>
-            {segment}
-
-            {/* open-circuit break: a gap in the rail with two terminals */}
-            {isOpen && (
-              <>
-                <line x1={RAIL - 9} y1={y} x2={RAIL - 3} y2={y} stroke="#b3743c" strokeWidth="1.4" />
-                <line x1={RAIL + 3} y1={y} x2={RAIL + 9} y2={y} stroke="#b3743c" strokeWidth="1.4" />
-                <circle cx={RAIL} cy={y} r="13.5" fill="none" stroke="#b3743c"
-                        strokeWidth="1" strokeDasharray="2 3" opacity="0.85" />
-              </>
+            {i < 7 && (
+              <line
+                x1={RAIL} y1={y + 13} x2={RAIL} y2={y + ROW - 13}
+                stroke={i === 3 ? "var(--rule-strong)" : col}
+                strokeOpacity={i === 3 ? 1 : shadow ? 0.3 : 0.45}
+                strokeWidth={i === 3 ? 1.5 : 2}
+                strokeDasharray={i === 3 ? "4 5" : undefined}
+              />
             )}
 
-            <circle cx={RAIL} cy={y} r={shadow ? 5.5 : 7.5} fill={col} opacity={op}
-                    filter={shadow ? undefined : "url(#halo)"} />
-            {!shadow && (
-              <circle cx={RAIL} cy={y} r="13" fill="none" stroke={FN_GLOW[fn]} strokeWidth="1" />
-            )}
-
-            {/* slot index + name, left of the rail */}
-            <text x={RAIL - 26} y={y - 2} textAnchor="end" fill="#6f7987"
-                  fontFamily="IBM Plex Mono" fontSize="9.5" letterSpacing="1.2">
-              {String(i + 1).padStart(2, "0")}
+            {/* slot number + name */}
+            <text x="0" y={y + 5} fill="var(--muted)" fontSize="14" style={{ fontVariantNumeric: "tabular-nums" }}>
+              {i + 1}
             </text>
-            <text x={RAIL - 26} y={y + 9} textAnchor="end" fill={shadow ? "#4a525e" : "#aab3c0"}
-                  fontFamily="IBM Plex Mono" fontSize="10" letterSpacing="0.6">
-              {SLOT_NAMES[i].toUpperCase()}
+            <text x="22" y={y + 5} fill={shadow ? "var(--muted)" : "var(--ink)"} fontSize="16" fontWeight="500">
+              {SLOT_NAMES[i]}
+            </text>
+            <text x="22" y={y + 23} fill="var(--muted)" fontSize="14">
+              {SLOT_TAGS[i]}
             </text>
 
-            {/* function + role, right of the rail */}
-            <text x={RAIL + 26} y={y - 1} fill={col} opacity={shadow ? 0.75 : 1}
-                  fontFamily="IBM Plex Mono" fontSize="13" letterSpacing="0.5">
+            {/* node */}
+            <circle cx={RAIL} cy={y} r={shadow ? 7 : 10} fill={col} opacity={shadow ? 0.55 : 1} />
+            {!shadow && <circle cx={RAIL} cy={y} r="15" fill="none" stroke={col} strokeOpacity="0.35" strokeWidth="2" />}
+
+            {/* function + meaning */}
+            <text
+              x={RAIL + 30} y={y - 2}
+              fill={col} fontSize="17" fontWeight="600"
+              fontFamily="'IBM Plex Mono', monospace"
+              opacity={shadow ? 0.85 : 1}
+            >
               {fn}
             </text>
-            <text x={RAIL + 56} y={y - 1} fill={shadow ? "#5b6472" : "#aab3c0"}
-                  fontFamily="Inter" fontSize="11.5">
+            <text x={RAIL + 74} y={y - 2} fill={shadow ? "var(--muted)" : "var(--ink)"} fontSize="15">
               {FN_FULL[fn]}
             </text>
-            <text x={RAIL + 26} y={y + 12} fill="#5b6472" fontFamily="IBM Plex Mono"
-                  fontSize="9.5" letterSpacing="1.1">
-              [{SLOT_TAGS[i].toUpperCase()}]
-              {isInferior && "  ·  CSJ: THE CAVE"}
-              {isOpen && `  ·  OPS: OPEN CIRCUIT (${o.demon.toUpperCase()})`}
+            <text x={RAIL + 30} y={y + 19} fill="var(--muted)" fontSize="14">
+              {shortPlain(SLOT_PLAIN[SLOT_NAMES[i]])}
             </text>
+
+            {/* markers, right edge */}
+            {isCave && <Marker x={W} y={y - 8} text="CSJ: the cave" tone="var(--warn)" />}
+            {isOpsSavior && <Marker x={W} y={y - 8} text="OPS savior" tone="var(--accent-ink)" />}
+            {isOpsDemon && !isCave && <Marker x={W} y={y - 8} text="OPS demon" tone="var(--warn)" />}
+            {isOpsDemon && isCave && <Marker x={W} y={y + 10} text="OPS demon" tone="var(--warn)" />}
           </g>
         );
       })}
     </svg>
   );
 }
+
+/** A bracket calling out a region of the stack, with a label. */
+function Marker({ x, y, text, tone }: { x: number; y: number; text: string; tone: string }) {
+  return (
+    <text x={x} y={y} textAnchor="end" fill={tone} fontSize="14" fontWeight="500">
+      {text}
+    </text>
+  );
+}
+
+/** The slot plain-language line, trimmed to its first clause for the diagram. */
+const shortPlain = (s: string) => s.split(".")[0] + ".";

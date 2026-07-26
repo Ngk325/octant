@@ -1,18 +1,27 @@
-import { alpha, beta, omega, quadra, ops, coins, gate, stack, type MbtiType } from "./core";
+import { alpha, beta, omega, quadra, gate, stack, type MbtiType } from "./core";
+import { ops, coins } from "./ops";
+import { PLAIN_BY_ID } from "./plain";
 import {
   REL_NAME, REL_DEF, REL_SCORE, FN_FULL, COIN_LABELS,
   INTERACTION_STYLE, ROMANCE, GROUP, type Fn, type RelCode,
 } from "./data";
 
+/** The kind of thing an entry is. Drives filtering and the pairing logic. */
 export type Category =
   | "Function" | "Archetype" | "Relation" | "Quadra" | "Animal"
   | "Romance Style" | "Interaction Style" | "Gate" | "Coin"
   | "Temperament" | "Concept";
 
+/**
+ * One defined term: plain gloss, short definition, full definition, and where it sits
+ * in this app's own model.
+ */
 export interface Entry {
   id: string;
   term: string;
   category: Category;
+  /** Plain English, no vocabulary. Attached from plain.ts when ENTRIES is built. */
+  plain: string;
   short: string;
   definition: string;
   inSystem?: string;
@@ -20,12 +29,19 @@ export interface Entry {
   seeAlso?: string[];
 }
 
+/** What happens when two terms of the same category meet. */
 export interface Pairing { headline: string; body: string }
 
-const E = (e: Entry) => e;
+/** Authored without `plain`; it is attached from PLAIN_BY_ID when ENTRIES is built. */
+type Draft = Omit<Entry, "plain">;
+/**
+ * Identity helper that types an entry draft at the point of authoring, so a typo in a
+ * field name fails here rather than silently producing an entry with a missing field.
+ */
+const E = (e: Draft) => e;
 
 /* ══════════════════════════════ FUNCTIONS ══════════════════════════════ */
-const FUNCTIONS: Entry[] = [
+const FUNCTIONS: Draft[] = [
   E({ id: "ne", term: "Ne", category: "Function",
     short: "Extraverted Intuition — branching possibility read off the outside world.",
     definition:
@@ -77,7 +93,7 @@ const FUNCTIONS: Entry[] = [
 ];
 
 /* ══════════════════════════════ ARCHETYPES ══════════════════════════════ */
-const ARCHETYPES: Entry[] = [
+const ARCHETYPES: Draft[] = [
   E({ id: "hero", term: "Hero", category: "Archetype",
     short: "Slot 1. The function you are best at and most identified with.",
     definition:
@@ -98,7 +114,7 @@ const ARCHETYPES: Entry[] = [
     definition:
       "The gateway to the subconscious: the function a person feels chronically inadequate at and quietly organises their life to avoid. Under stress it erupts in crude, exaggerated form. Faced deliberately rather than avoided, it converts into what CS Joseph calls aspirational power — which is why every growth gate in this system is named for an Inferior.",
     inSystem: "Determines the type's Gate. The Dual supplies precisely this function as their Hero.",
-    source: "Beebe; Jung", seeAlso: ["gate", "duality", "child", "shadow"] }),
+    source: "Beebe; Jung", seeAlso: ["gate", "rel-du", "child", "shadow"] }),
   E({ id: "nemesis", term: "Nemesis", category: "Archetype",
     short: "Slot 5. The Hero's attitude-flip, running as worry.",
     definition:
@@ -128,7 +144,7 @@ const QUADRA_ELEMENTS: Record<string, Fn[]> = {
   Alpha: ["Ne", "Si", "Ti", "Fe"], Beta: ["Se", "Ni", "Ti", "Fe"],
   Gamma: ["Se", "Ni", "Te", "Fi"], Delta: ["Ne", "Si", "Te", "Fi"],
 };
-const QUADRAS: Entry[] = [
+const QUADRAS: Draft[] = [
   E({ id: "alpha", term: "Alpha", category: "Quadra",
     short: "Ne · Si · Ti · Fe. Open enquiry inside a comfortable, unhierarchical group.",
     definition:
@@ -153,7 +169,7 @@ const QUADRAS: Entry[] = [
 ];
 
 /* ══════════════════════════════ ANIMALS ══════════════════════════════ */
-const ANIMALS: Entry[] = [
+const ANIMALS: Draft[] = [
   E({ id: "play", term: "Play", category: "Animal",
     short: "Extraverted observing + introverted deciding. Interactive, exploratory, low-stakes.",
     definition:
@@ -181,7 +197,7 @@ const ANIMALS: Entry[] = [
 ];
 
 /* ══════════════════════════════ ROMANCE STYLES ══════════════════════════════ */
-const ROMANCE_STYLES: Entry[] = [
+const ROMANCE_STYLES: Draft[] = [
   E({ id: "infantile", term: "Infantile", category: "Romance Style",
     short: "Relates through play. Wants delight and lightness, and resists being managed.",
     definition:
@@ -209,7 +225,7 @@ const ROMANCE_STYLES: Entry[] = [
 ];
 
 /* ══════════════════════════════ INTERACTION STYLES ══════════════════════════════ */
-const INTERACTION_STYLES: Entry[] = [
+const INTERACTION_STYLES: Draft[] = [
   E({ id: "in-charge", term: "In-Charge", category: "Interaction Style",
     short: "Initiating + Directing. Moves first and says what to do.",
     definition:
@@ -237,7 +253,7 @@ const INTERACTION_STYLES: Entry[] = [
 ];
 
 /* ══════════════════════════════ GATES ══════════════════════════════ */
-const GATES: Entry[] = [
+const GATES: Draft[] = [
   E({ id: "gate-of-chaos", term: "Gate of Chaos", category: "Gate",
     short: "IxxJ. Fear of the unplanned. Opens onto freedom.",
     definition:
@@ -261,7 +277,7 @@ const GATES: Entry[] = [
 ];
 
 /* ══════════════════════════════ TEMPERAMENTS ══════════════════════════════ */
-const TEMPERAMENTS: Entry[] = [
+const TEMPERAMENTS: Draft[] = [
   E({ id: "nt", term: "Intellectuals (NT)", category: "Temperament",
     short: "Competence. Wants to understand the system well enough to command it.",
     definition: "ENTP, INTP, ENTJ, INTJ. Organised around mastery and models: the point of a thing is to understand its mechanism well enough to predict or command it. Status is conferred by being right and by knowing why, and competence is assumed until disproved. Impatient with claims that cannot be defended, and with process observed for its own sake.",
@@ -315,32 +331,32 @@ const COIN_POLES: [string, string, string, string][] = [
   ["movement", "Movement", "Optimises for continued progress.",
    "Keeps things moving and repairs later. A derived coin: true when Initiating and Direct disagree."],
 ];
-const COINS_E: Entry[] = COIN_POLES.map(([id, term, short, definition], i) =>
+const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) =>
   E({ id, term, category: "Coin", short, definition,
       inSystem: `Coin ${Math.floor(i / 2) + 1} — ${COIN_LABELS[Math.floor(i / 2)]}. ` +
         ([0, 2, 3, 4].includes(Math.floor(i / 2)) ? "Determining." : "Confirming: derivable from the determining coins."),
       source: "Objective Personality System; CS Joseph", seeAlso: ["coin", "savior"] }));
 
 /* ══════════════════════════════ CONCEPTS ══════════════════════════════ */
-const CONCEPTS: Entry[] = [
+const CONCEPTS: Draft[] = [
   E({ id: "complement", term: "Complement", category: "Concept",
     short: "Your Dual and your Activity partner. They supply the function you fear.",
     definition:
       "The two types whose strengths sit exactly where your conscious stack is weakest. Your Dual leads with your Inferior; your Activity partner leads with the function that mobilises you. Time with a Complement is restful rather than exciting: they handle, without effort or resentment, the thing you have organised your life around avoiding.",
     inSystem: "Derived as {Duality, Activity}. This is what the network layer optimises on, because it measures structural fit rather than felt chemistry.",
-    seeAlso: ["catalyst", "duality", "activity", "inferior"] }),
+    seeAlso: ["catalyst", "rel-du", "rel-ac", "inferior"] }),
   E({ id: "catalyst", term: "Catalyst", category: "Concept",
     short: "The two types whose Hero is your Nemesis. Stimulating rather than restful.",
     definition:
       "Your Nemesis is your Hero's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Nemesis.",
     inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Extinguishment and Mirage partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
-    seeAlso: ["complement", "nemesis", "extinguishment", "mirage"] }),
+    seeAlso: ["complement", "nemesis", "rel-ex", "rel-mi"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
     short: "A 0–100 modelling score for how one type experiences another. Directional.",
     definition:
       "A ladder over the sixteen relations, monotone in structural comfort. It is a modelling choice rather than a measurement, and it is deliberately directional: four relations are asymmetric, so the score one person gives is not the score they receive. Any single 'compatibility number' for a pair is concealing that.",
     inSystem: "Derived from the relation code, never stored separately, so the two cannot disagree.",
-    seeAlso: ["supervisor", "benefactor", "relation"] }),
+    seeAlso: ["rel-sr", "rel-be", "relation"] }),
   E({ id: "dual-lighting", term: "Dual-lighting", category: "Concept",
     short: "Holding CSJ and OPS as two instruments, unreconciled, because they disagree.",
     definition:
@@ -362,7 +378,7 @@ const CONCEPTS: Entry[] = [
     short: "Ego, Subconscious, Unconscious and Superego — four whole types inside one person.",
     definition:
       "CS Joseph's model in which each person carries four complete type-patterns: the Ego they identify with, the Subconscious they aspire to (their Dual), the Unconscious that runs when the Ego is exhausted (their Extinguisher) and the Superego they perform under threat. Useful as a reading of state rather than of identity.",
-    source: "CS Joseph", seeAlso: ["ego", "shadow", "duality"] }),
+    source: "CS Joseph", seeAlso: ["ego", "shadow", "rel-du"] }),
   E({ id: "ego", term: "Ego", category: "Concept",
     short: "Slots 1–4. The conscious stack a person identifies with.",
     definition: "Hero, Parent, Child and Inferior. Two aware positions and two unaware, two optimistic and two pessimistic. This is the part of the wiring a person will describe if asked who they are.",
@@ -375,7 +391,7 @@ const CONCEPTS: Entry[] = [
     short: "The Socionics eight-position map from which all intertype relations are derived.",
     definition:
       "Positions a type's eight information elements into four blocks. Every relation in this system is a statement about how two Model A arrangements line up — which of my functions lands on which of yours.",
-    source: "Augustinavičiūtė", seeAlso: ["relation", "quadra", "duality"] }),
+    source: "Augustinavičiūtė", seeAlso: ["relation", "quadra", "rel-du"] }),
   E({ id: "quadra", term: "Quadra", category: "Concept",
     short: "One of four groups of types sharing the same four ego functions, and so the same values.",
     definition:
@@ -395,7 +411,7 @@ const CONCEPTS: Entry[] = [
     short: "One of sixteen structural relationships between two types.",
     definition:
       "Derived from how two Model A arrangements overlay. Twelve are symmetric and four — Supervisor/Supervisee and Benefactor/Beneficiary — are asymmetric, meaning the relationship is genuinely different from each side.",
-    source: "Augustinavičiūtė", seeAlso: ["ease", "model-a", "duality", "conflict"] }),
+    source: "Augustinavičiūtė", seeAlso: ["ease", "model-a", "rel-du", "rel-cf"] }),
   E({ id: "gate", term: "Growth gate", category: "Concept",
     short: "The structural fear a type is built around, and what integrating it unlocks.",
     definition:
@@ -407,6 +423,125 @@ const CONCEPTS: Entry[] = [
     definition:
       "The most contested and least stable part of OPS. This build deliberately holds it out: the base type is exactly four bits, and the fine layer adds further independent bits on top. Modelled as a bit vector with a fixed four-bit head, the extension can attach later without touching the 256-cell core.",
     source: "Objective Personality System", seeAlso: ["coin", "animal", "consume", "sleep"] }),
+
+  /* ── the three non-ego sides. `ego` and `shadow` had entries; these did
+     not, which left the four-sides material and everything the Octagram
+     builds on top of it without anywhere to look a word up. ── */
+
+  E({ id: "subconscious", term: "Subconscious", category: "Concept",
+    short: "Your ego stack reversed. The person you wish you were, and your Dual.",
+    definition:
+      "Take your four ego slots and read them backwards: your Inferior becomes its Hero, your Hero becomes its Inferior. The resulting type is your Dual, which is why being around a Dual feels like being handed a version of yourself you cannot reach alone. The gateway is the Inferior, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
+    inSystem: "fourSides(t)[1]. Derived by omega — flip both attitude and element on the dominant and auxiliary. relation(t, subconscious) is always DU.",
+    source: "CS Joseph", seeAlso: ["four-sides", "inferior", "rel-du", "unconscious", "subconscious-development"] }),
+
+  E({ id: "unconscious", term: "Unconscious", category: "Concept",
+    short: "Your shadow four in order. Who you become in a crisis.",
+    definition:
+      "Its Hero is your Nemesis, and its stack runs Nemesis, Critic, Trickster, Demon. Access is through worry rather than choice, which is why it shows up under pressure without being invited. Developed deliberately it produces wisdom and a kind of maturity available no other way; left alone it gets forced later — the three-quarter-life crisis is this side arriving whether or not you went looking for it.",
+    inSystem: "fourSides(t)[2]. Derived by alpha — flip attitude only. relation(t, unconscious) is always EX.",
+    source: "CS Joseph", seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego"] }),
+
+  E({ id: "superego", term: "Superego", category: "Concept",
+    short: "Your shadow reversed. Who you are at your worst, and where the sins live.",
+    definition:
+      "Its Hero is your Demon — the single function you trust least, running the show. That is exactly why the superego reads as a parasite persona rather than as you: it is competent, it is confident, and none of it is yours. The gateway is fear. It produces power, and the material is blunt that the power is destructive until the other three sides have been developed first. The Octagram's Deadly Sins are described as this side overriding the ego's stated values.",
+    inSystem: "fourSides(t)[3]. Derived by beta — swap element only. relation(t, superego) is always SE.",
+    source: "CS Joseph", seeAlso: ["four-sides", "demon", "rel-se", "deadly-sin", "unconscious"] }),
+
+  E({ id: "midlife-crisis", term: "Midlife crisis", category: "Concept",
+    short: "The subconscious forcing its way in when it was not developed on purpose.",
+    definition:
+      "Described as arriving roughly between 38 and 48: the ego's usual moves keep working externally and stop landing internally, and the pressure is the subconscious demanding to be lived rather than admired. Read structurally it is not a breakdown but a deadline. The same mechanism arrives later for the unconscious, as the three-quarter-life crisis. The whole point of doing gateway work early is that both can be walked through instead of waited for.",
+    inSystem: "Not computed — it is the narrative consequence of leaving the subconscious undeveloped.",
+    source: "CS Joseph", seeAlso: ["subconscious", "inferior", "gate", "octagram-theme"] }),
+
+  /* ── the Octagram. The most advanced material the app carries. Each entry
+     says which parts are derived by this engine and which are taken from
+     source, because the difference matters more here than anywhere else. ── */
+
+  E({ id: "octagram", term: "Octagram", category: "Concept",
+    short: "A second layer over the sixteen: what a type is chasing, and what nurture did to how it chases.",
+    definition:
+      "Where the type model describes wiring, the Octagram describes what that wiring has been reaching for and the shape a particular life has bent it into. It has two layers. The wheel layer is structural: sixteen types make eight dyads, each dyad shares one lifelong want called a Cognitive Origin, and each origin is drawn as a wheel with four surrounding positions. The theme layer is biographical: two coins, neither derivable from type, that say whether the subconscious was nurtured in childhood and which side of the mind is running the show now. Two people of the same type can sit in the same wheel and completely different themes, and that is the whole reason the layer exists.",
+    inSystem:
+      "Fully derived here. A dyad is a type and its subconscious, which is its Dual; a temple is one orbit of the four-sides operation. tests/octagram.test.ts checks all eight dyads and all four temples against the published lists — they match 16/16 with no lookup table. Only the NAMES are authored.",
+    source: "CS Joseph",
+    seeAlso: ["temple", "temple-wheel", "cognitive-origin", "octagram-theme", "four-sides"] }),
+
+  E({ id: "temple", term: "Temple", category: "Concept",
+    short: "One of four departments of a life — Soul, Mind, Heart, Body. Four types each.",
+    definition:
+      "Soul is identity and character: who somebody actually is. Mind is knowledge and judgement. Heart is desire and regard. Body is action, achievement and what is left behind. The four types in a temple are not four similar people — they are the four sides of one mind, which is why they belong together and why a temple is closed under the four-sides operation.",
+    inSystem:
+      "Derived, not listed. templeOf(t) returns the sorted four-sides orbit of t. Soul = {ENFP, ISTJ, ESTP, INFJ}; Mind = {ESTJ, INFP, ENFJ, ISTP}; Heart = {ENTP, ISFJ, ESFP, INTJ}; Body = {ESFJ, INTP, ENTJ, ISFP}. Each matches the published membership exactly.",
+    source: "CS Joseph", seeAlso: ["octagram", "temple-wheel", "four-sides", "subconscious"] }),
+
+  E({ id: "temple-wheel", term: "Temple wheel", category: "Concept",
+    short: "A dyad's origin drawn as a cross: virtue above, sin below, two poles either side.",
+    definition:
+      "Eight wheels, two per temple. At the centre is the Cognitive Origin — the thing this dyad wants. Directly above is the Living Virtue, the honest route to it, which characteristically involves giving somebody else some of what you want. Directly below is the Deadly Sin, the counterfeit: easier to reach, resembles the origin, and leaves you hungrier. To either side are the two poles, which are not good and bad but two different distortions — the drift of a childhood that fed you and the drift of one that did not.",
+    inSystem:
+      "A wheel is a Dual pair, so wheelOf(t).pair is always [t, subconscious(t)]. Both members share one origin. The four contents are authored from source; the membership is computed.",
+    source: "CS Joseph",
+    seeAlso: ["cognitive-origin", "living-virtue", "deadly-sin", "shadow-pole", "rel-du"] }),
+
+  E({ id: "cognitive-origin", term: "Cognitive origin", category: "Concept",
+    short: "The one thing a dyad has been after its whole life. Eight of them.",
+    definition:
+      "Not a goal — you do not complete an origin; it is what sits underneath the goals. Justification (ENFP/ISTJ), Intimacy (ESTP/INFJ), Satisfaction (ENTP/ISFJ), Reverence (ESFP/INTJ), Authority (ESTJ/INFP), Validation (ENFJ/ISTP), Discovery (ESFJ/INTP), Purpose (ENTJ/ISFP). Described as emerging from the hero function and shared with the subconscious, which is why a dyad and not a type is the unit.",
+    inSystem: "Authored, but the dyad each belongs to is derived. Origins for ENFP/ISTJ, ENTP/ISFJ, ENTJ/ISFP and ESFJ/INTP are corroborated across more than one published source.",
+    source: "CS Joseph", seeAlso: ["temple-wheel", "octagram", "hero", "subconscious"] }),
+
+  E({ id: "living-virtue", term: "Living virtue", category: "Concept",
+    short: "The honest route to an origin — what the wheel claims to be.",
+    definition:
+      "Absolution, Chastity, Compassion, Modesty, Initiative, Humility, Generativity, Generosity. Each is the traditional contrary of its wheel's Deadly Sin, and each involves relinquishing something: forgiving the debt, spending closeness sparingly, wanting somebody else to be satisfied too. Described as what the ego temple aspires to be rather than what it reliably is.",
+    inSystem: "Authored from source. The eight are exactly the classical contrary virtues, which is a strong internal check on the table.",
+    source: "CS Joseph", seeAlso: ["deadly-sin", "temple-wheel", "cognitive-origin"] }),
+
+  E({ id: "deadly-sin", term: "Deadly sin", category: "Concept",
+    short: "The counterfeit of an origin — what the superego reaches for instead.",
+    definition:
+      "Wrath, Lust, Envy, Vainglory, Sloth, Pride, Gluttony, Greed: the classical eight of the Evagrian tradition, one per wheel. Each is the shortest path to something that looks like the origin. Wrath is Justification collected by force; Gluttony is Discovery consumed rather than made. Described as the superego overriding the ego's stated values, which lines up with this app's account of the superego as a persona that produces power and is destructive until the other three sides are developed.",
+    inSystem: "Authored from source. Landing on the exact classical eight is why the table is trusted despite thin sourcing elsewhere.",
+    source: "CS Joseph", seeAlso: ["living-virtue", "superego", "temple-wheel"] }),
+
+  E({ id: "shadow-pole", term: "Shadow pole", category: "Concept",
+    short: "Where somebody whose subconscious was denied in childhood drifts.",
+    definition:
+      "A strategy that once worked, still running long after the situation that required it. The clearest published example is the Intimacy wheel: a child in a disabling environment learns to put others on a pedestal in order to get needs met, and Idolatry is what that becomes in an adult. The pole is not a moral failing; it is an adaptation with an expiry date.",
+    inSystem: "Paired with the aspirational pole. Which of a wheel's two poles is the shadow is the least certain part of the Octagram data this app carries — see the app's recorded gaps.",
+    source: "CS Joseph", seeAlso: ["aspirational-pole", "subconscious-development", "temple-wheel"] }),
+
+  E({ id: "aspirational-pole", term: "Aspirational pole", category: "Concept",
+    short: "Where somebody whose subconscious was nurtured in childhood drifts.",
+    definition:
+      "The other distortion — the one that comes from having been given something early. On the Intimacy wheel it is Objectification: a child rewarded and enabled for high performance is, in effect, valued as a producer, and learns to treat people including themselves as things that perform. Having your needs met is not the same as being undamaged, and this pole is where that shows.",
+    inSystem: "Paired with the shadow pole. Both are distortions of the same origin, so 'aspirational' names a direction rather than a recommendation.",
+    source: "CS Joseph", seeAlso: ["shadow-pole", "subconscious-development", "temple-wheel"] }),
+
+  E({ id: "subconscious-development", term: "Subconscious development (SD / UD)", category: "Concept",
+    short: "Whether the subconscious was fed in childhood. Set early, and largely fixed.",
+    definition:
+      "SD means the subconscious side was nurtured; UD means it was denied. It is described as a fact about upbringing rather than about wiring, so it cannot be read off a four-letter type, and two people of one type routinely differ. It decides which pole of the wheel a person drifts toward, and it is half of what fixes the Octagram theme.",
+    inSystem: "Not derivable. Presented as a self-reported coin, in the same posture as the OPS subtype coins.",
+    source: "CS Joseph", seeAlso: ["octagram-focus", "octagram-theme", "subconscious", "shadow-pole"] }),
+
+  E({ id: "octagram-focus", term: "Focus (SF / UF)", category: "Concept",
+    short: "Which half of the mind is doing the work right now. Unlike development, this moves.",
+    definition:
+      "SF means running out of the subconscious side, UF means running out of the shadow. This is the mutable coin, and moving it is what most of the growth material in this app is actually about — the gateway functions, the two crises, the deliberate shadow work. Where development says what you were given, focus says what you are doing with it this year.",
+    inSystem: "Not derivable. Combined with development it fixes one of four themes.",
+    source: "CS Joseph", seeAlso: ["subconscious-development", "octagram-theme", "gate", "four-sides"] }),
+
+  E({ id: "octagram-theme", term: "Octagram theme", category: "Concept",
+    short: "Joy, Decay, Hope or Despair — the season a life is currently in.",
+    definition:
+      "Development crossed with focus. SD|SF is Joy, the psychological summer, described as the variant most resistant to despair. SD|UF is Decay, autumn: good roots running on the shadow, and an entropic position — taking other people's ideas, rules and norms and testing them to breaking. UD|SF is Hope, spring: denied early, but in conditions that now feed you, with the direction of travel upward. UD|UF is Despair, winter: denied and still constrained, with the shadow and superego doing the work because nothing else is available. Everyone cycles through all four; none is a verdict.",
+    inSystem: "Computed from the two coins by themeFor(). The coins themselves are self-reported.",
+    source: "CS Joseph",
+    seeAlso: ["subconscious-development", "octagram-focus", "octagram", "midlife-crisis"] }),
 ];
 
 /* ══════════════════════════════ RELATIONS ══════════════════════════════ */
@@ -428,7 +563,7 @@ const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
   SE: "Your ego block lands on their super-ego block — the positions they are conscious of being bad at. You are effortlessly demonstrating the exact competence they feel judged for lacking, and they are doing the same to you. At distance this reads as impressive and intriguing; in sustained contact it reads as a standing rebuke neither of you intended.",
   CF: "Their leading function lands on your most defended weakness and yours on theirs. Maximum friction, and usually mutual bafflement about why.",
 };
-const RELATIONS: Entry[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
+const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
   E({ id: `rel-${c.toLowerCase()}`, term: REL_NAME[c], category: "Relation",
      short: REL_DEF[c].split(".")[0] + ".",
      definition: RELATION_EXTRA[c] ?? REL_DEF[c],
@@ -437,11 +572,15 @@ const RELATIONS: Entry[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
          ? "Asymmetric — the reciprocal relation is different." : "Symmetric."}`,
      source: "Augustinavičiūtė", seeAlso: ["relation", "ease", "model-a"] }));
 
-export const ENTRIES: Entry[] = [
+const DRAFTS: Draft[] = [
   ...FUNCTIONS, ...ARCHETYPES, ...QUADRAS, ...ANIMALS, ...ROMANCE_STYLES,
   ...INTERACTION_STYLES, ...GATES, ...TEMPERAMENTS, ...COINS_E, ...CONCEPTS, ...RELATIONS,
 ];
 
+/** Every entry carries its plain-language gloss. Completeness is asserted in tests. */
+export const ENTRIES: Entry[] = DRAFTS.map((d) => ({ ...d, plain: PLAIN_BY_ID[d.id] ?? "" }));
+
+/** A stable, url-safe id from a term. */
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /** Canonical id -> entry, plus an alias for each entry's term name.
@@ -452,19 +591,23 @@ export const BY_ID = (() => {
   for (const e of ENTRIES) { const a = slugify(e.term); if (!m.has(a)) m.set(a, e); }
   return m;
 })();
+/** Every category present in ENTRIES, for the lexicon's filter row. */
 export const CATEGORIES: Category[] = [
   "Function", "Archetype", "Relation", "Quadra", "Animal", "Romance Style",
   "Interaction Style", "Gate", "Coin", "Temperament", "Concept",
 ];
 const slug = slugify;
+/** Find an entry by term or alias, case-insensitively. Used by inline <Term> tags. */
 export const lookup = (name: string): Entry | undefined =>
   BY_ID.get(slug(name)) ?? ENTRIES.find((e) => e.term.toLowerCase() === name.toLowerCase());
 
+/** Free-text search across term, gloss and definition. */
 export function search(q: string): Entry[] {
   const t = q.trim().toLowerCase();
   if (!t) return ENTRIES;
   return ENTRIES.filter((e) =>
     e.term.toLowerCase().includes(t) || e.short.toLowerCase().includes(t) ||
+    e.plain.toLowerCase().includes(t) ||
     e.definition.toLowerCase().includes(t) || e.category.toLowerCase().includes(t));
 }
 
@@ -583,6 +726,7 @@ const ANIMAL_TEXT: Record<string, (a: string, b: string) => Pairing> = {
     body: `Opposite on both axes. One of you is doing outward what the other does inward, in both perceiving and judging. Genuinely complementary coverage, and the highest tempo mismatch available — neither will find the other's default speed natural.` }),
 };
 
+/** Whether a function observes or decides — the split every function pairing turns on. */
 function fnClass(a: Fn, b: Fn): "same" | "alpha" | "beta" | "omega" | "unrelated" {
   if (a === b) return "same";
   if (alpha[a] === b) return "alpha";
@@ -591,6 +735,7 @@ function fnClass(a: Fn, b: Fn): "same" | "alpha" | "beta" | "omega" | "unrelated
   return "unrelated";
 }
 
+/** What happens when two cognitive functions meet, derived from their kinds and attitudes. */
 function functionPair(a: Fn, b: Fn): Pairing {
   switch (fnClass(a, b)) {
     case "same": return { headline: `${a} meets ${a}`,
@@ -606,7 +751,9 @@ function functionPair(a: Fn, b: Fn): Pairing {
   }
 }
 
+/** What happens when two archetype slots meet. */
 function slotPair(a: string, b: string): Pairing {
+  /** The ego-block position of a slot, used to pitch the pairing text. */
   const ego = (s: string) => ["Hero", "Parent", "Child", "Inferior"].includes(s);
   if (a === b) return { headline: `${a} meets ${a}`,
     body: `The same position on both sides, so the same function is being used with the same degree of awareness. Mutual recognition, and no correction available in either direction.` };
@@ -640,6 +787,7 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
         : QUADRA_TEXT.opposite(a.term, b.term);
     }
     case "Animal": {
+      /** Attitude of a function as a word, for interpolating into pairing prose. */
       const att = (t: string): [boolean, boolean] =>
         ({ Play: [true, false], Blast: [false, true], Consume: [true, true], Sleep: [false, false] } as const)[
           t as "Play"] as [boolean, boolean];
@@ -677,12 +825,17 @@ export interface AspectRow {
   aLabel: string; bLabel: string; pairing: Pairing | null; determining?: boolean;
 }
 
+/** The lexicon id for one pole of one coin. */
 const coinPoleId = (v: string) =>
   COIN_POLES.find(([, term]) => term === v)?.[0] ?? slug(v);
 
 /** Every comparable aspect of two types, with the pairing text for that combination. */
 export function compareAspects(a: MbtiType, b: MbtiType): AspectRow[] {
   const rows: AspectRow[] = [];
+  /**
+   * Add an entry, guarding against a duplicate id — two entries with one id would make
+   * one of them unreachable from every link in the app.
+   */
   const push = (aspect: string, aId: string, bId: string, aLabel: string, bLabel: string, determining?: boolean) =>
     rows.push({ aspect, aId, bId, aLabel, bLabel, pairing: pairTerms(aId, bId), determining });
 
