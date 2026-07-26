@@ -53,11 +53,19 @@
    * build on any other value. One place to read the whole responsive story:
    *
    *   1180px  chat rail: sticky column -> fixed overlay (with scrim)
-   *   1100px  tabs -> menu button; .g3 3 -> 2 columns
+   *   1100px  .g3 3 -> 2 columns
    *    900px  .g-side stacks; page padding tightens; body text steps down
-   *    700px  .g2 stacks; the wordmark tagline hides
+   *    700px  .g2 stacks
    *    640px  .g3 -> 1 column; rows stack; vertical labels un-rotate
    *    480px  chat rail goes full-screen
+   *
+   * The masthead is different: whether the tab row fits depends on the
+   * masthead's own width — the docked chat rail takes 384px of it — so its
+   * two thresholds are CONTAINER queries on the `masthead` container, not
+   * viewport media queries:
+   *
+   *   1399px  the wordmark tagline hides
+   *   1239px  tabs collapse to the menu button
    *
    * The grids deliberately do NOT all collapse at once — .g3 and .g2 step
    * down before .g-side so a tablet gets intermediate layouts instead of

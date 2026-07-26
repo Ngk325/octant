@@ -132,7 +132,7 @@ Tasks 1–3 set secrets, which apply without a deploy. If you want to force one
 anyway, an empty commit is enough:
 
 ```sh
-npm test          # expect 498 passed
+npm test          # expect 540 passed
 npm run build     # expect no errors
 git commit --allow-empty -m "Redeploy to pick up the new secrets"
 git push origin claude/personality-app-redesign-ax1rdi

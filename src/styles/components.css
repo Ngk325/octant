@@ -31,6 +31,13 @@
   border-bottom: 1px solid var(--rule);
   margin: 0 calc(var(--s5) * -1) var(--s5);
   padding: var(--s3) var(--s5);
+  /* The tab row collapses based on the masthead's OWN width, not the
+     viewport's — with the chat rail docked, a 1440px screen gives the
+     masthead ~1050px, and a viewport media query cannot know that. The
+     container thresholds live in the same contract block as the media
+     breakpoints in tokens.css. */
+  container-type: inline-size;
+  container-name: masthead;
 }
 .masthead-inner {
   max-width: var(--shell);
@@ -827,11 +834,16 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   }
 }
 
-@media (max-width: 1100px) {
-  /* Collapse the tabs BEFORE they would wrap to a second line — eight tabs
-     need ~744px, which stops fitting around 1210px with the shell padding.
-     Keeping the masthead single-line at every width is what lets
-     --masthead-h be a constant, and every scroll offset derives from it. */
+/* The tagline goes first — it is decoration, and it is 185px the tabs need. */
+@container masthead (max-width: 1399px) {
+  .wordmark span { display: none; }
+}
+
+@container masthead (max-width: 1239px) {
+  /* Collapse the tabs BEFORE they would ever wrap to a second line. Keeping
+     the masthead single-line at every width and every rail state is what
+     lets --masthead-h be a constant that every scroll offset derives from —
+     scripts/shots.mjs asserts the measured height against the token. */
   .menu-toggle { display: inline-grid; }
   /* nav.tabs carried the auto margin that pushed the actions right; when it
      leaves the flow the actions inherit the job. */
@@ -850,6 +862,9 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
     min-width: 200px;
   }
   nav.tabs.open { display: flex; }
+}
+
+@media (max-width: 1100px) {
   .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -867,9 +882,6 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 
 @media (max-width: 700px) {
   .g2 { grid-template-columns: minmax(0, 1fr); }
-  /* "Octant" alone fits a 320px phone beside four icon buttons; the italic
-     tagline is what used to force a document-wide horizontal scrollbar. */
-  .wordmark span { display: none; }
 }
 
 @media (max-width: 640px) {

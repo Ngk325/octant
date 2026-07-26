@@ -26,7 +26,7 @@ import DivergingEase from "../components/DivergingEase";
 /* ------------------------------------------------------------------ *
  * The course.
  *
- * Ten stages, each one assuming only what the previous ones taught. The
+ * Twelve stages, each one assuming only what the previous ones taught. The
  * rule for every stage: a plain-language explanation you could give to
  * someone in a pub comes first, the machinery goes inside "the exact
  * mechanics", and there is always something on screen to look at.
