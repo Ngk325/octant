@@ -41,6 +41,14 @@
     // thing standing between the app and the public internet.
     "run_worker_first": true
   },
+  // The user list for Google sign-in: who is pending, approved or blocked.
+  // Create it once with `npx wrangler kv namespace create USERS` and paste the
+  // id it prints below. Without this binding Google sign-in is unavailable and
+  // the wall falls back to invite codes alone — it does not fail open.
+  "kv_namespaces": [
+    { "binding": "USERS", "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+  ],
+
   "observability": { "enabled": true }
   // GEMINI_API_KEY is a secret, never a var:  npx wrangler secret put GEMINI_API_KEY
 }

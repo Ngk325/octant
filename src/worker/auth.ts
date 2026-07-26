@@ -1,52 +1,68 @@
+import { b64url, unb64url, sign, digest, sameDigest, signatureMatches } from "./crypto";
+import { getUser, isOwner, type UserEnv } from "./users";
+
 /* ------------------------------------------------------------------ *
  * THE ACCESS WALL
  *
  * Nothing is public. Every request — the app shell, every asset, every
- * API route — has to carry a valid session, and the only way to get one
- * is an invite code the owner issued.
+ * API route — has to carry a valid session, and there are exactly two
+ * ways to get one:
  *
- * Design notes, because the failure modes here matter more than the
- * feature:
+ *   1. An INVITE CODE the owner issued. Stateless: the code either
+ *      matches ACCESS_CODES or it does not.
+ *   2. GOOGLE SIGN-IN, which additionally requires the owner to have
+ *      approved that person. That approval lives in KV (src/worker/users.ts).
  *
- *   - It FAILS CLOSED. If ACCESS_CODES or AUTH_SECRET is missing the
- *     site serves a "not configured" page rather than serving the app.
- *     A misconfigured auth wall that silently lets everyone in is worse
- *     than no auth wall, because you think you have one.
+ * Design notes, because the failure modes matter more than the feature:
+ *
+ *   - It FAILS CLOSED. With no way in configured at all, the site serves
+ *     a "not configured" page rather than the app. A misconfigured wall
+ *     that lets everyone in is worse than none, because you think you
+ *     have one.
  *   - Codes are compared as SHA-256 digests, so neither the code nor its
  *     length leaks through response timing.
- *   - The session is a signed token, not a stored one. HMAC-SHA256 over
- *     {label, expiry}, so there is no session table to keep and a forged
- *     cookie needs the secret.
- *   - Revocation is by editing ACCESS_CODES. Rotating AUTH_SECRET signs
- *     everyone out at once.
- *   - Unauthenticated /api/* gets JSON 401, not the HTML gate, so the
- *     app's own fetches fail cleanly instead of parsing a login page.
+ *   - Sessions are signed, not stored. HMAC-SHA256 over {kind, label,
+ *     email, expiry}, so there is no session table and a forged cookie
+ *     needs the secret.
+ *   - A Google session's STATUS is re-checked against KV on every
+ *     request that is not a static asset. Checking on assets too would
+ *     mean a KV read per JS chunk for no benefit — an asset is useless
+ *     without the shell, and the shell is checked. So disabling somebody
+ *     takes effect on their next page load or API call.
+ *   - Unauthenticated /api/* gets JSON, not the HTML gate, so the app's
+ *     own fetches fail cleanly instead of parsing a login page.
+ *
+ * The one thing that is instant: rotating AUTH_SECRET invalidates every
+ * session everywhere, both kinds, immediately. That is the panic button,
+ * and it is the answer to KV's eventual consistency.
  * ------------------------------------------------------------------ */
 
-export interface AuthEnv {
+export interface AuthEnv extends UserEnv {
   /**
-   * The invite codes, comma-separated. Either bare codes or `label:code`
-   * pairs — the label is only ever used in logs and the sign-out line, so
-   * you can tell who is who and revoke one person without disturbing the
-   * rest.
+   * Invite codes, comma-separated. Either bare codes or `label:code` pairs —
+   * the label is how you tell people apart and revoke one without disturbing
+   * the rest.
    *
    *   ACCESS_CODES="nick:river-oak-8821,jane:slate-harbor-4417"
    */
   ACCESS_CODES?: string;
   /** HMAC key for session cookies. Any long random string. Rotating it signs everyone out. */
   AUTH_SECRET?: string;
+  /** Set when Google sign-in is available; only used here to decide whether to offer it. */
+  GOOGLE_CLIENT_ID?: string;
+  GOOGLE_CLIENT_SECRET?: string;
 }
 
 const COOKIE = "octant_session";
 const SESSION_DAYS = 30;
 
-/* Brute-force brake. Per-isolate like the chat limiter, so it is a brake
-   and not a lock — but codes are long enough that this plus the digest
-   comparison is a reasonable posture for an invite-only app.
+/* Brute-force brake. Per-isolate like the chat limiter, so it is a brake and
+   not a lock — but codes are long enough that this plus the digest comparison
+   is a reasonable posture for an invite-only app.
  *
- * Only FAILURES are counted. Counting every attempt would lock out someone
- * who legitimately signs in on several devices in one sitting, while doing
- * nothing extra against an attacker — who, by definition, only ever fails. */
+ * Only FAILURES are counted. Counting every attempt would lock out someone who
+ * legitimately signs in on several devices in one sitting, while doing nothing
+ * extra against an attacker — who, by definition, only ever fails. */
 const LOGIN_WINDOW_MS = 10 * 60_000;
 const MAX_LOGIN_FAILURES = 10;
 const failures = new Map<string, number[]>();
@@ -68,50 +84,6 @@ function recordFailure(ip: string, now: number): void {
   if (failures.size > 5_000) failures.clear(); // crude ceiling on isolate memory
 }
 
-/* ------------------------------ crypto ------------------------------ */
-
-const enc = new TextEncoder();
-
-/** Base64url, unpadded — safe in a cookie value. */
-function b64url(buf: ArrayBuffer | Uint8Array): string {
-  const b = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
-  let s = "";
-  for (const x of b) s += String.fromCharCode(x);
-  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-/** Reverse of b64url, restoring the padding base64 needs. */
-function unb64url(s: string): string {
-  const t = s.replace(/-/g, "+").replace(/_/g, "/");
-  return atob(t + (t.length % 4 ? "=".repeat(4 - (t.length % 4)) : ""));
-}
-
-/** Import the signing secret as an HMAC-SHA256 key. */
-async function hmacKey(secret: string): Promise<CryptoKey> {
-  return crypto.subtle.importKey(
-    "raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
-  );
-}
-
-/** HMAC-SHA256 over the payload, base64url encoded. */
-async function sign(payload: string, secret: string): Promise<string> {
-  return b64url(await crypto.subtle.sign("HMAC", await hmacKey(secret), enc.encode(payload)));
-}
-
-/** SHA-256 digest, hex. Used so code comparison leaks neither value nor length. */
-async function digest(s: string): Promise<string> {
-  const h = await crypto.subtle.digest("SHA-256", enc.encode(s));
-  return [...new Uint8Array(h)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-/** Constant-time compare of two equal-length hex strings. */
-function sameDigest(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let out = 0;
-  for (let i = 0; i < a.length; i++) out |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return out === 0;
-}
-
 /* ------------------------------- codes ------------------------------- */
 
 interface Invite { label: string; code: string }
@@ -131,9 +103,16 @@ export function parseCodes(raw: string | undefined): Invite[] {
     .filter((x) => x.code.length > 0);
 }
 
-/** True when the wall has everything it needs. Anything else fails closed. */
+/** Is Google sign-in available on this deployment? */
+export const googleAvailable = (env: AuthEnv): boolean =>
+  !!env.GOOGLE_CLIENT_ID && !!env.GOOGLE_CLIENT_SECRET && !!env.AUTH_SECRET && !!env.USERS;
+
+/**
+ * True when there is a signing secret AND at least one way in.
+ * Anything else fails closed.
+ */
 export const isConfigured = (env: AuthEnv): boolean =>
-  !!env.AUTH_SECRET && parseCodes(env.ACCESS_CODES).length > 0;
+  !!env.AUTH_SECRET && (parseCodes(env.ACCESS_CODES).length > 0 || googleAvailable(env));
 
 /** The label attached to a submitted code, or null. Constant-time against every code. */
 async function labelForCode(env: AuthEnv, submitted: string): Promise<string | null> {
@@ -147,33 +126,46 @@ async function labelForCode(env: AuthEnv, submitted: string): Promise<string | n
 
 /* ------------------------------ session ------------------------------ */
 
-interface Session { label: string; exp: number }
+export type SessionKind = "code" | "google";
 
-/** Mint a session token: the label and an expiry, signed. Nothing is stored server-side. */
-async function issue(label: string, secret: string, now: number): Promise<string> {
+export interface Session {
+  label: string;
+  kind: SessionKind;
+  /** Present only for Google sessions. The key into the user list. */
+  email?: string;
+  exp: number;
+}
+
+/** Mint a session token. Nothing is stored server-side; the signature is the proof. */
+export async function issueSession(
+  label: string, kind: SessionKind, email: string | undefined, secret: string, now: number,
+): Promise<string> {
   const exp = Math.floor(now / 1000) + SESSION_DAYS * 86_400;
-  const payload = b64url(enc.encode(JSON.stringify({ l: label, e: exp })));
+  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, e: exp }));
   return `${payload}.${await sign(payload, secret)}`;
 }
 
-/** Verify and decode a session token. Returns null for anything forged, malformed or expired. */
 async function open(token: string, secret: string, now: number): Promise<Session | null> {
   const dot = token.lastIndexOf(".");
   if (dot < 1) return null;
   const payload = token.slice(0, dot);
-  if (!sameDigest(await digest(token.slice(dot + 1)), await digest(await sign(payload, secret)))) {
-    return null;
-  }
+  if (!(await signatureMatches(token.slice(dot + 1), await sign(payload, secret)))) return null;
   try {
-    const { l, e } = JSON.parse(unb64url(payload)) as { l?: string; e?: number };
+    const { l, k, m, e } = JSON.parse(unb64url(payload)) as
+      { l?: string; k?: string; m?: string; e?: number };
     if (typeof e !== "number" || e * 1000 <= now) return null;
-    return { label: typeof l === "string" ? l : "guest", exp: e };
+    return {
+      label: typeof l === "string" ? l : "guest",
+      // Sessions minted before Google existed carry no kind; they are codes.
+      kind: k === "google" ? "google" : "code",
+      email: typeof m === "string" ? m : undefined,
+      exp: e,
+    };
   } catch {
     return null;
   }
 }
 
-/** Pull one cookie out of a Cookie header. */
 function cookieValue(header: string | null, name: string): string | null {
   for (const part of (header ?? "").split(";")) {
     const [k, ...rest] = part.trim().split("=");
@@ -182,7 +174,7 @@ function cookieValue(header: string | null, name: string): string | null {
   return null;
 }
 
-/** The caller's session, or null. The single source of truth for "are you in". */
+/** The caller's session, or null. Signature and expiry only — status is checked separately. */
 export async function readSession(
   request: Request, env: AuthEnv, now = Date.now(),
 ): Promise<Session | null> {
@@ -197,15 +189,10 @@ const secureFlag = (url: URL) =>
   url.protocol === "https:" || !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(url.hostname)
     ? "; Secure" : "";
 
-/**
- * The session cookie: HttpOnly so script cannot read it, Lax so it survives a normal
- * navigation, and Secure everywhere except plain-http localhost.
- */
-const setCookie = (url: URL, token: string) =>
+export const setCookie = (url: URL, token: string) =>
   `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_DAYS * 86_400}${secureFlag(url)}`;
 
-/** The same cookie with a zero lifetime — how logout works. */
-const clearCookie = (url: URL) =>
+export const clearCookie = (url: URL) =>
   `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secureFlag(url)}`;
 
 /* ------------------------------ handlers ------------------------------ */
@@ -217,19 +204,30 @@ const json = (body: unknown, status: number, headers: Record<string, string> = {
   });
 
 /**
- * `/api/auth/*` — login, logout and "who am I".
+ * `/api/auth/*` — the code login, logout and "who am I".
  *
- * Returns null when the path is not an auth route, so the caller can carry on.
+ * Google's own routes live in google.ts and are dispatched by index.ts;
+ * this handler deliberately ignores anything under /api/auth/google/.
+ * Returns null when the path is not ours, so the caller can carry on.
  */
 export async function handleAuth(
   request: Request, env: AuthEnv, now = Date.now(),
 ): Promise<Response | null> {
   const url = new URL(request.url);
   if (!url.pathname.startsWith("/api/auth/")) return null;
+  if (url.pathname.startsWith("/api/auth/google/")) return null;
 
   if (url.pathname === "/api/auth/me") {
     const session = await readSession(request, env, now);
-    return json({ signedIn: !!session, label: session?.label ?? null }, 200);
+    const user = session?.email ? await getUser(env, session.email) : null;
+    return json({
+      signedIn: !!session,
+      label: session?.label ?? null,
+      kind: session?.kind ?? null,
+      email: session?.email ?? null,
+      status: user?.status ?? null,
+      owner: !!user?.owner || (!!session?.email && isOwner(env, session.email)),
+    }, 200);
   }
 
   if (url.pathname === "/api/auth/logout") {
@@ -239,7 +237,7 @@ export async function handleAuth(
 
   if (url.pathname === "/api/auth/login") {
     if (request.method !== "POST") return json({ error: "Use POST." }, 405);
-    if (!isConfigured(env)) {
+    if (!env.AUTH_SECRET || parseCodes(env.ACCESS_CODES).length === 0) {
       return json({ error: "Access is not configured on this deployment." }, 503);
     }
 
@@ -263,7 +261,7 @@ export async function handleAuth(
       return json({ error: "That code was not recognised." }, 401);
     }
 
-    const token = await issue(label, env.AUTH_SECRET!, now);
+    const token = await issueSession(label, "code", undefined, env.AUTH_SECRET, now);
     return json({ ok: true, label }, 200, { "set-cookie": setCookie(url, token) });
   }
 
@@ -271,11 +269,20 @@ export async function handleAuth(
 }
 
 /**
+ * A static asset — something with a file extension, outside /api.
+ *
+ * These skip the KV status check. An asset is useless without the shell, the
+ * shell IS checked, and checking here would cost a KV read per chunk on every
+ * cold load for no security gained.
+ */
+export const isAssetPath = (pathname: string) =>
+  !pathname.startsWith("/api/") && /\.[a-z0-9]+$/i.test(pathname);
+
+/**
  * The gate. Call this before ANY other routing.
  *
- * Returns null when the caller may proceed, or the Response to send when
- * they may not — the JSON 401 for API paths, the HTML gate for everything
- * else, and the "not configured" page when the deployment has no codes.
+ * Returns null when the caller may proceed, or the Response to send when they
+ * may not: JSON for API paths, HTML for everything else.
  */
 export async function requireAuth(
   request: Request, env: AuthEnv, now = Date.now(),
@@ -289,17 +296,28 @@ export async function requireAuth(
       : page(unconfiguredPage(), 503);
   }
 
-  if (await readSession(request, env, now)) return null;
+  const session = await readSession(request, env, now);
+  if (!session) {
+    return isApi
+      ? json({ error: "Not signed in." }, 401)
+      : page(gatePage(env, url.pathname + url.search), 401);
+  }
 
+  // A code session is as good as its code, and that was checked at login.
+  if (session.kind === "code") return null;
+
+  // A Google session is only as good as the owner's current answer about it.
+  if (isAssetPath(url.pathname)) return null;
+
+  const user = session.email ? await getUser(env, session.email) : null;
+  if (user?.status === "approved") return null;
+
+  const blocked = user?.status === "blocked";
   return isApi
-    ? json({ error: "Not signed in." }, 401)
-    : page(gatePage(), 401);
+    ? json({ error: blocked ? "Access withdrawn." : "Waiting for approval." }, 403)
+    : page(blocked ? blockedPage() : pendingPage(session.email ?? ""), 403);
 }
 
-/**
- * An HTML response for the gate. no-store and DENY framing, because this page is the
- * security boundary and must not be cached or embedded.
- */
 const page = (html: string, status: number) =>
   new Response(html, {
     status,
@@ -348,26 +366,44 @@ const SHELL = (title: string, body: string) => `<!doctype html>
           padding-top:20px; border-top:1px solid var(--rule); }
   code { font:400 15px/1.5 ui-monospace,SFMono-Regular,monospace; background:var(--surface);
          border:1px solid var(--rule); border-radius:4px; padding:1px 5px; }
+  .google { display:flex; align-items:center; justify-content:center; gap:10px;
+            background:var(--surface); color:var(--ink); border:1px solid var(--rule);
+            text-decoration:none; padding:13px 18px; border-radius:6px;
+            font:500 17px/1 system-ui,sans-serif; }
+  .or { display:flex; align-items:center; gap:12px; color:var(--ink2);
+        font:400 14px/1 system-ui,sans-serif; margin:22px 0; }
+  .or::before, .or::after { content:""; flex:1; height:1px; background:var(--rule); }
+  .mark { font-size:34px; line-height:1; margin-bottom:12px; }
 </style>
 </head><body><main>${body}</main></body></html>`;
 
-/**
- * The access page. Self-contained: the stylesheet it would otherwise load is itself
- * behind this wall.
- */
-const gatePage = () => SHELL("Octant — access required", `
-  <h1>Octant</h1>
-  <p>This is a private instrument. Enter the access code you were given.</p>
-  <form id="f" autocomplete="off">
+const GOOGLE_MARK = `<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62Z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18Z"/><path fill="#FBBC05" d="M3.96 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.96a9 9 0 0 0 0 8.08l3-2.33Z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58Z"/></svg>`;
+
+const gatePage = (env: AuthEnv, returnTo: string) => {
+  const google = googleAvailable(env)
+    ? `<a class="google" href="/api/auth/google/start?returnTo=${encodeURIComponent(returnTo)}">
+         ${GOOGLE_MARK}<span>Continue with Google</span></a>
+       <div class="or">or use an access code</div>`
+    : "";
+  const codes = parseCodes(env.ACCESS_CODES).length > 0
+    ? `<form id="f" autocomplete="off">
     <label for="code">Access code</label>
     <input id="code" name="code" type="password" autocomplete="one-time-code"
-           autocapitalize="off" autocorrect="off" spellcheck="false" required autofocus>
+           autocapitalize="off" autocorrect="off" spellcheck="false" required>
     <button id="go" type="submit">Enter</button>
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
-  </form>
-  <p class="fine">Codes are issued by the owner of this deployment. If yours has stopped
-  working it has been revoked or rotated.</p>
-<script>
+  </form>`
+    : "";
+
+  return SHELL("Octant — access required", `
+  <h1>Octant</h1>
+  <p>This is a private instrument. Sign in to continue.</p>
+  ${google}
+  ${codes}
+  <p class="fine">Access is granted by the owner of this deployment. If you sign in with
+  Google you will wait until they approve you; if your code has stopped working it has been
+  revoked or rotated.</p>
+${codes ? `<script>
 (function () {
   var f = document.getElementById('f'), go = document.getElementById('go'),
       msg = document.getElementById('msg'), code = document.getElementById('code');
@@ -390,17 +426,38 @@ const gatePage = () => SHELL("Octant — access required", `
     });
   });
 })();
-</script>`);
+</script>` : ""}`);
+};
 
-/**
- * Shown when the wall has no codes or no secret. Names the exact commands, because
- * the person seeing it is the one who has to fix it.
- */
+const pendingPage = (email: string) => SHELL("Octant — waiting for approval", `
+  <div class="mark">◷</div>
+  <h1>Waiting for approval</h1>
+  <p>You are signed in${email ? ` as <b>${escapeHtml(email)}</b>` : ""}, and the owner has been
+  told you are here. Nothing opens until they say yes.</p>
+  <p>You can close this. Come back and reload once you hear from them — you will not have to
+  sign in again.</p>
+  <p class="fine">Signed in as the wrong account?
+  <a href="/api/auth/google/start">Switch account</a>.</p>`);
+
+const blockedPage = () => SHELL("Octant — no access", `
+  <div class="mark">—</div>
+  <h1>No access</h1>
+  <p>This account cannot open Octant. If you think that is a mistake, ask the person who
+  gave you the link.</p>
+  <p class="fine"><a href="/api/auth/google/start">Try a different account</a>.</p>`);
+
 const unconfiguredPage = () => SHELL("Octant — not configured", `
   <h1>Not configured</h1>
   <p>This deployment has an access wall but no way through it, so it is refusing
   everyone — including you. That is deliberate: failing open would publish the site.</p>
-  <p class="fine">Set both secrets and redeploy:<br><br>
-  <code>npx wrangler secret put ACCESS_CODES</code><br>
-  <code>npx wrangler secret put AUTH_SECRET</code><br><br>
-  Full instructions are in <code>DEPLOY.md</code>, step 3.</p>`);
+  <p class="fine">Set a signing secret and at least one way in, then redeploy:<br><br>
+  <code>npx wrangler secret put AUTH_SECRET</code><br>
+  <code>npx wrangler secret put ACCESS_CODES</code><br><br>
+  Full instructions are in <code>DEPLOY.md</code>, step 2.</p>`);
+
+/** Escape anything a person controls before it goes into HTML. */
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}

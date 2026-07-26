@@ -5,6 +5,12 @@ OAuth change — the code fails closed without them, exactly like the access wal
 
 ---
 
+> **Steps 1 and 2 are already done** — see `OCTANTSETUPSTATUS.md`. The Google Cloud
+> project is `stratfield-partners`, the client is `Octant Worker`, and the
+> redirect URIs are registered. What is left is the client **secret**, Resend,
+> the Cloudflare secrets, and the KV namespace. Keeping the full instructions
+> below so the setup is reproducible if it ever has to be done again.
+
 ## 1 · Google OAuth client (~4 minutes)
 
 1. Go to <https://console.cloud.google.com/projectcreate> and make a project.
@@ -28,7 +34,7 @@ OAuth change — the code fails closed without them, exactly like the access wal
      scheme and no trailing slash:
 
      ```
-     https://<your-worker-url>/api/auth/google/callback
+     https://typology.stratfield-partners.workers.dev/api/auth/google/callback
      ```
 
      Add a second one for local testing:
@@ -68,9 +74,9 @@ Cloudflare dashboard → **Workers & Pages** → **typology** → **Settings** �
 
 | Name | Value |
 |---|---|
-| `GOOGLE_CLIENT_ID` | from step 1.4 — ends `.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_ID` | `754718810816-oik5c621sgorqk71efp0rka7liagcf14.apps.googleusercontent.com` |
 | `GOOGLE_CLIENT_SECRET` | from step 1.4 — starts `GOCSPX-` |
-| `OWNER_EMAIL` | your own Google address. This is who gets approved automatically and who the admin page belongs to. |
+| `OWNER_EMAIL` | `nick@stratfieldpartners.com` — auto-approved, and the only account `/admin` opens for. |
 | `RESEND_API_KEY` | from step 2.3. Omit it to run without email. |
 
 The existing `ACCESS_CODES`, `AUTH_SECRET` and `GEMINI_API_KEY` all stay as

@@ -9,6 +9,7 @@ import Calculator from "./views/Calculator";
 import Network from "./views/Network";
 import Matrix from "./views/Matrix";
 import Lexicon from "./views/Lexicon";
+import Admin from "./views/Admin";
 import ChatRail from "./chat/ChatRail";
 import { useChatCtx } from "./chat/ChatContext";
 import { usePalette } from "./components/Theme";
@@ -135,6 +136,9 @@ export default function App() {
             <Route path="/matrix" element={<Matrix />} />
             <Route path="/lexicon" element={<Lexicon />} />
             <Route path="/lexicon/:id" element={<Lexicon />} />
+            {/* Unlisted in the nav on purpose — the API refuses non-owners, so this
+                is the owner's door, not a page anyone else needs to see exists. */}
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

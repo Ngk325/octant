@@ -249,10 +249,16 @@ describe("auth routing", () => {
 
   it("reports who you are, and says so honestly when nobody", async () => {
     expect(await (await handleAuth(get("/api/auth/me"), ENV, NOW))!.json())
-      .toEqual({ signedIn: false, label: null });
+      .toMatchObject({ signedIn: false, label: null, kind: null, email: null, owner: false });
     const cookie = await signIn("river-oak-8821");
     expect(await (await handleAuth(get("/api/auth/me", cookie), ENV, NOW))!.json())
-      .toEqual({ signedIn: true, label: "nick" });
+      .toMatchObject({ signedIn: true, label: "nick", kind: "code", email: null });
+  });
+
+  /** Google has its own handler; this one must not swallow those paths. */
+  it("leaves the Google routes to google.ts", async () => {
+    expect(await handleAuth(get("/api/auth/google/start"), ENV, NOW)).toBeNull();
+    expect(await handleAuth(get("/api/auth/google/callback?code=x"), ENV, NOW)).toBeNull();
   });
 
   it("clears the cookie on logout", async () => {
