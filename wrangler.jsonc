@@ -1,0 +1,11 @@
+{
+  // Optional: only used if you later move from Pages to Workers Static Assets.
+  // Pages deployment needs none of this — it reads package.json and dist/.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stratfield-typology",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

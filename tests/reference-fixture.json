@@ -1,0 +1,1804 @@
+{
+ "types": [
+  "ENTP",
+  "INTP",
+  "ENTJ",
+  "INTJ",
+  "ENFP",
+  "INFP",
+  "ENFJ",
+  "INFJ",
+  "ESTP",
+  "ISTP",
+  "ESTJ",
+  "ISTJ",
+  "ESFP",
+  "ISFP",
+  "ESFJ",
+  "ISFJ"
+ ],
+ "perType": {
+  "ENTP": {
+   "stack": [
+    "Ne",
+    "Ti",
+    "Fe",
+    "Si",
+    "Ni",
+    "Te",
+    "Fi",
+    "Se"
+   ],
+   "quadra": "Alpha",
+   "socionics": "ILE",
+   "ops": {
+    "savior_obs": "Ne",
+    "savior_dec": "Ti",
+    "demon_obs": "Ni",
+    "demon_dec": "Te",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Observer",
+    "Identity",
+    "Gather",
+    "Thinking",
+    "iNtuition",
+    "Initiating",
+    "Informative",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of Obligation",
+    "Being trapped, tied down, or bored",
+    "Routine, continuity and commitment (Si)",
+    "Legacy / follow-through"
+   ],
+   "complements": [
+    "ISFJ",
+    "ESFJ"
+   ],
+   "frictions": [
+    "ISFP",
+    "ESFP"
+   ],
+   "fourSides": [
+    "ENTP",
+    "ISFJ",
+    "INTJ",
+    "ESFP"
+   ]
+  },
+  "INTP": {
+   "stack": [
+    "Ti",
+    "Ne",
+    "Si",
+    "Fe",
+    "Te",
+    "Ni",
+    "Se",
+    "Fi"
+   ],
+   "quadra": "Alpha",
+   "socionics": "LII",
+   "ops": {
+    "savior_obs": "Ne",
+    "savior_dec": "Ti",
+    "demon_obs": "Ni",
+    "demon_dec": "Te",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Decider",
+    "Identity",
+    "Gather",
+    "Thinking",
+    "iNtuition",
+    "Responding",
+    "Informative",
+    "Control"
+   ],
+   "gate": [
+    "Gate of the Tribe",
+    "Tribal rejection / being found incompetent",
+    "The tribe and its expectations (Fe)",
+    "Leadership / impact"
+   ],
+   "complements": [
+    "ESFJ",
+    "ISFJ"
+   ],
+   "frictions": [
+    "ESFP",
+    "ISFP"
+   ],
+   "fourSides": [
+    "INTP",
+    "ESFJ",
+    "ENTJ",
+    "ISFP"
+   ]
+  },
+  "ENTJ": {
+   "stack": [
+    "Te",
+    "Ni",
+    "Se",
+    "Fi",
+    "Ti",
+    "Ne",
+    "Si",
+    "Fe"
+   ],
+   "quadra": "Gamma",
+   "socionics": "LIE",
+   "ops": {
+    "savior_obs": "Ni",
+    "savior_dec": "Te",
+    "demon_obs": "Ne",
+    "demon_dec": "Ti",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Decider",
+    "Tribe",
+    "Organize",
+    "Thinking",
+    "iNtuition",
+    "Initiating",
+    "Direct",
+    "Control"
+   ],
+   "gate": [
+    "Gate of the Self",
+    "Internal emptiness / worthlessness",
+    "Sitting alone with yourself (Fi)",
+    "Authenticity / self-acceptance"
+   ],
+   "complements": [
+    "ISFP",
+    "ESFP"
+   ],
+   "frictions": [
+    "ISFJ",
+    "ESFJ"
+   ],
+   "fourSides": [
+    "ENTJ",
+    "ISFP",
+    "INTP",
+    "ESFJ"
+   ]
+  },
+  "INTJ": {
+   "stack": [
+    "Ni",
+    "Te",
+    "Fi",
+    "Se",
+    "Ne",
+    "Ti",
+    "Fe",
+    "Si"
+   ],
+   "quadra": "Gamma",
+   "socionics": "ILI",
+   "ops": {
+    "savior_obs": "Ni",
+    "savior_dec": "Te",
+    "demon_obs": "Ne",
+    "demon_dec": "Ti",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Observer",
+    "Tribe",
+    "Organize",
+    "Thinking",
+    "iNtuition",
+    "Responding",
+    "Direct",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of Chaos",
+    "Unpredictability / losing the plot",
+    "New experience taken raw (Se)",
+    "Freedom / adaptability"
+   ],
+   "complements": [
+    "ESFP",
+    "ISFP"
+   ],
+   "frictions": [
+    "ESFJ",
+    "ISFJ"
+   ],
+   "fourSides": [
+    "INTJ",
+    "ESFP",
+    "ENTP",
+    "ISFJ"
+   ]
+  },
+  "ENFP": {
+   "stack": [
+    "Ne",
+    "Fi",
+    "Te",
+    "Si",
+    "Ni",
+    "Fe",
+    "Ti",
+    "Se"
+   ],
+   "quadra": "Delta",
+   "socionics": "IEE",
+   "ops": {
+    "savior_obs": "Ne",
+    "savior_dec": "Fi",
+    "demon_obs": "Ni",
+    "demon_dec": "Fe",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Observer",
+    "Identity",
+    "Gather",
+    "Feeling",
+    "iNtuition",
+    "Initiating",
+    "Informative",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of Obligation",
+    "Being trapped, tied down, or bored",
+    "Routine, continuity and commitment (Si)",
+    "Legacy / follow-through"
+   ],
+   "complements": [
+    "ISTJ",
+    "ESTJ"
+   ],
+   "frictions": [
+    "ISTP",
+    "ESTP"
+   ],
+   "fourSides": [
+    "ENFP",
+    "ISTJ",
+    "INFJ",
+    "ESTP"
+   ]
+  },
+  "INFP": {
+   "stack": [
+    "Fi",
+    "Ne",
+    "Si",
+    "Te",
+    "Fe",
+    "Ni",
+    "Se",
+    "Ti"
+   ],
+   "quadra": "Delta",
+   "socionics": "EII",
+   "ops": {
+    "savior_obs": "Ne",
+    "savior_dec": "Fi",
+    "demon_obs": "Ni",
+    "demon_dec": "Fe",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Decider",
+    "Identity",
+    "Gather",
+    "Feeling",
+    "iNtuition",
+    "Responding",
+    "Informative",
+    "Control"
+   ],
+   "gate": [
+    "Gate of the Tribe",
+    "Tribal rejection / being found incompetent",
+    "The tribe and its expectations (Te)",
+    "Leadership / impact"
+   ],
+   "complements": [
+    "ESTJ",
+    "ISTJ"
+   ],
+   "frictions": [
+    "ESTP",
+    "ISTP"
+   ],
+   "fourSides": [
+    "INFP",
+    "ESTJ",
+    "ENFJ",
+    "ISTP"
+   ]
+  },
+  "ENFJ": {
+   "stack": [
+    "Fe",
+    "Ni",
+    "Se",
+    "Ti",
+    "Fi",
+    "Ne",
+    "Si",
+    "Te"
+   ],
+   "quadra": "Beta",
+   "socionics": "EIE",
+   "ops": {
+    "savior_obs": "Ni",
+    "savior_dec": "Fe",
+    "demon_obs": "Ne",
+    "demon_dec": "Fi",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Decider",
+    "Tribe",
+    "Organize",
+    "Feeling",
+    "iNtuition",
+    "Initiating",
+    "Direct",
+    "Control"
+   ],
+   "gate": [
+    "Gate of the Self",
+    "Internal emptiness / worthlessness",
+    "Sitting alone with yourself (Ti)",
+    "Authenticity / self-acceptance"
+   ],
+   "complements": [
+    "ISTP",
+    "ESTP"
+   ],
+   "frictions": [
+    "ISTJ",
+    "ESTJ"
+   ],
+   "fourSides": [
+    "ENFJ",
+    "ISTP",
+    "INFP",
+    "ESTJ"
+   ]
+  },
+  "INFJ": {
+   "stack": [
+    "Ni",
+    "Fe",
+    "Ti",
+    "Se",
+    "Ne",
+    "Fi",
+    "Te",
+    "Si"
+   ],
+   "quadra": "Beta",
+   "socionics": "IEI",
+   "ops": {
+    "savior_obs": "Ni",
+    "savior_dec": "Fe",
+    "demon_obs": "Ne",
+    "demon_dec": "Fi",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Observer",
+    "Tribe",
+    "Organize",
+    "Feeling",
+    "iNtuition",
+    "Responding",
+    "Direct",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of Chaos",
+    "Unpredictability / losing the plot",
+    "New experience taken raw (Se)",
+    "Freedom / adaptability"
+   ],
+   "complements": [
+    "ESTP",
+    "ISTP"
+   ],
+   "frictions": [
+    "ESTJ",
+    "ISTJ"
+   ],
+   "fourSides": [
+    "INFJ",
+    "ESTP",
+    "ENFP",
+    "ISTJ"
+   ]
+  },
+  "ESTP": {
+   "stack": [
+    "Se",
+    "Ti",
+    "Fe",
+    "Ni",
+    "Si",
+    "Te",
+    "Fi",
+    "Ne"
+   ],
+   "quadra": "Beta",
+   "socionics": "SLE",
+   "ops": {
+    "savior_obs": "Se",
+    "savior_dec": "Ti",
+    "demon_obs": "Si",
+    "demon_dec": "Te",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Observer",
+    "Identity",
+    "Gather",
+    "Thinking",
+    "Sensing",
+    "Initiating",
+    "Direct",
+    "Control"
+   ],
+   "gate": [
+    "Gate of Obligation",
+    "Being trapped, tied down, or bored",
+    "Routine, continuity and commitment (Ni)",
+    "Legacy / follow-through"
+   ],
+   "complements": [
+    "INFJ",
+    "ENFJ"
+   ],
+   "frictions": [
+    "INFP",
+    "ENFP"
+   ],
+   "fourSides": [
+    "ESTP",
+    "INFJ",
+    "ISTJ",
+    "ENFP"
+   ]
+  },
+  "ISTP": {
+   "stack": [
+    "Ti",
+    "Se",
+    "Ni",
+    "Fe",
+    "Te",
+    "Si",
+    "Ne",
+    "Fi"
+   ],
+   "quadra": "Beta",
+   "socionics": "LSI",
+   "ops": {
+    "savior_obs": "Se",
+    "savior_dec": "Ti",
+    "demon_obs": "Si",
+    "demon_dec": "Te",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Decider",
+    "Identity",
+    "Gather",
+    "Thinking",
+    "Sensing",
+    "Responding",
+    "Direct",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of the Tribe",
+    "Tribal rejection / being found incompetent",
+    "The tribe and its expectations (Fe)",
+    "Leadership / impact"
+   ],
+   "complements": [
+    "ENFJ",
+    "INFJ"
+   ],
+   "frictions": [
+    "ENFP",
+    "INFP"
+   ],
+   "fourSides": [
+    "ISTP",
+    "ENFJ",
+    "ESTJ",
+    "INFP"
+   ]
+  },
+  "ESTJ": {
+   "stack": [
+    "Te",
+    "Si",
+    "Ne",
+    "Fi",
+    "Ti",
+    "Se",
+    "Ni",
+    "Fe"
+   ],
+   "quadra": "Delta",
+   "socionics": "LSE",
+   "ops": {
+    "savior_obs": "Si",
+    "savior_dec": "Te",
+    "demon_obs": "Se",
+    "demon_dec": "Ti",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Decider",
+    "Tribe",
+    "Organize",
+    "Thinking",
+    "Sensing",
+    "Initiating",
+    "Direct",
+    "Control"
+   ],
+   "gate": [
+    "Gate of the Self",
+    "Internal emptiness / worthlessness",
+    "Sitting alone with yourself (Fi)",
+    "Authenticity / self-acceptance"
+   ],
+   "complements": [
+    "INFP",
+    "ENFP"
+   ],
+   "frictions": [
+    "INFJ",
+    "ENFJ"
+   ],
+   "fourSides": [
+    "ESTJ",
+    "INFP",
+    "ISTP",
+    "ENFJ"
+   ]
+  },
+  "ISTJ": {
+   "stack": [
+    "Si",
+    "Te",
+    "Fi",
+    "Ne",
+    "Se",
+    "Ti",
+    "Fe",
+    "Ni"
+   ],
+   "quadra": "Delta",
+   "socionics": "SLI",
+   "ops": {
+    "savior_obs": "Si",
+    "savior_dec": "Te",
+    "demon_obs": "Se",
+    "demon_dec": "Ti",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Observer",
+    "Tribe",
+    "Organize",
+    "Thinking",
+    "Sensing",
+    "Responding",
+    "Direct",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of Chaos",
+    "Unpredictability / losing the plot",
+    "New experience taken raw (Ne)",
+    "Freedom / adaptability"
+   ],
+   "complements": [
+    "ENFP",
+    "INFP"
+   ],
+   "frictions": [
+    "ENFJ",
+    "INFJ"
+   ],
+   "fourSides": [
+    "ISTJ",
+    "ENFP",
+    "ESTP",
+    "INFJ"
+   ]
+  },
+  "ESFP": {
+   "stack": [
+    "Se",
+    "Fi",
+    "Te",
+    "Ni",
+    "Si",
+    "Fe",
+    "Ti",
+    "Ne"
+   ],
+   "quadra": "Gamma",
+   "socionics": "SEE",
+   "ops": {
+    "savior_obs": "Se",
+    "savior_dec": "Fi",
+    "demon_obs": "Si",
+    "demon_dec": "Fe",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Observer",
+    "Identity",
+    "Gather",
+    "Feeling",
+    "Sensing",
+    "Initiating",
+    "Informative",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of Obligation",
+    "Being trapped, tied down, or bored",
+    "Routine, continuity and commitment (Ni)",
+    "Legacy / follow-through"
+   ],
+   "complements": [
+    "INTJ",
+    "ENTJ"
+   ],
+   "frictions": [
+    "INTP",
+    "ENTP"
+   ],
+   "fourSides": [
+    "ESFP",
+    "INTJ",
+    "ISFJ",
+    "ENTP"
+   ]
+  },
+  "ISFP": {
+   "stack": [
+    "Fi",
+    "Se",
+    "Ni",
+    "Te",
+    "Fe",
+    "Si",
+    "Ne",
+    "Ti"
+   ],
+   "quadra": "Gamma",
+   "socionics": "ESI",
+   "ops": {
+    "savior_obs": "Se",
+    "savior_dec": "Fi",
+    "demon_obs": "Si",
+    "demon_dec": "Fe",
+    "primary": "Play",
+    "demon": "Blast",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "P-[C/S]-[S/C]-B"
+   },
+   "coins": [
+    "Decider",
+    "Identity",
+    "Gather",
+    "Feeling",
+    "Sensing",
+    "Responding",
+    "Informative",
+    "Control"
+   ],
+   "gate": [
+    "Gate of the Tribe",
+    "Tribal rejection / being found incompetent",
+    "The tribe and its expectations (Te)",
+    "Leadership / impact"
+   ],
+   "complements": [
+    "ENTJ",
+    "INTJ"
+   ],
+   "frictions": [
+    "ENTP",
+    "INTP"
+   ],
+   "fourSides": [
+    "ISFP",
+    "ENTJ",
+    "ESFJ",
+    "INTP"
+   ]
+  },
+  "ESFJ": {
+   "stack": [
+    "Fe",
+    "Si",
+    "Ne",
+    "Ti",
+    "Fi",
+    "Se",
+    "Ni",
+    "Te"
+   ],
+   "quadra": "Alpha",
+   "socionics": "ESE",
+   "ops": {
+    "savior_obs": "Si",
+    "savior_dec": "Fe",
+    "demon_obs": "Se",
+    "demon_dec": "Fi",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Decider",
+    "Tribe",
+    "Organize",
+    "Feeling",
+    "Sensing",
+    "Initiating",
+    "Informative",
+    "Movement"
+   ],
+   "gate": [
+    "Gate of the Self",
+    "Internal emptiness / worthlessness",
+    "Sitting alone with yourself (Ti)",
+    "Authenticity / self-acceptance"
+   ],
+   "complements": [
+    "INTP",
+    "ENTP"
+   ],
+   "frictions": [
+    "INTJ",
+    "ENTJ"
+   ],
+   "fourSides": [
+    "ESFJ",
+    "INTP",
+    "ISFP",
+    "ENTJ"
+   ]
+  },
+  "ISFJ": {
+   "stack": [
+    "Si",
+    "Fe",
+    "Ti",
+    "Ne",
+    "Se",
+    "Fi",
+    "Te",
+    "Ni"
+   ],
+   "quadra": "Alpha",
+   "socionics": "SEI",
+   "ops": {
+    "savior_obs": "Si",
+    "savior_dec": "Fe",
+    "demon_obs": "Se",
+    "demon_dec": "Fi",
+    "primary": "Blast",
+    "demon": "Play",
+    "middles": [
+     "Consume",
+     "Sleep"
+    ],
+    "stack": "B-[C/S]-[S/C]-P"
+   },
+   "coins": [
+    "Observer",
+    "Tribe",
+    "Organize",
+    "Feeling",
+    "Sensing",
+    "Responding",
+    "Informative",
+    "Control"
+   ],
+   "gate": [
+    "Gate of Chaos",
+    "Unpredictability / losing the plot",
+    "New experience taken raw (Ne)",
+    "Freedom / adaptability"
+   ],
+   "complements": [
+    "ENTP",
+    "INTP"
+   ],
+   "frictions": [
+    "ENTJ",
+    "INTJ"
+   ],
+   "fourSides": [
+    "ISFJ",
+    "ENTP",
+    "ESFP",
+    "INTJ"
+   ]
+  }
+ },
+ "relations": {
+  "ENTP": {
+   "ENTP": "ID",
+   "INTP": "MI",
+   "ENTJ": "QI",
+   "INTJ": "EX",
+   "ENFP": "KD",
+   "INFP": "SR",
+   "ENFJ": "BR",
+   "INFJ": "MG",
+   "ESTP": "BU",
+   "ISTP": "SV",
+   "ESTJ": "BE",
+   "ISTJ": "HD",
+   "ESFP": "SE",
+   "ISFP": "CF",
+   "ESFJ": "AC",
+   "ISFJ": "DU"
+  },
+  "INTP": {
+   "ENTP": "MI",
+   "INTP": "ID",
+   "ENTJ": "EX",
+   "INTJ": "QI",
+   "ENFP": "SV",
+   "INFP": "BU",
+   "ENFJ": "HD",
+   "INFJ": "BE",
+   "ESTP": "SR",
+   "ISTP": "KD",
+   "ESTJ": "MG",
+   "ISTJ": "BR",
+   "ESFP": "CF",
+   "ISFP": "SE",
+   "ESFJ": "DU",
+   "ISFJ": "AC"
+  },
+  "ENTJ": {
+   "ENTP": "QI",
+   "INTP": "EX",
+   "ENTJ": "ID",
+   "INTJ": "MI",
+   "ENFP": "BE",
+   "INFP": "HD",
+   "ENFJ": "BU",
+   "INFJ": "SV",
+   "ESTP": "BR",
+   "ISTP": "MG",
+   "ESTJ": "KD",
+   "ISTJ": "SR",
+   "ESFP": "AC",
+   "ISFP": "DU",
+   "ESFJ": "SE",
+   "ISFJ": "CF"
+  },
+  "INTJ": {
+   "ENTP": "EX",
+   "INTP": "QI",
+   "ENTJ": "MI",
+   "INTJ": "ID",
+   "ENFP": "MG",
+   "INFP": "BR",
+   "ENFJ": "SR",
+   "INFJ": "KD",
+   "ESTP": "HD",
+   "ISTP": "BE",
+   "ESTJ": "SV",
+   "ISTJ": "BU",
+   "ESFP": "DU",
+   "ISFP": "AC",
+   "ESFJ": "CF",
+   "ISFJ": "SE"
+  },
+  "ENFP": {
+   "ENTP": "KD",
+   "INTP": "SR",
+   "ENTJ": "BR",
+   "INTJ": "MG",
+   "ENFP": "ID",
+   "INFP": "MI",
+   "ENFJ": "QI",
+   "INFJ": "EX",
+   "ESTP": "SE",
+   "ISTP": "CF",
+   "ESTJ": "AC",
+   "ISTJ": "DU",
+   "ESFP": "BU",
+   "ISFP": "SV",
+   "ESFJ": "BE",
+   "ISFJ": "HD"
+  },
+  "INFP": {
+   "ENTP": "SV",
+   "INTP": "BU",
+   "ENTJ": "HD",
+   "INTJ": "BE",
+   "ENFP": "MI",
+   "INFP": "ID",
+   "ENFJ": "EX",
+   "INFJ": "QI",
+   "ESTP": "CF",
+   "ISTP": "SE",
+   "ESTJ": "DU",
+   "ISTJ": "AC",
+   "ESFP": "SR",
+   "ISFP": "KD",
+   "ESFJ": "MG",
+   "ISFJ": "BR"
+  },
+  "ENFJ": {
+   "ENTP": "BE",
+   "INTP": "HD",
+   "ENTJ": "BU",
+   "INTJ": "SV",
+   "ENFP": "QI",
+   "INFP": "EX",
+   "ENFJ": "ID",
+   "INFJ": "MI",
+   "ESTP": "AC",
+   "ISTP": "DU",
+   "ESTJ": "SE",
+   "ISTJ": "CF",
+   "ESFP": "BR",
+   "ISFP": "MG",
+   "ESFJ": "KD",
+   "ISFJ": "SR"
+  },
+  "INFJ": {
+   "ENTP": "MG",
+   "INTP": "BR",
+   "ENTJ": "SR",
+   "INTJ": "KD",
+   "ENFP": "EX",
+   "INFP": "QI",
+   "ENFJ": "MI",
+   "INFJ": "ID",
+   "ESTP": "DU",
+   "ISTP": "AC",
+   "ESTJ": "CF",
+   "ISTJ": "SE",
+   "ESFP": "HD",
+   "ISFP": "BE",
+   "ESFJ": "SV",
+   "ISFJ": "BU"
+  },
+  "ESTP": {
+   "ENTP": "BU",
+   "INTP": "SV",
+   "ENTJ": "BE",
+   "INTJ": "HD",
+   "ENFP": "SE",
+   "INFP": "CF",
+   "ENFJ": "AC",
+   "INFJ": "DU",
+   "ESTP": "ID",
+   "ISTP": "MI",
+   "ESTJ": "QI",
+   "ISTJ": "EX",
+   "ESFP": "KD",
+   "ISFP": "SR",
+   "ESFJ": "BR",
+   "ISFJ": "MG"
+  },
+  "ISTP": {
+   "ENTP": "SR",
+   "INTP": "KD",
+   "ENTJ": "MG",
+   "INTJ": "BR",
+   "ENFP": "CF",
+   "INFP": "SE",
+   "ENFJ": "DU",
+   "INFJ": "AC",
+   "ESTP": "MI",
+   "ISTP": "ID",
+   "ESTJ": "EX",
+   "ISTJ": "QI",
+   "ESFP": "SV",
+   "ISFP": "BU",
+   "ESFJ": "HD",
+   "ISFJ": "BE"
+  },
+  "ESTJ": {
+   "ENTP": "BR",
+   "INTP": "MG",
+   "ENTJ": "KD",
+   "INTJ": "SR",
+   "ENFP": "AC",
+   "INFP": "DU",
+   "ENFJ": "SE",
+   "INFJ": "CF",
+   "ESTP": "QI",
+   "ISTP": "EX",
+   "ESTJ": "ID",
+   "ISTJ": "MI",
+   "ESFP": "BE",
+   "ISFP": "HD",
+   "ESFJ": "BU",
+   "ISFJ": "SV"
+  },
+  "ISTJ": {
+   "ENTP": "HD",
+   "INTP": "BE",
+   "ENTJ": "SV",
+   "INTJ": "BU",
+   "ENFP": "DU",
+   "INFP": "AC",
+   "ENFJ": "CF",
+   "INFJ": "SE",
+   "ESTP": "EX",
+   "ISTP": "QI",
+   "ESTJ": "MI",
+   "ISTJ": "ID",
+   "ESFP": "MG",
+   "ISFP": "BR",
+   "ESFJ": "SR",
+   "ISFJ": "KD"
+  },
+  "ESFP": {
+   "ENTP": "SE",
+   "INTP": "CF",
+   "ENTJ": "AC",
+   "INTJ": "DU",
+   "ENFP": "BU",
+   "INFP": "SV",
+   "ENFJ": "BE",
+   "INFJ": "HD",
+   "ESTP": "KD",
+   "ISTP": "SR",
+   "ESTJ": "BR",
+   "ISTJ": "MG",
+   "ESFP": "ID",
+   "ISFP": "MI",
+   "ESFJ": "QI",
+   "ISFJ": "EX"
+  },
+  "ISFP": {
+   "ENTP": "CF",
+   "INTP": "SE",
+   "ENTJ": "DU",
+   "INTJ": "AC",
+   "ENFP": "SR",
+   "INFP": "KD",
+   "ENFJ": "MG",
+   "INFJ": "BR",
+   "ESTP": "SV",
+   "ISTP": "BU",
+   "ESTJ": "HD",
+   "ISTJ": "BE",
+   "ESFP": "MI",
+   "ISFP": "ID",
+   "ESFJ": "EX",
+   "ISFJ": "QI"
+  },
+  "ESFJ": {
+   "ENTP": "AC",
+   "INTP": "DU",
+   "ENTJ": "SE",
+   "INTJ": "CF",
+   "ENFP": "BR",
+   "INFP": "MG",
+   "ENFJ": "KD",
+   "INFJ": "SR",
+   "ESTP": "BE",
+   "ISTP": "HD",
+   "ESTJ": "BU",
+   "ISTJ": "SV",
+   "ESFP": "QI",
+   "ISFP": "EX",
+   "ESFJ": "ID",
+   "ISFJ": "MI"
+  },
+  "ISFJ": {
+   "ENTP": "DU",
+   "INTP": "AC",
+   "ENTJ": "CF",
+   "INTJ": "SE",
+   "ENFP": "HD",
+   "INFP": "BE",
+   "ENFJ": "SV",
+   "INFJ": "BU",
+   "ESTP": "MG",
+   "ISTP": "BR",
+   "ESTJ": "SR",
+   "ISTJ": "KD",
+   "ESFP": "EX",
+   "ISFP": "QI",
+   "ESFJ": "MI",
+   "ISFJ": "ID"
+  }
+ },
+ "scores": {
+  "ENTP": {
+   "ENTP": 74,
+   "INTP": 70,
+   "ENTJ": 40,
+   "INTJ": 28,
+   "ENFP": 64,
+   "INFP": 34,
+   "ENFJ": 54,
+   "INFJ": 80,
+   "ESTP": 60,
+   "ISTP": 44,
+   "ESTJ": 48,
+   "ISTJ": 86,
+   "ESFP": 20,
+   "ISFP": 10,
+   "ESFJ": 92,
+   "ISFJ": 100
+  },
+  "INTP": {
+   "ENTP": 70,
+   "INTP": 74,
+   "ENTJ": 28,
+   "INTJ": 40,
+   "ENFP": 44,
+   "INFP": 60,
+   "ENFJ": 86,
+   "INFJ": 48,
+   "ESTP": 34,
+   "ISTP": 64,
+   "ESTJ": 80,
+   "ISTJ": 54,
+   "ESFP": 10,
+   "ISFP": 20,
+   "ESFJ": 100,
+   "ISFJ": 92
+  },
+  "ENTJ": {
+   "ENTP": 40,
+   "INTP": 28,
+   "ENTJ": 74,
+   "INTJ": 70,
+   "ENFP": 48,
+   "INFP": 86,
+   "ENFJ": 60,
+   "INFJ": 44,
+   "ESTP": 54,
+   "ISTP": 80,
+   "ESTJ": 64,
+   "ISTJ": 34,
+   "ESFP": 92,
+   "ISFP": 100,
+   "ESFJ": 20,
+   "ISFJ": 10
+  },
+  "INTJ": {
+   "ENTP": 28,
+   "INTP": 40,
+   "ENTJ": 70,
+   "INTJ": 74,
+   "ENFP": 80,
+   "INFP": 54,
+   "ENFJ": 34,
+   "INFJ": 64,
+   "ESTP": 86,
+   "ISTP": 48,
+   "ESTJ": 44,
+   "ISTJ": 60,
+   "ESFP": 100,
+   "ISFP": 92,
+   "ESFJ": 10,
+   "ISFJ": 20
+  },
+  "ENFP": {
+   "ENTP": 64,
+   "INTP": 34,
+   "ENTJ": 54,
+   "INTJ": 80,
+   "ENFP": 74,
+   "INFP": 70,
+   "ENFJ": 40,
+   "INFJ": 28,
+   "ESTP": 20,
+   "ISTP": 10,
+   "ESTJ": 92,
+   "ISTJ": 100,
+   "ESFP": 60,
+   "ISFP": 44,
+   "ESFJ": 48,
+   "ISFJ": 86
+  },
+  "INFP": {
+   "ENTP": 44,
+   "INTP": 60,
+   "ENTJ": 86,
+   "INTJ": 48,
+   "ENFP": 70,
+   "INFP": 74,
+   "ENFJ": 28,
+   "INFJ": 40,
+   "ESTP": 10,
+   "ISTP": 20,
+   "ESTJ": 100,
+   "ISTJ": 92,
+   "ESFP": 34,
+   "ISFP": 64,
+   "ESFJ": 80,
+   "ISFJ": 54
+  },
+  "ENFJ": {
+   "ENTP": 48,
+   "INTP": 86,
+   "ENTJ": 60,
+   "INTJ": 44,
+   "ENFP": 40,
+   "INFP": 28,
+   "ENFJ": 74,
+   "INFJ": 70,
+   "ESTP": 92,
+   "ISTP": 100,
+   "ESTJ": 20,
+   "ISTJ": 10,
+   "ESFP": 54,
+   "ISFP": 80,
+   "ESFJ": 64,
+   "ISFJ": 34
+  },
+  "INFJ": {
+   "ENTP": 80,
+   "INTP": 54,
+   "ENTJ": 34,
+   "INTJ": 64,
+   "ENFP": 28,
+   "INFP": 40,
+   "ENFJ": 70,
+   "INFJ": 74,
+   "ESTP": 100,
+   "ISTP": 92,
+   "ESTJ": 10,
+   "ISTJ": 20,
+   "ESFP": 86,
+   "ISFP": 48,
+   "ESFJ": 44,
+   "ISFJ": 60
+  },
+  "ESTP": {
+   "ENTP": 60,
+   "INTP": 44,
+   "ENTJ": 48,
+   "INTJ": 86,
+   "ENFP": 20,
+   "INFP": 10,
+   "ENFJ": 92,
+   "INFJ": 100,
+   "ESTP": 74,
+   "ISTP": 70,
+   "ESTJ": 40,
+   "ISTJ": 28,
+   "ESFP": 64,
+   "ISFP": 34,
+   "ESFJ": 54,
+   "ISFJ": 80
+  },
+  "ISTP": {
+   "ENTP": 34,
+   "INTP": 64,
+   "ENTJ": 80,
+   "INTJ": 54,
+   "ENFP": 10,
+   "INFP": 20,
+   "ENFJ": 100,
+   "INFJ": 92,
+   "ESTP": 70,
+   "ISTP": 74,
+   "ESTJ": 28,
+   "ISTJ": 40,
+   "ESFP": 44,
+   "ISFP": 60,
+   "ESFJ": 86,
+   "ISFJ": 48
+  },
+  "ESTJ": {
+   "ENTP": 54,
+   "INTP": 80,
+   "ENTJ": 64,
+   "INTJ": 34,
+   "ENFP": 92,
+   "INFP": 100,
+   "ENFJ": 20,
+   "INFJ": 10,
+   "ESTP": 40,
+   "ISTP": 28,
+   "ESTJ": 74,
+   "ISTJ": 70,
+   "ESFP": 48,
+   "ISFP": 86,
+   "ESFJ": 60,
+   "ISFJ": 44
+  },
+  "ISTJ": {
+   "ENTP": 86,
+   "INTP": 48,
+   "ENTJ": 44,
+   "INTJ": 60,
+   "ENFP": 100,
+   "INFP": 92,
+   "ENFJ": 10,
+   "INFJ": 20,
+   "ESTP": 28,
+   "ISTP": 40,
+   "ESTJ": 70,
+   "ISTJ": 74,
+   "ESFP": 80,
+   "ISFP": 54,
+   "ESFJ": 34,
+   "ISFJ": 64
+  },
+  "ESFP": {
+   "ENTP": 20,
+   "INTP": 10,
+   "ENTJ": 92,
+   "INTJ": 100,
+   "ENFP": 60,
+   "INFP": 44,
+   "ENFJ": 48,
+   "INFJ": 86,
+   "ESTP": 64,
+   "ISTP": 34,
+   "ESTJ": 54,
+   "ISTJ": 80,
+   "ESFP": 74,
+   "ISFP": 70,
+   "ESFJ": 40,
+   "ISFJ": 28
+  },
+  "ISFP": {
+   "ENTP": 10,
+   "INTP": 20,
+   "ENTJ": 100,
+   "INTJ": 92,
+   "ENFP": 34,
+   "INFP": 64,
+   "ENFJ": 80,
+   "INFJ": 54,
+   "ESTP": 44,
+   "ISTP": 60,
+   "ESTJ": 86,
+   "ISTJ": 48,
+   "ESFP": 70,
+   "ISFP": 74,
+   "ESFJ": 28,
+   "ISFJ": 40
+  },
+  "ESFJ": {
+   "ENTP": 92,
+   "INTP": 100,
+   "ENTJ": 20,
+   "INTJ": 10,
+   "ENFP": 54,
+   "INFP": 80,
+   "ENFJ": 64,
+   "INFJ": 34,
+   "ESTP": 48,
+   "ISTP": 86,
+   "ESTJ": 60,
+   "ISTJ": 44,
+   "ESFP": 40,
+   "ISFP": 28,
+   "ESFJ": 74,
+   "ISFJ": 70
+  },
+  "ISFJ": {
+   "ENTP": 100,
+   "INTP": 92,
+   "ENTJ": 10,
+   "INTJ": 20,
+   "ENFP": 86,
+   "INFP": 48,
+   "ENFJ": 44,
+   "INFJ": 60,
+   "ESTP": 80,
+   "ISTP": 54,
+   "ESTJ": 34,
+   "ISTJ": 64,
+   "ESFP": 28,
+   "ISFP": 40,
+   "ESFJ": 70,
+   "ISFJ": 74
+  }
+ },
+ "playbooks": {
+  "ENTP": {
+   "ENTP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ti, landing on their Parent. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ti, landing on their Hero. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ti, landing on their Nemesis. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ti, landing on their Critic. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ti, landing on their Trickster. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ti, landing on their Demon. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ti, landing on their Inferior. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ti, landing on their Child. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ti, landing on their Parent. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ti, landing on their Hero. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ti, landing on their Nemesis. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ti, landing on their Critic. Open through their Child Fi: let a private conviction show and do not comment. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ti, landing on their Trickster. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ti, landing on their Demon. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ti, landing on their Inferior. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ti, landing on their Child. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "INTP": {
+   "ENTP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ne, landing on their Hero. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ne, landing on their Parent. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ne, landing on their Critic. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ne, landing on their Nemesis. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ne, landing on their Hero. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ne, landing on their Parent. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ne, landing on their Critic. Open through their Child Se: do something physical together. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ne, landing on their Nemesis. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ne, landing on their Demon. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ne, landing on their Trickster. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ne, landing on their Child. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ne, landing on their Inferior. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ne, landing on their Demon. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ne, landing on their Trickster. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ne, landing on their Child. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ne, landing on their Inferior. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ENTJ": {
+   "ENTP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Te (hand them something runnable); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ni, landing on their Nemesis. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Te (hand them something runnable); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ni, landing on their Critic. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Te (hand them something runnable); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ni, landing on their Parent. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Te (hand them something runnable); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ni, landing on their Hero. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Te (hand them something runnable); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ni, landing on their Nemesis. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Te (hand them something runnable); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ni, landing on their Critic. Open through their Child Si: trade specifics, trivia and remembered detail. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Te (hand them something runnable); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ni, landing on their Parent. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Te (hand them something runnable); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ni, landing on their Hero. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Te (hand them something runnable); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ni, landing on their Inferior. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Te (hand them something runnable); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ni, landing on their Child. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Te (hand them something runnable); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ni, landing on their Trickster. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Te (hand them something runnable); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ni, landing on their Demon. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Te (hand them something runnable); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ni, landing on their Inferior. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Te (hand them something runnable); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ni, landing on their Child. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Te (hand them something runnable); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ni, landing on their Trickster. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Te (hand them something runnable); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ni, landing on their Demon. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "INTJ": {
+   "ENTP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Ni (name where this actually ends up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Te, landing on their Critic. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Ni (name where this actually ends up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Te, landing on their Nemesis. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Ni (name where this actually ends up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Te, landing on their Hero. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Ni (name where this actually ends up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Te, landing on their Parent. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Ni (name where this actually ends up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Te, landing on their Child. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Ni (name where this actually ends up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Te, landing on their Inferior. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Ni (name where this actually ends up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Te, landing on their Demon. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Ni (name where this actually ends up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Te, landing on their Trickster. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Ni (name where this actually ends up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Te, landing on their Critic. Open through their Child Fe: banter, and let them charm you. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Ni (name where this actually ends up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Te, landing on their Nemesis. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Ni (name where this actually ends up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Te, landing on their Hero. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Ni (name where this actually ends up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Te, landing on their Parent. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Ni (name where this actually ends up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Te, landing on their Child. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Ni (name where this actually ends up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Te, landing on their Inferior. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Ni (name where this actually ends up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Te, landing on their Demon. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Ni (name where this actually ends up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Te, landing on their Trickster. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ENFP": {
+   "ENTP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fi, landing on their Trickster. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fi, landing on their Demon. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fi, landing on their Inferior. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fi, landing on their Child. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fi, landing on their Parent. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fi, landing on their Hero. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fi, landing on their Nemesis. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fi, landing on their Critic. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fi, landing on their Trickster. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fi, landing on their Demon. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fi, landing on their Inferior. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fi, landing on their Child. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fi, landing on their Parent. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fi, landing on their Hero. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fi, landing on their Nemesis. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Ne (throw options rather than conclusions); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fi, landing on their Critic. Open through their Child Ti: let them take a mechanism apart for fun. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "INFP": {
+   "ENTP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Fi (say plainly what you value); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ne, landing on their Hero. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Fi (say plainly what you value); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ne, landing on their Parent. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Fi (say plainly what you value); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ne, landing on their Critic. Open through their Child Se: do something physical together. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Fi (say plainly what you value); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ne, landing on their Nemesis. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Fi (say plainly what you value); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ne, landing on their Hero. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Fi (say plainly what you value); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ne, landing on their Parent. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Fi (say plainly what you value); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ne, landing on their Critic. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Fi (say plainly what you value); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ne, landing on their Nemesis. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Fi (say plainly what you value); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ne, landing on their Demon. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Fi (say plainly what you value); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ne, landing on their Trickster. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Fi (say plainly what you value); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ne, landing on their Child. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Fi (say plainly what you value); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ne, landing on their Inferior. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Fi (say plainly what you value); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ne, landing on their Demon. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Fi (say plainly what you value); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ne, landing on their Trickster. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Ne is your instrument and their Trickster, they will bluff fluency in open-ended brainstorming rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Fi (say plainly what you value); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ne, landing on their Child. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Fi (say plainly what you value); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ne, landing on their Inferior. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ENFJ": {
+   "ENTP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Fe (set the temperature of the room); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ni, landing on their Nemesis. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Fe (set the temperature of the room); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ni, landing on their Critic. Open through their Child Si: trade specifics, trivia and remembered detail. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Fe (set the temperature of the room); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ni, landing on their Parent. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Fe (set the temperature of the room); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ni, landing on their Hero. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Fe (set the temperature of the room); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ni, landing on their Nemesis. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Fe (set the temperature of the room); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ni, landing on their Critic. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Fe (set the temperature of the room); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ni, landing on their Parent. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Fe (set the temperature of the room); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ni, landing on their Hero. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Fe (set the temperature of the room); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ni, landing on their Inferior. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Fe (set the temperature of the room); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ni, landing on their Child. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Fe (set the temperature of the room); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ni, landing on their Trickster. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Fe (set the temperature of the room); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ni, landing on their Demon. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Fe (set the temperature of the room); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ni, landing on their Inferior. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Fe (set the temperature of the room); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ni, landing on their Child. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Fe (set the temperature of the room); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ni, landing on their Trickster. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Fe (set the temperature of the room); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ni, landing on their Demon. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "INFJ": {
+   "ENTP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Ni (name where this actually ends up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fe, landing on their Child. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Ni (name where this actually ends up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fe, landing on their Inferior. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Ni (name where this actually ends up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fe, landing on their Demon. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Ni (name where this actually ends up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fe, landing on their Trickster. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Ni (name where this actually ends up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fe, landing on their Critic. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Ni (name where this actually ends up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fe, landing on their Nemesis. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Ni (name where this actually ends up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fe, landing on their Hero. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Ni (name where this actually ends up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fe, landing on their Parent. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Ni (name where this actually ends up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fe, landing on their Child. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Ni (name where this actually ends up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fe, landing on their Inferior. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Ni (name where this actually ends up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fe, landing on their Demon. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Ni (name where this actually ends up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fe, landing on their Trickster. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Ni (name where this actually ends up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fe, landing on their Critic. Open through their Child Te: let them organise something small and blunt. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Ni (name where this actually ends up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fe, landing on their Nemesis. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Ni (name where this actually ends up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fe, landing on their Hero. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Ni is your instrument and their Trickster, they will bluff fluency in long-range implication rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Ni (name where this actually ends up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fe, landing on their Parent. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ESTP": {
+   "ENTP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Se (show them, do not tell them); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ti, landing on their Parent. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Se (show them, do not tell them); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ti, landing on their Hero. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Se (show them, do not tell them); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ti, landing on their Nemesis. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Se (show them, do not tell them); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ti, landing on their Critic. Open through their Child Fi: let a private conviction show and do not comment. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Se (show them, do not tell them); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Ti, landing on their Trickster. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Se (show them, do not tell them); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Ti, landing on their Demon. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Se (show them, do not tell them); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Ti, landing on their Inferior. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Se (show them, do not tell them); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Ti, landing on their Child. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Se (show them, do not tell them); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ti, landing on their Parent. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Se (show them, do not tell them); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ti, landing on their Hero. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Se (show them, do not tell them); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ti, landing on their Nemesis. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Se (show them, do not tell them); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ti, landing on their Critic. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Se (show them, do not tell them); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Ti, landing on their Trickster. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Se (show them, do not tell them); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Ti, landing on their Demon. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Se (show them, do not tell them); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Ti, landing on their Inferior. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Se (show them, do not tell them); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Ti, landing on their Child. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ISTP": {
+   "ENTP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Se, landing on their Demon. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Se, landing on their Trickster. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Se, landing on their Child. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Se, landing on their Inferior. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Se, landing on their Demon. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Se, landing on their Trickster. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Se, landing on their Child. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Se, landing on their Inferior. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Se, landing on their Hero. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Se, landing on their Parent. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Se, landing on their Critic. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Se, landing on their Nemesis. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Se, landing on their Hero. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Ti is your instrument and their Trickster, they will bluff fluency in airtight internal logic rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Se, landing on their Parent. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Se, landing on their Critic. Open through their Child Ne: riff on what-ifs with nothing riding on them. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Ti (take the argument apart cleanly); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Se, landing on their Nemesis. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ESTJ": {
+   "ENTP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Te (hand them something runnable); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Si, landing on their Inferior. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Te (hand them something runnable); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Si, landing on their Child. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Te (hand them something runnable); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Si, landing on their Trickster. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Te (hand them something runnable); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Si, landing on their Demon. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Te (hand them something runnable); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Si, landing on their Inferior. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Te (hand them something runnable); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Si, landing on their Child. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Te (hand them something runnable); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Si, landing on their Trickster. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Te (hand them something runnable); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Si, landing on their Demon. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Te (hand them something runnable); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Si, landing on their Nemesis. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Te (hand them something runnable); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Si, landing on their Critic. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Te (hand them something runnable); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Si, landing on their Parent. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Te (hand them something runnable); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Si, landing on their Hero. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Te (hand them something runnable); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Si, landing on their Nemesis. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Te (hand them something runnable); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Si, landing on their Critic. Open through their Child Ni: let them float a hunch about where it goes. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Te (hand them something runnable); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Si, landing on their Parent. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Te (hand them something runnable); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Si, landing on their Hero. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ISTJ": {
+   "ENTP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Te, landing on their Critic. Open through their Child Fe: banter, and let them charm you. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Te, landing on their Nemesis. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Te, landing on their Hero. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Te, landing on their Parent. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Te, landing on their Child. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Te, landing on their Inferior. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Te, landing on their Demon. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Te, landing on their Trickster. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Te, landing on their Critic. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Te, landing on their Nemesis. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Te, landing on their Hero. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Te, landing on their Parent. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Te, landing on their Child. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Te, landing on their Inferior. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Te, landing on their Demon. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Te, landing on their Trickster. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Te is your instrument and their Trickster, they will bluff fluency in external efficiency rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ESFP": {
+   "ENTP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Se (show them, do not tell them); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fi, landing on their Trickster. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Se (show them, do not tell them); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fi, landing on their Demon. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Se (show them, do not tell them); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fi, landing on their Inferior. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Se (show them, do not tell them); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fi, landing on their Child. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Se (show them, do not tell them); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fi, landing on their Parent. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Se (show them, do not tell them); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fi, landing on their Hero. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Se (show them, do not tell them); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fi, landing on their Nemesis. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Se (show them, do not tell them); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fi, landing on their Critic. Open through their Child Ti: let them take a mechanism apart for fun. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Se (show them, do not tell them); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fi, landing on their Trickster. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Se (show them, do not tell them); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fi, landing on their Demon. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Se (show them, do not tell them); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fi, landing on their Inferior. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Se (show them, do not tell them); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fi, landing on their Child. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Se (show them, do not tell them); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fi, landing on their Parent. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Se (show them, do not tell them); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fi, landing on their Hero. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Se (show them, do not tell them); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fi, landing on their Nemesis. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Se (show them, do not tell them); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fi, landing on their Critic. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ISFP": {
+   "ENTP": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Fi (say plainly what you value); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Se, landing on their Demon. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Fi (say plainly what you value); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Se, landing on their Trickster. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Fe — do not make group approval the price of admission. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Fi (say plainly what you value); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Se, landing on their Child. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Fi (say plainly what you value); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Se, landing on their Inferior. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Fi (say plainly what you value); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Se, landing on their Demon. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Fi (say plainly what you value); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Se, landing on their Trickster. Open through their Child Si: trade specifics, trivia and remembered detail. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Because Se is your instrument and their Trickster, they will bluff fluency in reading the physical room rather than concede it — read agreement there as noise. Do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Fi (say plainly what you value); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Se, landing on their Child. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Si (detail retention and upkeep), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Fi (say plainly what you value); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Se, landing on their Inferior. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Fi (say plainly what you value); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Se, landing on their Hero. Open through their Child Fe: banter, and let them charm you. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Because Fi is your instrument and their Trickster, they will bluff fluency in naming their own values rather than concede it — read agreement there as noise. Do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Fi (say plainly what you value); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Se, landing on their Parent. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Fi (say plainly what you value); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Se, landing on their Critic. Open through their Child Ne: riff on what-ifs with nothing riding on them. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Fi (say plainly what you value); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Se, landing on their Nemesis. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Fe (managing group emotion), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Fi (say plainly what you value); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Se, landing on their Hero. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Fi (say plainly what you value); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Se, landing on their Parent. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Fi (say plainly what you value); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Se, landing on their Critic. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Fi (say plainly what you value); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Se, landing on their Nemesis. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ESFJ": {
+   "ENTP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Fe (set the temperature of the room); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Si, landing on their Inferior. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Fe (set the temperature of the room); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Si, landing on their Child. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Fe (set the temperature of the room); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Si, landing on their Trickster. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Fe (set the temperature of the room); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Si, landing on their Demon. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Fe (set the temperature of the room); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Si, landing on their Inferior. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Si — do not bury them in routine, upkeep and repetition. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Fe (set the temperature of the room); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Si, landing on their Child. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Fe (set the temperature of the room); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Si, landing on their Trickster. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Fe (set the temperature of the room); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Si, landing on their Demon. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Fe (set the temperature of the room); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Si, landing on their Nemesis. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Fe (set the temperature of the room); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Si, landing on their Critic. Open through their Child Ni: let them float a hunch about where it goes. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Fe (set the temperature of the room); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Si, landing on their Parent. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Fe (set the temperature of the room); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Si, landing on their Hero. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Fe (set the temperature of the room); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Si, landing on their Nemesis. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Fe (set the temperature of the room); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Si, landing on their Critic. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Fe (set the temperature of the room); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Si, landing on their Parent. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Fe (set the temperature of the room); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Si, landing on their Hero. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  },
+  "ISFJ": {
+   "ENTP": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fe, landing on their Child. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INTP": "Activity. Genuinely energising, and quietly draining if you never step out of it. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fe, landing on their Inferior. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ENTJ": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fe, landing on their Demon. Open through their Child Se: do something physical together. Shield their Inferior Fi — do not interrogate what they personally feel. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "INTJ": "Super-Ego. Fascinating at a distance, abrasive up close. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fe, landing on their Trickster. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ENFP": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Inferior, which is their fear, and precisely what you are equipped to supply — offer it as a service, never as a requirement. Back it with your Fe, landing on their Critic. Open through their Child Te: let them organise something small and blunt. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Se: reckless physical indulgence and destructive impulse when cornered.",
+   "INFP": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Child, which is their delight — keep it light and they will open immediately. Back it with your Fe, landing on their Nemesis. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Se (reading the physical room), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ENFJ": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Trickster, which is a blind spot — they will bluff fluency they do not have. Back it with your Fe, landing on their Hero. Open through their Child Se: do something physical together. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Because Si is your instrument and their Trickster, they will bluff fluency in detail retention and upkeep rather than concede it — read agreement there as noise. Do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "INFJ": "Business. Shared second function — easy to work alongside, harder to get close to. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Demon, which is the tripwire — leading with this reads as an attack. Back it with your Fe, landing on their Parent. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Se — do not spring physical chaos or demand real-time performance. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Si: obsessive replay of past damage and hyper-fixation on bodily detail.",
+   "ESTP": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fe, landing on their Child. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Fi (naming their own values), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISTP": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fe, landing on their Inferior. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Fe — do not make group approval the price of admission. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Fi: moral outrage with no off-switch.",
+   "ESTJ": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fe, landing on their Demon. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Fi — do not interrogate what they personally feel. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Fe: manipulating the room's mood as a weapon.",
+   "ISTJ": "Kindred. Shared leading function: you see the same thing and then do different things with it. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fe, landing on their Trickster. Open through their Child Fi: let a private conviction show and do not comment. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Because Fe is your instrument and their Trickster, they will bluff fluency in managing group emotion rather than concede it — read agreement there as noise. Do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built.",
+   "ESFP": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Nemesis, which is their guard — it reads as a challenge to their competence. Back it with your Fe, landing on their Critic. Open through their Child Te: let them organise something small and blunt. Shield their Inferior Ni — do not force a commitment to one irreversible long path. Never test them on Trickster Ti (airtight internal logic), and do not corner them into Demon Ne: paranoia about unproven possibility; worst-case branching where others see opportunity.",
+   "ISFP": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Critic, which is their cynicism — expect it audited harshly. Back it with your Fe, landing on their Nemesis. Open through their Child Ni: let them float a hunch about where it goes. Shield their Inferior Te — do not measure them by cold metrics or bureaucracy. Never test them on Trickster Ne (open-ended brainstorming), and do not corner them into Demon Ti: cutting logic deployed to dismantle a person rather than a problem.",
+   "ESFJ": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Parent, which is their sense of duty — expect it pruned and stress-tested before it is accepted. Back it with your Fe, landing on their Hero. Open through their Child Ne: riff on what-ifs with nothing riding on them. Shield their Inferior Ti — do not make them defend their own logic unaided in public. Never test them on Trickster Ni (long-range implication), and do not corner them into Demon Te: cold, tyrannical control; efficiency turned against people.",
+   "ISFJ": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap. Lead with your Si (bring what has demonstrably held up); in their stack it sits at Hero, which is their strongest ground — you will move fast together and share the same blind spot. Back it with your Fe, landing on their Parent. Open through their Child Ti: let them take a mechanism apart for fun. Shield their Inferior Ne — do not hand them unproven possibility and ask them to trust it. Never test them on Trickster Te (external efficiency), and do not corner them into Demon Ni: apocalyptic certainty; foreseeing the collapse of everything already built."
+  }
+ }
+}

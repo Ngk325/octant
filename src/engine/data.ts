@@ -1,0 +1,649 @@
+// GENERATED FILE - do not edit by hand.
+// Emitted from the verified Python reference engine and checked by tests/engine.test.ts.
+// After this handover TypeScript is canonical; the Python reference is retired.
+
+export const TYPES = [
+  "ENTP",
+  "INTP",
+  "ENTJ",
+  "INTJ",
+  "ENFP",
+  "INFP",
+  "ENFJ",
+  "INFJ",
+  "ESTP",
+  "ISTP",
+  "ESTJ",
+  "ISTJ",
+  "ESFP",
+  "ISFP",
+  "ESFJ",
+  "ISFJ"
+] as const;
+export type MbtiType = (typeof TYPES)[number];
+export type Fn = "Ne" | "Ni" | "Se" | "Si" | "Te" | "Ti" | "Fe" | "Fi";
+export type RelCode =
+  | "ID" | "MI" | "EX" | "QI" | "DU" | "AC" | "SE" | "CF"
+  | "KD" | "BU" | "HD" | "MG" | "SR" | "SV" | "BR" | "BE";
+
+export const DOM_AUX: Record<MbtiType, [Fn, Fn]> = {
+  "ENTP": [
+    "Ne",
+    "Ti"
+  ],
+  "INTP": [
+    "Ti",
+    "Ne"
+  ],
+  "ENTJ": [
+    "Te",
+    "Ni"
+  ],
+  "INTJ": [
+    "Ni",
+    "Te"
+  ],
+  "ENFP": [
+    "Ne",
+    "Fi"
+  ],
+  "INFP": [
+    "Fi",
+    "Ne"
+  ],
+  "ENFJ": [
+    "Fe",
+    "Ni"
+  ],
+  "INFJ": [
+    "Ni",
+    "Fe"
+  ],
+  "ESTP": [
+    "Se",
+    "Ti"
+  ],
+  "ISTP": [
+    "Ti",
+    "Se"
+  ],
+  "ESTJ": [
+    "Te",
+    "Si"
+  ],
+  "ISTJ": [
+    "Si",
+    "Te"
+  ],
+  "ESFP": [
+    "Se",
+    "Fi"
+  ],
+  "ISFP": [
+    "Fi",
+    "Se"
+  ],
+  "ESFJ": [
+    "Fe",
+    "Si"
+  ],
+  "ISFJ": [
+    "Si",
+    "Fe"
+  ]
+};
+export const SOCIONICS: Record<MbtiType, string> = {
+  "ENTP": "ILE",
+  "INTP": "LII",
+  "ENTJ": "LIE",
+  "INTJ": "ILI",
+  "ENFP": "IEE",
+  "INFP": "EII",
+  "ENFJ": "EIE",
+  "INFJ": "IEI",
+  "ESTP": "SLE",
+  "ISTP": "LSI",
+  "ESTJ": "LSE",
+  "ISTJ": "SLI",
+  "ESFP": "SEE",
+  "ISFP": "ESI",
+  "ESFJ": "ESE",
+  "ISFJ": "SEI"
+};
+export const REL_NAME: Record<RelCode, string> = {
+  "DU": "Duality",
+  "AC": "Activity",
+  "HD": "Semi-Duality",
+  "MG": "Mirage",
+  "ID": "Identity",
+  "MI": "Mirror",
+  "KD": "Kindred",
+  "BU": "Business",
+  "BR": "Benefactor",
+  "BE": "Beneficiary",
+  "SV": "Supervisee",
+  "QI": "Quasi-Identity",
+  "SR": "Supervisor",
+  "EX": "Extinguishment",
+  "SE": "Super-Ego",
+  "CF": "Conflict"
+};
+export const REL_DEF: Record<RelCode, string> = {
+  "DU": "Their wiring completes yours: your weak functions are their strong ones and vice versa. Lowest-friction pairing in the model.",
+  "AC": "Energising and fast to warm, because each of you feeds the other's mobilising function. Exhausting if never stepped out of.",
+  "HD": "Partial completion. Shares the dual's base channel but not the creative one; comfortable until the unshared half is what is needed.",
+  "MG": "Relaxing and slightly unserious. Shares the dual's creative channel only; good for rest, poor for joint execution.",
+  "ID": "Same wiring. Instant mutual understanding and perfectly shared blind spots, so no one covers the gap.",
+  "MI": "Same two functions in opposite order. Agreement on what matters, persistent argument about sequence.",
+  "KD": "Same leading function, different second. You perceive the same thing and then do different things with it.",
+  "BU": "Same second function, different leading. Easy to work alongside, harder to be close to.",
+  "BR": "Asymmetric admiration. Their leading function lands on your mobilising function, so you find them compelling and they do not quite return it.",
+  "BE": "Asymmetric admiration, reversed. Your leading function lands on their mobilising function; they orbit you more than you orbit them.",
+  "SV": "Asymmetric correction. Your leading function lands on their vulnerable function; you can flatten them without noticing.",
+  "QI": "Same elements, every position and attitude rearranged. You look alike from outside and reach conclusions by incompatible routes.",
+  "SR": "Asymmetric correction, reversed. Their leading function lands on your vulnerable function; their casual remarks land as verdicts.",
+  "EX": "Same functions, every attitude flipped. Constant near-miss: you keep misreading each other's intent.",
+  "SE": "Ego meets ego's understudy. Fascinating at a distance, abrasive up close.",
+  "CF": "Their leading function lands directly on your most defended weakness, and yours on theirs. Maximum cognitive friction."
+};
+export const REL_SCORE: Record<RelCode, number> = {
+  "DU": 100,
+  "AC": 92,
+  "HD": 86,
+  "MG": 80,
+  "ID": 74,
+  "MI": 70,
+  "KD": 64,
+  "BU": 60,
+  "BR": 54,
+  "BE": 48,
+  "SV": 44,
+  "QI": 40,
+  "SR": 34,
+  "EX": 28,
+  "SE": 20,
+  "CF": 10
+};
+export const RECIPROCAL: Record<RelCode, RelCode> = {
+  "ID": "ID",
+  "MI": "MI",
+  "EX": "EX",
+  "QI": "QI",
+  "DU": "DU",
+  "AC": "AC",
+  "SE": "SE",
+  "CF": "CF",
+  "KD": "KD",
+  "BU": "BU",
+  "HD": "HD",
+  "MG": "MG",
+  "SR": "SV",
+  "SV": "SR",
+  "BR": "BE",
+  "BE": "BR"
+};
+
+export const FN_LONG: Record<Fn, string> = {
+  "Ne": "Simulates the multiverse. Branches into dozens of 'what if' lines and watches how variables would interact before they do.",
+  "Ni": "Foresees the inevitable path. Compresses masses of abstract data into a single laser-focused reading of how this ends.",
+  "Se": "Kinetic mastery. Unmatched awareness of the physical field, reacting to concrete variables in real time.",
+  "Si": "Preserves functional systems. Holds the body's and the institution's history, and notices the moment either drifts.",
+  "Te": "Commands external resources. Reads the world as a board to be arranged into the most efficient route to the objective.",
+  "Ti": "Constructs flawless internal logic. Compiles every input until the framework holds without a single contradiction.",
+  "Fe": "Forges emotional consensus. Reads and then bends the emotional climate of a room toward unity.",
+  "Fi": "Wields absolute moral truth. A refined internal compass that dictates what is authentic, corrupt, right, and wrong."
+};
+export const FN_SHADOW: Record<Fn, string> = {
+  "Ne": "Paranoia about unproven possibility; worst-case branching where others see opportunity.",
+  "Ni": "Apocalyptic certainty; foreseeing the collapse of everything already built.",
+  "Se": "Reckless physical indulgence and destructive impulse when cornered.",
+  "Si": "Obsessive replay of past damage and hyper-fixation on bodily detail.",
+  "Te": "Cold, tyrannical control; efficiency turned against people.",
+  "Ti": "Cutting logic deployed to dismantle a person rather than a problem.",
+  "Fe": "Manipulating the room's mood as a weapon.",
+  "Fi": "Moral outrage with no off-switch."
+};
+export const FN_INSTRUMENT: Record<Fn, string> = {
+  "Ne": "throw options rather than conclusions",
+  "Ni": "name where this actually ends up",
+  "Se": "show them, do not tell them",
+  "Si": "bring what has demonstrably held up",
+  "Te": "hand them something runnable",
+  "Ti": "take the argument apart cleanly",
+  "Fe": "set the temperature of the room",
+  "Fi": "say plainly what you value"
+};
+export const SLOT_EFFECT: Record<string, string> = {
+  "Hero": "their strongest ground — you will move fast together and share the same blind spot",
+  "Parent": "their sense of duty — expect it pruned and stress-tested before it is accepted",
+  "Child": "their delight — keep it light and they will open immediately",
+  "Inferior": "their fear — approach it slowly or not at all",
+  "Nemesis": "their guard — it reads as a challenge to their competence",
+  "Critic": "their cynicism — expect it audited harshly",
+  "Trickster": "a blind spot — they will bluff fluency they do not have",
+  "Demon": "the tripwire — leading with this reads as an attack"
+};
+export const CHILD_HOOK: Record<Fn, string> = {
+  "Ne": "riff on what-ifs with nothing riding on them",
+  "Ni": "let them float a hunch about where it goes",
+  "Se": "do something physical together",
+  "Si": "trade specifics, trivia and remembered detail",
+  "Te": "let them organise something small and blunt",
+  "Ti": "let them take a mechanism apart for fun",
+  "Fe": "banter, and let them charm you",
+  "Fi": "let a private conviction show and do not comment"
+};
+export const INFERIOR_GUARD: Record<Fn, string> = {
+  "Ne": "do not hand them unproven possibility and ask them to trust it",
+  "Ni": "do not force a commitment to one irreversible long path",
+  "Se": "do not spring physical chaos or demand real-time performance",
+  "Si": "do not bury them in routine, upkeep and repetition",
+  "Te": "do not measure them by cold metrics or bureaucracy",
+  "Ti": "do not make them defend their own logic unaided in public",
+  "Fe": "do not make group approval the price of admission",
+  "Fi": "do not interrogate what they personally feel"
+};
+export const TRICKSTER_BLIND: Record<Fn, string> = {
+  "Ne": "open-ended brainstorming",
+  "Ni": "long-range implication",
+  "Se": "reading the physical room",
+  "Si": "detail retention and upkeep",
+  "Te": "external efficiency",
+  "Ti": "airtight internal logic",
+  "Fe": "managing group emotion",
+  "Fi": "naming their own values"
+};
+export const REL_FRAME: Record<RelCode, string> = {
+  "ID": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap.",
+  "DU": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model.",
+  "AC": "Activity. Genuinely energising, and quietly draining if you never step out of it.",
+  "MI": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence.",
+  "KD": "Kindred. Shared leading function: you see the same thing and then do different things with it.",
+  "BU": "Business. Shared second function — easy to work alongside, harder to get close to.",
+  "HD": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed.",
+  "MG": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution.",
+  "SE": "Super-Ego. Fascinating at a distance, abrasive up close.",
+  "CF": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours.",
+  "QI": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate.",
+  "EX": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent.",
+  "SR": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
+  "SV": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
+  "BR": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
+  "BE": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection."
+};
+
+export const ARCHETYPE: Record<MbtiType, string> = {
+  "ENTP": "Debater / Inventor / Visionary / Rogue",
+  "INTP": "Logician / Architect / Engineer / Ardent",
+  "ENTJ": "Commander / Fieldmarshal / Chief / Marshal",
+  "INTJ": "Architect / Mastermind / Mastermind / Ranger",
+  "ENFP": "Campaigner / Champion / Advocate / Bard",
+  "INFP": "Mediator / Healer / Dreamer / Mystic",
+  "ENFJ": "Protagonist / Teacher / Mentor / Cleric",
+  "INFJ": "Advocate / Counselor / Sage / Paladin",
+  "ESTP": "Entrepreneur / Promoter / Dynamo / Gladiator",
+  "ISTP": "Virtuoso / Crafter / Craftsman / Artificer",
+  "ESTJ": "Executive / Supervisor / Overseer / Judicator",
+  "ISTJ": "Logistician / Inspector / Examiner / Archivist",
+  "ESFP": "Entertainer / Performer / Entertainer / Duelist",
+  "ISFP": "Adventurer / Composer / Artist / Druid",
+  "ESFJ": "Consul / Provider / Provider / Cavalier",
+  "ISFJ": "Defender / Protector / Defender / Knight"
+};
+export const GROUP: Record<MbtiType, string> = {
+  "ENTP": "Intellectuals (NT)",
+  "INTP": "Intellectuals (NT)",
+  "ENTJ": "Intellectuals (NT)",
+  "INTJ": "Intellectuals (NT)",
+  "ENFP": "Idealists (NF)",
+  "INFP": "Idealists (NF)",
+  "ENFJ": "Idealists (NF)",
+  "INFJ": "Idealists (NF)",
+  "ESTP": "Artisans (SP)",
+  "ISTP": "Artisans (SP)",
+  "ESTJ": "Guardians (SJ)",
+  "ISTJ": "Guardians (SJ)",
+  "ESFP": "Artisans (SP)",
+  "ISFP": "Artisans (SP)",
+  "ESFJ": "Guardians (SJ)",
+  "ISFJ": "Guardians (SJ)"
+};
+export const INTERACTION_STYLE: Record<MbtiType, string> = {
+  "ENTP": "Get-Things-Going (Starter)",
+  "INTP": "Behind-the-Scenes",
+  "ENTJ": "In-Charge",
+  "INTJ": "Chart-the-Course",
+  "ENFP": "Get-Things-Going (Starter)",
+  "INFP": "Behind-the-Scenes",
+  "ENFJ": "In-Charge",
+  "INFJ": "Chart-the-Course",
+  "ESTP": "In-Charge",
+  "ISTP": "Chart-the-Course",
+  "ESTJ": "In-Charge",
+  "ISTJ": "Chart-the-Course",
+  "ESFP": "Get-Things-Going (Starter)",
+  "ISFP": "Behind-the-Scenes",
+  "ESFJ": "Get-Things-Going (Starter)",
+  "ISFJ": "Behind-the-Scenes"
+};
+export const ROMANCE: Record<MbtiType, string> = {
+  "ENTP": "Infantile",
+  "INTP": "Infantile",
+  "ENTJ": "Victim",
+  "INTJ": "Victim",
+  "ENFP": "Infantile",
+  "INFP": "Infantile",
+  "ENFJ": "Victim",
+  "INFJ": "Victim",
+  "ESTP": "Aggressor",
+  "ISTP": "Aggressor",
+  "ESTJ": "Caregiver",
+  "ISTJ": "Caregiver",
+  "ESFP": "Aggressor",
+  "ISFP": "Aggressor",
+  "ESFJ": "Caregiver",
+  "ISFJ": "Caregiver"
+};
+export const VIRTUE_VICE: Record<MbtiType, [string, string]> = {
+  "ENTP": [
+    "Earnestness",
+    "Illusion"
+  ],
+  "INTP": [
+    "Attentiveness",
+    "Apathy"
+  ],
+  "ENTJ": [
+    "Candor",
+    "Tyranny"
+  ],
+  "INTJ": [
+    "Reverence",
+    "Depravity"
+  ],
+  "ENFP": [
+    "Charity",
+    "Depravity"
+  ],
+  "INFP": [
+    "Devotion",
+    "Treachery"
+  ],
+  "ENFJ": [
+    "Compassion",
+    "Manipulation"
+  ],
+  "INFJ": [
+    "Integrity",
+    "Corruption"
+  ],
+  "ESTP": [
+    "Modesty",
+    "Arrogance"
+  ],
+  "ISTP": [
+    "Diligence",
+    "Sloth"
+  ],
+  "ESTJ": [
+    "Altruism",
+    "Greed"
+  ],
+  "ISTJ": [
+    "Honesty",
+    "Deceit"
+  ],
+  "ESFP": [
+    "Forgiveness",
+    "Vengeance"
+  ],
+  "ISFP": [
+    "Industry",
+    "Idleness"
+  ],
+  "ESFJ": [
+    "Caring",
+    "Cruelty"
+  ],
+  "ISFJ": [
+    "Faith",
+    "Fear"
+  ]
+};
+
+export interface Behavioural {
+  motivation: string; decisionStyle: string; commsStyle: string;
+  persuasionTrigger: string; rapportBuilder: string; conflictStyle: string;
+  stressResponse: string; trustBuilder: string; dealBreaker: string; commsFlaw: string;
+}
+export const BEHAVIOURAL: Record<MbtiType, Behavioural> = {
+  "ENTP": {
+    "motivation": "Innovation",
+    "decisionStyle": "Logical analysis",
+    "commsStyle": "Debating",
+    "persuasionTrigger": "Challenge their ideas",
+    "rapportBuilder": "Brainstorm together",
+    "conflictStyle": "Avoidance",
+    "stressResponse": "Withdrawal",
+    "trustBuilder": "Consistency",
+    "dealBreaker": "Micromanagement",
+    "commsFlaw": "Overly blunt"
+  },
+  "INTP": {
+    "motivation": "Understanding",
+    "decisionStyle": "Objective logic",
+    "commsStyle": "Precise",
+    "persuasionTrigger": "Appeal to logic",
+    "rapportBuilder": "Share theories",
+    "conflictStyle": "Analytical",
+    "stressResponse": "Isolation",
+    "trustBuilder": "Logic",
+    "dealBreaker": "Emotional appeals",
+    "commsFlaw": "Too abstract"
+  },
+  "ENTJ": {
+    "motivation": "Achievement",
+    "decisionStyle": "Strategic",
+    "commsStyle": "Direct",
+    "persuasionTrigger": "Focus on efficiency",
+    "rapportBuilder": "Respect their time",
+    "conflictStyle": "Direct",
+    "stressResponse": "Action",
+    "trustBuilder": "Competence",
+    "dealBreaker": "Inefficiency",
+    "commsFlaw": "Impatient"
+  },
+  "INTJ": {
+    "motivation": "Competence",
+    "decisionStyle": "Analytical",
+    "commsStyle": "Conceptual",
+    "persuasionTrigger": "Present a vision",
+    "rapportBuilder": "Acknowledge expertise",
+    "conflictStyle": "Strategic",
+    "stressResponse": "Planning",
+    "trustBuilder": "Reliability",
+    "dealBreaker": "Incompetence",
+    "commsFlaw": "Condescending"
+  },
+  "ENFP": {
+    "motivation": "Authenticity",
+    "decisionStyle": "Value-driven",
+    "commsStyle": "Enthusiastic",
+    "persuasionTrigger": "Appeal to morals",
+    "rapportBuilder": "Explore possibilities",
+    "conflictStyle": "Collaborative",
+    "stressResponse": "Brainstorming",
+    "trustBuilder": "Authenticity",
+    "dealBreaker": "Fake behaviour",
+    "commsFlaw": "Rambling"
+  },
+  "INFP": {
+    "motivation": "Harmony",
+    "decisionStyle": "Idealistic",
+    "commsStyle": "Empathetic",
+    "persuasionTrigger": "Validate feelings",
+    "rapportBuilder": "Listen deeply",
+    "conflictStyle": "Empathetic",
+    "stressResponse": "Emotional",
+    "trustBuilder": "Validation",
+    "dealBreaker": "Cruelty",
+    "commsFlaw": "Passive-aggressive"
+  },
+  "ENFJ": {
+    "motivation": "Connection",
+    "decisionStyle": "Consensus",
+    "commsStyle": "Expressive",
+    "persuasionTrigger": "Focus on people",
+    "rapportBuilder": "Show appreciation",
+    "conflictStyle": "Harmonising",
+    "stressResponse": "Seeking support",
+    "trustBuilder": "Appreciation",
+    "dealBreaker": "Selfishness",
+    "commsFlaw": "Overly emotional"
+  },
+  "INFJ": {
+    "motivation": "Meaning",
+    "decisionStyle": "Intuitive",
+    "commsStyle": "Insightful",
+    "persuasionTrigger": "Connect on a deep level",
+    "rapportBuilder": "Share a vision",
+    "conflictStyle": "Insightful",
+    "stressResponse": "Retreating",
+    "trustBuilder": "Deep connection",
+    "dealBreaker": "Superficiality",
+    "commsFlaw": "Cryptic"
+  },
+  "ESTP": {
+    "motivation": "Action",
+    "decisionStyle": "Pragmatic",
+    "commsStyle": "Direct",
+    "persuasionTrigger": "Focus on immediate results",
+    "rapportBuilder": "Be spontaneous",
+    "conflictStyle": "Pragmatic",
+    "stressResponse": "Action",
+    "trustBuilder": "Results",
+    "dealBreaker": "Boredom",
+    "commsFlaw": "Too blunt"
+  },
+  "ISTP": {
+    "motivation": "Autonomy",
+    "decisionStyle": "Tactical",
+    "commsStyle": "Concise",
+    "persuasionTrigger": "Provide practical solutions",
+    "rapportBuilder": "Give them space",
+    "conflictStyle": "Tactical",
+    "stressResponse": "Problem-solving",
+    "trustBuilder": "Space",
+    "dealBreaker": "Clinginess",
+    "commsFlaw": "Uncommunicative"
+  },
+  "ESTJ": {
+    "motivation": "Order",
+    "decisionStyle": "Practical",
+    "commsStyle": "Authoritative",
+    "persuasionTrigger": "Use facts and data",
+    "rapportBuilder": "Follow the rules",
+    "conflictStyle": "Authoritative",
+    "stressResponse": "Taking control",
+    "trustBuilder": "Following rules",
+    "dealBreaker": "Chaos",
+    "commsFlaw": "Rigid"
+  },
+  "ISTJ": {
+    "motivation": "Stability",
+    "decisionStyle": "Methodical",
+    "commsStyle": "Factual",
+    "persuasionTrigger": "Provide evidence",
+    "rapportBuilder": "Be reliable",
+    "conflictStyle": "Methodical",
+    "stressResponse": "Sticking to routine",
+    "trustBuilder": "Evidence",
+    "dealBreaker": "Unreliability",
+    "commsFlaw": "Too detailed"
+  },
+  "ESFP": {
+    "motivation": "Experience",
+    "decisionStyle": "Spontaneous",
+    "commsStyle": "Engaging",
+    "persuasionTrigger": "Keep it fun",
+    "rapportBuilder": "Be enthusiastic",
+    "conflictStyle": "Spontaneous",
+    "stressResponse": "Distraction",
+    "trustBuilder": "Fun",
+    "dealBreaker": "Negativity",
+    "commsFlaw": "Scattered"
+  },
+  "ISFP": {
+    "motivation": "Freedom",
+    "decisionStyle": "Flexible",
+    "commsStyle": "Gentle",
+    "persuasionTrigger": "Respect their individuality",
+    "rapportBuilder": "Be authentic",
+    "conflictStyle": "Flexible",
+    "stressResponse": "Escaping",
+    "trustBuilder": "Individuality",
+    "dealBreaker": "Control",
+    "commsFlaw": "Too quiet"
+  },
+  "ESFJ": {
+    "motivation": "Belonging",
+    "decisionStyle": "Traditional",
+    "commsStyle": "Warm",
+    "persuasionTrigger": "Focus on community",
+    "rapportBuilder": "Be polite and helpful",
+    "conflictStyle": "Accommodating",
+    "stressResponse": "Seeking reassurance",
+    "trustBuilder": "Community",
+    "dealBreaker": "Disloyalty",
+    "commsFlaw": "Gossiping"
+  },
+  "ISFJ": {
+    "motivation": "Security",
+    "decisionStyle": "Cautious",
+    "commsStyle": "Supportive",
+    "persuasionTrigger": "Offer practical help",
+    "rapportBuilder": "Show gratitude",
+    "conflictStyle": "Supportive",
+    "stressResponse": "Worrying",
+    "trustBuilder": "Practical help",
+    "dealBreaker": "Instability",
+    "commsFlaw": "Complaining"
+  }
+};
+
+export const COIN_LABELS = [
+  "Observer vs Decider",
+  "Identity vs Tribe",
+  "Organize vs Gather",
+  "Thinking vs Feeling",
+  "Sensing vs iNtuition",
+  "Initiating vs Responding",
+  "Direct vs Informative",
+  "Control vs Movement"
+] as const;
+export const DETERMINING = [
+  0,
+  2,
+  3,
+  4
+] as const;
+export const CONFIRMING = [
+  1,
+  5,
+  6,
+  7
+] as const;
+
+export const FN_FULL: Record<Fn, string> = {
+  "Ne": "Extraverted Intuition",
+  "Ni": "Introverted Intuition",
+  "Se": "Extraverted Sensing",
+  "Si": "Introverted Sensing",
+  "Te": "Extraverted Thinking",
+  "Ti": "Introverted Thinking",
+  "Fe": "Extraverted Feeling",
+  "Fi": "Introverted Feeling"
+};
+export const SLOT_NAMES = ["Hero","Parent","Child","Inferior","Nemesis","Critic","Trickster","Demon"] as const;
+export const SLOT_TAGS  = ["Power","Responsibility","Innocence","Fear","Worry","Cynicism","Blindspot","Hate"] as const;
+export type SlotName = (typeof SLOT_NAMES)[number];
