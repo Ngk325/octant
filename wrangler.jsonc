@@ -3,7 +3,7 @@
   // The migration the original build anticipated: `main` and an assets binding,
   // no project recreation needed.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "stratfield-typology",
+  "name": "typology",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-07-01",
   "assets": {

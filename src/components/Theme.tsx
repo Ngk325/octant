@@ -3,8 +3,9 @@ import {
   FN_COLOR, FN_GLOW, QUADRA_COLOR, CANVAS, easeColor, easeFill, onEaseFill, type Theme,
 } from "../engine/palette";
 import type { Fn } from "../engine/data";
+import { readStored, writeStored, removeStored } from "../storage";
 
-const KEY = "stratfield.theme";
+const KEY = "theme";
 
 interface Ctx {
   theme: Theme;
@@ -35,7 +36,7 @@ const systemTheme = (): Theme =>
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [preference, setPref] = useState<Theme | null>(() => {
     try {
-      const v = localStorage.getItem(KEY);
+      const v = readStored(KEY);
       return v === "light" || v === "dark" ? v : null;
     } catch {
       return null;
@@ -62,12 +63,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [theme]);
 
   useEffect(() => {
-    try {
-      if (preference) localStorage.setItem(KEY, preference);
-      else localStorage.removeItem(KEY);
-    } catch {
-      /* private mode — the theme just will not persist */
-    }
+    if (preference) writeStored(KEY, preference);
+    else removeStored(KEY);
   }, [preference]);
 
   const setPreference = useCallback((t: Theme | null) => setPref(t), []);

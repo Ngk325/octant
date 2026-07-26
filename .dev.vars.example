@@ -1,7 +1,29 @@
-# Copy to `.dev.vars` (gitignored) for local development.
+# Copy to `.dev.vars` (gitignored) for local development:
 #
+#   cp .dev.vars.example .dev.vars
+#
+# In production none of these is a file — each is a Worker secret. See DEPLOY.md
+# step 3, which lists the exact `wrangler secret put` command for each one.
+
+
+# ── The access wall ──────────────────────────────────────────────────────────
+# Nothing is served without a valid session, so BOTH of these must be set or the
+# site refuses everyone, including you. That is deliberate: an auth wall that
+# fails open is worse than none, because you believe you have one.
+
+# Who may in. Comma-separated, either bare codes or `label:code` pairs.
+# The label is how you tell people apart and revoke one without disturbing
+# the rest. Use long, unguessable codes in production — generate one with:
+#   node -e "console.log(require('crypto').randomBytes(12).toString('base64url'))"
+ACCESS_CODES=dev:let-me-in
+
+# Signing key for session cookies. Any long random string.
+# Rotating this signs everybody out at once, which is your panic button.
+#   node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+AUTH_SECRET=local-development-only-not-a-real-secret
+
+
+# ── The assistant ────────────────────────────────────────────────────────────
 # Get a key from https://aistudio.google.com/apikey
-# In production this is a Worker secret, not a file:
-#   npx wrangler secret put GEMINI_API_KEY
-#
+# Without it everything else works and the assistant reports itself unconfigured.
 GEMINI_API_KEY=your-key-here

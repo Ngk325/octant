@@ -4,13 +4,14 @@ import { STAGES } from "../learn/curriculum";
 import { TYPES, type MbtiType } from "../engine/data";
 import { usePublishContext } from "../chat/ChatContext";
 import { Panel } from "../components/Bits";
+import { readStored, writeStored } from "../storage";
 
-const DONE_KEY = "stratfield.learn.done";
-const TYPE_KEY = "stratfield.learn.type";
+const DONE_KEY = "learn.done";
+const TYPE_KEY = "learn.type";
 
 const readDone = (): string[] => {
   try {
-    const v = JSON.parse(localStorage.getItem(DONE_KEY) ?? "[]");
+    const v = JSON.parse(readStored(DONE_KEY) ?? "[]");
     return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
   } catch {
     return [];
@@ -24,7 +25,7 @@ export default function Learn() {
   const [done, setDone] = useState<string[]>(readDone);
   const [example, setExample] = useState<MbtiType>(() => {
     try {
-      const v = localStorage.getItem(TYPE_KEY);
+      const v = readStored(TYPE_KEY);
       return TYPES.includes(v as MbtiType) ? (v as MbtiType) : "ENTP";
     } catch {
       return "ENTP";
@@ -32,22 +33,14 @@ export default function Learn() {
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem(TYPE_KEY, example);
-    } catch {
-      /* ignore */
-    }
+    writeStored(TYPE_KEY, example);
   }, [example]);
 
   /* Persisting from an effect, not from inside the setDone updater. React may
      call a state updater more than once for a single dispatch, so writing to
      localStorage in there is a side effect in a function that must stay pure. */
   useEffect(() => {
-    try {
-      localStorage.setItem(DONE_KEY, JSON.stringify(done));
-    } catch {
-      /* ignore */
-    }
+    writeStored(DONE_KEY, JSON.stringify(done));
   }, [done]);
 
   const i = STAGES.findIndex((s) => s.slug === stage);

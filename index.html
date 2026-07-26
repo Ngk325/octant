@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Stratfield — read the wiring</title>
+    <title>Octant — read the wiring</title>
     <meta name="description" content="Learn how personality actually works, step by step and in plain language: sixteen wirings, four sides of the mind, and 256 derived relations." />
     <meta name="color-scheme" content="light dark" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,8 +14,10 @@
       // canvas. data-theme is ALWAYS set — the stylesheet declares the dark
       // palette once, under [data-theme="dark"], with no prefers-color-scheme
       // duplicate to drift out of sync.
+      // The "stratfield." fallback is the pre-rename key; src/storage.ts does the
+      // same migration for every other key, so nobody loses their settings.
       try {
-        var t = localStorage.getItem("stratfield.theme");
+        var t = localStorage.getItem("octant.theme") || localStorage.getItem("stratfield.theme");
         if (t !== "light" && t !== "dark") {
           t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }

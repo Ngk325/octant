@@ -1,4 +1,4 @@
-# Stratfield — read the wiring
+# Octant — read the wiring
 
 Learn how personality actually works, step by step and in plain language — then read a person,
 then compose the network.
@@ -23,7 +23,7 @@ src/engine/
   verify.ts     the structural assertions, runnable at any time
   lexicon.ts    103 term definitions + pairing logic for every category
   data.ts       GENERATED copy tables (see "Provenance")
-src/worker/     Cloudflare Worker: /api/chat proxies Gemini, assets fall through
+src/worker/     Cloudflare Worker: the access wall, /api/chat proxying Gemini, assets behind both
 src/learn/      the eleven-stage course
 ```
 
@@ -178,6 +178,36 @@ falls out for free: because a dominant and an auxiliary always run opposite atti
 non-jumper is energy-dominant and every jumper is info-dominant, which is precisely the line
 where OPS's 32 base types leave this app's 16 behind.
 
+## Private by default
+
+Nothing here is public. The Worker gates **every** request — the app shell, every
+asset, every API route — before the static asset binding is ever reached, so an
+unauthenticated visitor never receives a byte of the app. Not the HTML, not a chunk
+of JS. They get a self-contained access page and nothing else.
+
+Access is by invite code, issued by the owner:
+
+- `ACCESS_CODES` is a list of `label:code` pairs. Adding one grants access; removing
+  one revokes it. The label is how you tell people apart.
+- Sessions are HMAC-signed tokens in an `HttpOnly` cookie, not rows in a table, so
+  there is nothing to keep and a forged cookie needs the signing secret.
+- Rotating `AUTH_SECRET` ends every session everywhere at once. That is the panic button.
+
+Three decisions worth knowing about, because they are the parts that would bite:
+
+1. **It fails closed.** With the secrets missing the site serves a "not configured"
+   page rather than serving the app. A wall that fails open publishes the site while
+   its owner believes it is private, which is worse than having no wall at all.
+2. **Codes are compared as SHA-256 digests**, so neither the code nor its length
+   leaks through response timing.
+3. **Only failed logins count toward the brute-force brake.** Counting successes
+   would lock out someone signing in on three devices while doing nothing extra
+   against an attacker, who by definition only ever fails.
+
+`tests/auth.test.ts` asserts the boundary directly: anonymous requests get no app
+content, forged and tampered and expired cookies are refused, a revoked code cannot
+sign in again, and a misconfigured wall refuses everyone. Setup is DEPLOY.md step 2.
+
 ## The assistant
 
 A persistent, context-aware rail on every route, backed by Gemini through a Cloudflare Worker.
@@ -220,7 +250,7 @@ is a test rather than a matter of taste.
 npm install
 cp .dev.vars.example .dev.vars   # add a Gemini key to use the assistant locally
 npm run dev        # http://localhost:5173 — serves /api/* with the Worker's own handler
-npm test           # 423 tests
+npm test           # 454 tests
 npm run build      # → dist/
 ```
 

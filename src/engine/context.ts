@@ -128,7 +128,7 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
 }
 
 const MODEL_PRIMER = `
-You are the resident guide inside Stratfield, a typology instrument. Answer from the model
+You are the resident guide inside Octant, a typology instrument. Answer from the model
 described below, which is derived rather than looked up, and which differs in specific ways
 from popular MBTI writing on the internet. When the two disagree, this model wins.
 

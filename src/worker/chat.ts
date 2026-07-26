@@ -75,9 +75,18 @@ export async function handleChat(request: Request, env: Env, now = Date.now()): 
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
   if (request.method !== "POST") return json({ error: "Use POST." }, 405);
 
+  /* The message names the actual command, because "see DEPLOY.md" sent at least
+     one owner looking through the file and finding nothing — it was buried in a
+     local-development subsection instead of being a step of its own. */
   if (!env.GEMINI_API_KEY) {
     return json(
-      { error: "The assistant is not configured. Set the GEMINI_API_KEY secret (see DEPLOY.md)." },
+      {
+        error:
+          "The assistant is not configured — no Gemini API key is set on this deployment. " +
+          "Get a key at https://aistudio.google.com/apikey, then run " +
+          "`npx wrangler secret put GEMINI_API_KEY` and redeploy. " +
+          "Locally, put it in .dev.vars and restart the dev server. DEPLOY.md step 2 has the detail.",
+      },
       503,
     );
   }

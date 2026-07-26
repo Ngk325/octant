@@ -2,6 +2,7 @@ import {
   createContext, useContext, useMemo, useState, useCallback, useEffect, type ReactNode,
 } from "react";
 import type { ChatContext as Ctx } from "../engine/context";
+import { readStored, writeStored } from "../storage";
 
 interface ChatCtxValue {
   /** What the reader is currently looking at. Published by each view. */
@@ -13,7 +14,7 @@ interface ChatCtxValue {
 }
 
 const C = createContext<ChatCtxValue | null>(null);
-const OPEN_KEY = "stratfield.chat.open";
+const OPEN_KEY = "chat.open";
 
 /**
  * Holds the assistant's open/closed state and whatever the current view has published
@@ -22,21 +23,13 @@ const OPEN_KEY = "stratfield.chat.open";
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [context, setContext] = useState<Ctx>({ kind: "home" });
   const [open, setOpen] = useState<boolean>(() => {
-    try {
-      const stored = localStorage.getItem(OPEN_KEY);
-      if (stored !== null) return stored === "1";
-    } catch {
-      /* fall through to the width default */
-    }
+    const stored = readStored(OPEN_KEY);
+    if (stored !== null) return stored === "1";
     return typeof window !== "undefined" && window.innerWidth > 1180;
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem(OPEN_KEY, open ? "1" : "0");
-    } catch {
-      /* private mode */
-    }
+    writeStored(OPEN_KEY, open ? "1" : "0");
   }, [open]);
 
   const toggle = useCallback(() => setOpen((o) => !o), []);

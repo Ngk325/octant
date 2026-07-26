@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatContext } from "../engine/context";
+import { readStored, writeStored, removeStored } from "../storage";
 
 /** One message in a thread, as stored and rendered. */
 export interface Message {
@@ -7,12 +8,12 @@ export interface Message {
   text: string;
 }
 
-const KEY = "stratfield.chat.thread";
+const KEY = "chat.thread";
 const MAX_STORED = 40;
 
 function load(): Message[] {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = readStored(KEY);
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -37,11 +38,7 @@ export function useChat(context: ChatContext) {
   const abort = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(messages.slice(-MAX_STORED)));
-    } catch {
-      /* private mode, or quota — the thread just will not survive a reload */
-    }
+    writeStored(KEY, JSON.stringify(messages.slice(-MAX_STORED)));
   }, [messages]);
 
   useEffect(() => () => abort.current?.abort(), []);
@@ -56,11 +53,7 @@ export function useChat(context: ChatContext) {
     stop();
     setMessages([]);
     setError(null);
-    try {
-      localStorage.removeItem(KEY);
-    } catch {
-      /* ignore */
-    }
+    removeStored(KEY);
   }, [stop]);
 
   const send = useCallback(

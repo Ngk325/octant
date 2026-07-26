@@ -53,13 +53,23 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [pathname, hash]);
 
+  /* Clears the session cookie server-side, then reloads — at which point the
+     Worker's gate serves the access page. A hard reload rather than a route
+     change, because the whole app is behind the wall and nothing in the bundle
+     should try to render an unauthenticated state. */
+  const signOut = () => {
+    void fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+      window.location.assign("/");
+    });
+  };
+
   return (
     <div className="app">
       <div className="main">
         <header className="masthead">
           <div className="masthead-inner">
             <Link to="/" className="wordmark">
-              Stratfield <span>— read the wiring</span>
+              Octant <span>— read the wiring</span>
             </Link>
 
             <nav className={`tabs${menu ? " open" : ""}`}>
@@ -91,6 +101,14 @@ export default function App() {
                 title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
               >
                 {theme === "dark" ? "☀" : "☾"}
+              </button>
+              <button
+                className="icon-btn"
+                onClick={signOut}
+                aria-label="Sign out"
+                title="Sign out"
+              >
+                ⏻
               </button>
               <button
                 className="icon-btn menu-toggle"

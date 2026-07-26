@@ -26,7 +26,7 @@ Working directory is the repo root — the folder containing `package.json` and 
 
 ```sh
 npm install
-npm test          # expect: 423 passed
+npm test          # expect: 454 passed
 npm run build     # expect: dist/ written, no TypeScript errors
 ```
 
@@ -34,60 +34,134 @@ npm run build     # expect: dist/ written, no TypeScript errors
 reproduces its verified reference exactly, including all 256 playbooks character for character,
 and that every lexicon cross-reference and every aspect pairing resolves. It also asserts the
 four-sides derivation, the OPS animal definitions, and that every colour in the design system
-clears WCAG AA on its own canvas in both themes. A failure means the data model or the reading
-surface is wrong, not that a test is flaky.
+clears WCAG AA on its own canvas in both themes. It also asserts that the access wall blocks
+anonymous requests, fails closed when misconfigured, and rejects forged and expired sessions.
+A failure means the data model, the reading surface or the security boundary is wrong, not that
+a test is flaky.
 
-### The assistant's API key
-
-`/api/chat` is served by a Worker (`src/worker/index.ts`) that proxies Gemini. The key is a
-**secret** — never a `var`, never in the client bundle, never committed.
-
-```sh
-cp .dev.vars.example .dev.vars     # local only; .dev.vars is gitignored
-# put your key in it, then:
-npm run dev                        # Vite serves /api/* with the same handler the Worker runs
-npx wrangler dev                   # or run the real Worker + assets locally
-```
-
-For production, once per environment:
+Smoke check — **do step 2 first**, or the dev site will (correctly) refuse to let you in:
 
 ```sh
-npx wrangler secret put GEMINI_API_KEY
+cp .dev.vars.example .dev.vars
+npm run dev       # http://localhost:5173, access code: let-me-in
 ```
 
-Verify the key never ships: `npm run build && grep -r "GEMINI\|AIza\|AQ\." dist/` must find
-nothing. Without the secret set, the app still works everywhere else — the rail simply reports
-itself unconfigured.
-
-**Rate limiting.** `handleChat` throttles per IP, but only within a single Worker isolate, so it
-slows a runaway client rather than a determined one. Before pointing real traffic at this,
-add a KV namespace and move the counter there.
-
-Optional smoke check:
-
-```sh
-npm run dev       # http://localhost:5173
-```
-
-Visit `/calculator`, `/type/ENTP`, `/pair/ENTP/ENFJ`, `/network`, `/matrix`, `/lexicon`.
-Confirm deep links survive a hard refresh.
+Visit `/calculator`, `/type/ENTP`, `/pair/ENTP/ENFJ`, `/network`, `/matrix`, `/lexicon`,
+`/learn/octagram`. Confirm deep links survive a hard refresh.
 
 ---
 
-## 2 · 🔑 HUMAN — create the GitHub repository
+## 2 · Secrets — the access wall and the assistant
+
+**Read this before deploying.** Three secrets. The first two are required or the
+site refuses everyone; the third is required or the assistant reports itself
+unconfigured. None is ever a `var`, none is ever committed, and none reaches the
+client bundle.
+
+| Secret | Required | What it does |
+|---|---|---|
+| `ACCESS_CODES` | **yes** | Who may in. Without it nobody gets past the gate — including you. |
+| `AUTH_SECRET` | **yes** | Signs session cookies. Rotating it signs everybody out. |
+| `GEMINI_API_KEY` | for the assistant | Powers `/api/chat`. Everything else works without it. |
+
+### Locally
+
+```sh
+cp .dev.vars.example .dev.vars     # gitignored; already contains a working dev code
+```
+
+Then edit `.dev.vars` to add your Gemini key. `npm run dev` and `npx wrangler dev`
+both read it, and both enforce the access wall exactly as production does — the dev
+site is gated too, which is the only way to actually test the thing protecting you.
+
+### In production
+
+Run each command, paste the value when prompted, press enter:
+
+```sh
+npx wrangler secret put ACCESS_CODES
+npx wrangler secret put AUTH_SECRET
+npx wrangler secret put GEMINI_API_KEY
+```
+
+**Generate the values first** — do not invent them by hand:
+
+```sh
+# one access code
+node -e "console.log(require('crypto').randomBytes(12).toString('base64url'))"
+
+# the signing secret
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+```
+
+**`ACCESS_CODES` format.** Comma-separated, either bare codes or `label:code` pairs.
+The label is how you tell people apart:
+
+```
+nick:Rk9xQe2mVt8L,jane:7Zp3WsNbYc1H
+```
+
+- **To grant access:** generate a code, add `name:code` to the list, re-run
+  `wrangler secret put ACCESS_CODES` with the full new list, then send that person
+  their code. Existing sessions are unaffected.
+- **To revoke one person:** remove their entry and re-run the command. They cannot
+  sign in again. Their current session survives until it expires (30 days) — if you
+  need them out *now*, rotate `AUTH_SECRET` as well.
+- **Panic button:** re-run `wrangler secret put AUTH_SECRET` with a fresh value.
+  Every session everywhere ends immediately and everyone signs in again.
+
+Secrets take effect on the next deploy. `npx wrangler deploy` if you are deploying
+directly; push to the branch if you are on Git-connected builds.
+
+### Verifying
+
+```sh
+npm run build && grep -rE "GEMINI|AIza|AQ\.|ACCESS_CODES|AUTH_SECRET" dist/
+```
+
+Must find **nothing** — every secret lives in the Worker, and the Worker's code is
+not the client bundle. Then, against the deployed URL:
+
+```sh
+curl -si https://<your-worker-url>/ | head -1          # expect: HTTP/2 401
+curl -s  https://<your-worker-url>/api/chat -X POST    # expect: {"error":"Not signed in."}
+```
+
+A `200` on the first command means the wall is not doing its job — check that both
+secrets are set and that the deploy that set them has actually gone out.
+
+### If you see "Not configured"
+
+The wall is missing `ACCESS_CODES` or `AUTH_SECRET` and is refusing everyone rather
+than serving the site to the public. Set both, redeploy, reload.
+
+### If the assistant says it is not configured
+
+`GEMINI_API_KEY` is unset. Get a key from <https://aistudio.google.com/apikey>, then
+`npx wrangler secret put GEMINI_API_KEY` and redeploy. Locally, put it in `.dev.vars`
+and restart `npm run dev`.
+
+**Rate limiting.** Both `handleChat` and the login brake throttle per IP, but only
+within a single Worker isolate, so they slow a runaway client rather than a
+determined one. Before pointing real traffic at this, add a KV namespace and move
+both counters there.
+
+---
+
+## 3 · 🔑 HUMAN — create the GitHub repository
 
 The initial commit already exists in this repo. Create an **empty** repository at
 <https://repo.new> — no README, no `.gitignore`, no licence, or the first push will conflict.
 
-Suggested name: `stratfield-typology`. Private is fine; Workers Builds can read private repos
+Suggested name: `typology`. Private is fine; Workers Builds can read private repos
 once authorised.
 
 ---
 
-## 3 · 🔑 HUMAN — push
+## 4 · 🔑 HUMAN — push
 
 ```sh
-git remote add origin https://github.com/<YOUR-USERNAME>/stratfield-typology.git
+git remote add origin https://github.com/<YOUR-USERNAME>/typology.git
 git branch -M main
 git push -u origin main
 ```
@@ -100,7 +174,7 @@ Verify: `git ls-remote origin` returns a `refs/heads/main` line.
 
 ---
 
-## 4 · Choose a deploy path
+## 5 · Choose a deploy path
 
 Two options. **B is the better long-term setup**; A is faster if you just want it live now.
 
@@ -113,7 +187,7 @@ npm run deploy       # builds, then wrangler deploy
 ```
 
 `npm run deploy` prints the live URL, of the form
-`https://stratfield-typology.<your-subdomain>.workers.dev`.
+`https://typology.<your-subdomain>.workers.dev`.
 
 To redeploy after any change: `npm run deploy`. Nothing is automatic.
 
@@ -124,7 +198,7 @@ Every push to `main` builds and deploys itself, and pull requests get preview UR
 1. 🔑 **HUMAN** — Cloudflare dashboard → **Workers & Pages** → **Create** → **Workers** →
    **Import a repository**.
 2. Authorise the Cloudflare GitHub app for the account or org, then pick
-   `stratfield-typology`.
+   `typology`.
 3. Build settings:
 
    | Field | Value |
@@ -141,7 +215,7 @@ output-directory field to set.
 
 ---
 
-## 5 · Verify the deployment
+## 6 · Verify the deployment
 
 Against the live URL:
 
@@ -153,7 +227,7 @@ Against the live URL:
 
 ---
 
-## 6 · Custom domain (optional)
+## 7 · Custom domain (optional)
 
 🔑 **HUMAN** — Workers & Pages → the Worker → **Settings** → **Domains & Routes** → **Add**
 → **Custom domain**. The zone must already be on the Cloudflare account; DNS is created
