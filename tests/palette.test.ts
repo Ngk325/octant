@@ -20,9 +20,8 @@ const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
 /** Read the ink/surface tokens straight out of the stylesheet so the two cannot drift. */
 function tokens(theme: Theme): Record<string, string> {
   const css = readFileSync(new URL("../src/styles/tokens.css", import.meta.url), "utf8");
-  const block = theme === "light"
-    ? css.slice(css.indexOf(":root {"), css.indexOf(':root[data-theme="dark"]'))
-    : css.slice(css.indexOf(':root[data-theme="dark"]'), css.indexOf("@media (prefers-color-scheme: dark)"));
+  const dark = css.indexOf(':root[data-theme="dark"] {');
+  const block = theme === "light" ? css.slice(css.indexOf(":root {"), dark) : css.slice(dark);
   const out: Record<string, string> = {};
   for (const m of block.matchAll(/--([a-z0-9-]+):\s*(#[0-9A-Fa-f]{3,8})\s*;/g)) out[m[1]] = m[2];
   return out;
@@ -71,6 +70,36 @@ describe.each(THEMES)("%s theme legibility", (theme) => {
 
   it("agrees with the canvas token exported for diagrams", () => {
     expect(CANVAS[theme].toLowerCase()).toBe(tok.canvas.toLowerCase());
+  });
+});
+
+describe("the dark palette is declared once", () => {
+  const css = readFileSync(new URL("../src/styles/tokens.css", import.meta.url), "utf8");
+
+  /**
+   * Regression: the dark tokens were declared twice — once under
+   * `[data-theme="dark"]` and again inside `@media (prefers-color-scheme: dark)`.
+   * The tests above only ever read the first copy, so the second could drift
+   * below AA without anything failing. There is now exactly one copy, and
+   * data-theme is always set (index.html boot script + ThemeProvider).
+   */
+  it("has no second copy hiding in a prefers-color-scheme block", () => {
+    const code = css.replace(/\/\*[\s\S]*?\*\//g, ""); // comments talk about it; rules must not
+    expect(code).not.toMatch(/@media\s*\(prefers-color-scheme/);
+  });
+
+  it("declares each dark token exactly once", () => {
+    const block = css.slice(css.indexOf(':root[data-theme="dark"] {'));
+    for (const name of ["canvas", "surface", "ink", "muted", "accent"]) {
+      const hits = [...block.matchAll(new RegExp(`--${name}:`, "g"))];
+      expect(hits.length, `--${name} declared ${hits.length}x in the dark block`).toBe(1);
+    }
+  });
+
+  it("is applied by an attribute the app always sets", () => {
+    const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+    expect(html).toMatch(/documentElement\.dataset\.theme = t/);
+    expect(html).toMatch(/prefers-color-scheme: dark/);
   });
 });
 

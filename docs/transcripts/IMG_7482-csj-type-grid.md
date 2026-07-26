@@ -1,33 +1,36 @@
-# IMG_7482 — CS Joseph "TYPE GRID"
-**Group C · photographed printed page · © CSJ Ventures LLC 2021, 2022 · page 7 · confidence: high**
+# IMG_7482 — CS Joseph "Type Grid"
+**Group C · photographed printed page · © CSJ Ventures LLC 2021, 2022 · confidence: high**
 
-Axes: **Your Worldview** (columns, temperament) × **Your Expression** (rows, interaction style).
+> **Rights note.** This page is copyrighted commercial material. The grid's contents are
+> **described here rather than reproduced** — no table of its cells, labels or figures. What the
+> app uses from it is structural (which axes exist, and the fact that its archetype names were
+> already present in this codebase), and the app's own prose is written independently.
+> Source: CS Joseph, *Type Grid*, © CSJ Ventures LLC 2021–2022, csjoseph.life.
 
-Columns: Guardians (SJ) 40% of Population · Artisans (SP) 30% · Intellectuals (NT) 15% · Idealists (NF) 15%
+## What the page is
 
-| Expression | Decomposition | SJ | SP | NT | NF |
-|---|---|---|---|---|---|
-| **Structure** | Direct · Initiating · Outcome | JUDICATOR (ESTJ) | GLADIATOR (ESTP) | MARSHAL (ENTJ) | CLERIC (ENFJ) |
-| **Starter** | Informative · Initiating · Progression | CAVALIER (ESFJ) | DUELIST (ESFP) | ROGUE (ENTP) | BARD (ENFP) |
-| **Finisher** | Direct · Responding · Progression | ARCHIVIST (ISTJ) | ARTIFICER (ISTP) | RANGER (INTJ) | PALADIN (INFJ) |
-| **Background** | Informative · Responding · Outcome | KNIGHT (ISFJ) | DRUID (ISFP) | ARDENT (INTP) | MYSTIC (INFP) |
+A single-page wall chart laying the sixteen types on two axes:
 
-Temperament attribute triples (bottom row):
-- SJ — Concrete · Affiliative · Systematic
-- SP — Concrete · Pragmatic · Interest
-- NT — Abstract · Pragmatic · Systematic
-- NF — Abstract · Affiliative · Interest
+- **Columns — "Your Worldview"**: the four Keirsey temperaments (SJ, SP, NT, NF), each annotated
+  with an approximate share of the population.
+- **Rows — "Your Expression"**: four interaction styles, which CS Joseph names Structure, Starter,
+  Finisher and Background. Each row is annotated with a three-part decomposition combining a
+  directing/informing axis, an initiating/responding axis, and an outcome/progression axis.
 
-Bottom-left legend: a 2×2 box labelled **"The Four Sides of the Mind"** — Ego | Subconscious /
-Unconscious | Superego. Each type cell carries four small function glyphs.
+Every cell names one type and gives it a fantasy-archetype label. A legend at the foot introduces
+the Four Sides of the Mind as a 2×2 of Ego, Subconscious, Unconscious and Superego.
 
-**Already in the app (unattributed):** all sixteen archetype names appear as the 4th entry of each
-`ARCHETYPE[t]` string in `data.ts` (Rogue, Ranger, Knight, Ardent, Judicator, Gladiator, Marshal,
-Cleric, Cavalier, Duelist, Bard, Archivist, Artificer, Paladin, Druid, Mystic — all sixteen verified).
-The Expression↔Interaction-Style mapping is also already implicit: the app labels ENTP
-"Get-Things-Going (Starter)".
+## What this app takes from it
 
-**Not in the app:** population percentages; the temperament attribute triples; the explicit
-three-part Expression decomposition. Note the app's coin 8 (Control/Movement) is the same axis as
-CSJ's Outcome/Progression — Control ↔ Outcome, Movement ↔ Progression, verified against the app's
-own derivation.
+**Nothing new was ingested.** Two findings, both checked against the code:
+
+1. **The sixteen archetype names were already in the app**, as the last entry of each
+   `ARCHETYPE[t]` string in `data.ts`. Verified for all sixteen in `tests/ingested.test.ts`.
+   This transcript's value was identifying *whose* names those are, so they can be attributed.
+2. **The row axis is the app's existing interaction-style field under different names**, and the
+   grid's outcome/progression axis is the app's coin 8 (Control/Movement) under a different name.
+   Both confirmed by derivation, not by copying.
+
+Not taken: the population figures and the temperament attribute triples. Those fall in the
+A3–A5 naming-and-detail group held back by agreement, and are in any case the page's own content
+rather than structure.

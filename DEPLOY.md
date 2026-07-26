@@ -26,7 +26,7 @@ Working directory is the repo root — the folder containing `package.json` and 
 
 ```sh
 npm install
-npm test          # expect: 304 passed
+npm test          # expect: 366 passed
 npm run build     # expect: dist/ written, no TypeScript errors
 ```
 

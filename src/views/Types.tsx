@@ -14,7 +14,7 @@ export default function Types() {
   const p = usePalette();
   const [sortBy, setSortBy] = useState<SortBy>("quadra");
 
-  usePublishContext(() => ({ kind: "home" }), []);
+  usePublishContext(() => ({ kind: "catalogue", sortBy }), [sortBy]);
 
   const groups = groupTypes(sortBy);
 

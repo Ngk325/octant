@@ -32,10 +32,20 @@ export default function LettersToStack({ type }: { type: MbtiType }) {
     {
       letter: type[3],
       title: `${type[3]} — which kind it is`,
-      body:
-        `The last letter describes what you show the world, not what you lead with. You are a ${lastLetter}, ` +
-        `so the function you show outwardly is ${type[3] === "J" ? "a judging one" : "a perceiving one"} — ` +
-        `which means the ${attitude} one underneath it is ${heroKind}.`,
+      /* The two cases are genuinely different, and collapsing them makes the
+         extravert version circular. The last letter always describes the
+         function you turn OUTWARD. For an Extravert that is the strongest
+         function itself, so the letter names it directly. For an Introvert the
+         outward function is only the second, so the letter names the second and
+         the strongest is the other kind. */
+      body: attitude === "extraverted"
+        ? `The last letter describes the function you turn outward — and since you lead outwardly, ` +
+          `that is your strongest one. You are a ${lastLetter}, so your strongest function is ` +
+          `${heroKind}, and step 1 already said it faces outward.`
+        : `The last letter describes the function you turn outward, which is not the one you lead with. ` +
+          `You are a ${lastLetter}, so the function you show the world is ` +
+          `${type[3] === "J" ? "a judging one" : "a perceiving one"} — but that is your second. Your ` +
+          `strongest sits behind it, faces inward, and is the other kind: ${heroKind}.`,
       result: `Your strongest function is ${hero}.`,
       fn: hero,
     },

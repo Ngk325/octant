@@ -48,10 +48,14 @@ export default function Calculator() {
         plain="Eight either-or questions. There is no right answer and no scoring you can fail — pick whichever sounds more like an ordinary day for you. Four of the eight actually decide it; the other four are a cross-check."
       >
         <p>
-          Coins 3 and 5 name the savior observer exactly; coins 2 and 4 name the savior decider.
-          Because the two saviors must run opposite attitudes, coin 2 carries no information coin 3
-          has not already given — so four bits fix one of sixteen. The confirming coins are kept
-          because disagreement between self-report and structure is itself informative.
+          Coin 3 gives the savior observer's attitude and coin 5 gives its element, so the two
+          together name that function exactly. Coin 4 gives the savior decider's element. Coin 2
+          would give the decider's attitude, but it carries nothing new: the two saviors must run
+          opposite attitudes, so coin 3 has already fixed it. What is still missing is which of the
+          two saviors leads, and that is coin 1. Coins <b>1, 3, 4 and 5</b> — the four highlighted
+          below — are therefore the deciding set, and four independent bits fix one of sixteen. The
+          other four are kept because disagreement between self-report and structure is itself
+          informative.
         </p>
       </Explain>
 

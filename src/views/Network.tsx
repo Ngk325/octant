@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { TYPES, quadra, type MbtiType } from "../engine/core";
 import { analyse, type Member } from "../engine/network";
@@ -14,12 +14,15 @@ const SEED: Member[] = [
   { id: "3", name: "Third", type: "ISFJ" },
 ];
 
-let nextId = 4;
-
 export default function Network() {
   const [members, setMembers] = useState<Member[]>(SEED);
   const report = useMemo(() => analyse(members), [members]);
   const p = usePalette();
+  /* Per-mount, and bumped OUTSIDE the state updater. A module-level counter
+     incremented inside the updater is a side effect in a function React is
+     free to call twice, so ids skipped in StrictMode and leaked between
+     mounts. */
+  const nextId = useRef(SEED.length + 1);
 
   usePublishContext(
     () => ({ kind: "network", members: members.map((m) => ({ name: m.name, type: m.type })) }),
@@ -83,9 +86,10 @@ export default function Network() {
             <button
               className="btn"
               style={{ marginTop: "var(--s2)" }}
-              onClick={() =>
-                setMembers((ms) => [...ms, { id: String(nextId++), name: `Person ${ms.length + 1}`, type: "ENFP" }])
-              }
+              onClick={() => {
+                const id = String(nextId.current++);
+                setMembers((ms) => [...ms, { id, name: `Person ${ms.length + 1}`, type: "ENFP" }]);
+              }}
             >
               Add a person
             </button>

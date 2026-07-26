@@ -49,10 +49,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const theme = preference ?? system;
 
+  /* data-theme always carries the RESOLVED theme, never "unset for system".
+     tokens.css declares the dark palette once, under [data-theme="dark"], so
+     following the system means writing the system's answer here rather than
+     leaving the attribute off and relying on a duplicate media block. */
   useEffect(() => {
-    const root = document.documentElement;
-    if (preference) root.dataset.theme = preference;
-    else delete root.dataset.theme;
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  useEffect(() => {
     try {
       if (preference) localStorage.setItem(KEY, preference);
       else localStorage.removeItem(KEY);

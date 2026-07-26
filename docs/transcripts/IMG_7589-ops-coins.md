@@ -1,6 +1,13 @@
 # IMG_7589 — OPS coin reference sheet
 **Group C · photographed printed page, rotated 90° · confidence: high (some marginalia low)**
 
+> **Rights note.** Objective Personality's material is commercial. What is quoted below is
+> limited to the short marker phrases and coin names, because those *are* the data — the
+> savior/demon markers cannot be paraphrased without destroying the thing being recorded.
+> The longer prose on the sheet is not transcribed. Everything the app ships from this page
+> (`COIN_PLAIN`, the Calculator prompts, `SAVIOR_MARKERS`/`DEMON_MARKERS`) is written in this
+> app's own voice and credited to OPS on the surfaces that use it.
+
 ## Growth vs Fixed — Saviors vs Demons
 **Saviors:** "I'm responsible, so I spend my time on this (**Responsible**)" · "I can work through
 the struggles here (**Confidence**)" · "Let me just do that for you, thank me later (**Obvious**)"
@@ -22,6 +29,8 @@ Plus four nicknames: **SF "Popularity" · NT "Nerdy" · ST "Reporter" · NF "Hip
 **Marginalia:** hand-circled Observer, Identity, Gather, NT — which resolves to Ne/Ti, i.e. ENTP.
 Read as the photographer's own self-typing; not treated as app content.
 
-**Already in the app:** this sheet is evidently the source of the existing coin definitions — the
-Calculator's coin-1 prompt is near-verbatim from it. **Not in the app:** the three-part
-savior/demon markers, and the SF/NT/ST/NF nicknames.
+**Already in the app:** this sheet is the source of the coin definitions. The Calculator's prompts
+were near-verbatim from it in the first build and have since been rewritten in plain first-person
+language of the app's own (`PROMPTS` in `src/views/Calculator.tsx`); the three-part savior/demon
+markers are now carried in `SAVIOR_MARKERS`/`DEMON_MARKERS`. **Not in the app:** the SF/NT/ST/NF
+nicknames, which are jokey rather than load-bearing.

@@ -92,19 +92,31 @@ export function divergence(a: MbtiType, b: MbtiType): Divergence {
   const size = sizeOf(delta);
   const rel = REL_NAME[REL[a][b]];
 
+  /* Both branches quote the two numbers rather than characterising the
+     relation. An earlier version described every negative delta as "a
+     high-friction relation on paper", which is simply false for several of
+     them — Identity is the clearest case: the structure rates it merely
+     comfortable rather than difficult, and the survey rates it near the top.
+     A negative delta means the survey is higher, nothing more. */
   let reading: string;
   if (size === "agree") {
     reading = `Both readings land in the same place. The structure says ${rel}, and people who have lived it broadly agree.`;
   } else if (delta > 0) {
     reading =
-      `The structure is far more optimistic than people are. ${rel} predicts low friction, but survey respondents rate this ` +
-      `pairing at ${survey}%. The likeliest reason: the model is describing how the wiring meshes, and the survey is ` +
-      `describing who people enjoy — and what completes you is not always what you find easy to be around.`;
+      `The structure is more optimistic than people are: ${rel} scores ${derived} on the derived ease scale, but survey ` +
+      `respondents rate this pairing at ${survey}%. The likeliest reason is that the two are measuring different things — ` +
+      `the model describes how the wiring meshes, the survey describes who people enjoy, and what completes you is not ` +
+      `always what you find easy to be around.`;
+  } else if (a === b) {
+    reading =
+      `People rate this far higher than the structure does: Identity scores ${derived} derived against ${survey}% surveyed. ` +
+      `Same-type pairings are the sharpest case of the gap — being understood without explaining yourself is enormously ` +
+      `pleasant, and the model marks it down anyway because nobody is covering anybody's blind spots.`;
   } else {
     reading =
-      `People like this pairing considerably more than the structure predicts. ${rel} is a high-friction relation on paper, ` +
-      `yet respondents rate it ${survey}%. Friction and attraction are not opposites, and shared interests can carry a pair ` +
-      `a long way past a difficult function match.`;
+      `People like this pairing considerably more than the structure predicts: ${rel} scores ${derived} derived against ` +
+      `${survey}% surveyed. Ease and attraction are not the same measurement, and shared interests, values or circumstance ` +
+      `can carry a pair a long way past an awkward function match.`;
   }
   return { derived, survey, delta, size, reading };
 }

@@ -36,8 +36,13 @@ export default function ChatRail() {
     );
   }
 
+  /* Guarded, because Enter is bound to this. Without the check, pressing Enter
+     while an answer was still streaming cleared the box and dropped the
+     question on the floor — the send was refused but the draft was already
+     gone. Nothing is cleared unless something is actually sent. */
   const submit = () => {
-    const text = draft;
+    const text = draft.trim();
+    if (!text || streaming) return;
     setDraft("");
     void send(text);
   };
@@ -70,7 +75,7 @@ export default function ChatRail() {
             </p>
             <div className="rail-suggest">
               {suggestedPrompts(context).map((q) => (
-                <button key={q} onClick={() => void send(q)}>{q}</button>
+                <button key={q} disabled={streaming} onClick={() => void send(q)}>{q}</button>
               ))}
             </div>
           </>

@@ -1,19 +1,30 @@
 # what-makes-each-cognitive-function-happy-410x1024.png
 **Group A · diagram_reference · confidence: high · source: psychologyjunkie.com (watermarked)**
 
-Infographic: "WHAT MAKES EACH COGNITIVE FUNCTION HAPPY — Live Your Best Life".
-Eight entries, each a function + a one-word headline + a paragraph. Verbatim:
+> **Rights note.** This is a watermarked, copyrighted infographic. It is
+> **described here rather than transcribed** — the one-word headlines are facts about
+> the source's structure and are named, but the eight paragraphs of body copy are
+> summarised in this app's own words, not reproduced. The version that ships in the
+> bundle (`FN_SATISFACTION` in `src/engine/functions.ts`) is likewise original prose
+> that follows the source's *shape*, not its wording. To read the original, go to
+> psychologyjunkie.com.
 
-| Fn | Headline | Text |
+Infographic: "WHAT MAKES EACH COGNITIVE FUNCTION HAPPY — Live Your Best Life".
+Eight entries, each a function paired with a one-word headline and a short paragraph
+of body copy. What the app took from it is the **structure**: the idea that each
+function has a nameable appetite, and that naming it is what makes growth advice
+actionable. Headlines and gist:
+
+| Fn | Headline | Gist of the paragraph, in summary |
 |---|---|---|
-| Se | **EXPERIENCE** | "You want to interact fully with your environment and be able to make an impact. Go whitewater rafting. Get in the car and drive without a destination. Immerse yourself in the opportunities, beauty, and thrills available in the present moment." |
-| Si | **IMMERSION** | "As a specialist you enjoy tinkering with your hobbies, mastering a skill and repeating it. You enjoy meaningful routines, rituals, and practices that give you a sense of inner comfort and well-being." |
-| Ne | **IDEAS** | "You want to generate possibilities and innovative new ways of doing things. You enjoy change, risk, novelty, and adventure. You crave freedom and a sense that tomorrow is unknowable." |
-| Ni | **MEANING** | "You want to search for meaning in abstract concepts, philosophies, and symbolism. You see everything in the tangible world as being connected in complex, hidden ways and your goal is to understand those connections." |
-| Te | **ACCOMPLISHMENT** | "You are energized by meeting objectives, getting things done, and finding the best way to accomplish something. Creating order and efficiency in your environment gives you a lot of joy." |
-| Ti | **PRECISION** | "The search for truth and accuracy guides you. You want to understand the logical processes behind how things work and you want to discard inaccurate or biased thinking from your mind to live with truth and clarity." |
-| Fe | **UNITY** | "Whether you're reading a book or talking with a friend, you get satisfaction from understanding other people's feelings and values. You enjoy working with people to create unity, harmony, and a feeling of shared purpose." |
-| Fi | **INDIVIDUALITY** | "You are energized by getting in touch with your own values, ethics, ideals, and desires. You enjoy being true to your feelings and wishes in life, even if that makes you a misfit." |
+| Se | **EXPERIENCE** | Full-resolution contact with the physical world, and having a visible effect on it. The examples given are physical and immediate — travel with no destination, sport with real stakes. |
+| Si | **IMMERSION** | Depth over breadth. Returning to the same hobby or skill until it is genuinely yours, and keeping the routines and rituals that make life feel steady from the inside. |
+| Ne | **IDEAS** | Generating possibilities and new ways of doing things; a taste for change, novelty and risk, and a specific pleasure in not yet knowing how tomorrow goes. |
+| Ni | **MEANING** | Searching abstract concepts, philosophies and symbols for meaning, on the premise that visible things are connected in hidden ways worth working out. |
+| Te | **ACCOMPLISHMENT** | Meeting objectives and finding the most efficient route to them. Order and efficiency in the environment are described as a direct source of joy, not just a means. |
+| Ti | **PRECISION** | Truth and accuracy for their own sake — understanding the mechanism behind how something works, and discarding one's own inaccurate or biased thinking. |
+| Fe | **UNITY** | Satisfaction from understanding what other people feel and value, and from working with them toward harmony and shared purpose. |
+| Fi | **INDIVIDUALITY** | Contact with one's own values, ethics and desires, and acting on them — explicitly including when doing so makes you a misfit. |
 
 **Assessment vs mainstream:** consistent with standard function theory; a popular-audience
 framing, not fringe. Se/Si and Ne/Ni are correctly attitude-differentiated. No discrepancies found.

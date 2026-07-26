@@ -41,7 +41,18 @@ export default function TypeReader() {
   const p = usePalette();
   const t = (TYPES.includes(type as MbtiType) ? type : "ENTP") as MbtiType;
 
+  /* The subtype coins are self-reported facts about ONE person, so they must
+     not survive a switch to a different type — otherwise reading ENTP with
+     "sensory: masculine" set and then clicking through to INFJ silently
+     attributes your answer to a type you never answered for. React keeps this
+     component mounted across /type/X → /type/Y, so the reset is explicit. */
   const [sub, setSub] = useState<Subtype>({});
+  const [subFor, setSubFor] = useState<MbtiType>(t);
+  if (subFor !== t) {
+    setSubFor(t);
+    setSub({});
+  }
+
   const st = stack(t);
   const o = ops(t, sub);
   const g = gate(t);

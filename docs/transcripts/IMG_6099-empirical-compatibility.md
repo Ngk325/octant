@@ -1,9 +1,13 @@
 # IMG_6099.PNG — "Percentage compatibility between the 16 factor model (Myers Briggs®) types"
 **Group B · diagram_reference · confidence: high**
-**Source: personalitydata.org · Creative Commons Attribution 4.0 International**
+**Source: personalitydata.org**
+**Licence: Creative Commons Attribution 4.0 International (CC BY 4.0) —
+<https://creativecommons.org/licenses/by/4.0/>**
 
 A full 16×16 matrix of **empirical, survey-derived** compatibility percentages. Unlike the other
-material in this batch, the licence permits reuse with attribution.
+material in this batch, the licence permits reuse — including reproduction of the table itself —
+provided the source is credited and the licence named. Both are done here, in
+`src/engine/empirical.ts`, and on the surfaces that render the numbers.
 
 Column/row order: ENFJ ENFP ENTJ ENTP ESFJ ESFP ESTJ ESTP INFJ INFP INTJ INTP ISFJ ISFP ISTJ ISTP
 

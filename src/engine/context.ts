@@ -27,6 +27,7 @@ import {
 
 export type ChatContext =
   | { kind: "home" }
+  | { kind: "catalogue"; sortBy: string }
   | { kind: "learn"; stage: number; title: string }
   | { kind: "type"; type: MbtiType }
   | { kind: "pair"; a: MbtiType; b: MbtiType }
@@ -203,6 +204,8 @@ export function contextBlock(ctx: ChatContext): string {
         : "The reader is on the type calculator and has not resolved a type yet.";
     case "matrix":
       return "The reader is looking at the full 16x16 relation matrix.";
+    case "catalogue":
+      return `The reader is browsing all sixteen types, grouped by ${ctx.sortBy}. They have not picked one yet, so answer comparatively rather than assuming a type.`;
     default:
       return "The reader is on the home page.";
   }
@@ -240,6 +243,12 @@ export function suggestedPrompts(ctx: ChatContext): string[] {
         "Explain that again more simply",
         "Give me a concrete everyday example",
         "How do I spot this in someone I know?",
+      ];
+    case "catalogue":
+      return [
+        "Which two types are hardest to tell apart, and how do I tell them apart?",
+        "I only know one thing about someone — where do I start narrowing?",
+        "What actually makes a quadra a quadra?",
       ];
     default:
       return [

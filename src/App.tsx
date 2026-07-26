@@ -28,15 +28,26 @@ const TABS: [string, string][] = [
 const sectionOf = (path: string) => "/" + (path.split("/")[1] ?? "");
 
 export default function App() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const [menu, setMenu] = useState(false);
   const { theme, toggle } = usePalette();
   const { open: chatOpen, toggle: toggleChat } = useChatCtx();
 
+  /* Scroll to the top on navigation — EXCEPT when the URL names an anchor.
+     The lexicon links to `/lexicon#gateway` and the course links into stages
+     by id; forcing the top would silently discard the part of the link that
+     said where to go. */
   useEffect(() => {
     setMenu(false);
+    if (hash) {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (el) {
+        el.scrollIntoView({ block: "start" });
+        return;
+      }
+    }
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return (
     <div className="app">

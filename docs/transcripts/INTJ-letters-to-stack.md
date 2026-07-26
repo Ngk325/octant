@@ -1,24 +1,30 @@
 # INTJ (2).jpg
 **Group A · diagram_reference · confidence: high**
 
-**Not** a profile card, despite the filename and the catalog's guess. It is a worked
-**letters → function stack derivation**, using INTJ as the example. Verbatim:
+> **Rights note.** Third-party infographic, source unidentified (saved image). Its *content* is a
+> standard, widely-taught derivation rather than an original expression, and it is summarised here
+> rather than reproduced. The app's version (`src/components/LettersToStack.tsx`) computes the
+> result from the engine and is worded independently.
 
-> "Because I'm an **Introvert**, my dominant function will be introverted."
->
-> "It will be opposite in nature to the last letter of my type. I am a **Judger**, so my dominant
-> function will actually be a perceiving function, since it is introverted. **My dominant function
-> is Ni.**"
->
-> "T is my judging function. Because I'm a **Judger**, I extravert my judging function. My first
-> extraverted function will be **my auxiliary function, Te**."
->
-> "If my dominant function is Ni, then my inferior function must be opposite in both nature and
-> direction. As a result, **my inferior function is Se**. If my auxiliary function is Te, then my
-> tertiary function must be the opposite of that. Thus, **my tertiary function is Fi**."
+**Not** a profile card, despite the filename and the catalog's guess. It is a worked derivation
+from the four MBTI letters to the four-function stack, using INTJ as its example.
 
-**Why this matters.** The app's `stack()` takes a (dominant, auxiliary) pair as given and derives
-the other six slots. It never explains **how you get the dominant and auxiliary from the four
-letters** — which is the very first question anyone arriving with "I'm an INTJ" has. Course stage 2
-asserts the mapping rather than deriving it. This closes that gap and is a direct complement to the
-Function Tree (`IMG_8413`), which derives the eight functions but not the letter mapping.
+## The derivation it walks through
+
+1. The first letter fixes the **direction of the strongest function**: an introvert leads with an
+   introverted function, an extravert with an extraverted one.
+2. The last letter describes **what you show outwardly**, not what you lead with. For an introvert
+   this means the visible function is the second one, and the strongest is the other kind — so a
+   Judger who is introverted leads with a *perceiving* function.
+3. The remaining middle letters supply the two functions in play; whichever is not the strongest
+   becomes the second, facing the opposite way.
+4. The bottom two are the opposites of the top two — the weakest is the exact opposite of the
+   strongest, the third the opposite of the second.
+
+## Why this matters
+
+`stack()` takes a (dominant, auxiliary) pair as given and derives the other six slots. Nothing in
+the app explained **how you get that pair from four letters** — the first question anyone arriving
+with "I'm an INTJ" actually has. Course stage 2 asserted the mapping instead of deriving it. This
+closes that gap, and complements the Function Tree, which derives the eight functions but not
+which two of them lead.

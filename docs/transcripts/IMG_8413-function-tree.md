@@ -1,34 +1,30 @@
-# IMG_8413 — "FUNCTION TREE"
+# IMG_8413 — "Function Tree"
 **Group C · photographed printed page · © erictb.info/typeintro.html · confidence: high**
 
-A first-principles derivation of the eight functions from a single root.
+> **Rights note.** Third-party material. Described and paraphrased here, **not reproduced**. The
+> app's own derivation (`src/components/FunctionTree.tsx`) is written independently in this app's
+> voice; only the *idea* of deriving eight from successive binary splits is taken, which is not
+> itself ownable. Source: eric b, "Type Intro", erictb.info/typeintro.html.
 
-```
-Consciousness — processed in terms of Yes/No (Positive/Negative)
-├── Observation  (Yes/No is involuntary)      → "Is / Isn't"     [P]
-│   ├── Reality (Spacelike)                   → Known / Unknown  [S]
-│   └── Implied or inferred (Timelike)        → Guessed / Nay'ed [N]
-└── Determination (Yes/No is willed by the subject) → "Right / Wrong" [J]
-    ├── "Things" focused                      → True / False     [T]
-    └── People related                        → Good / Bad       [F]
-```
+## What the page shows
 
-Then an orientation axis — **Environment (e)** vs **Individual (i)** — yields the eight:
+A top-down tree deriving the eight functions from a single root rather than listing them.
 
-| Fn | Name | Gloss |
-|---|---|---|
-| Se | **Immediacy** | What's known is dictated by Environment |
-| Si | **Familiarity** | What's known is dictated by and filtered through individual memory |
-| Ne | **Implications** | Guess or infer directly from the environment [objects] |
-| Ni | **Hunchery** | Guess or infer based on timelike patterns stored in Individual unconscious |
-| Te | **Authority** | Environment of "Things" determines "truth" |
-| Ti | **Expediency** | Individual model of [impersonal] "Things" determines "truth" |
-| Fe | **Fellowship** | Environment of people determines "good" |
-| Fi | **Contentment** | Individual model of personal relations determines "good" |
+The root is consciousness, treated as resolving things into a yes or a no. The first split is
+whether that resolution happens **to** you or is **willed** by you — perceiving versus judging.
+Each branch then splits by what it attends to: the perceiving branch into the concrete and the
+inferred (S and N), the judging branch into the impersonal and the personal (T and F). A final
+orientation axis — whether the function looks to the environment or to the individual — doubles
+each of the four into an extraverted and an introverted form.
 
-**Marginalia:** "Observer" written over Observation and "Decider" over Determination — mapping the
-tree onto OPS vocabulary.
+Two by two by two. Eight is a count that falls out, not a list someone drew up.
 
-**Why this matters for the app:** it is a derivation, not a list — the same posture the engine
-already takes. Strong candidate for course stage 1, where the app currently asserts "there are
-eight" without showing where eight comes from.
+The page also glosses each of the eight in terms of what decides the matter for it: for the
+extraverted forms the environment decides, for the introverted forms the individual's own record
+or model decides.
+
+## Why it mattered
+
+Course stage 1 previously asserted "there are eight functions" and left the reader to take it on
+trust. This is the missing derivation, and it matches the app's own posture everywhere else —
+derived rather than looked up. The app's version reuses the structure and none of the wording.

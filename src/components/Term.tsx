@@ -16,14 +16,30 @@ export default function Term({
   if (!entry) return <span className={className}>{children}</span>;
 
   return (
-    <span className="term-wrap">
+    /* The close-on-blur lives on the WRAPPER, not on the button. On the button
+       it fired the moment focus moved to the "Full entry" link inside the
+       popover, so a keyboard user could open the popover and never reach the
+       link — it vanished on the very Tab that would have got there. Checking
+       relatedTarget means the popover only closes when focus leaves the whole
+       term, and Escape closes it deliberately. */
+    <span
+      className="term-wrap"
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key !== "Escape" || !open) return;
+        e.stopPropagation();
+        setOpen(false);
+        e.currentTarget.querySelector("button")?.focus();
+      }}
+    >
       <button
         type="button"
         className={`term${className ? ` ${className}` : ""}`}
         aria-expanded={open}
         aria-controls={popId}
         onClick={() => setOpen((o) => !o)}
-        onBlur={() => setOpen(false)}
       >
         {children}
       </button>
@@ -39,7 +55,7 @@ export default function Term({
           <span className="small muted" style={{ display: "block", margin: "4px 0 10px" }}>
             {entry.short}
           </span>
-          <Link to={`/lexicon/${entry.id}`} className="chip" onMouseDown={(e) => e.preventDefault()}>
+          <Link to={`/lexicon/${entry.id}`} className="chip">
             Full entry →
           </Link>
         </span>

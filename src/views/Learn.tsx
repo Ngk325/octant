@@ -38,6 +38,17 @@ export default function Learn() {
     }
   }, [example]);
 
+  /* Persisting from an effect, not from inside the setDone updater. React may
+     call a state updater more than once for a single dispatch, so writing to
+     localStorage in there is a side effect in a function that must stay pure. */
+  useEffect(() => {
+    try {
+      localStorage.setItem(DONE_KEY, JSON.stringify(done));
+    } catch {
+      /* ignore */
+    }
+  }, [done]);
+
   const i = STAGES.findIndex((s) => s.slug === stage);
   const current = i >= 0 ? STAGES[i] : null;
 
@@ -49,17 +60,8 @@ export default function Learn() {
     [current?.slug, i],
   );
 
-  const markDone = (slug: string) => {
-    setDone((d) => {
-      const next = d.includes(slug) ? d : [...d, slug];
-      try {
-        localStorage.setItem(DONE_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-  };
+  const markDone = (slug: string) =>
+    setDone((d) => (d.includes(slug) ? d : [...d, slug]));
 
   if (!current) return <Index done={done} />;
 

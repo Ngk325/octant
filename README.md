@@ -181,7 +181,7 @@ is a test rather than a matter of taste.
 npm install
 cp .dev.vars.example .dev.vars   # add a Gemini key to use the assistant locally
 npm run dev        # http://localhost:5173 — serves /api/* with the Worker's own handler
-npm test           # 355 tests
+npm test           # 366 tests
 npm run build      # → dist/
 ```
 
