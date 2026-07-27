@@ -51,6 +51,13 @@ export default function Term({
         }}
       >
         {children}
+        {/* The affordance was a 1px dashed border in --rule-strong: a pale
+            hairline on warm paper that nobody read as "this is clickable", so
+            every definition already attached to a term went undiscovered.
+            aria-hidden because the button already announces the term and its
+            expanded state — a spoken "question mark" after every piece of
+            vocabulary would be worse than no marker at all. */}
+        <span className="term-q" aria-hidden="true">?</span>
       </button>
       {open && (
         /* A disclosure, not a tooltip: it holds a link, and the trigger carries

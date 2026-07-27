@@ -447,6 +447,21 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   border-bottom: 1px dashed var(--rule-strong);
 }
 .term:hover { color: var(--accent-ink); border-bottom-color: var(--accent); }
+
+/* The visible half of the affordance. Small enough to sit inside a paragraph
+   without breaking the line, accent-coloured so it reads as interactive, and
+   it never changes the line box — `vertical-align: super` on a 0.72em glyph
+   stays inside the ascender. */
+.term-q {
+  font-family: var(--sans);
+  font-size: .72em;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: super;
+  color: var(--accent);
+  margin-left: 1.5px;
+}
+.term:hover .term-q { color: var(--accent-ink); }
 .term-pop {
   position: absolute;
   z-index: 60;
