@@ -61,7 +61,7 @@ export const STAGES: Stage[] = [
           <p>
             Eight cognitive functions: four perceiving (Ne, Ni, Se, Si) and four judging
             (Te, Ti, Fe, Fi), each in an extraverted or introverted attitude. This app treats them
-            as the eight information elements, and the whole model is three involutions over them.
+            as the eight information elements, and the whole model is three moves over them.
           </p>
         </Explain>
 
@@ -173,7 +173,7 @@ export const STAGES: Stage[] = [
           <Explain big plain={CONCEPT_PLAIN.stack}>
             <p>
               The eight-slot stack is generated, not listed. Given a dominant and an auxiliary,
-              the other six slots follow by applying the three involutions — so sixteen pairs
+              the other six slots follow by applying the three moves — so sixteen pairs
               produce sixteen complete stacks with no lookup table.
             </p>
           </Explain>
@@ -336,7 +336,7 @@ export const STAGES: Stage[] = [
             <p>
               The four sides. The subconscious is the ego stack reversed; the
               unconscious is the shadow block read forwards; the superego is the shadow reversed.
-              Because the three involutions that generate the relation table also generate the
+              Because the three moves that generate the relation table also generate the
               sides, each side stands in a fixed relation to the ego — your subconscious is
               literally your <Term id="rel-du">Dual</Term>, your unconscious your{" "}
               <Term id="rel-ex">Extinguishment</Term> partner, and your superego your{" "}

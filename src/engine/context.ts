@@ -138,9 +138,11 @@ THE MODEL IN BRIEF
 - A type is a fixed order of eight cognitive functions. Slots 1-4 are the ego block
   (Hero, Parent, Child, Inferior); slots 5-8 are the shadow block (Nemesis, Critic,
   Trickster, Demon).
-- Three involutions generate everything: alpha flips attitude, beta swaps element,
-  omega flips both. All 256 relations, all 256 ease scores and every playbook are computed
-  from sixteen (dominant, auxiliary) pairs.
+- Three moves generate everything, and they are named for what they do rather than by a Greek
+  letter: FLIP keeps the letter and changes direction (Ne -> Ni); SWAP changes the letter and
+  keeps the direction (Ne -> Se); TURN does both (Ne -> Si). All 256 relations, all 256 ease
+  scores and every playbook are computed from sixteen (dominant, auxiliary) pairs by composing
+  these three. Never say "alpha", "beta", "omega" or "involution" to a reader.
 - EASE IS DIRECTIONAL. Supervisor/Supervisee and Benefactor/Beneficiary are asymmetric, so
   always give both directions rather than a single compatibility number.
 - FOUR SIDES OF THE MIND. Every person is four types at once. The subconscious

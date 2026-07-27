@@ -122,7 +122,7 @@ export default function TypeReader() {
       >
         <p>
           The full eight-slot stack, generated from the (dominant, auxiliary) pair by the three
-          involutions. Slots 1–4 are the ego block; 5–8 are the shadow.
+          moves. Slots 1–4 are the ego block; 5–8 are the shadow.
         </p>
       </Explain>
 
@@ -197,7 +197,7 @@ export default function TypeReader() {
         plain="You are not one type — you are four. Split those eight slots into groups of four and each group is itself one of the sixteen. You move between them all day."
       >
         <p>
-          The four sides are derived from the same three involutions that generate the
+          The four sides are derived from the same three moves that generate the
           relation table. Which is why each side stands in a fixed relation to the ego: the
           subconscious is your <Term id="rel-du">Dual</Term>, the unconscious your{" "}
           <Term id="rel-ex">Extinguishment</Term> partner, and the superego your{" "}
@@ -509,7 +509,7 @@ export default function TypeReader() {
           Two layers. The wheel layer is structural and derived here rather than looked up: your{" "}
           <Term id="temple-wheel">wheel</Term> is you and your <Term id="subconscious">subconscious</Term>,
           which is your <Term id="rel-du">Dual</Term>, and your <Term id="temple">temple</Term> is your
-          full four-sides orbit. Both fall out of the same three involutions the rest of the engine
+          full four-sides orbit. Both fall out of the same three moves the rest of the engine
           runs on, 16 of 16, with no lookup table anywhere. The theme layer is biographical, so it
           is set below rather than computed.
         </p>
