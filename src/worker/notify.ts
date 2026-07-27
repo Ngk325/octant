@@ -25,11 +25,27 @@ export interface NotifyEnv {
   RESEND_API_KEY?: string;
   OWNER_EMAIL?: string;
   AUTH_SECRET?: string;
+  /**
+   * Sender, e.g. `Octant <octant@your-verified-domain.com>`. Defaults to
+   * Resend's shared onboarding address — which Resend only delivers to the
+   * address the Resend ACCOUNT is registered under. If OWNER_EMAIL is any
+   * other inbox, every send 403s silently; set this to an address on a
+   * domain verified in Resend.
+   */
+  NOTIFY_FROM?: string;
+  /**
+   * Recipient override. Defaults to OWNER_EMAIL — and stays a SEPARATE knob
+   * on purpose: OWNER_EMAIL decides who owns /admin, which is an
+   * authorisation question. Where the mail lands is not. Conflating them
+   * would mean mail routing cannot be fixed without handing somebody the
+   * admin page.
+   */
+  NOTIFY_EMAIL?: string;
 }
 
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
-/** Resend's shared sender. Works with no domain and no DNS. */
-const FROM = "Octant <onboarding@resend.dev>";
+/** Fallback sender. See NOTIFY_FROM above for why it usually is not enough. */
+const DEFAULT_FROM = "Octant <onboarding@resend.dev>";
 /** Long enough to survive a holiday, short enough not to linger forever. */
 const ACTION_TTL_SECONDS = 7 * 24 * 60 * 60;
 
@@ -54,7 +70,8 @@ export async function notifyOwnerOfSignup(
   env: NotifyEnv, origin: string, user: User, now: number,
 ): Promise<{ sent: boolean; reason?: string }> {
   if (!env.RESEND_API_KEY) return { sent: false, reason: "no RESEND_API_KEY" };
-  if (!env.OWNER_EMAIL) return { sent: false, reason: "no OWNER_EMAIL" };
+  const to = env.NOTIFY_EMAIL || env.OWNER_EMAIL;
+  if (!to) return { sent: false, reason: "no OWNER_EMAIL" };
   if (!env.AUTH_SECRET) return { sent: false, reason: "no AUTH_SECRET" };
 
   const approve = await actionLink(origin, user.email, "approve", env.AUTH_SECRET, now);
@@ -68,8 +85,8 @@ export async function notifyOwnerOfSignup(
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        from: FROM,
-        to: [env.OWNER_EMAIL],
+        from: env.NOTIFY_FROM || DEFAULT_FROM,
+        to: [to],
         subject: `Octant — ${user.name} is waiting for access`,
         html: signupEmail(user, approve, block, origin),
         text:
@@ -78,8 +95,17 @@ export async function notifyOwnerOfSignup(
           `Or manage everyone at ${origin}/admin\n`,
       }),
     });
-    return res.ok ? { sent: true } : { sent: false, reason: `resend ${res.status}` };
+    if (!res.ok) {
+      /* Logged, not just returned. A silent { sent: false } cost a day of
+         debugging when Resend was refusing the shared sender: the sign-in
+         succeeded, the KV write succeeded, and nothing anywhere said why no
+         mail arrived. Observability is enabled on this Worker; use it. */
+      console.error(`notify: resend ${res.status}`, await res.text().catch(() => ""));
+      return { sent: false, reason: `resend ${res.status}` };
+    }
+    return { sent: true };
   } catch {
+    console.error("notify: network failure reaching Resend");
     return { sent: false, reason: "network" };
   }
 }

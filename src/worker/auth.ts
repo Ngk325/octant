@@ -331,6 +331,19 @@ const page = (html: string, status: number) =>
     },
   });
 
+/**
+ * The sign-in page as its own route, for the public front door to link to.
+ *
+ * Same gate the wall serves — same markup, same fail-closed posture — but at
+ * 200: a person who deliberately navigated to /signin asked for this page and
+ * got it, which is not an authorization failure. The wall's own copies stay
+ * 401, because there the page is a refusal.
+ */
+export function signinPage(env: AuthEnv, returnTo = "/"): Response {
+  if (!isConfigured(env)) return page(unconfiguredPage(), 503);
+  return page(gatePage(env, returnTo), 200);
+}
+
 /* -------------------------------- pages -------------------------------- */
 /* Written inline and self-contained, because the static assets are behind
    this wall too — the gate cannot load a stylesheet it is protecting. */
@@ -403,7 +416,8 @@ const gatePage = (env: AuthEnv, returnTo: string) => {
   ${codes}
   <p class="fine">Access is granted by the owner of this deployment. If you sign in with
   Google you will wait until they approve you; if your code has stopped working it has been
-  revoked or rotated.</p>
+  revoked or rotated.<br><br>
+  New here? <a href="/">Read what Octant is</a> first.</p>
 ${codes ? `<script>
 (function () {
   var f = document.getElementById('f'), go = document.getElementById('go'),
