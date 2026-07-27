@@ -45,6 +45,34 @@ export const SLOT_PLAIN: Record<string, string> = {
   Demon: "Your worst setting. Rarely on — and when it is on, it is doing damage.",
 };
 
+/* ------------------------------------------------------------------ *
+ * The same eight positions, described from OUTSIDE.
+ *
+ * SLOT_PLAIN is second-person, which is right on a type page: one person
+ * is on screen and "you" can only mean them. The pair page has TWO people
+ * on screen, and reusing the second-person copy there produced rows that
+ * read "Their strongest ... Your worry" about a single function — two
+ * pronouns pointing at two different people inside one line.
+ *
+ * `{who}` is replaced with the name of the type whose stack the slot
+ * belongs to, so nothing on the pair page depends on the reader tracking
+ * which of "your" and "their" is currently which.
+ * ------------------------------------------------------------------ */
+export const SLOT_ABOUT: Record<string, string> = {
+  Hero: "{who}'s strongest move. They reach for it without thinking, they are genuinely good at it, and they overuse it.",
+  Parent: "{who}'s sense of duty. They are good at this too, but it feels like work rather than fun, so it slips when they are tired.",
+  Child: "{who}'s fun. Not brilliant at it, but they love it — it is where they go to feel light.",
+  Inferior: "{who}'s sore spot. They want to be good at this and are afraid they are not. Their growth lives here.",
+  Nemesis: "{who}'s worry. The voice asking what they have not thought of.",
+  Critic: "{who}'s cynicism. Where they get dismissive, usually about other people doing this badly.",
+  Trickster: "{who}'s blind spot. They genuinely cannot see this one, and will bluff rather than admit it.",
+  Demon: "{who}'s worst setting. Rarely on — and when it is on, it is doing damage.",
+};
+
+/** One slot described from outside, with the owner named rather than pronouned. */
+export const slotAbout = (slot: string, who: string): string =>
+  (SLOT_ABOUT[slot] ?? "").replace(/\{who\}/g, who);
+
 /** The four sides, said plainly, without any structure attached. */
 export const SIDE_PLAIN: Record<string, string> = {
   ego: "Who you are on an ordinary day.",

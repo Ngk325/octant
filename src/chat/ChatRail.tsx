@@ -115,18 +115,25 @@ export default function ChatRail() {
           </>
         )}
 
-        {messages.map((m, i) => (
-          <div key={i} className={`msg ${m.role === "user" ? "you" : "bot"}`}>
-            {m.role === "user" ? (
-              m.text
-            ) : (
-              <>
-                <Markdown text={m.text} />
-                {streaming && i === messages.length - 1 && <span className="caret" />}
-              </>
-            )}
-          </div>
-        ))}
+        {messages.map((m, i) => {
+          const live = streaming && i === messages.length - 1;
+          return (
+            <div key={i} className={`msg ${m.role === "user" ? "you" : "bot"}`}>
+              {m.role === "user" ? (
+                m.text
+              ) : live && !m.text ? (
+                /* Nothing has come back yet. An empty bubble with a 2px blinking
+                   bar in it read as a rendering fault, so say what is happening. */
+                <Thinking />
+              ) : (
+                <>
+                  <Markdown text={m.text} />
+                  {live && <span className="caret" />}
+                </>
+              )}
+            </div>
+          );
+        })}
 
         {error && <div className="msg err">{error}</div>}
       </div>
@@ -161,6 +168,22 @@ export default function ChatRail() {
       </div>
       </aside>
     </>
+  );
+}
+
+/**
+ * Shown between pressing Send and the first token arriving — which on the deep
+ * model is several seconds of otherwise blank rail. `role="status"` announces it
+ * to a screen reader once, without stealing focus.
+ */
+function Thinking() {
+  return (
+    <span className="thinking" role="status" aria-label="Thinking">
+      <span className="thinking-dots" aria-hidden="true">
+        <i /><i /><i />
+      </span>
+      Thinking…
+    </span>
   );
 }
 

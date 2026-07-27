@@ -40,6 +40,58 @@ export type ModelKey = keyof typeof MODELS;
 const MAX_MESSAGES = 40;
 const MAX_CHARS = 24_000;
 
+/* ------------------------- upstream failures ------------------------- *
+ * Gemini's own 429 is the one people actually hit: the free tier meters
+ * per MINUTE as well as per day, so a normal back-and-forth conversation
+ * trips it and then clears on its own seconds later. The old code turned
+ * every upstream failure into a bare "The model returned 429." — which
+ * names Google's status code, blames "the model", and gives the reader
+ * nothing to do about it.
+ *
+ * So: retry the transient ones ONCE, honouring Retry-After when Google
+ * sends it, and translate whatever survives into an instruction.
+ * -------------------------------------------------------------------- */
+
+/** Upstream statuses where trying again a moment later plausibly helps. */
+const TRANSIENT = new Set([429, 500, 502, 503, 504]);
+
+/** Ceiling on the retry wait. Longer than this and the reader should be told instead. */
+const MAX_RETRY_MS = 2_000;
+
+/**
+ * How long to wait before the single retry. Google sends `Retry-After` in
+ * seconds on quota errors; anything absent, unparseable or longer than the
+ * ceiling falls back to a fixed short pause.
+ */
+export function retryDelayMs(res: { headers: { get(n: string): string | null } }): number {
+  const raw = res.headers.get("retry-after");
+  const secs = raw ? Number(raw) : NaN;
+  if (Number.isFinite(secs) && secs > 0) return Math.min(secs * 1000, MAX_RETRY_MS);
+  return 900;
+}
+
+/**
+ * What to tell the reader, in their terms rather than Google's. Every branch
+ * says what happened AND what to do next; none of them leaks the upstream body,
+ * which can echo the request back.
+ */
+export function upstreamMessage(status: number): string {
+  if (status === 429) {
+    return "The assistant is answering too many questions at once. Wait about a minute and ask again — " +
+      "this clears on its own.";
+  }
+  if (status === 401 || status === 403) {
+    return "The assistant's API key was rejected. Check that GEMINI_API_KEY is set correctly on this " +
+      "deployment — DEPLOY.md step 2 has the detail.";
+  }
+  if (status === 404) {
+    return "The assistant is configured with a model this key cannot reach. Check the model names in " +
+      "src/worker/chat.ts against the ones your key is enabled for.";
+  }
+  if (status >= 500) return "The model is having trouble at its end. Try again in a moment.";
+  return "The assistant could not answer that one. Try rephrasing it.";
+}
+
 /** One turn of conversation as it arrives from the client. */
 export interface ChatTurn {
   role: "user" | "model";
@@ -66,6 +118,9 @@ function contextLabel(ctx: ChatContext): string {
     default: return ctx.kind;
   }
 }
+
+/** Pause between the first upstream attempt and its retry. */
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** A JSON response with the right content type. */
 const json = (body: unknown, status: number) =>
@@ -157,27 +212,38 @@ export async function handleChat(
   const model = MODELS[body.model as ModelKey] ?? MODELS.fast;
   const systemInstruction = buildSystemInstruction(body.context ?? { kind: "home" });
 
+  const call = () => fetch(`${ENDPOINT}/${model}:streamGenerateContent?alt=sse`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-goog-api-key": env.GEMINI_API_KEY!,
+    },
+    body: JSON.stringify({
+      contents,
+      systemInstruction: { parts: [{ text: systemInstruction }] },
+      generationConfig: { temperature: 0.8, maxOutputTokens: 4096 },
+    }),
+  });
+
   let upstream: Response;
   try {
-    upstream = await fetch(`${ENDPOINT}/${model}:streamGenerateContent?alt=sse`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-goog-api-key": env.GEMINI_API_KEY,
-      },
-      body: JSON.stringify({
-        contents,
-        systemInstruction: { parts: [{ text: systemInstruction }] },
-        generationConfig: { temperature: 0.8, maxOutputTokens: 4096 },
-      }),
-    });
+    upstream = await call();
+    /* One retry, and only one. A per-minute quota clears in seconds, so this
+       turns the most common failure into a pause the reader never sees; a real
+       outage still surfaces rather than being hidden behind a retry storm. */
+    if (!upstream.ok && TRANSIENT.has(upstream.status)) {
+      await sleep(retryDelayMs(upstream));
+      upstream = await call();
+    }
   } catch {
-    return json({ error: "Could not reach the model. Try again." }, 502);
+    return json({ error: "Could not reach the model. Check your connection and try again." }, 502);
   }
 
   if (!upstream.ok || !upstream.body) {
-    // Never surface the upstream body — it can echo request details.
-    return json({ error: `The model returned ${upstream.status}.` }, 502);
+    /* Pass 429 through as 429. The old code flattened everything to 502, which
+       hid a quota problem behind a generic gateway error in the logs. */
+    const status = upstream.status === 429 ? 429 : 502;
+    return json({ error: upstreamMessage(upstream.status) }, status);
   }
 
   /* The transcript hook. The reply is accumulated by the stream transform as
