@@ -20,6 +20,7 @@ import {
   type MbtiType,
 } from "../engine/data";
 import { FN_PLAIN, SLOT_PLAIN, GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, typePlain } from "../engine/plain";
+import { typeElsewhere } from "../engine/translation";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
@@ -107,9 +108,16 @@ export default function TypeReader() {
       </div>
       <p className="lede">{typePlain(t, st[0], st[1], st[3])}</p>
 
+      {/* Three epithets, not one. A single label boxes a reader in, and the
+          spread is itself informative — someone who does not see themselves in
+          the first often does in the third. */}
+      <p className="lede" style={{ margin: "var(--s2) 0 0", color: "var(--ink-2)" }}>
+        {ARCHETYPE[t].join(" · ")}
+      </p>
+
       <p className="small muted">
-        {ARCHETYPE[t]} · <Term>{GROUP[t]}</Term> ·{" "}
-        <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term> · <Term>{ROMANCE[t]}</Term> romance style
+        <Term>{GROUP[t]}</Term> · <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term> ·{" "}
+        <Term>{ROMANCE[t]}</Term> romance style
       </p>
 
       <SectionNav items={SECTIONS} />
@@ -694,6 +702,37 @@ export default function TypeReader() {
             }
           />
         ))}
+      </Panel>
+
+      {/* Cross-reference, so it sits at the bottom and stays closed. A reader
+          who arrived from another framework needs this once; everyone else
+          should never have to see another system's vocabulary on their own
+          type page. Every name comes from engine/translation.ts — the one
+          module allowed to hold them — so nothing is duplicated here. */}
+      <Panel style={{ marginTop: "var(--s4)" }}>
+        <details>
+          <summary className="card-title" style={{ cursor: "pointer", marginBottom: 0 }}>
+            Known elsewhere as
+          </summary>
+          <p className="small muted" style={{ margin: "var(--s3) 0" }}>
+            Octant is one model, derived here — these are not its sources, and the names below are
+            not interchangeable with ours. They are here so that if you arrived carrying somebody
+            else&rsquo;s vocabulary, you can find your footing.
+          </p>
+          {typeElsewhere(t).map((e) => (
+            <Row
+              key={e.system}
+              stacked
+              k={<span>{e.system}</span>}
+              v={
+                <span className="small">
+                  {e.term}
+                  {e.note && <span className="muted"> — {e.note}</span>}
+                </span>
+              }
+            />
+          ))}
+        </details>
       </Panel>
     </>
   );

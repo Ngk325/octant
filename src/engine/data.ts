@@ -256,30 +256,40 @@ export const REL_FRAME: Record<RelCode, string> = {
 };
 
 /**
- * One role name per type, in this app's own voice.
+ * THREE role names per type, in this app's own voice — never one.
  *
- * Each is a plain vocation noun chosen for the type's Hero function and what
- * that function is for — the Prospector opens seams (Ne), the Steward keeps
- * what worked (Si), the Forecaster commits to one long read (Ni). They are
- * labels, not inputs: nothing in the engine reads this table.
+ * A single label boxes a person in, and readers reported exactly that. Three
+ * give range: someone who does not recognise themselves in "Prospector" may
+ * well recognise "Provocateur", and the spread is itself informative about
+ * what the type actually is.
+ *
+ * Each is a plain vocation noun chosen for the type's lead and support — the
+ * Prospector opens seams (Ne), the Steward keeps what worked (Si), the
+ * Forecaster commits to one long read (Ni). All original: none is a role name
+ * belonging to another product, and none collides with a term used elsewhere
+ * in this system (which rules out Anchor, Spark and Examiner, all of which
+ * are now something else). Asserted in tests/ingested.test.ts.
+ *
+ * Labels, not inputs: nothing in the engine reads this table. What OTHER
+ * systems call each type lives in engine/translation.ts.
  */
-export const ARCHETYPE: Record<MbtiType, string> = {
-  "ENTP": "Prospector",
-  "INTP": "Theorist",
-  "ENTJ": "Strategist",
-  "INTJ": "Forecaster",
-  "ENFP": "Kindler",
-  "INFP": "Believer",
-  "ENFJ": "Shepherd",
-  "INFJ": "Diviner",
-  "ESTP": "Improviser",
-  "ISTP": "Tinkerer",
-  "ESTJ": "Administrator",
-  "ISTJ": "Steward",
-  "ESFP": "Reveller",
-  "ISFP": "Maker",
-  "ESFJ": "Host",
-  "ISFJ": "Custodian"
+export const ARCHETYPE: Record<MbtiType, [string, string, string]> = {
+  "ENTP": ["Prospector", "Provocateur", "Igniter"],
+  "INTP": ["Theorist", "Cartographer", "Skeptic"],
+  "ENTJ": ["Strategist", "Operator", "Closer"],
+  "INTJ": ["Forecaster", "Planner", "Watchman"],
+  "ENFP": ["Kindler", "Wanderer", "Enthusiast"],
+  "INFP": ["Believer", "Poet", "Conscience"],
+  "ENFJ": ["Shepherd", "Convener", "Rouser"],
+  "INFJ": ["Diviner", "Confidant", "Seer"],
+  "ESTP": ["Improviser", "Opportunist", "Daredevil"],
+  "ISTP": ["Tinkerer", "Mechanic", "Marksman"],
+  "ESTJ": ["Administrator", "Foreman", "Enforcer"],
+  "ISTJ": ["Steward", "Registrar", "Keeper"],
+  "ESFP": ["Reveller", "Showman", "Firestarter"],
+  "ISFP": ["Maker", "Naturalist", "Aesthete"],
+  "ESFJ": ["Host", "Caretaker", "Organiser"],
+  "ISFJ": ["Custodian", "Homemaker", "Quartermaster"]
 };
 export const GROUP: Record<MbtiType, string> = {
   "ENTP": "Intellectuals (NT)",

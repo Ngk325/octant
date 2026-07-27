@@ -66,7 +66,14 @@ const TYPE_ROWS: Record<MbtiType, [code: string, full: string, popular: string, 
 export function typeElsewhere(t: MbtiType): Elsewhere[] {
   const [code, full, popular, keirsey, grid] = TYPE_ROWS[t];
   return [
-    { system: SOCIONICS, term: `${code} — ${full}`, note: "One of two competing letter conventions; see DIVERGENCES." },
+    {
+      system: SOCIONICS,
+      term: `${code} — ${full}`,
+      // Reader-facing: never name an export here. An earlier draft said "see
+      // DIVERGENCES", which is a constant in this file and nothing at all to
+      // somebody reading their own type page.
+      note: "There are two competing letter conventions; some sources use the other one.",
+    },
     { system: POPULAR, term: popular },
     { system: TEMPERAMENTS, term: keirsey },
     { system: FOUR_SIDES, term: grid },
@@ -91,7 +98,7 @@ const RELATION_ROWS: Record<RelCode, [term: string, alias?: string]> = {
   SV: ["Supervisee", "Revisee"],
   QI: ["Quasi-Identity"],
   EX: ["Extinguishment", "Contrary, Opposite"],
-  SE: ["Super-Ego", "Not the same as the Super-Ego BLOCK; see DIVERGENCES."],
+  SE: ["Super-Ego", "Their Super-Ego block is two stack positions, which is a different thing entirely."],
   CF: ["Conflict"],
 };
 

@@ -54,7 +54,7 @@ export function typeFacts(t: MbtiType): string[] {
   const b = BEHAVIOURAL[t];
 
   return [
-    line("Type", `${t} — ${ARCHETYPE[t]}`),
+    line("Type", `${t} — ${ARCHETYPE[t].join(", ")}`),
     line("Quadra", quadra(t)),
     line("Temperament", GROUP[t]),
     line("Interaction style", INTERACTION_STYLE[t]),

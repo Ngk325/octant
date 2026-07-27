@@ -120,6 +120,17 @@ describe("honesty", () => {
     expect(typeElsewhere("ENTP")[0].note).toMatch(/convention/i);
   });
 
+  it("never leaks an internal export name into reader-facing copy", () => {
+    // "see DIVERGENCES" shipped once. It means nothing to somebody reading
+    // their own type page, and these notes render verbatim.
+    const notes = [
+      ...TYPES.flatMap((t) => typeElsewhere(t).map((e) => e.note ?? "")),
+      ...(["DU", "SE", "CF"] as RelCode[]).flatMap((c) => relationElsewhere(c).map((e) => e.note ?? "")),
+      ...[0, 3, 6].flatMap((i) => slotElsewhere(i).map((e) => e.note ?? "")),
+    ];
+    for (const n of notes) expect(n, n).not.toMatch(/DIVERGENCES|TRANSLATED_IDS|MODEL_A_/);
+  });
+
   it("warns that their Super-Ego block is not our Super-Ego relation", () => {
     expect(relationElsewhere("SE")[0].note).toMatch(/block/i);
   });
