@@ -10,7 +10,12 @@ import { SLOT_NAMES, FN_FULL, type Fn, type MbtiType } from "../engine/data";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
 import WiringSchematic from "../components/WiringSchematic";
-import FunctionTree from "../components/FunctionTree";
+import DerivationTree from "../components/glyphs/DerivationTree";
+import FnIcon from "../components/glyphs/FnIcon";
+import SelfTribeCone from "../components/glyphs/SelfTribeCone";
+import AnimalGlyph from "../components/glyphs/AnimalGlyph";
+import SideDoor from "../components/glyphs/SideDoor";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
 import LettersToStack from "../components/LettersToStack";
 import FourSidesDiagram from "../components/FourSidesDiagram";
 import AnimalStack from "../components/AnimalStack";
@@ -90,10 +95,42 @@ export const STAGES: Stage[] = [
         </Explain>
 
         <Figure
+          minWidth={560}
           label="Three splits, eight results."
           caption="Read downward. Each level is one binary choice, and the eight at the bottom are every combination of them — which is why the list is exactly this long."
         >
-          <FunctionTree />
+          <DerivationTree />
+        </Figure>
+
+        <h3>Where a function points</h3>
+        <Explain plain="The e/i letter is not shyness — it is where the function checks its answers. Inward-facing functions answer to the self; outward-facing ones answer to the world.">
+          <p>
+            The clearest case is the deciders: <Term>Fi</Term> checks a decision against its own
+            values, <Term>Fe</Term> against the room&rsquo;s. The same beam-versus-fan applies to
+            every pair.
+          </p>
+        </Explain>
+
+        <Figure
+          label="One beam, or the whole room."
+          caption={
+            <>
+              <b>Fi</b> holds one point alone — its own calibration. <b>Fe</b> casts a fan over
+              everyone present and reads them. Neither is better; they are different instruments
+              pointed different ways.
+            </>
+          }
+        >
+          <div className="cluster" style={{ gap: "var(--s6)", justifyContent: "center" }}>
+            <div style={{ width: 160, textAlign: "center" }}>
+              <SelfTribeCone fn="Fi" />
+              <span className="small muted">Fi — the self&rsquo;s values</span>
+            </div>
+            <div style={{ width: 160, textAlign: "center" }}>
+              <SelfTribeCone fn="Fe" />
+              <span className="small muted">Fe — the tribe&rsquo;s values</span>
+            </div>
+          </div>
         </Figure>
 
         <h3>What each one sounds like</h3>
@@ -104,13 +141,16 @@ export const STAGES: Stage[] = [
 
         <div className="grid g2">
           {FNS.map((f) => (
-            <div key={f} className="row stacked">
-              <dt>
-                <Term>{f}</Term> · {FN_ROLE[f]} · {FN_KEYWORD[f]}
-              </dt>
-              <dd className="small">
-                &ldquo;{FN_SAYS[f][0]}&rdquo; &middot; &ldquo;{FN_SAYS[f][1]}&rdquo;
-              </dd>
+            <div key={f} style={{ display: "flex", gap: "var(--s3)", alignItems: "flex-start" }}>
+              <FnIcon fn={f} size={44} />
+              <div className="row stacked" style={{ flex: 1, minWidth: 0 }}>
+                <dt>
+                  <Term>{f}</Term> · {FN_ROLE[f]} · {FN_KEYWORD[f]}
+                </dt>
+                <dd className="small">
+                  &ldquo;{FN_SAYS[f][0]}&rdquo; &middot; &ldquo;{FN_SAYS[f][1]}&rdquo;
+                </dd>
+              </div>
             </div>
           ))}
         </div>
@@ -172,6 +212,22 @@ export const STAGES: Stage[] = [
             caption="Change the type at the top of the page and this rederives. Note the third step: the last letter describes what you show people, not what you lead with — which is why so many descriptions of J and P types get this backwards."
           >
             <LettersToStack type={t} />
+          </Figure>
+
+          <Figure
+            label="The same order, worn as a face."
+            caption={
+              <>
+                Every type in this app carries this mark: its four ego functions as beads,
+                biggest first. Once you can read one molecule you can read all sixteen at a
+                glance — the size says the rank, the colour says the function, a ring means it
+                faces outward and a core means inward.
+              </>
+            }
+          >
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <TypeMolecule type={t} size={120} />
+            </div>
           </Figure>
 
           <p>
@@ -303,6 +359,27 @@ export const STAGES: Stage[] = [
             <FourSidesDiagram type={t} />
           </Figure>
 
+          <Figure
+            label="Four doors, one keystone each."
+            caption={
+              <>
+                Every side is entered through one function of your own ego stack — the bead in
+                each keystone. The ego stands open; the subconscious is ajar behind insecurity;
+                the unconscious closed behind worry; the superego barred, and best left so until
+                the others are developed.
+              </>
+            }
+          >
+            <div className="cluster" style={{ gap: "var(--s5)", alignItems: "flex-end", justifyContent: "center" }}>
+              {SIDE_ORDER.map((k) => (
+                <div key={k} style={{ textAlign: "center" }}>
+                  <SideDoor side={k} fn={s[k].gateway.fn} />
+                  <span className="small muted">{s[k].name}</span>
+                </div>
+              ))}
+            </div>
+          </Figure>
+
           <div className="grid g2">
             {SIDE_ORDER.filter((k) => k !== "ego").map((k) => (
               <Panel key={k} title={s[k].name}>
@@ -397,6 +474,26 @@ export const STAGES: Stage[] = [
               <b>Blast</b> (Oi+De) and <b>Consume</b> (Oe+Di) are the information animals.
             </p>
           </Explain>
+
+          <Figure
+            label="What each animal does with the world."
+            caption={
+              <>
+                Arrows in = taking in; arrows out = sharing; the loop = processing alone.{" "}
+                <b>Consume</b> takes in more than it shares, <b>Blast</b> shares more than it
+                takes in, <b>Play</b> is live exchange, <b>Sleep</b> is the closed loop.
+              </>
+            }
+          >
+            <div className="cluster" style={{ gap: "var(--s5)", alignItems: "flex-end", justifyContent: "center" }}>
+              {(["Consume", "Blast", "Play", "Sleep"] as const).map((a) => (
+                <div key={a} style={{ width: 118, textAlign: "center" }}>
+                  <AnimalGlyph animal={a} />
+                  <span className="small muted">{a}</span>
+                </div>
+              ))}
+            </div>
+          </Figure>
 
           <Figure
             label="Your animals, in order."

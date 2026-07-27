@@ -8,6 +8,8 @@ import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
 import { ChoiceCard, Panel } from "../components/Bits";
+import FnIcon from "../components/glyphs/FnIcon";
+import SelfTribeCone from "../components/glyphs/SelfTribeCone";
 
 const PROMPTS: [string, string][] = [
   ["I take things in first and make up my mind later.",
@@ -27,6 +29,26 @@ const PROMPTS: [string, string][] = [
   ["I focus on the outcome, and will slow down to get it exactly right.",
    "I focus on progress, and would rather keep moving and fix things later."],
 ];
+
+/**
+ * The glyph a choice card leads with, when its pole is something the glyph
+ * language can draw. Decorative only (the prompt is the choice, so the
+ * pictures are hidden from assistive tech): coin 2 is really a choice
+ * between self-calibration and tribe-calibration, drawn with the F pair
+ * standing in for both deciders; coins 3 and 5 choose observer postures.
+ */
+function coinGlyph(coin: number, side: 0 | 1): JSX.Element | null {
+  if (coin === 1) {
+    return (
+      <span style={{ display: "block", width: 104 }}>
+        <SelfTribeCone fn={side === 0 ? "Fi" : "Fe"} />
+      </span>
+    );
+  }
+  if (coin === 2) return <FnIcon fn={side === 0 ? "Si" : "Se"} size={44} />;
+  if (coin === 4) return <FnIcon fn={side === 0 ? "Se" : "Ne"} size={44} />;
+  return null;
+}
 
 /** Eight either-or questions. Four decide the type; four cross-check it. */
 export default function Calculator() {
@@ -78,11 +100,22 @@ export default function Calculator() {
               </p>
 
               <div className="grid g2" style={{ gap: "var(--s3)" }}>
-                {([[A, PROMPTS[i][0]], [B, PROMPTS[i][1]]] as const).map(([val, prompt]) => (
-                  <ChoiceCard key={val} selected={answers[i] === val} onClick={() => set(i, val)}>
-                    {prompt}
-                  </ChoiceCard>
-                ))}
+                {([[A, PROMPTS[i][0], 0], [B, PROMPTS[i][1], 1]] as const).map(([val, prompt, side]) => {
+                  const glyph = coinGlyph(i, side);
+                  return (
+                    <ChoiceCard key={val} selected={answers[i] === val} onClick={() => set(i, val)}>
+                      {glyph && (
+                        <span
+                          aria-hidden="true"
+                          style={{ display: "flex", justifyContent: "center", marginBottom: "var(--s3)" }}
+                        >
+                          {glyph}
+                        </span>
+                      )}
+                      {prompt}
+                    </ChoiceCard>
+                  );
+                })}
               </div>
             </Panel>
           ))}

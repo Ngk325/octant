@@ -12,7 +12,6 @@ import OctagramMap from "../src/components/OctagramMap";
 import FourSidesDiagram from "../src/components/FourSidesDiagram";
 import AnimalStack from "../src/components/AnimalStack";
 import LettersToStack from "../src/components/LettersToStack";
-import FunctionTree from "../src/components/FunctionTree";
 import ThemeSeasons from "../src/components/ThemeSeasons";
 import RelationLanding from "../src/components/RelationLanding";
 import InvolutionTable from "../src/components/InvolutionTable";
@@ -138,7 +137,6 @@ describe("the small grids", () => {
   it("theme seasons renders static and interactive", () => {
     draw(<ThemeSeasons />);
     draw(<ThemeSeasons development="SD" focus="SF" onPick={() => {}} />);
-    draw(<FunctionTree />);
   });
 });
 

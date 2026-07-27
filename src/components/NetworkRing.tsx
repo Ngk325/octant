@@ -1,6 +1,7 @@
 import { quadra } from "../engine/core";
 import { type Member, type analyse } from "../engine/network";
 import { usePalette } from "./Theme";
+import TypeMolecule from "./glyphs/TypeMolecule";
 
 /** The group as a ring, every pair joined by a line coloured and weighted by ease. */
 export default function NetworkRing({ members, report }: {
@@ -57,14 +58,19 @@ export default function NetworkRing({ members, report }: {
         </path>
       ))}
 
+      {/* Each node is the member's molecule on a quadra-ringed backing disc.
+          The molecule nests as an inner <svg> positioned by the wrapping
+          transform; the outer svg's role="img" makes it presentational. */}
       {pos.map(({ m, x, y }) => (
         <g key={m.id}>
-          <circle cx={x} cy={y} r="10" fill={p.quadra(quadra(m.type))} />
-          <circle cx={x} cy={y} r="16" fill="none" stroke={p.quadra(quadra(m.type))} strokeOpacity="0.3" strokeWidth="2" />
-          <text x={x} y={y - 24} textAnchor="middle" fill="var(--ink)" fontFamily="Inter, sans-serif" fontSize="15">
+          <circle cx={x} cy={y} r="25" fill="var(--surface)" stroke={p.quadra(quadra(m.type))} strokeOpacity="0.55" strokeWidth="2" />
+          <g transform={`translate(${x - 22}, ${y - 22})`}>
+            <TypeMolecule type={m.type} size={44} labels={false} />
+          </g>
+          <text x={x} y={y - 32} textAnchor="middle" fill="var(--ink)" fontFamily="Inter, sans-serif" fontSize="15">
             {m.name}
           </text>
-          <text x={x} y={y + 32} textAnchor="middle" fill="var(--muted)" fontFamily="'IBM Plex Mono', monospace" fontSize="14">
+          <text x={x} y={y + 40} textAnchor="middle" fill="var(--muted)" fontFamily="'IBM Plex Mono', monospace" fontSize="14">
             {m.type}
           </text>
         </g>
