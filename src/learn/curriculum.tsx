@@ -338,8 +338,8 @@ export const STAGES: Stage[] = [
               unconscious is the shadow block read forwards; the superego is the shadow reversed.
               Because the three moves that generate the relation table also generate the
               sides, each side stands in a fixed relation to the ego — your subconscious is
-              literally your <Term id="rel-du">Dual</Term>, your unconscious your{" "}
-              <Term id="rel-ex">Extinguishment</Term> partner, and your superego your{" "}
+              literally your <Term id="rel-du">Counterpart</Term>, your unconscious your{" "}
+              <Term id="rel-ex">Damper</Term> partner, and your superego your{" "}
               <Term id="rel-se">Super-Ego</Term> partner.
             </p>
           </Explain>
@@ -603,8 +603,8 @@ export const STAGES: Stage[] = [
         </Figure>
 
         <Panel title="Three worth knowing" style={{ marginTop: "var(--s5)" }}>
-          <Row stacked k={<Term id="rel-du">Duality</Term>} v={<span className="small">{REL_PLAIN.DU}</span>} />
-          <Row stacked k={<Term id="rel-sr">Supervision</Term>} v={<span className="small">{REL_PLAIN.SR}</span>} />
+          <Row stacked k={<Term id="rel-du">Counterpart</Term>} v={<span className="small">{REL_PLAIN.DU}</span>} />
+          <Row stacked k={<Term id="rel-sr">Examiner</Term>} v={<span className="small">{REL_PLAIN.SR}</span>} />
           <Row stacked k={<Term id="rel-cf">Conflict</Term>} v={<span className="small">{REL_PLAIN.CF}</span>} />
         </Panel>
 
@@ -713,7 +713,7 @@ export const STAGES: Stage[] = [
             You do not get your own origin. You share one with your{" "}
             <Term id="subconscious">subconscious</Term> — the type you become when you develop
             through your <Term id="inferior">Inferior</Term>, which is also your{" "}
-            <Term id="rel-du">Dual</Term>. Sixteen types, paired off, make eight. Two of those
+            <Term id="rel-du">Counterpart</Term>. Sixteen types, paired off, make eight. Two of those
             wheels make a <Term id="temple">temple</Term>, and a temple turns out to be exactly the
             four sides of one mind: your ego, your subconscious, your unconscious and your superego
             are all in it. That is why the picture has eight points and four arcs.

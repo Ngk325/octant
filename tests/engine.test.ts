@@ -6,6 +6,7 @@ import {
 } from "../src/engine";
 import { ENTRIES, BY_ID, CATEGORIES, pairTerms, compareAspects } from "../src/engine/lexicon";
 import { playbook } from "../src/engine/playbook";
+import { REL_FRAME } from "../src/engine/data";
 
 type F = typeof fixture;
 const f = fixture as F;
@@ -58,9 +59,34 @@ describe("faithful port of the reference engine", () => {
     }
   });
 
-  it("reproduces all 256 playbooks character for character", () => {
+  /**
+   * A playbook is one authored opening sentence (REL_FRAME, keyed by relation
+   * code) followed by five derived clauses composed from where the reader's two
+   * strongest functions land in the target's stack.
+   *
+   * The fixture's job is to pin the DERIVED half to the retired Python engine
+   * forever. It used to be compared whole, which meant renaming a relation
+   * changed 128 of the 256 strings and the only way to get back to green was to
+   * regenerate the fixture — quietly re-baselining the derivation against
+   * whatever the TypeScript happened to produce that day, and throwing away the
+   * guarantee the file exists for.
+   *
+   * So the two halves are asserted separately: the body against the fixture,
+   * the opening against REL_FRAME. Authored copy can now be renamed freely, and
+   * a real change in derivation still fails.
+   */
+  const body = (s: string) => s.slice(s.indexOf(". ") + 2);
+
+  it("derives all 256 playbook bodies character for character", () => {
     for (const p of TYPES) for (const t of TYPES) {
-      expect(playbook(p, t)).toBe((f.playbooks as any)[p][t]);
+      expect(body(playbook(p, t)), `${p} -> ${t}`).toBe(body((f.playbooks as any)[p][t]));
+    }
+  });
+
+  it("opens every playbook with the current name for that relation", () => {
+    for (const p of TYPES) for (const t of TYPES) {
+      const opening = REL_FRAME[REL[t][p]];
+      expect(playbook(p, t).startsWith(opening), `${p} -> ${t}: "${opening}"`).toBe(true);
     }
   });
 });

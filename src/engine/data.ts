@@ -94,28 +94,28 @@ export const DOM_AUX: Record<MbtiType, [Fn, Fn]> = {
   ]
 };
 export const REL_NAME: Record<RelCode, string> = {
-  "DU": "Duality",
-  "AC": "Activity",
-  "HD": "Semi-Duality",
-  "MG": "Mirage",
-  "ID": "Identity",
-  "MI": "Mirror",
-  "KD": "Kindred",
-  "BU": "Business",
-  "BR": "Benefactor",
-  "BE": "Beneficiary",
-  "SV": "Supervisee",
-  "QI": "Quasi-Identity",
-  "SR": "Supervisor",
-  "EX": "Extinguishment",
-  "SE": "Super-Ego",
-  "CF": "Conflict"
+  "DU": "Counterpart",
+  "AC": "Spark",
+  "HD": "Near fit",
+  "MG": "False fit",
+  "ID": "Twin",
+  "MI": "Opposite hand",
+  "KD": "Cousin",
+  "BU": "Colleague",
+  "BR": "Upstream",
+  "BE": "Downstream",
+  "SV": "Examined",
+  "QI": "Near-twin",
+  "SR": "Examiner",
+  "EX": "Damper",
+  "SE": "Standoff",
+  "CF": "Headwind"
 };
 export const REL_DEF: Record<RelCode, string> = {
   "DU": "Their wiring completes yours: your weak functions are their strong ones and vice versa. Lowest-friction pairing in the model.",
   "AC": "Energising and fast to warm, because each of you feeds the other's mobilising function. Exhausting if never stepped out of.",
-  "HD": "Partial completion. Shares the dual's base channel but not the creative one; comfortable until the unshared half is what is needed.",
-  "MG": "Relaxing and slightly unserious. Shares the dual's creative channel only; good for rest, poor for joint execution.",
+  "HD": "Partial completion. Shares the Counterpart base channel but not the creative one; comfortable until the unshared half is what is needed.",
+  "MG": "Relaxing and slightly unserious. Shares the Counterpart creative channel only; good for rest, poor for joint execution.",
   "ID": "Same wiring. Instant mutual understanding and perfectly shared blind spots, so no one covers the gap.",
   "MI": "Same two functions in opposite order. Agreement on what matters, persistent argument about sequence.",
   "KD": "Same leading function, different second. You perceive the same thing and then do different things with it.",
@@ -238,21 +238,21 @@ export const TRICKSTER_BLIND: Record<Fn, string> = {
 };
 export const REL_FRAME: Record<RelCode, string> = {
   "ID": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap.",
-  "DU": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model.",
+  "DU": "Counterpart. Their wiring completes yours; this is the lowest-friction pairing in the model.",
   "AC": "Activity. Genuinely energising, and quietly draining if you never step out of it.",
   "MI": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence.",
-  "KD": "Kindred. Shared leading function: you see the same thing and then do different things with it.",
+  "KD": "Cousin. Shared leading function: you see the same thing and then do different things with it.",
   "BU": "Business. Shared second function — easy to work alongside, harder to get close to.",
-  "HD": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed.",
-  "MG": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution.",
+  "HD": "Near fit. Partial completion; comfortable until the half you do not share is the half that is needed.",
+  "MG": "False fit. Relaxing and slightly unserious — good for rest, poor for joint execution.",
   "SE": "Super-Ego. Fascinating at a distance, abrasive up close.",
   "CF": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours.",
-  "QI": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate.",
-  "EX": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent.",
+  "QI": "Near-twin. You look alike from outside and arrive by routes that do not translate.",
+  "EX": "Damper. Same functions, every attitude flipped — a constant near-miss on intent.",
   "SR": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
   "SV": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
-  "BR": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
-  "BE": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection."
+  "BR": "You are Upstream of them. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
+  "BE": "You are Downstream of them. You will find them more compelling than they find you; do not read the asymmetry as rejection."
 };
 
 /**

@@ -112,7 +112,7 @@ const ARCHETYPES: Draft[] = [
     short: "Slot 4. The fear. Also the doorway to everything the type is not yet.",
     definition:
       "The gateway to the subconscious: the function a person feels chronically inadequate at and quietly organises their life to avoid. Under stress it erupts in crude, exaggerated form. Faced deliberately rather than avoided, it converts into what this model calls aspirational power — which is why every growth gate in this system is named for an Inferior.",
-    inSystem: "Determines the type's Gate. The Dual supplies precisely this function as their Hero.",
+    inSystem: "Determines the type's Gate. Their Counterpart supplies precisely this function as their Lead.",
     seeAlso: ["gate", "rel-du", "child", "shadow"] }),
   E({ id: "nemesis", term: "Nemesis", category: "Archetype",
     short: "Slot 5. The Hero's attitude-flip, running as worry.",
@@ -339,16 +339,16 @@ const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) =>
 /* ══════════════════════════════ CONCEPTS ══════════════════════════════ */
 const CONCEPTS: Draft[] = [
   E({ id: "complement", term: "Complement", category: "Concept",
-    short: "Your Dual and your Activity partner. They supply the function you fear.",
+    short: "Your Counterpart and your Spark partner. They supply the function you fear.",
     definition:
-      "The two types whose strengths sit exactly where your conscious stack is weakest. Your Dual leads with your Inferior; your Activity partner leads with the function that mobilises you. Time with a Complement is restful rather than exciting: they handle, without effort or resentment, the thing you have organised your life around avoiding.",
-    inSystem: "Derived as {Duality, Activity}. This is what the network layer optimises on, because it measures structural fit rather than felt chemistry.",
+      "The two types whose strengths sit exactly where your conscious stack is weakest. Your Counterpart leads with your Inferior; your Spark partner leads with the function that mobilises you. Time with a Complement is restful rather than exciting: they handle, without effort or resentment, the thing you have organised your life around avoiding.",
+    inSystem: "Derived as {Counterpart, Spark}. This is what the network layer optimises on, because it measures structural fit rather than felt chemistry.",
     seeAlso: ["catalyst", "rel-du", "rel-ac", "inferior"] }),
   E({ id: "catalyst", term: "Catalyst", category: "Concept",
     short: "The two types whose Hero is your Nemesis. Stimulating rather than restful.",
     definition:
       "Your Nemesis is your Hero's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Nemesis.",
-    inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Extinguishment and Mirage partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
+    inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Damper and False fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
     seeAlso: ["complement", "nemesis", "rel-ex", "rel-mi"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
     short: "A 0–100 modelling score for how one type experiences another. Directional.",
@@ -356,7 +356,7 @@ const CONCEPTS: Draft[] = [
       "A ladder over the sixteen relations, monotone in structural comfort. It is a modelling choice rather than a measurement, and it is deliberately directional: four relations are asymmetric, so the score one person gives is not the score they receive. Any single 'compatibility number' for a pair is concealing that.",
     inSystem: "Derived from the relation code, never stored separately, so the two cannot disagree.",
     seeAlso: ["rel-sr", "rel-be", "relation"] }),
-  E({ id: "dual-lighting", term: "Dual-lighting", category: "Concept",
+  E({ id: "dual-lighting", term: "The two readings", category: "Concept",
     short: "Holding the two growth readings unreconciled, because they disagree.",
     definition:
       "One reading runs an eight-function stack across all four letters and puts the weak point at the Inferior; the exchange overlay tracks two letters across four orientations and marks the tertiary and inferior together. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system carries both and lets the divergence stand as content.",
@@ -376,7 +376,7 @@ const CONCEPTS: Draft[] = [
   E({ id: "four-sides", term: "Four Sides of the Mind", category: "Concept",
     short: "Ego, Subconscious, Unconscious and Superego — four whole types inside one person.",
     definition:
-      "The reading in which each person carries four complete type-patterns: the Ego they identify with, the Subconscious they aspire to (their Dual), the Unconscious that runs when the Ego is exhausted (their Extinguisher) and the Superego they perform under threat. Useful as a reading of state rather than of identity.",
+      "The reading in which each person carries four complete type-patterns: the Ego they identify with, the Subconscious they aspire to (their Counterpart), the Unconscious that runs when the Ego is exhausted (their Damper) and the Superego they perform under threat. Useful as a reading of state rather than of identity.",
     seeAlso: ["ego", "shadow", "rel-du"] }),
   E({ id: "ego", term: "Ego", category: "Concept",
     short: "Slots 1–4. The conscious stack a person identifies with.",
@@ -409,7 +409,7 @@ const CONCEPTS: Draft[] = [
   E({ id: "relation", term: "Intertype relation", category: "Concept",
     short: "One of sixteen structural relationships between two types.",
     definition:
-      "Derived from how two stack maps overlay. Twelve are symmetric and four — Supervisor/Supervisee and Benefactor/Beneficiary — are asymmetric, meaning the relationship is genuinely different from each side.",
+      "Derived from how two stack maps overlay. Twelve are symmetric and four — Examiner/Examined and Upstream/Downstream — are asymmetric, meaning the relationship is genuinely different from each side.",
     seeAlso: ["ease", "stack-map", "rel-du", "rel-cf"] }),
   E({ id: "gate", term: "Growth gate", category: "Concept",
     short: "The structural fear a type is built around, and what integrating it unlocks.",
@@ -428,9 +428,9 @@ const CONCEPTS: Draft[] = [
      builds on top of it without anywhere to look a word up. ── */
 
   E({ id: "subconscious", term: "Subconscious", category: "Concept",
-    short: "Your ego stack reversed. The person you wish you were, and your Dual.",
+    short: "Your ego stack reversed. The person you wish you were, and your Counterpart.",
     definition:
-      "Take your four ego slots and read them backwards: your Inferior becomes its Hero, your Hero becomes its Inferior. The resulting type is your Dual, which is why being around a Dual feels like being handed a version of yourself you cannot reach alone. The gateway is the Inferior, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
+      "Take your four ego slots and read them backwards: your Inferior becomes its Hero, your Hero becomes its Inferior. The resulting type is your Counterpart, which is why being around one feels like being handed a version of yourself you cannot reach alone. The gateway is the Inferior, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
     inSystem: "fourSides(t)[1]. Derived by omega — flip both attitude and element on the dominant and auxiliary. relation(t, subconscious) is always DU.",
     seeAlso: ["four-sides", "inferior", "rel-du", "unconscious", "subconscious-development"] }),
 
@@ -464,7 +464,7 @@ const CONCEPTS: Draft[] = [
     definition:
       "Where the type model describes wiring, the Octagram describes what that wiring has been reaching for and the shape a particular life has bent it into. It has two layers. The wheel layer is structural: sixteen types make eight dyads, each dyad shares one lifelong want called a Cognitive Origin, and each origin is drawn as a wheel with four surrounding positions. The theme layer is biographical: two coins, neither derivable from type, that say whether the subconscious was nurtured in childhood and which side of the mind is running the show now. Two people of the same type can sit in the same wheel and completely different themes, and that is the whole reason the layer exists.",
     inSystem:
-      "Fully derived here. A dyad is a type and its subconscious, which is its Dual; a temple is one orbit of the four-sides operation. tests/octagram.test.ts checks all eight dyads and all four temples against the published lists — they match 16/16 with no lookup table. Only the NAMES are authored.",
+      "Fully derived here. A dyad is a type and its subconscious, which is its Counterpart; a temple is one orbit of the four-sides operation. tests/octagram.test.ts checks all eight dyads and all four temples against the published lists — they match 16/16 with no lookup table. Only the NAMES are authored.",
     seeAlso: ["temple", "temple-wheel", "cognitive-origin", "octagram-theme", "four-sides"] }),
 
   E({ id: "temple", term: "Temple", category: "Concept",
@@ -480,7 +480,7 @@ const CONCEPTS: Draft[] = [
     definition:
       "Eight wheels, two per temple. At the centre is the Cognitive Origin — the thing this dyad wants. Directly above is the Living Virtue, the honest route to it, which characteristically involves giving somebody else some of what you want. Directly below is the Deadly Sin, the counterfeit: easier to reach, resembles the origin, and leaves you hungrier. To either side are the two poles, which are not good and bad but two different distortions — the drift of a childhood that fed you and the drift of one that did not.",
     inSystem:
-      "A wheel is a Dual pair, so wheelOf(t).pair is always [t, subconscious(t)]. Both members share one origin. The four contents are authored from source; the membership is computed.",
+      "A wheel is a Counterpart pair, so wheelOf(t).pair is always [t, subconscious(t)]. Both members share one origin. The four contents are authored from source; the membership is computed.",
     seeAlso: ["cognitive-origin", "living-virtue", "deadly-sin", "shadow-pole", "rel-du"] }),
 
   E({ id: "cognitive-origin", term: "Cognitive origin", category: "Concept",
@@ -753,7 +753,7 @@ function functionPair(a: Fn, b: Fn): Pairing {
     case "beta": return { headline: `${a} and ${b} — same attitude, different element`,
       body: `Both pointed the same way, drawing on different material. Compatible tempo, different subject matter — usually experienced as talking past each other rather than as conflict.` };
     case "omega": return { headline: `${a} and ${b} — the axis opposite`,
-      body: `Full complement. ${b} is exactly what ${a} does not do, which is why this pairing sits at the heart of Duality: one supplies the other's Inferior directly.` };
+      body: `Full complement. ${b} is exactly what ${a} does not do, which is why this pairing is the Counterpart relation itself: one supplies the other's Inferior directly.` };
     default: return { headline: `${a} and ${b}`,
       body: `A perceiving function meeting a judging one, or two functions with no direct structural relation. They do not compete: one supplies material, the other decides about it.` };
   }

@@ -207,8 +207,8 @@ export default function TypeReader() {
         <p>
           The four sides are derived from the same three moves that generate the
           relation table. Which is why each side stands in a fixed relation to the ego: the
-          subconscious is your <Term id="rel-du">Dual</Term>, the unconscious your{" "}
-          <Term id="rel-ex">Extinguishment</Term> partner, and the superego your{" "}
+          subconscious is your <Term id="rel-du">Counterpart</Term>, the unconscious your{" "}
+          <Term id="rel-ex">Damper</Term> partner, and the superego your{" "}
           <Term id="rel-se">Super-Ego</Term> partner. The relation and the structural side land on
           the same type because they are the same operator.
         </p>
@@ -516,7 +516,7 @@ export default function TypeReader() {
         <p>
           Two layers. The wheel layer is structural and derived here rather than looked up: your{" "}
           <Term id="temple-wheel">wheel</Term> is you and your <Term id="subconscious">subconscious</Term>,
-          which is your <Term id="rel-du">Dual</Term>, and your <Term id="temple">temple</Term> is your
+          which is your <Term id="rel-du">Counterpart</Term>, and your <Term id="temple">temple</Term> is your
           full four-sides orbit. Both fall out of the same three moves the rest of the engine
           runs on, 16 of 16, with no lookup table anywhere. The theme layer is biographical, so it
           is set below rather than computed.
@@ -619,7 +619,7 @@ export default function TypeReader() {
         plain={`Fit is mechanical before it is chemical: how easy someone is for ${t} to be around depends on which of ${t}'s slots their strengths land in.`}
       >
         <p>
-          The figure shows the best case — {t}&rsquo;s Dual, whose Hero and Parent land exactly on{" "}
+          The figure shows the best case — {t}&rsquo;s Counterpart, whose Hero and Parent land exactly on{" "}
           {t}&rsquo;s Inferior and Child. Every pairing below is the same picture with different
           landing spots; open one to see its version.
         </p>
