@@ -226,13 +226,33 @@ which must read as "careful here", not "error".
 
 ### Term help — the `?`
 
-Every named term needs a `?` that opens a definition. That is ~71
-triggers, so the affordance must be nearly weightless.
+**The mechanism already exists and now shows itself.** `<Term>` opens a
+popover carrying the plain gloss, the short definition and a link to the
+full entry, and handles blur, Escape and flipping near the right margin.
+Its affordance used to be a 1px dashed hairline in `--rule-strong`, which
+nobody could see — so every definition went undiscovered. It now carries a
+small accent `?`.
 
-**Design needed:** the trigger at rest, hovered and open; a popover
-template with room for one line of plain language, one figure, and a link
-to the full entry. Must work on touch, and must not reflow the paragraph
-it sits in.
+**What is left is coverage, and it is an editorial call, not a technical
+one.** Jargon still appearing as bare text in the reading views:
+
+| Term | Bare occurrences |
+|---|---|
+| Inferior | 15 |
+| Octagram | 10 |
+| Child · Nemesis | 5 each |
+| Parent · Demon | 4 each |
+| Charge · Broadcast · Absorb · Settle · Alpha | 3 each |
+| Anchor · Living virtue · Deadly sin · Trickster · Delta | 2 each |
+
+Roughly seventy in total. **Do not wrap all of them.** Seventy markers on
+pages already reported as cluttered would make the problem it is meant to
+solve worse. The rule to design to is *first meaningful encounter per
+section* — a reader needs the door once, not every time the word appears.
+
+**Design needed:** the density rule made concrete (which occurrence earns
+a marker), and the popover's own layout — one line of plain language, one
+figure, one link — on touch as well as pointer.
 
 ### Interactive elements
 
