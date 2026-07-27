@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { TYPES, REL, stack } from "../src/engine/core";
-import { ENTRIES } from "../src/engine/lexicon";
+import { ENTRIES, compareAspects } from "../src/engine/lexicon";
 import {
   PLAIN_BY_ID, FN_PLAIN, SLOT_PLAIN, SLOT_ABOUT, slotAbout, REL_PLAIN, QUADRA_PLAIN,
   GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, SIDE_PLAIN,
@@ -124,6 +124,36 @@ describe("assistant grounding", () => {
   it("names the reader's own stack slots rather than generic advice", () => {
     const facts = typeFacts("ISFJ").join("\n");
     for (const fn of stack("ISFJ")) expect(facts).toContain(fn);
+  });
+});
+
+/* Renaming a display label must never silently drop a pair-page row.
+ *
+ * compareAspects keys its pairing lookups by lexicon id. It used to derive
+ * that id by slugifying the DISPLAY label, which couples the pairing tables
+ * to the copy: rename "Infantile" to "Playful" and every romance lookup
+ * misses, so the rows vanish from the pair page with nothing failing —
+ * pairing comes back null and the view filters nulls out. It now resolves
+ * through the entry alias to the canonical id instead. */
+describe("pairings survive a display rename", () => {
+  const NEVER_NULL = ["Quadra", "Temperament", "Interaction style", "Romance style"];
+
+  it.each(NEVER_NULL)("%s resolves a pairing for every ordered pair", (aspect) => {
+    const misses: string[] = [];
+    for (const a of TYPES) {
+      for (const b of TYPES) {
+        const row = compareAspects(a, b).find((r) => r.aspect === aspect);
+        if (!row?.pairing) misses.push(`${a}->${b}`);
+      }
+    }
+    expect(misses.slice(0, 5)).toEqual([]);
+  });
+
+  it("resolves ids that are real entries, not slugified labels", () => {
+    const row = compareAspects("ENTP", "ESTJ").find((r) => r.aspect === "Romance style")!;
+    const ids = new Set(ENTRIES.map((e) => e.id));
+    expect(ids.has(row.aId)).toBe(true);
+    expect(ids.has(row.bId)).toBe(true);
   });
 });
 

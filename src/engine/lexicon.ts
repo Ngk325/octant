@@ -197,56 +197,56 @@ const ANIMALS: Draft[] = [
 
 /* ══════════════════════════════ ROMANCE STYLES ══════════════════════════════ */
 const ROMANCE_STYLES: Draft[] = [
-  E({ id: "infantile", term: "Infantile", category: "Romance Style",
+  E({ id: "infantile", term: "Playful", category: "Romance Style",
     short: "Relates through play. Wants delight and lightness, and resists being managed.",
     definition:
-      "The Infantile style approaches intimacy as shared play: teasing, novelty, silliness, and an ongoing refusal to make the relationship heavy. Care is expressed by being fun to be around and by keeping the other person entertained rather than by anticipating their needs. It wants to be enjoyed rather than looked after, and reads too much practical fussing as a loss of charge. Its blind side is logistics: the Infantile partner can be genuinely devoted and still leave the shared life unadministered.",
-    inSystem: "Held by the Alpha and Delta intuitive-leading types. Structurally complementary to Caregiver.",
+      "The Playful style approaches intimacy as shared play: teasing, novelty, silliness, and an ongoing refusal to make the relationship heavy. Care is expressed by being fun to be around and by keeping the other person entertained rather than by anticipating their needs. It wants to be enjoyed rather than looked after, and reads too much practical fussing as a loss of charge. Its blind side is logistics: a Playful partner can be genuinely devoted and still leave the shared life unadministered.",
+    inSystem: "Held by the Alpha and Delta intuitive-leading types. Structurally complementary to Caring.",
     seeAlso: ["caregiver", "aggressor", "victim"] }),
-  E({ id: "caregiver", term: "Caregiver", category: "Romance Style",
+  E({ id: "caregiver", term: "Caring", category: "Romance Style",
     short: "Relates through provision. Expresses love by noticing and supplying what is needed.",
     definition:
-      "The Caregiver style approaches intimacy as tending: feeding, arranging, remembering, smoothing the practical world so the other person can be at ease in it. Affection is demonstrated rather than declared, and the relationship is made secure by being reliably maintained. It wants to be needed and trusted with the running of things. Its blind side is that provision can shade into control, and that a partner who never asks to be looked after can leave the Caregiver without a role.",
-    inSystem: "Held by the Alpha and Delta sensing-leading types. Structurally complementary to Infantile.",
+      "The Caring style approaches intimacy as tending: feeding, arranging, remembering, smoothing the practical world so the other person can be at ease in it. Affection is demonstrated rather than declared, and the relationship is made secure by being reliably maintained. It wants to be needed and trusted with the running of things. Its blind side is that provision can shade into control, and that a partner who never asks to be looked after can leave a Caring partner without a role.",
+    inSystem: "Held by the Alpha and Delta sensing-leading types. Structurally complementary to Playful.",
     seeAlso: ["infantile", "aggressor", "victim"] }),
-  E({ id: "aggressor", term: "Aggressor", category: "Romance Style",
+  E({ id: "aggressor", term: "Pursuing", category: "Romance Style",
     short: "Relates through pursuit. Direct, physical, and comfortable initiating.",
     definition:
-      "The Aggressor style approaches intimacy by closing distance: claiming attention, initiating contact, making desire explicit rather than implied. It is confident about wanting and unembarrassed about showing it, and it reads hesitation as an invitation to be clearer rather than to retreat. Its blind side is calibration — the same directness that reads as thrilling to one partner reads as pressure to another, and the Aggressor often cannot tell the difference from the inside.",
-    inSystem: "Held by the Beta and Gamma sensing-leading types. Structurally complementary to Victim.",
+      "The Pursuing style approaches intimacy by closing distance: claiming attention, initiating contact, making desire explicit rather than implied. It is confident about wanting and unembarrassed about showing it, and it reads hesitation as an invitation to be clearer rather than to retreat. Its blind side is calibration — the same directness that reads as thrilling to one partner reads as pressure to another, and a Pursuing partner often cannot tell the difference from the inside.",
+    inSystem: "Held by the Beta and Gamma sensing-leading types. Structurally complementary to Pursued.",
     seeAlso: ["victim", "infantile", "caregiver"] }),
-  E({ id: "victim", term: "Victim", category: "Romance Style",
+  E({ id: "victim", term: "Pursued", category: "Romance Style",
     short: "Relates through surrender. Drawn to strength, ambivalence and being pursued.",
     definition:
-      "The name is a term of art, not a judgement. The Victim style approaches intimacy by yielding to someone whose force it respects: it wants to be sought, convinced and somewhat overwhelmed, and it charges the relationship with a productive tension rather than resolving it. Complexity, ambivalence and a degree of unattainability are part of the appeal. Its blind side is that the same tension can be manufactured where it is not warranted, turning a settled relationship into a drama it did not need.",
-    inSystem: "Held by the Beta and Gamma intuitive-leading types. Structurally complementary to Aggressor.",
+      "The Pursued style approaches intimacy by yielding to someone whose force it respects: it wants to be sought, convinced and somewhat overwhelmed, and it charges the relationship with a productive tension rather than resolving it. Complexity, ambivalence and a degree of unattainability are part of the appeal. Its blind side is that the same tension can be manufactured where it is not warranted, turning a settled relationship into a drama it did not need.",
+    inSystem: "Held by the Beta and Gamma intuitive-leading types. Structurally complementary to Pursuing.",
     seeAlso: ["aggressor", "infantile", "caregiver"] }),
 ];
 
 /* ══════════════════════════════ INTERACTION STYLES ══════════════════════════════ */
 const INTERACTION_STYLES: Draft[] = [
-  E({ id: "in-charge", term: "In-Charge", category: "Interaction Style",
+  E({ id: "in-charge", term: "Directs", category: "Interaction Style",
     short: "Initiating + Directing. Moves first and says what to do.",
     definition:
-      "Takes the lead by default and communicates in instructions rather than options. In-Charge sets the pace, assigns the work and closes the discussion, and is comfortable being accountable for having done so. It is fast and unambiguous. Its cost is that it fills the room: quieter or informing styles read the same behaviour as steamrolling and stop contributing.",
+      "Takes the lead by default and communicates in instructions rather than options. It sets the pace, assigns the work and closes the discussion, and is comfortable being accountable for having done so. It is fast and unambiguous. Its cost is that it fills the room: quieter or informing styles read the same behaviour as steamrolling and stop contributing.",
     inSystem: "ENTJ, ENFJ, ESTP, ESTJ. Derived from the Initiating and Direct coins.",
     seeAlso: ["chart-the-course", "get-things-going", "behind-the-scenes"] }),
-  E({ id: "chart-the-course", term: "Chart-the-Course", category: "Interaction Style",
+  E({ id: "chart-the-course", term: "Navigates", category: "Interaction Style",
     short: "Responding + Directing. Waits, then tells you the plan.",
     definition:
-      "Does not open the conversation, but when it speaks it speaks in conclusions. Chart-the-Course wants a route mapped before movement begins and is uncomfortable improvising in public. It is precise and low-noise. Its cost is that the deliberation is invisible, so others read the silence as agreement and the eventual directive as arriving from nowhere.",
+      "Does not open the conversation, but when it speaks it speaks in conclusions. This style wants a route mapped before movement begins and is uncomfortable improvising in public. It is precise and low-noise. Its cost is that the deliberation is invisible, so others read the silence as agreement and the eventual directive as arriving from nowhere.",
     inSystem: "INTJ, INFJ, ISTP, ISTJ. Derived from the Responding and Direct coins.",
     seeAlso: ["in-charge", "behind-the-scenes", "get-things-going"] }),
-  E({ id: "get-things-going", term: "Get-Things-Going", category: "Interaction Style",
+  E({ id: "get-things-going", term: "Rallies", category: "Interaction Style",
     short: "Initiating + Informing. Opens the conversation and hands you the context.",
     definition:
-      "Starts things, brings energy, and communicates by supplying background so the other person can choose. Get-Things-Going is enthusiastic and inclusive and treats a decision as something to be arrived at together. Its cost is that the point can go missing: directing styles hear all context and no instruction, and conclude nothing was actually asked for.",
+      "Starts things, brings energy, and communicates by supplying background so the other person can choose. It is enthusiastic and inclusive and treats a decision as something to be arrived at together. Its cost is that the point can go missing: directing styles hear all context and no instruction, and conclude nothing was actually asked for.",
     inSystem: "ENTP, ENFP, ESFP, ESFJ. Derived from the Initiating and Informative coins.",
     seeAlso: ["behind-the-scenes", "in-charge", "chart-the-course"] }),
-  E({ id: "behind-the-scenes", term: "Behind-the-Scenes", category: "Interaction Style",
+  E({ id: "behind-the-scenes", term: "Steadies", category: "Interaction Style",
     short: "Responding + Informing. Waits, then offers rather than instructs.",
     definition:
-      "Neither opens nor directs. Behind-the-Scenes contributes by improving what already exists, offering information sideways and leaving the other person entirely free to act on it. It is the least imposing style and often the most quietly consequential. Its cost is invisibility: the contribution is real, unattributed, and easily talked over.",
+      "Neither opens nor directs. It contributes by improving what already exists, offering information sideways and leaving the other person entirely free to act on it. It is the least imposing style and often the most quietly consequential. Its cost is invisibility: the contribution is real, unattributed, and easily talked over.",
     inSystem: "INTP, INFP, ISFP, ISFJ. Derived from the Responding and Informative coins.",
     seeAlso: ["get-things-going", "chart-the-course", "in-charge"] }),
 ];
@@ -277,19 +277,19 @@ const GATES: Draft[] = [
 
 /* ══════════════════════════════ TEMPERAMENTS ══════════════════════════════ */
 const TEMPERAMENTS: Draft[] = [
-  E({ id: "nt", term: "Intellectuals (NT)", category: "Temperament",
+  E({ id: "nt", term: "Systems (NT)", category: "Temperament",
     short: "Competence. Wants to understand the system well enough to command it.",
     definition: "ENTP, INTP, ENTJ, INTJ. Organised around mastery and models: the point of a thing is to understand its mechanism well enough to predict or command it. Status is conferred by being right and by knowing why, and competence is assumed until disproved. Impatient with claims that cannot be defended, and with process observed for its own sake.",
     seeAlso: ["nf", "sj", "sp"] }),
-  E({ id: "nf", term: "Idealists (NF)", category: "Temperament",
+  E({ id: "nf", term: "Meaning (NF)", category: "Temperament",
     short: "Meaning. Wants people and work to be authentic to something.",
     definition: "ENFP, INFP, ENFJ, INFJ. Organised around significance and human potential: work is worth doing if it means something and if it leaves people better than it found them. Status is conferred by integrity rather than output. Impatient with the merely procedural, and with competence deployed toward nothing in particular.",
     seeAlso: ["nt", "sj", "sp"] }),
-  E({ id: "sj", term: "Guardians (SJ)", category: "Temperament",
+  E({ id: "sj", term: "Order (SJ)", category: "Temperament",
     short: "Stewardship. Wants the thing to keep working after everyone goes home.",
     definition: "ESTJ, ISTJ, ESFJ, ISFJ. Organised around duty and continuity: someone has to keep the thing running, and that someone is reasonably assumed to be you. Status is conferred by reliability over time rather than by brilliance. Impatient with novelty that has not proven itself and with people who leave the clearing-up to others.",
     seeAlso: ["sp", "nt", "nf"] }),
-  E({ id: "sp", term: "Artisans (SP)", category: "Temperament",
+  E({ id: "sp", term: "Contact (SP)", category: "Temperament",
     short: "Effect. Wants contact with the real thing, now.",
     definition: "ESTP, ISTP, ESFP, ISFP. Organised around action and skill: contact with the real material, now, done well. Status is conferred by visible capability under live conditions rather than by credential or plan. Impatient with abstraction that never touches ground, and with meetings held about work instead of work.",
     seeAlso: ["sj", "nt", "nf"] }),
@@ -593,6 +593,18 @@ export const CATEGORIES: Category[] = [
   "Interaction Style", "Gate", "Coin", "Temperament", "Concept",
 ];
 const slug = slugify;
+
+/**
+ * A display label -> its CANONICAL entry id.
+ *
+ * compareAspects used to key pairings on `slugify(label)` directly, which
+ * quietly couples the pairing tables to the display text: rename "Infantile"
+ * to "Playful" and every romance pairing lookup misses, so the rows vanish
+ * from the pair page with nothing failing. BY_ID already registers each
+ * entry's term as an alias, so resolving through it and taking `.id` back
+ * gives a key that survives any number of renames.
+ */
+const canonicalId = (label: string): string => BY_ID.get(slugify(label))?.id ?? slugify(label);
 /** Find an entry by term or alias, case-insensitively. Used by inline <Term> tags. */
 export const lookup = (name: string): Entry | undefined =>
   BY_ID.get(slug(name)) ?? ENTRIES.find((e) => e.term.toLowerCase() === name.toLowerCase());
@@ -835,15 +847,15 @@ export function compareAspects(a: MbtiType, b: MbtiType): AspectRow[] {
   const push = (aspect: string, aId: string, bId: string, aLabel: string, bLabel: string, determining?: boolean) =>
     rows.push({ aspect, aId, bId, aLabel, bLabel, pairing: pairTerms(aId, bId), determining });
 
-  push("Quadra", slug(quadra(a)), slug(quadra(b)), quadra(a), quadra(b));
-  push("Temperament", slug(GROUP[a].match(/\((\w+)\)/)![1]), slug(GROUP[b].match(/\((\w+)\)/)![1]), GROUP[a], GROUP[b]);
-  push("Interaction style", slug(INTERACTION_STYLE[a].split(" (")[0]), slug(INTERACTION_STYLE[b].split(" (")[0]),
+  push("Quadra", canonicalId(quadra(a)), canonicalId(quadra(b)), quadra(a), quadra(b));
+  push("Temperament", canonicalId(GROUP[a].match(/\((\w+)\)/)![1]), canonicalId(GROUP[b].match(/\((\w+)\)/)![1]), GROUP[a], GROUP[b]);
+  push("Interaction style", canonicalId(INTERACTION_STYLE[a].split(" (")[0]), canonicalId(INTERACTION_STYLE[b].split(" (")[0]),
        INTERACTION_STYLE[a], INTERACTION_STYLE[b]);
-  push("Romance style", slug(ROMANCE[a]), slug(ROMANCE[b]), ROMANCE[a], ROMANCE[b]);
-  push("Primary animal", slug(ops(a).primary), slug(ops(b).primary), ops(a).primary, ops(b).primary);
-  push("Growth gate", slug(gate(a).gate), slug(gate(b).gate), gate(a).gate, gate(b).gate);
-  push("Hero function", slug(stack(a)[0]), slug(stack(b)[0]), stack(a)[0], stack(b)[0]);
-  push("Inferior function", slug(stack(a)[3]), slug(stack(b)[3]), stack(a)[3], stack(b)[3]);
+  push("Romance style", canonicalId(ROMANCE[a]), canonicalId(ROMANCE[b]), ROMANCE[a], ROMANCE[b]);
+  push("Primary animal", canonicalId(ops(a).primary), canonicalId(ops(b).primary), ops(a).primary, ops(b).primary);
+  push("Growth gate", canonicalId(gate(a).gate), canonicalId(gate(b).gate), gate(a).gate, gate(b).gate);
+  push("Hero function", canonicalId(stack(a)[0]), canonicalId(stack(b)[0]), stack(a)[0], stack(b)[0]);
+  push("Inferior function", canonicalId(stack(a)[3]), canonicalId(stack(b)[3]), stack(a)[3], stack(b)[3]);
 
   const ca = coins(a), cb = coins(b);
   COIN_LABELS.forEach((label, i) => {
