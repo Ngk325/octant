@@ -82,6 +82,60 @@ const HERO_ART = (() => {
 </svg>`;
 })();
 
+/* ------------------------------------------------------------------ *
+ * Audience-card glyphs, echoing the app's glyph language: people are a
+ * head and a shoulder arc, attention is a beam or a fan, a mind is a
+ * molecule of four beads sized by rank. Self-contained copies on
+ * purpose — this page ships no app code, so the drawings are restated
+ * here in the marketing palette. Original artwork.
+ * ------------------------------------------------------------------ */
+const gPerson = (cx: number, cy: number, r: number, colour = "var(--m-ink)", w = 3.6) => `
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="${colour}"/>
+  <path d="M ${cx - r * 1.9} ${cy + r * 3.1} A ${r * 1.9} ${r * 1.9} 0 0 1 ${cx + r * 1.9} ${cy + r * 3.1}"
+        stroke="${colour}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+
+/** One person, one beam, one held point — the structured mirror. */
+const GLYPH_COACH = `
+<svg viewBox="0 0 96 64" fill="none" aria-hidden="true">
+  <path d="M 48 36 L 41 12 Q 48 7, 55 12 Z" fill="var(--m-accent)" opacity=".22"/>
+  <circle cx="48" cy="11" r="6" fill="var(--m-accent)"/>
+  <circle cx="48" cy="11" r="2" fill="var(--m-paper)" opacity=".6"/>
+  ${gPerson(48, 42, 6.5)}
+</svg>`;
+
+/** Three people, three directed lines — the group as a web. */
+const GLYPH_TEAM = `
+<svg viewBox="0 0 96 64" fill="none" aria-hidden="true">
+  <path d="M 30 20 Q 48 8 66 20" stroke="var(--m-accent)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M 27 34 Q 34 46 42 52" stroke="var(--m-accent)" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>
+  <path d="M 69 34 Q 62 46 54 52" stroke="var(--m-rose)" stroke-width="2.4" stroke-linecap="round"/>
+  ${gPerson(24, 20, 5.4)}
+  ${gPerson(72, 20, 5.4)}
+  ${gPerson(48, 44, 5.4)}
+</svg>`;
+
+/** Two people, one arrow each way — both directions, separately. */
+const GLYPH_PAIR = `
+<svg viewBox="0 0 96 64" fill="none" aria-hidden="true">
+  <path d="M 34 22 H 58" stroke="var(--m-accent)" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M 62 22 l -8 -4.5 v 9 z" fill="var(--m-accent)"/>
+  <path d="M 62 32 H 38" stroke="var(--m-rose)" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M 34 32 l 8 -4.5 v 9 z" fill="var(--m-rose)"/>
+  ${gPerson(22, 24, 5.8)}
+  ${gPerson(74, 24, 5.8, "var(--m-ink)", 3.6)}
+</svg>`;
+
+/** Four beads sized by rank, crossed bonds — one mind as a molecule. */
+const GLYPH_SELF = `
+<svg viewBox="0 0 96 64" fill="none" aria-hidden="true">
+  <line x1="34" y1="22" x2="64" y2="50" stroke="var(--m-muted)" stroke-width="2" opacity=".5"/>
+  <line x1="66" y1="26" x2="36" y2="50" stroke="var(--m-muted)" stroke-width="2" opacity=".5"/>
+  <circle cx="34" cy="22" r="11" fill="var(--m-accent)"/>
+  <circle cx="66" cy="26" r="8.6" fill="var(--m-accent)" opacity=".75"/>
+  <circle cx="36" cy="50" r="6.2" fill="var(--m-rose)" opacity=".8"/>
+  <circle cx="64" cy="50" r="4.6" fill="var(--m-rose)" opacity=".55"/>
+</svg>`;
+
 const TITLE = "Octant — see how minds mesh";
 const DESCRIPTION =
   "Octant maps how people think and how those patterns fit together — both directions of " +
@@ -193,6 +247,8 @@ export function marketingPage(origin: string): Response {
   .card p { font-family:var(--sans); font-size:15.5px; line-height:1.6; color:var(--m-ink2); margin:0; }
   .card .pain { display:block; font-family:var(--sans); font-size:14px; color:var(--m-rose);
                 font-weight:600; margin-bottom:6px; }
+  .card .glyph { display:block; height:56px; margin-bottom:14px; }
+  .card .glyph svg { height:100%; width:auto; display:block; }
 
   .steps { counter-reset:step; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
            gap:20px; margin-top:32px; }
@@ -358,6 +414,7 @@ export function marketingPage(origin: string): Response {
       <h2>Built for people whose work is other people.</h2>
       <div class="cols">
         <div class="card">
+          <span class="glyph">${GLYPH_COACH}</span>
           <h3>Coaches &amp; practitioners</h3>
           <p>
             Give clients a structured mirror: why the same feedback lands on one person and
@@ -366,6 +423,7 @@ export function marketingPage(origin: string): Response {
           </p>
         </div>
         <div class="card">
+          <span class="glyph">${GLYPH_TEAM}</span>
           <h3>Teams &amp; founders</h3>
           <p>
             See the friction before it has a name. Understand why two strong people keep
@@ -374,6 +432,7 @@ export function marketingPage(origin: string): Response {
           </p>
         </div>
         <div class="card">
+          <span class="glyph">${GLYPH_PAIR}</span>
           <h3>Partners &amp; families</h3>
           <p>
             The same argument, every time, with the same person? Read the pairing in both
@@ -382,6 +441,7 @@ export function marketingPage(origin: string): Response {
           </p>
         </div>
         <div class="card">
+          <span class="glyph">${GLYPH_SELF}</span>
           <h3>Anyone reading themselves</h3>
           <p>
             Eight either-or questions find your pattern. Then the interesting part: your four

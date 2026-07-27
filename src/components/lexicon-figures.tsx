@@ -1,7 +1,13 @@
 import { type ReactNode } from "react";
 import { type Entry, type Category } from "../engine/lexicon";
 import { type Fn, type SlotName } from "../engine/data";
-import { type Quadra } from "../engine/core";
+import { type MbtiType, type Quadra } from "../engine/core";
+import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
+import { type Animal } from "../engine/ops";
+import FnIcon from "./glyphs/FnIcon";
+import SelfTribeCone from "./glyphs/SelfTribeCone";
+import AnimalGlyph from "./glyphs/AnimalGlyph";
+import SideDoor from "./glyphs/SideDoor";
 import InvolutionTable from "./InvolutionTable";
 import ArchetypeGrid from "./ArchetypeGrid";
 import QuadraFunctionGrid from "./QuadraFunctionGrid";
@@ -72,15 +78,75 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   savior: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
   "demon-animal": () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
 
-  "four-sides": () => <Worked><GatewayPath type="ENTP" /></Worked>,
-  subconscious: () => <Worked><GatewayPath type="ENTP" /></Worked>,
-  unconscious: () => <Worked><GatewayPath type="ENTP" /></Worked>,
-  superego: () => <Worked><GatewayPath type="ENTP" /></Worked>,
+  /* Each side of the mind is its door, then the whole path in order. */
+  ...Object.fromEntries(
+    (["four-sides", "ego", "subconscious", "unconscious", "superego"] as const).map((id) => [
+      id,
+      () => (
+        <Worked>
+          <SideDoorRow type="ENTP" emphasis={id === "four-sides" ? undefined : id as SideKey} />
+          <div style={{ marginTop: "var(--s3)" }}><GatewayPath type="ENTP" /></div>
+        </Worked>
+      ),
+    ]),
+  ),
+
+  /* The animals as arrow signatures. */
+  ...Object.fromEntries(
+    (["play", "blast", "consume", "sleep"] as const).map((id) => [
+      id,
+      (e: Entry) => <Plain><AnimalGlyph animal={e.term as Animal} /></Plain>,
+    ]),
+  ),
+  animal: () => (
+    <Plain>
+      <div className="cluster" style={{ gap: "var(--s5)", alignItems: "flex-end" }}>
+        {(["Consume", "Blast", "Play", "Sleep"] as const).map((a) => (
+          <div key={a} style={{ width: 120, textAlign: "center" }}>
+            <AnimalGlyph animal={a} />
+            <span className="small muted">{a}</span>
+          </div>
+        ))}
+      </div>
+    </Plain>
+  ),
+
 };
+
+/**
+ * The four doors of one type in a row, dimming all but the emphasised one.
+ * Local composition, not a glyph — SideDoor stays single-purpose.
+ */
+function SideDoorRow({ type, emphasis }: { type: MbtiType; emphasis?: SideKey }) {
+  const s = sides(type);
+  return (
+    <div className="cluster" style={{ gap: "var(--s4)", alignItems: "flex-end" }}>
+      {SIDE_ORDER.map((k) => (
+        <div key={k} style={{ textAlign: "center", opacity: emphasis && emphasis !== k ? 0.45 : 1 }}>
+          <SideDoor side={k} fn={s[k].gateway.fn} />
+          <span className="small muted">{s[k].name}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /** Category-level fallbacks, when no id-specific figure exists. */
 export const CATEGORY_FIGURES: Partial<Record<Category, (e: Entry) => ReactNode>> = {
-  Function: (e) => <Plain><InvolutionTable highlight={e.term as Fn} /></Plain>,
+  /* A Function entry leads with its own icon and its self/tribe reading,
+     then the involution table that places it among the eight. */
+  Function: (e) => {
+    const fn = e.term as Fn;
+    return (
+      <Plain>
+        <div className="cluster" style={{ gap: "var(--s5)", alignItems: "flex-start", marginBottom: "var(--s3)" }}>
+          <FnIcon fn={fn} size={56} />
+          <div style={{ width: 150 }}><SelfTribeCone fn={fn} /></div>
+        </div>
+        <InvolutionTable highlight={fn} />
+      </Plain>
+    );
+  },
 };
 
 /** The figure for an entry, or null. */

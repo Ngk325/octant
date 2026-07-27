@@ -1,6 +1,7 @@
 import type { OpsSignature } from "../engine/ops";
 import { ANIMAL_DOES, ANIMAL_KIND } from "../engine/ops";
 import { usePalette } from "./Theme";
+import AnimalGlyph from "./glyphs/AnimalGlyph";
 
 const ROLE_LABEL: Record<string, string> = {
   savior: "Savior",
@@ -26,7 +27,7 @@ export default function AnimalStack({ sig }: { sig: OpsSignature }) {
             key={a.animal}
             style={{
               display: "grid",
-              gridTemplateColumns: "34px 1fr",
+              gridTemplateColumns: "34px 64px 1fr",
               gap: "var(--s3)",
               padding: "var(--s3) 0",
               borderBottom: "1px solid var(--rule)",
@@ -50,6 +51,12 @@ export default function AnimalStack({ sig }: { sig: OpsSignature }) {
               }}
             >
               {a.position ?? "?"}
+            </span>
+
+            {/* The glyph repeats what the text says (arrows in, arrows out,
+                the closed loop), so assistive tech only needs it once. */}
+            <span aria-hidden="true" style={{ alignSelf: "center", opacity: open ? 0.55 : 1 }}>
+              <AnimalGlyph animal={a.animal} />
             </span>
 
             <div style={{ minWidth: 0 }}>

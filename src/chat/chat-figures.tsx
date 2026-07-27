@@ -15,6 +15,10 @@ import InvolutionTable from "../components/InvolutionTable";
 import QuadraFunctionGrid from "../components/QuadraFunctionGrid";
 import OctagramWheel from "../components/OctagramWheel";
 import OctagramMap from "../components/OctagramMap";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
+import FnIcon from "../components/glyphs/FnIcon";
+import AnimalGlyph from "../components/glyphs/AnimalGlyph";
+import { type Animal } from "../engine/ops";
 
 /* ------------------------------------------------------------------ *
  * FIGURES THE ASSISTANT CAN DRAW.
@@ -84,6 +88,16 @@ const FIGURES: Record<string, (args: string[]) => ReactNode | null> = {
   "octagram-map": ([t]) =>
     t === undefined ? <Scroll minWidth={480}><OctagramMap /></Scroll>
       : isType(t) ? <Scroll minWidth={480}><OctagramMap highlight={asType(t)} /></Scroll> : null,
+
+  /* The glyph language. */
+  molecule: ([t]) => (isType(t) ? <TypeMolecule type={asType(t)} size={96} /> : null),
+  "fn-icon": ([f]) => (isFn(f) ? <FnIcon fn={asFn(f)} size={56} /> : null),
+  animal: ([a]) => {
+    const name = a ? a[0].toUpperCase() + a.slice(1).toLowerCase() : "";
+    return (["Play", "Blast", "Consume", "Sleep"] as const).includes(name as Animal)
+      ? <div style={{ maxWidth: 140 }}><AnimalGlyph animal={name as Animal} /></div>
+      : null;
+  },
 };
 
 /** The directive names, for the primer-parity test. */

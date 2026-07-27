@@ -194,6 +194,9 @@ when a picture genuinely carries the point):
 - {{figure:involution-table FN}} — alpha/beta/omega for the eight functions (FN optional).
 - {{figure:quadra-grid QUADRA}} — the four quadras' valued functions (QUADRA optional).
 - {{figure:octagram-map TYPE}} — the full eight-wheel ring (TYPE optional highlight).
+- {{figure:molecule TYPE}} — the type's identity glyph: four beads sized Hero to Inferior.
+- {{figure:fn-icon FN}} — one function's pictorial icon (e.g. Ne branching, Fi plumb line).
+- {{figure:animal ANIMAL}} — Play, Blast, Consume or Sleep as its arrow signature.
 Never invent other figure names, never put a directive inside a sentence, and keep
 explaining in words around the figure — it illustrates the answer, it is not the answer.
 

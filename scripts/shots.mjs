@@ -41,7 +41,7 @@ const { chromium } = (() => {
 const BASE = process.argv[2] ?? "http://localhost:4173";
 const WIDTHS = [375, 768, 1024, 1440];
 const ROUTES = [
-  "/", "/learn", "/learn/octagram", "/calculator", "/types",
+  "/", "/learn", "/learn/functions", "/learn/octagram", "/calculator", "/types",
   "/type/ENTP", "/pair/ENTP/INFJ", "/network", "/matrix", "/lexicon",
 ];
 

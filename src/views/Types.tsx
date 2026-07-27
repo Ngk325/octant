@@ -7,6 +7,7 @@ import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
 import { FnTag, Tile } from "../components/Bits";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
 
 type SortBy = "quadra" | "temperament" | "alpha";
 
@@ -65,7 +66,8 @@ export default function Types() {
               const st = stack(t);
               return (
                 <Tile key={t} to={`/type/${t}`}>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: "var(--s2)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--s3)" }}>
+                    <TypeMolecule type={t} size={52} />
                     <b className="mono" style={{ fontSize: "var(--t-lg)" }}>{t}</b>
                     <i
                       className="dot"

@@ -37,6 +37,8 @@ import LettersToStack from "../components/LettersToStack";
 import GatewayPath from "../components/GatewayPath";
 import SaviorDemonGrid from "../components/SaviorDemonGrid";
 import RelationLanding from "../components/RelationLanding";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
+import FnIcon from "../components/glyphs/FnIcon";
 
 /* The page's outline, and therefore its anchor nav — one array, so the two
    cannot drift apart. The two "your …" entries are the page's interactive
@@ -100,7 +102,10 @@ export default function TypeReader() {
         <span className="chip mono">{SOCIONICS[t]}</span>
       </div>
 
-      <h1>{t}</h1>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--s5)", flexWrap: "wrap" }}>
+        <TypeMolecule type={t} size={96} />
+        <h1 style={{ margin: 0 }}>{t}</h1>
+      </div>
       <p className="lede">{typePlain(t, st[0], st[1], st[3])}</p>
 
       <p className="small muted">
@@ -162,6 +167,7 @@ export default function TypeReader() {
               return (
                 <Panel key={fn} title={`${i + 1}. ${SLOT_NAMES[i]}`}>
                   <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
+                    <FnIcon fn={fn} size={36} />
                     <FnTag fn={fn} size="var(--t-lg)" />
                     <Term>{SLOT_NAMES[i]}</Term>
                     <span className="chip">{FN_ROLE[fn]}</span>
