@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { stack, quadra, TYPES, REL, ease } from "../engine/core";
-import { ops } from "../engine/ops";
+import { ops, ANIMAL_LABEL } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { wheelOf, templeOf } from "../engine/octagram";
 import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
@@ -449,15 +449,15 @@ export const STAGES: Stage[] = [
             plain="This overlay looks at the same top four functions and asks a different question: which two do you trust so completely you never think about them, and which two make you nervous?"
           >
             <p>
-              It splits the ego block into two <Term id="savior">saviors</Term> and two{" "}
+              It splits the ego block into two <Term id="savior">anchors</Term> and two{" "}
               <Term id="demon-fn">demons</Term>. The demons are the axis opposites of the
-              saviors, which places them at the tertiary and inferior — the overlay does not reach
+              anchors, which places them at the tertiary and inferior — the overlay does not reach
               into the shadow block at all.
             </p>
           </Explain>
 
           <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
-            <Panel title={`Saviors — ${o.saviorObs} and ${o.saviorDec}`}>
+            <Panel title={`Anchors —  and `}>
               <p style={{ fontSize: "var(--t-base)", margin: 0 }}>{CONCEPT_PLAIN.savior}</p>
             </Panel>
             <Panel title={`Demons — ${o.demonObs} and ${o.demonDec}`}>
@@ -468,19 +468,19 @@ export const STAGES: Stage[] = [
           <h3>The four animals</h3>
           <Explain plain={CONCEPT_PLAIN.animal}>
             <p>
-              Each animal pairs one observer attitude with one decider attitude.{" "}
-              <b>Play</b> (Oe+De) and <b>Sleep</b> (Oi+Di) are the energy animals;{" "}
-              <b>Blast</b> (Oi+De) and <b>Consume</b> (Oe+Di) are the information animals.
+              Each current pairs one observer attitude with one decider attitude.{" "}
+              <b>Charge</b> (Oe+De) and <b>Settle</b> (Oi+Di) move energy;{" "}
+              <b>Broadcast</b> (Oi+De) and <b>Absorb</b> (Oe+Di) move information.
             </p>
           </Explain>
 
           <Figure
-            label="What each animal does with the world."
+            label="What each current does with the world."
             caption={
               <>
                 Arrows in = taking in; arrows out = sharing; the loop = processing alone.{" "}
-                <b>Consume</b> takes in more than it shares, <b>Blast</b> shares more than it
-                takes in, <b>Play</b> is live exchange, <b>Sleep</b> is the closed loop.
+                <b>Absorb</b> takes in more than it shares, <b>Broadcast</b> shares more than it
+                takes in, <b>Charge</b> is live exchange, <b>Settle</b> is the closed loop.
               </>
             }
           >
@@ -488,7 +488,7 @@ export const STAGES: Stage[] = [
               {(["Consume", "Blast", "Play", "Sleep"] as const).map((a) => (
                 <div key={a} style={{ width: 118, textAlign: "center" }}>
                   <AnimalGlyph animal={a} />
-                  <span className="small muted">{a}</span>
+                  <span className="small muted">{ANIMAL_LABEL[a]}</span>
                 </div>
               ))}
             </div>
@@ -499,7 +499,7 @@ export const STAGES: Stage[] = [
             caption={
               <>
                 The first and last are fixed by your type. The middle two are genuinely open —
-                that ordering is its own coin, so this app leaves it blank rather than guessing.
+                that ordering is its own switch, so this app leaves it blank rather than guessing.
                 Set it on the type page if you know yours.
               </>
             }
@@ -516,7 +516,7 @@ export const STAGES: Stage[] = [
         </>
       );
     },
-    check: "Which of your two saviors do you reach for first when something goes wrong?",
+    check: "Which of your two anchors do you reach for first when something goes wrong?",
   },
 
   {
@@ -784,8 +784,8 @@ export const STAGES: Stage[] = [
             plain="The wheel said what you want and the honest way to get it. This layer says what your particular childhood did to how you go about it — and no four-letter type can tell you that."
           >
             <p>
-              Two coins, and neither is readable off the type. They are self-reported in the same
-              posture as the subtype coins: nothing here changes a relation, a score or a
+              Two switches, and neither is readable off the type. They are self-reported in the same
+              posture as the subtype switches: nothing here changes a relation, a score or a
               playbook.
             </p>
           </Explain>

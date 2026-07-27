@@ -1,10 +1,10 @@
 import type { OpsSignature } from "../engine/ops";
-import { ANIMAL_DOES, ANIMAL_KIND } from "../engine/ops";
+import { ANIMAL_DOES, ANIMAL_KIND, ANIMAL_LABEL } from "../engine/ops";
 import { usePalette } from "./Theme";
 import AnimalGlyph from "./glyphs/AnimalGlyph";
 
 const ROLE_LABEL: Record<string, string> = {
-  savior: "Savior",
+  savior: "Anchor",
   activated: "Hobby",
   last: "Missing",
   open: "Undecided",
@@ -62,7 +62,7 @@ export default function AnimalStack({ sig }: { sig: OpsSignature }) {
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
                 <b style={{ fontFamily: "var(--serif)", fontSize: "var(--t-lg)", fontWeight: 500 }}>
-                  {a.animal}
+                  {ANIMAL_LABEL[a.animal]}
                 </b>
                 <span className="mono" style={{ fontSize: "var(--t-sm)" }}>
                   <b style={{ color: p.fn(a.obs), fontWeight: 500 }}>{a.obs}</b>

@@ -147,8 +147,8 @@ export const CONCEPT_PLAIN: Record<string, string> = {
     "Things you distrust and avoid. You get nervous, you show off, you put it off until later, and " +
     "criticism here really stings.",
   animal:
-    "Pair up one way of looking at the world with one way of deciding, and you get a mode you drop " +
-    "into. There are four. You are always in one of them.",
+    "Pair up one way of looking at the world with one way of deciding, and you get one of four " +
+    "currents. You are always running one of them.",
   gateway:
     "Each side of your mind has one function standing in the doorway. To get in, you have to be " +
     "willing to be bad at that one thing in front of people.",
@@ -286,7 +286,7 @@ export const PLAIN_BY_ID: Record<string, string> = {
      concept entirely from the entry it was attached to. */
   "dual-lighting": "This app carries two accounts of where you grow, and they disagree about one slot. Rather than split the difference and print a number neither account would recognise, it shows you both and says which is which.",
   savior: CONCEPT_PLAIN.savior,
-  "demon-animal": "The mode you use least. You can do it — it just costs you, so you avoid it and then resent needing it.",
+  "demon-animal": "The current you use least. You can do it — it just costs you, so you avoid it and then resent needing it.",
   "four-sides": "You are four types, not one: the everyday you, the one you wish you were, the one who shows up in a crisis, and the one at your worst.",
   ego: CONCEPT_PLAIN.ego,
   shadow: "The bottom four habits. They still run — they just do not feel like you choosing something.",

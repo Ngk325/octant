@@ -1,5 +1,5 @@
 import { alpha, beta, omega, quadra, gate, stack, type MbtiType } from "./core";
-import { ops, coins } from "./ops";
+import { ops, coins, ANIMAL_LABEL } from "./ops";
 import { PLAIN_BY_ID } from "./plain";
 import {
   REL_NAME, REL_DEF, REL_SCORE, FN_FULL, COIN_LABELS,
@@ -45,13 +45,13 @@ const FUNCTIONS: Draft[] = [
     short: "Extraverted Intuition — branching possibility read off the outside world.",
     definition:
       "Perceives the field of what a thing could become. Ne takes any object, person or situation and fans it into alternatives, analogies and adjacent possibilities, then keeps every branch live rather than collapsing to one. It is a perceiving function, so it gathers rather than concludes; the pleasure is in the proliferation itself. Its characteristic failure is never landing: an enormous inventory of openings and nothing carried to completion.",
-    inSystem: "Extraverted observer. Pairs with an introverted decider (Ti or Fi) to form a Play-primary signature. Its attitude-flip is Ni; its axis opposite is Si.",
+    inSystem: "Extraverted observer. Pairs with an introverted decider (Ti or Fi) to form a Charge-primary signature. Its attitude-flip is Ni; its axis opposite is Si.",
     seeAlso: ["ni", "si", "observer", "gather"] }),
   E({ id: "ni", term: "Ni", category: "Function",
     short: "Introverted Intuition — convergence on the single line a situation is already running down.",
     definition:
       "Perceives where things are heading. Ni takes a mass of impressions and compresses them into one reading of the underlying trajectory, arriving as a conviction rather than a chain of reasoning. Because the process is largely unconscious, the conclusion often cannot be shown — only asserted, and then defended after the fact. Its failure is premature certainty: the vision arrives whole and resists correction by anything the present is actually doing.",
-    inSystem: "Introverted observer. Pairs with an extraverted decider (Te or Fe) to form a Blast-primary signature.",
+    inSystem: "Introverted observer. Pairs with an extraverted decider (Te or Fe) to form a Broadcast-primary signature.",
     seeAlso: ["ne", "se", "observer", "organize"] }),
   E({ id: "se", term: "Se", category: "Function",
     short: "Extraverted Sensing — the physical present, read at full resolution and in real time.",
@@ -69,13 +69,13 @@ const FUNCTIONS: Draft[] = [
     short: "Extraverted Thinking — ordering the outside world toward a stated objective.",
     definition:
       "Decides by arranging external reality efficiently. Te asks what the measurable objective is and what sequence of resources, people and steps reaches it fastest, then imposes that sequence. It trusts what can be verified publicly — metrics, track record, results — over what can only be argued internally. Its failure is the unexamined goal: exquisite machinery driving toward an objective nobody checked was worth reaching.",
-    inSystem: "Extraverted decider. Pairs with an introverted observer (Ni or Si) to form a Blast-primary signature.",
+    inSystem: "Extraverted decider. Pairs with an introverted observer (Ni or Si) to form a Broadcast-primary signature.",
     seeAlso: ["ti", "fi", "decider", "tribe"] }),
   E({ id: "ti", term: "Ti", category: "Function",
     short: "Introverted Thinking — a private framework that must remain free of contradiction.",
     definition:
       "Decides by internal consistency. Ti builds a model of how something actually works and tests every new input against it, discarding whatever will not fit. Precision matters more than consensus: a definition that most people accept but that leaks under pressure is worse than useless. Its failure is that the model can become the point — refinement continues indefinitely and nothing is ever released into the world where it could be wrong.",
-    inSystem: "Introverted decider. Pairs with an extraverted observer (Ne or Se) to form a Play-primary signature.",
+    inSystem: "Introverted decider. Pairs with an extraverted observer (Ne or Se) to form a Charge-primary signature.",
     seeAlso: ["te", "fe", "decider", "identity"] }),
   E({ id: "fe", term: "Fe", category: "Function",
     short: "Extraverted Feeling — reading and then setting the emotional state of a group.",
@@ -169,29 +169,29 @@ const QUADRAS: Draft[] = [
 
 /* ══════════════════════════════ ANIMALS ══════════════════════════════ */
 const ANIMALS: Draft[] = [
-  E({ id: "play", term: "Play", category: "Animal",
+  E({ id: "play", term: "Charge", category: "Animal",
     short: "Extraverted observing + introverted deciding. Interactive, exploratory, low-stakes.",
     definition:
-      "Energy that goes outward to gather and inward to judge. Play engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the animal most comfortable with an unfinished situation.",
-    inSystem: "Every xxxP type is Play-primary; every xxxJ type has Play as its demon animal.",
+      "Energy that goes outward to gather and inward to judge. Charge engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the current most comfortable with an unfinished situation.",
+    inSystem: "Every xxxP type is Charge-primary; every xxxJ type has Charge as its last current.",
     seeAlso: ["blast", "animal", "savior"] }),
-  E({ id: "blast", term: "Blast", category: "Animal",
+  E({ id: "blast", term: "Broadcast", category: "Animal",
     short: "Introverted observing + extraverted deciding. Directive, convergent, outcome-driven.",
     definition:
-      "Energy that goes inward to read and outward to act. Blast forms a private conclusion and then moves the world to match it — the animal of decisions announced and executed. It is the fastest route from perception to result and the least tolerant of open questions.",
-    inSystem: "Every xxxJ type is Blast-primary; every xxxP type has Blast as its demon animal.",
+      "Energy that goes inward to read and outward to act. Broadcast forms a private conclusion and then moves the world to match it — the current of decisions announced and executed. It is the fastest route from perception to result and the least tolerant of open questions.",
+    inSystem: "Every xxxJ type is Broadcast-primary; every xxxP type has Broadcast as its last current.",
     seeAlso: ["play", "animal", "demon-animal"] }),
-  E({ id: "consume", term: "Consume", category: "Animal",
-    short: "Both functions extraverted. Intake and output at once — the social, high-throughput animal.",
+  E({ id: "consume", term: "Absorb", category: "Animal",
+    short: "Both functions extraverted. Intake and output at once — the social, high-throughput current.",
     definition:
-      "Everything pointed outward: gathering from the world and acting on it in the same motion. Consume is the animal of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain.",
-    inSystem: "Always a middle animal in this build. Its ordering against Sleep is the deferred fine-coin layer.",
+      "Everything pointed outward: gathering from the world and acting on it in the same motion. Absorb is the current of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain.",
+    inSystem: "Always a middle current in this build. Its ordering against Settle is the deferred fine-switch layer.",
     seeAlso: ["sleep", "animal", "fine-coins"] }),
-  E({ id: "sleep", term: "Sleep", category: "Animal",
+  E({ id: "sleep", term: "Settle", category: "Animal",
     short: "Both functions introverted. Withdrawal into private processing.",
     definition:
-      "Everything pointed inward: observing internally and deciding internally, with no external limb. Sleep is where a person integrates, recovers and works things out unobserved. Starved of it, the other animals degrade.",
-    inSystem: "Always a middle animal in this build. Its ordering against Consume is deferred.",
+      "Everything pointed inward: observing internally and deciding internally, with no external limb. Settle is where a person integrates, recovers and works things out unobserved. Starved of it, the other currents degrade.",
+    inSystem: "Always a middle current in this build. Its ordering against Absorb is deferred.",
     seeAlso: ["consume", "animal", "fine-coins"] }),
 ];
 
@@ -229,25 +229,25 @@ const INTERACTION_STYLES: Draft[] = [
     short: "Initiating + Directing. Moves first and says what to do.",
     definition:
       "Takes the lead by default and communicates in instructions rather than options. It sets the pace, assigns the work and closes the discussion, and is comfortable being accountable for having done so. It is fast and unambiguous. Its cost is that it fills the room: quieter or informing styles read the same behaviour as steamrolling and stop contributing.",
-    inSystem: "ENTJ, ENFJ, ESTP, ESTJ. Derived from the Initiating and Direct coins.",
+    inSystem: "ENTJ, ENFJ, ESTP, ESTJ. Derived from the Initiating and Direct switches.",
     seeAlso: ["chart-the-course", "get-things-going", "behind-the-scenes"] }),
   E({ id: "chart-the-course", term: "Navigates", category: "Interaction Style",
     short: "Responding + Directing. Waits, then tells you the plan.",
     definition:
       "Does not open the conversation, but when it speaks it speaks in conclusions. This style wants a route mapped before movement begins and is uncomfortable improvising in public. It is precise and low-noise. Its cost is that the deliberation is invisible, so others read the silence as agreement and the eventual directive as arriving from nowhere.",
-    inSystem: "INTJ, INFJ, ISTP, ISTJ. Derived from the Responding and Direct coins.",
+    inSystem: "INTJ, INFJ, ISTP, ISTJ. Derived from the Responding and Direct switches.",
     seeAlso: ["in-charge", "behind-the-scenes", "get-things-going"] }),
   E({ id: "get-things-going", term: "Rallies", category: "Interaction Style",
     short: "Initiating + Informing. Opens the conversation and hands you the context.",
     definition:
       "Starts things, brings energy, and communicates by supplying background so the other person can choose. It is enthusiastic and inclusive and treats a decision as something to be arrived at together. Its cost is that the point can go missing: directing styles hear all context and no instruction, and conclude nothing was actually asked for.",
-    inSystem: "ENTP, ENFP, ESFP, ESFJ. Derived from the Initiating and Informative coins.",
+    inSystem: "ENTP, ENFP, ESFP, ESFJ. Derived from the Initiating and Informative switches.",
     seeAlso: ["behind-the-scenes", "in-charge", "chart-the-course"] }),
   E({ id: "behind-the-scenes", term: "Steadies", category: "Interaction Style",
     short: "Responding + Informing. Waits, then offers rather than instructs.",
     definition:
       "Neither opens nor directs. It contributes by improving what already exists, offering information sideways and leaving the other person entirely free to act on it. It is the least imposing style and often the most quietly consequential. Its cost is invisibility: the contribution is real, unattributed, and easily talked over.",
-    inSystem: "INTP, INFP, ISFP, ISFJ. Derived from the Responding and Informative coins.",
+    inSystem: "INTP, INFP, ISFP, ISFJ. Derived from the Responding and Informative switches.",
     seeAlso: ["get-things-going", "chart-the-course", "in-charge"] }),
 ];
 
@@ -301,21 +301,21 @@ const COIN_POLES: [string, string, string, string][] = [
    "The type's dominant function is Ne, Ni, Se or Si. Perception leads and judgement follows, so the person is comparatively balanced between self and tribe but gets stuck between control and chaos. Narrows to IxxJ or ExxP."],
   ["decider", "Decider", "The leading function judges rather than perceives.",
    "The type's dominant function is Te, Ti, Fe or Fi. Judgement leads and perception follows, so the person is comparatively balanced between control and chaos but gets stuck between self and tribe. Narrows to IxxP or ExxJ."],
-  ["identity", "Identity", "The savior decider is introverted — Ti or Fi.",
-   "Personal reasons and values are settled first, and the tribe's are consulted afterwards. This is not selfishness; it is the order of operations. Structurally equivalent to the Gather pole, because saviors must run opposite attitudes."],
-  ["tribe", "Tribe", "The savior decider is extraverted — Te or Fe.",
+  ["identity", "Identity", "The anchor decider is introverted — Ti or Fi.",
+   "Personal reasons and values are settled first, and the tribe's are consulted afterwards. This is not selfishness; it is the order of operations. Structurally equivalent to the Gather pole, because anchors must run opposite attitudes."],
+  ["tribe", "Tribe", "The anchor decider is extraverted — Te or Fe.",
    "The group's reasons and values are read first, and personal ones are worked out against them. Structurally equivalent to the Organize pole."],
-  ["organize", "Organize", "The savior observer is introverted — Ni or Si.",
+  ["organize", "Organize", "The anchor observer is introverted — Ni or Si.",
    "Answers come from working over material already held, with new input gathered afterwards. Depth before breadth."],
-  ["gather", "Gather", "The savior observer is extraverted — Ne or Se.",
+  ["gather", "Gather", "The anchor observer is extraverted — Ne or Se.",
    "Answers come from collecting new material first, and organising it afterwards. Breadth before depth."],
-  ["thinking", "Thinking", "The savior decider is Te or Ti.",
+  ["thinking", "Thinking", "The anchor decider is Te or Ti.",
    "Reasons are established before priorities: the type works out what is true or how something functions, and lets that constrain what is worth valuing. Not an absence of feeling — an order of operations, in which the judgement about worth arrives second and is expected to survive the reasoning."],
-  ["feeling", "Feeling", "The savior decider is Fe or Fi.",
+  ["feeling", "Feeling", "The anchor decider is Fe or Fi.",
    "Priorities are established before reasons. What matters constrains what is worth establishing."],
-  ["sensing", "Sensing", "The savior observer is Se or Si.",
+  ["sensing", "Sensing", "The anchor observer is Se or Si.",
    "Concrete, verifiable material is taken first; abstract connection is drawn from it afterwards."],
-  ["intuition", "iNtuition", "The savior observer is Ne or Ni.",
+  ["intuition", "iNtuition", "The anchor observer is Ne or Ni.",
    "Abstract connection is taken first: the type registers patterns, implications and resemblances before it registers the particulars, and then goes looking for the concrete detail that confirms or breaks them. The risk is a confident structure resting on facts nobody checked."],
   ["initiating", "Initiating", "Moves toward others without waiting.",
    "Starts conversations, changes subject comfortably, acts before being invited. Maps to extraversion."],
@@ -333,7 +333,7 @@ const COIN_POLES: [string, string, string, string][] = [
 const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) =>
   E({ id, term, category: "Coin", short, definition,
       inSystem: `Coin ${Math.floor(i / 2) + 1} — ${COIN_LABELS[Math.floor(i / 2)]}. ` +
-        ([0, 2, 3, 4].includes(Math.floor(i / 2)) ? "Determining." : "Confirming: derivable from the determining coins."),
+        ([0, 2, 3, 4].includes(Math.floor(i / 2)) ? "Determining." : "Confirming: derivable from the determining switches."),
       seeAlso: ["coin", "savior"] }));
 
 /* ══════════════════════════════ CONCEPTS ══════════════════════════════ */
@@ -362,15 +362,15 @@ const CONCEPTS: Draft[] = [
       "One reading runs an eight-function stack across all four letters and puts the weak point at the Inferior; the exchange overlay tracks two letters across four orientations and marks the tertiary and inferior together. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system carries both and lets the divergence stand as content.",
     inSystem: "The wiring schematic marks the Inferior as the cave and the demon-animal loop as an open circuit. They are in different slots.",
     seeAlso: ["inferior", "demon-animal", "savior"] }),
-  E({ id: "savior", term: "Savior", category: "Concept",
+  E({ id: "savior", term: "Anchor", category: "Concept",
     short: "The two functions a type actually uses well — one observer, one decider.",
     definition:
-      "The savior pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary animal. The attitude-flipped counterparts are the demons.",
+      "The anchor pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary current. The attitude-flipped counterparts are the flinches.",
     seeAlso: ["demon-animal", "animal", "dual-lighting"] }),
-  E({ id: "demon-animal", term: "Demon animal", category: "Concept",
+  E({ id: "demon-animal", term: "Last current", category: "Concept",
     short: "The double-demon loop: the energy pattern a type is worst at sustaining.",
     definition:
-      "Formed from the attitude-flips of both saviors. Because the saviors always run opposite attitudes, the demon animal is always Play or Blast — never a middle animal — which is why every xxxP type is Blast-demon and every xxxJ type is Play-demon.",
+      "Formed from the attitude-flips of both anchors. Because the anchors always run opposite attitudes, the last current is always Charge or Broadcast — never a middle one — which is why every xxxP type ends on Broadcast and every xxxJ type ends on Charge.",
     inSystem: "Rendered as the open circuit in the wiring schematic.",
     seeAlso: ["savior", "animal", "dual-lighting"] }),
   E({ id: "four-sides", term: "Four Sides of the Mind", category: "Concept",
@@ -396,12 +396,12 @@ const CONCEPTS: Draft[] = [
     definition:
       "Alpha, Beta, Gamma and Delta. Types within a quadra find each other's priorities self-evident because they are literally running the same four elements. Quadra membership is the single most efficient predictor of whether a group will argue about goals or only about methods.",
     seeAlso: ["alpha", "beta", "gamma", "delta"] }),
-  E({ id: "animal", term: "Animal", category: "Concept",
+  E({ id: "animal", term: "Current", category: "Concept",
     short: "An energy pattern formed by pairing an observer attitude with a decider attitude.",
     definition:
-      "Four combinations: Play, Blast, Consume and Sleep. They describe where energy goes rather than what a person is good at, and are held as an overlay on the stack rather than fused with it.",
+      "Four combinations: Charge, Broadcast, Absorb and Settle. They describe where energy goes rather than what a person is good at, and are held as an overlay on the stack rather than fused with it.",
     seeAlso: ["play", "blast", "consume", "sleep"] }),
-  E({ id: "coin", term: "Coin", category: "Concept",
+  E({ id: "coin", term: "Switch", category: "Concept",
     short: "A binary structural distinction. Four determine the type; four confirm it.",
     definition:
       "Coins 1, 3, 4 and 5 give sixteen unique signatures and fix the type exactly. Coins 2, 6, 7 and 8 are mathematically derivable from them — coin 2 is the exact inverse of coin 3, and coin 8 is a function of 6 and 7 — so they cannot add evidence. They are retained because disagreement between a person's self-report and the structure is itself informative.",
@@ -417,8 +417,8 @@ const CONCEPTS: Draft[] = [
       "Every type's Inferior function names something it quietly organises its life to avoid, and the four Inferior positions across sixteen types collapse into four gates. The gate is not a flaw to be corrected; it is the specific door that only this type has to walk through, and the capability on the other side is unavailable by any other route. Naming it structurally rather than personally is what makes it actionable.",
     inSystem: "Derived from the Inferior function and the type's E/I and J/P letters.",
     seeAlso: ["inferior", "gate-of-chaos", "gate-of-obligation", "gate-of-the-tribe", "gate-of-the-self"] }),
-  E({ id: "fine-coins", term: "Fine-coins", category: "Concept",
-    short: "The deferred fine layer: middle-animal ordering, modality, masculine/feminine coins.",
+  E({ id: "fine-coins", term: "Fine switches", category: "Concept",
+    short: "The deferred fine layer: middle-current ordering, modality, masculine/feminine switches.",
     definition:
       "The most contested and least stable part of the overlay. This build deliberately holds it out: the base type is exactly four bits, and the fine layer adds further independent bits on top. Modelled as a bit vector with a fixed four-bit head, the extension can attach later without touching the 256-cell core.",
     seeAlso: ["coin", "animal", "consume", "sleep"] }),
@@ -787,6 +787,9 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
       if (aId === bId) return GATE_PAIRS.same;
       return GATE_PAIRS[`${aId}|${bId}`] ?? GATE_PAIRS[`${bId}|${aId}`] ?? null;
     case "Quadra": {
+      /* QUADRA_ELEMENTS is still keyed by term because the quadra names have
+         not moved yet. When they do (pass 3), this needs the same id-keying
+         the Animal branch above just received, or it fails the same way. */
       const ea = QUADRA_ELEMENTS[a.term], eb = QUADRA_ELEMENTS[b.term];
       if (aId === bId) return QUADRA_TEXT.same(a.term, ea);
       const shared = ea.filter((f) => eb.includes(f));
@@ -795,11 +798,18 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
         : QUADRA_TEXT.opposite(a.term, b.term);
     }
     case "Animal": {
-      /** Attitude of a function as a word, for interpolating into pairing prose. */
-      const att = (t: string): [boolean, boolean] =>
-        ({ Play: [true, false], Blast: [false, true], Consume: [true, true], Sleep: [false, false] } as const)[
-          t as "Play"] as [boolean, boolean];
-      const [ao, ad] = att(a.term), [bo, bd] = att(b.term);
+      /**
+       * Which way each half of a current faces: [observer outward, decider outward].
+       *
+       * Keyed by ID, not by term. Keying it by the display name meant renaming
+       * the four currents made this lookup return undefined and the
+       * destructuring below throw — the pair page lost every animal row and
+       * eleven tests went red at once. Ids do not move; labels do.
+       */
+      const att = (id: string): [boolean, boolean] =>
+        ({ play: [true, false], blast: [false, true], consume: [true, true], sleep: [false, false] } as const)[
+          id as "play"] as [boolean, boolean];
+      const [ao, ad] = att(aId), [bo, bd] = att(bId);
       if (aId === bId) return ANIMAL_TEXT.same(a.term, b.term);
       if (ao === bo) return ANIMAL_TEXT.observer(a.term, b.term);
       if (ad === bd) return ANIMAL_TEXT.decider(a.term, b.term);
@@ -852,7 +862,8 @@ export function compareAspects(a: MbtiType, b: MbtiType): AspectRow[] {
   push("Interaction style", canonicalId(INTERACTION_STYLE[a].split(" (")[0]), canonicalId(INTERACTION_STYLE[b].split(" (")[0]),
        INTERACTION_STYLE[a], INTERACTION_STYLE[b]);
   push("Romance style", canonicalId(ROMANCE[a]), canonicalId(ROMANCE[b]), ROMANCE[a], ROMANCE[b]);
-  push("Primary animal", canonicalId(ops(a).primary), canonicalId(ops(b).primary), ops(a).primary, ops(b).primary);
+  push("Primary current", canonicalId(ops(a).primary), canonicalId(ops(b).primary),
+       ANIMAL_LABEL[ops(a).primary], ANIMAL_LABEL[ops(b).primary]);
   push("Growth gate", canonicalId(gate(a).gate), canonicalId(gate(b).gate), gate(a).gate, gate(b).gate);
   push("Hero function", canonicalId(stack(a)[0]), canonicalId(stack(b)[0]), stack(a)[0], stack(b)[0]);
   push("Inferior function", canonicalId(stack(a)[3]), canonicalId(stack(b)[3]), stack(a)[3], stack(b)[3]);

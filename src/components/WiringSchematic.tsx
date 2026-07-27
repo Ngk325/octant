@@ -135,9 +135,9 @@ export default function WiringSchematic({ type, showCorrespondence }: {
 
             {/* markers, right edge */}
             {isCave && <Marker x={W} y={y - 8} text="the cave" tone="var(--warn)" />}
-            {isOpsSavior && <Marker x={W} y={y - 8} text="savior" tone="var(--accent-ink)" />}
-            {isOpsDemon && !isCave && <Marker x={W} y={y - 8} text="demon" tone="var(--warn)" />}
-            {isOpsDemon && isCave && <Marker x={W} y={y + 10} text="demon" tone="var(--warn)" />}
+            {isOpsSavior && <Marker x={W} y={y - 8} text="anchor" tone="var(--accent-ink)" />}
+            {isOpsDemon && !isCave && <Marker x={W} y={y - 8} text="flinch" tone="var(--warn)" />}
+            {isOpsDemon && isCave && <Marker x={W} y={y + 10} text="flinch" tone="var(--warn)" />}
           </g>
         );
       })}
