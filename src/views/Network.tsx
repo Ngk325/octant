@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { TYPES, quadra, type MbtiType } from "../engine/core";
+import { ARCHETYPE } from "../engine/data";
 import { analyse, type Member } from "../engine/network";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
@@ -71,7 +72,8 @@ export default function Network() {
                 aria-label={`Type of ${m.name}`}
                 onChange={(e) => update(m.id, { type: e.target.value as MbtiType })}
               >
-                {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                {/* Named the same way as every other type picker. */}
+                {TYPES.map((t) => <option key={t} value={t}>{t} · {ARCHETYPE[t][0]}</option>)}
               </select>
               <button
                 className="icon-btn"
