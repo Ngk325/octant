@@ -1,6 +1,7 @@
-// GENERATED FILE - do not edit by hand.
-// Emitted from the verified Python reference engine and checked by tests/engine.test.ts.
-// After this handover TypeScript is canonical; the Python reference is retired.
+// Originally emitted from the verified Python reference engine and checked by
+// tests/engine.test.ts. TypeScript is canonical now; the Python reference is
+// retired, so the computed tables below are frozen and the authored label
+// tables (ARCHETYPE and friends) are edited here directly.
 
 export const TYPES = [
   "ENTP",
@@ -91,24 +92,6 @@ export const DOM_AUX: Record<MbtiType, [Fn, Fn]> = {
     "Si",
     "Fe"
   ]
-};
-export const SOCIONICS: Record<MbtiType, string> = {
-  "ENTP": "ILE",
-  "INTP": "LII",
-  "ENTJ": "LIE",
-  "INTJ": "ILI",
-  "ENFP": "IEE",
-  "INFP": "EII",
-  "ENFJ": "EIE",
-  "INFJ": "IEI",
-  "ESTP": "SLE",
-  "ISTP": "LSI",
-  "ESTJ": "LSE",
-  "ISTJ": "SLI",
-  "ESFP": "SEE",
-  "ISFP": "ESI",
-  "ESFJ": "ESE",
-  "ISFJ": "SEI"
 };
 export const REL_NAME: Record<RelCode, string> = {
   "DU": "Duality",
@@ -272,23 +255,31 @@ export const REL_FRAME: Record<RelCode, string> = {
   "BE": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection."
 };
 
+/**
+ * One role name per type, in this app's own voice.
+ *
+ * Each is a plain vocation noun chosen for the type's Hero function and what
+ * that function is for — the Prospector opens seams (Ne), the Steward keeps
+ * what worked (Si), the Forecaster commits to one long read (Ni). They are
+ * labels, not inputs: nothing in the engine reads this table.
+ */
 export const ARCHETYPE: Record<MbtiType, string> = {
-  "ENTP": "Debater / Inventor / Visionary / Rogue",
-  "INTP": "Logician / Architect / Engineer / Ardent",
-  "ENTJ": "Commander / Fieldmarshal / Chief / Marshal",
-  "INTJ": "Architect / Mastermind / Mastermind / Ranger",
-  "ENFP": "Campaigner / Champion / Advocate / Bard",
-  "INFP": "Mediator / Healer / Dreamer / Mystic",
-  "ENFJ": "Protagonist / Teacher / Mentor / Cleric",
-  "INFJ": "Advocate / Counselor / Sage / Paladin",
-  "ESTP": "Entrepreneur / Promoter / Dynamo / Gladiator",
-  "ISTP": "Virtuoso / Crafter / Craftsman / Artificer",
-  "ESTJ": "Executive / Supervisor / Overseer / Judicator",
-  "ISTJ": "Logistician / Inspector / Examiner / Archivist",
-  "ESFP": "Entertainer / Performer / Entertainer / Duelist",
-  "ISFP": "Adventurer / Composer / Artist / Druid",
-  "ESFJ": "Consul / Provider / Provider / Cavalier",
-  "ISFJ": "Defender / Protector / Defender / Knight"
+  "ENTP": "Prospector",
+  "INTP": "Theorist",
+  "ENTJ": "Strategist",
+  "INTJ": "Forecaster",
+  "ENFP": "Kindler",
+  "INFP": "Believer",
+  "ENFJ": "Shepherd",
+  "INFJ": "Diviner",
+  "ESTP": "Improviser",
+  "ISTP": "Tinkerer",
+  "ESTJ": "Administrator",
+  "ISTJ": "Steward",
+  "ESFP": "Reveller",
+  "ISFP": "Maker",
+  "ESFJ": "Host",
+  "ISFJ": "Custodian"
 };
 export const GROUP: Record<MbtiType, string> = {
   "ENTP": "Intellectuals (NT)",

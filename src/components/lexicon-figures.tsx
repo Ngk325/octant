@@ -71,7 +71,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   /* The structural entries get the involution table — the three moves that
      generate everything these definitions describe. */
   shadow: () => <Plain><InvolutionTable /></Plain>,
-  "model-a": () => <Plain><InvolutionTable /></Plain>,
+  "stack-map": () => <Plain><InvolutionTable /></Plain>,
 
   relation: () => <Worked><RelationLanding a="ENTP" b="INFJ" /></Worked>,
 

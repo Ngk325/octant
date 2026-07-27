@@ -59,10 +59,9 @@ export const STAGES: Stage[] = [
       <>
         <Explain big plain={CONCEPT_PLAIN.function}>
           <p>
-            Jung&rsquo;s eight cognitive functions: four perceiving (Ne, Ni, Se, Si) and four
-            judging (Te, Ti, Fe, Fi), each in an extraverted or introverted attitude. This app
-            treats them as the eight information elements, and the whole model is three
-            involutions over them.
+            Eight cognitive functions: four perceiving (Ne, Ni, Se, Si) and four judging
+            (Te, Ti, Fe, Fi), each in an extraverted or introverted attitude. This app treats them
+            as the eight information elements, and the whole model is three involutions over them.
           </p>
         </Explain>
 
@@ -250,8 +249,8 @@ export const STAGES: Stage[] = [
         <>
           <Explain big plain={CONCEPT_PLAIN.ego}>
             <p>
-              The ego block, in Beebe&rsquo;s terms. Slots 1–4 carry the archetypes Hero, Parent,
-              Child and Inferior; the Inferior is simultaneously the weakest conscious function
+              The ego block. Slots 1–4 carry the archetypes Hero, Parent, Child and
+              Inferior; the Inferior is simultaneously the weakest conscious function
               and the one carrying the most developmental charge.
             </p>
           </Explain>
@@ -335,7 +334,7 @@ export const STAGES: Stage[] = [
             plain="Split those eight slots into four groups of four, and each group is itself one of the sixteen types. So you are not one type. You are four, and you move between them."
           >
             <p>
-              CS Joseph&rsquo;s four sides. The subconscious is the ego stack reversed; the
+              The four sides. The subconscious is the ego stack reversed; the
               unconscious is the shadow block read forwards; the superego is the shadow reversed.
               Because the three involutions that generate the relation table also generate the
               sides, each side stands in a fixed relation to the ego — your subconscious is
@@ -438,22 +437,22 @@ export const STAGES: Stage[] = [
   },
 
   {
-    slug: "ops",
-    title: "The OPS overlay",
-    blurb: "A second instrument reading the same four functions: two you trust, two you do not.",
+    slug: "exchange",
+    title: "The exchange overlay",
+    blurb: "A second reading of the same four functions: two you trust, two you do not.",
     body: (t) => {
       const o = ops(t);
       return (
         <>
           <Explain
             big
-            plain="Objective Personality looks at the same top four functions and asks a different question: which two do you trust so completely you never think about them, and which two make you nervous?"
+            plain="This overlay looks at the same top four functions and asks a different question: which two do you trust so completely you never think about them, and which two make you nervous?"
           >
             <p>
-              OPS splits the ego block into two <Term id="savior">saviors</Term> and two{" "}
-              <Term id="demon-fn">demons</Term>. The demons are the Model A opposites of the
-              saviors, which places them at the tertiary and inferior — OPS does not reach into
-              the shadow block at all.
+              It splits the ego block into two <Term id="savior">saviors</Term> and two{" "}
+              <Term id="demon-fn">demons</Term>. The demons are the axis opposites of the
+              saviors, which places them at the tertiary and inferior — the overlay does not reach
+              into the shadow block at all.
             </p>
           </Explain>
 
@@ -500,8 +499,8 @@ export const STAGES: Stage[] = [
             caption={
               <>
                 The first and last are fixed by your type. The middle two are genuinely open —
-                OPS treats that ordering as its own coin, so this app leaves it blank rather than
-                guessing. Set it on the type page if you know yours.
+                that ordering is its own coin, so this app leaves it blank rather than guessing.
+                Set it on the type page if you know yours.
               </>
             }
           >
@@ -509,10 +508,10 @@ export const STAGES: Stage[] = [
           </Figure>
 
           <p className="note">
-            CS Joseph and OPS are <b>not</b> reconciled here, on purpose. They count the parts of
+            The two readings are <b>not</b> reconciled here, on purpose. They count the parts of
             a mind differently and give different growth advice for the same person. Where they
-            disagree, this app shows both rather than averaging them into something neither would
-            recognise.
+            disagree, this app shows both rather than averaging them into a single number that
+            hides the disagreement.
           </p>
         </>
       );
@@ -786,7 +785,7 @@ export const STAGES: Stage[] = [
           >
             <p>
               Two coins, and neither is readable off the type. They are self-reported in the same
-              posture as the OPS subtype coins: nothing here changes a relation, a score or a
+              posture as the subtype coins: nothing here changes a relation, a score or a
               playbook.
             </p>
           </Explain>

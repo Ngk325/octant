@@ -7,14 +7,14 @@ import { usePalette } from "./Theme";
 /**
  * The eight slots as a single readable column.
  *
- * Two regions are marked, and with the OPS demons corrected to the Model A
- * opposites they now OVERLAP rather than sitting in different blocks:
- *   · CSJ  — the Inferior is the cave (slot 4)
- *   · OPS  — the demon pair is the tertiary and inferior (slots 3 and 4)
- * So the two instruments agree that slot 4 is the sore spot and disagree
- * about slot 3: CS Joseph calls it the Child and treats it as a delight,
- * OPS calls it a demon and treats it as neglected. That is the real
- * divergence, and it is more interesting than the one the first build drew.
+ * Two regions are marked, and with the demons taken as the axis opposites of
+ * the saviors they now OVERLAP rather than sitting in different blocks:
+ *   · cave    — the Inferior alone (slot 4)
+ *   · demons  — the tertiary and inferior (slots 3 and 4)
+ * So the two readings agree that slot 4 is the sore spot and disagree about
+ * slot 3: one calls it the Child and treats it as a delight, the other calls
+ * it a demon and treats it as neglected. That is the real divergence, and it
+ * is more interesting than the one the first build drew.
  *
  * No text below 14px. Nothing depends on colour alone.
  */
@@ -134,10 +134,10 @@ export default function WiringSchematic({ type, showCorrespondence }: {
             </text>
 
             {/* markers, right edge */}
-            {isCave && <Marker x={W} y={y - 8} text="CSJ: the cave" tone="var(--warn)" />}
-            {isOpsSavior && <Marker x={W} y={y - 8} text="OPS savior" tone="var(--accent-ink)" />}
-            {isOpsDemon && !isCave && <Marker x={W} y={y - 8} text="OPS demon" tone="var(--warn)" />}
-            {isOpsDemon && isCave && <Marker x={W} y={y + 10} text="OPS demon" tone="var(--warn)" />}
+            {isCave && <Marker x={W} y={y - 8} text="the cave" tone="var(--warn)" />}
+            {isOpsSavior && <Marker x={W} y={y - 8} text="savior" tone="var(--accent-ink)" />}
+            {isOpsDemon && !isCave && <Marker x={W} y={y - 8} text="demon" tone="var(--warn)" />}
+            {isOpsDemon && isCave && <Marker x={W} y={y + 10} text="demon" tone="var(--warn)" />}
           </g>
         );
       })}

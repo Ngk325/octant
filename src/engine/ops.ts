@@ -5,23 +5,23 @@ import {
 } from "./data";
 
 /* ------------------------------------------------------------------ *
- * THE OPS OVERLAY
+ * THE EXCHANGE OVERLAY
  *
- * Objective Personality reads the same four ego functions as a pair of
- * SAVIORS (trusted, effortless, shrugged off) and a pair of DEMONS
- * (distrusted, effortful, defended). Two corrections against the
- * retired Python reference engine are baked in here; both are asserted
- * from first principles in tests/ops.test.ts.
+ * A second reading of the same four ego functions: a pair of SAVIORS
+ * (trusted, effortless, shrugged off) and a pair of DEMONS (distrusted,
+ * effortful, defended). Two corrections against the retired Python
+ * reference engine are baked in here; both are asserted from first
+ * principles in tests/ops.test.ts.
  *
- *   1. The demon functions are the MODEL A OPPOSITES of the saviors --
+ *   1. The demon functions are the AXIS OPPOSITES of the saviors --
  *      omega, not alpha. Savior Ne/Ti demons to Si/Fe, not Ni/Te.
- *      OPS's four functions are exactly MBTI's top four: saviors are
- *      dominant + auxiliary, demons are tertiary + inferior. The old
- *      code reached into the shadow block, which OPS does not model.
- *      Source: OPS "Savior vs Demon Functions" -- "you cannot have two
- *      observing saviors"; savior Ne/Ti -> demon Si/Fe.
+ *      The overlay's four functions are exactly the ego block: saviors
+ *      are dominant + auxiliary, demons are tertiary + inferior. The old
+ *      code reached into the shadow block, which the overlay does not
+ *      model -- you cannot have two observing saviors, so savior Ne/Ti
+ *      gives demon Si/Fe.
  *
- *   2. Play and Consume were transposed. The published definitions are
+ *   2. Play and Consume were transposed. The correct definitions are
  *      Play = Oe+De and Consume = Oe+Di, so the two ENERGY animals are
  *      the attitude-pure ones and the two INFORMATION animals are the
  *      mixed ones. The old table had it the other way round, which
@@ -63,7 +63,7 @@ export const ANIMAL_DOES: Record<Animal, string> = {
   Consume: "Pulls information in. Learning, researching, taking it all in before moving.",
 };
 
-/** OPS's single-letter abbreviations, used when printing a full code. */
+/** Single-letter abbreviations, used when printing a full code. */
 export const ANIMAL_LETTER: Record<Animal, string> = {
   Play: "P", Blast: "B", Consume: "C", Sleep: "S",
 };
@@ -81,42 +81,42 @@ export const DEMON_STATE =
 
 /**
  * The three tells for each side, which are far easier to spot in yourself than
- * the general descriptions above. Structure from the OPS coin sheet (IMG_7589);
+ * the general descriptions above. Structure from the coin sheet (IMG_7589);
  * see docs/transcripts/IMG_7589-ops-coins.md.
  */
 export interface Marker { name: string; says: string; note: string }
 
 /**
- * The three tells that a function is a savior: responsibility, confidence, obviousness.
- * Quoted from OPS and attributed, because the phrasing is the data.
+ * The three tells that a function is a savior: ownership, confidence, obviousness.
+ * Each is a first-person line written to be recognisable in your own speech.
  */
 export const SAVIOR_MARKERS: Marker[] = [
-  { name: "Responsible", says: "I'm responsible, so this is where I spend my time.",
+  { name: "Ownership", says: "This one is mine, so this is where the hours go.",
     note: "You take ownership here without being asked, and without noticing you did." },
-  { name: "Confidence", says: "I can work through the struggles here.",
+  { name: "Confidence", says: "Struggling here is just part of it — I'll get through.",
     note: "Difficulty in this area reads as a problem to solve, not as evidence about you." },
-  { name: "Obvious", says: "Let me just do that for you — thank me later.",
+  { name: "Obvious", says: "Here, let me just do that — it is nothing.",
     note: "It is so easy you assume anyone could, which is exactly why you undervalue it." },
 ];
 
 /** The three tells that a function is a demon, and the mirror image of SAVIOR_MARKERS. */
 export const DEMON_MARKERS: Marker[] = [
-  { name: "Tidalwaves", says: "I'm not responsible for this — someone else is.",
+  { name: "Weather", says: "This is not mine to fix — someone else owns it.",
     note: "The whole area feels like weather happening to you rather than something you steer." },
-  { name: "Fear / Pain", says: "Why does this keep happening to me?",
+  { name: "Recurrence", says: "Why does this keep landing on me?",
     note: "The same failure recurs and reads as fate rather than as a skill you have not built." },
-  { name: "Peacocking", says: "I secretly want to be good at this.",
+  { name: "Display", says: "I would love to be the person who is good at this.",
     note: "You show off here rather than work here — the wanting is real, the practice is not." },
 ];
 
 /**
- * The self-reported OPS coins. None of these is derivable from a four-letter
- * type — they are the layer where OPS's 512 types leave this app's sixteen
+ * The self-reported subtype coins. None of these is derivable from a four-letter
+ * type — they are the layer where the overlay's 512 readings leave this app's sixteen
  * behind, so they are asked for rather than inferred.
  */
 export interface Subtype {
   /**
-   * OPS's other sixteen. A jumper's saviors are dominant + TERTIARY rather than
+   * The overlay's other sixteen. A jumper's saviors are dominant + TERTIARY rather than
    * dominant + auxiliary, so both saviors share an attitude. Not derivable from
    * the 4-bit head — self-reported.
    */
@@ -142,7 +142,7 @@ export interface AnimalSlot {
   kind: AnimalKind;
   /** 1-4 once the free coins are set; null while the ordering is still open. */
   position: number | null;
-  /** What this position means in OPS. `open` = the free coin that decides has not been set. */
+  /** What this position means in the overlay. `open` = the free coin that decides has not been set. */
   role: "savior" | "activated" | "last" | "open";
   /** Whether this slot's position falls out of the structure or needs a coin. */
   certainty: "derived" | "free";
@@ -150,7 +150,7 @@ export interface AnimalSlot {
 }
 
 /**
- * Everything OPS reads off one type: both saviors, both demons, the ordered animal
+ * Everything the overlay reads off one type: both saviors, both demons, the ordered animal
  * stack, and which kind of information dominates.
  */
 export interface OpsSignature {
@@ -170,7 +170,7 @@ export interface OpsSignature {
   dominance: AnimalKind;
   /** Fully-ordered stack string, or a partial one with `?` where a coin is unset. */
   stackCode: string;
-  /** The full OPS code, e.g. `MM-Ne/Ti-PC/S(B)`. */
+  /** The full code, e.g. `MM-Ne/Ti-PC/S(B)`. */
   code: string;
   jumper: boolean;
   /** Which free coins are still unset. */
@@ -183,7 +183,7 @@ export interface OpsSignature {
 }
 
 /**
- * The full OPS reading for a type. Optional subtype coins refine the middle of the
+ * The full overlay reading for a type. Optional subtype coins refine the middle of the
  * animal stack; without them the two middle positions are reported as open.
  */
 export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
@@ -196,7 +196,7 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
   const saviorObs = isObserver(d) ? d : secondFn;
   const saviorDec = isObserver(d) ? secondFn : d;
 
-  // Demons are the Model A opposites — same axis, both element and attitude flipped.
+  // Demons are the axis opposites — same axis, both element and attitude flipped.
   const demonObs = omega[saviorObs];
   const demonDec = omega[saviorDec];
 
@@ -215,7 +215,7 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
 
   // Position 4 is always the double-demon animal; the double-savior animal is
   // always in the top pair. Which mixed animal joins it, and which of the two
-  // leads, are the two free coins that take OPS from 32 types to 128.
+  // leads, are the two free coins that take the overlay from 32 readings to 128.
   const secondSavior =
     sub.secondSavior && middles.includes(sub.secondSavior) ? sub.secondSavior : undefined;
   const third = secondSavior ? middles.find((m) => m !== secondSavior)! : undefined;
@@ -236,7 +236,7 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
     return i < 0 ? null : i + 1;
   };
 
-  /** What a position means in OPS: savior pair, activated hobby, or last and missing. */
+  /** What a position means in the overlay: savior pair, activated hobby, or last and missing. */
   const roleOf = (a: Animal): AnimalSlot["role"] => {
     if (a === doubleDemon) return "last";
     if (a === doubleSavior) return "savior";
@@ -273,7 +273,7 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
   // info-dominant. That is exactly the line this app's 16-type core sits on.
   const dominance: AnimalKind = ANIMAL_KIND[doubleDemon] === "Information" ? "Energy" : "Information";
 
-  /** Single-letter animal abbreviation, for printing a full OPS code. */
+  /** Single-letter animal abbreviation, for printing a full code. */
   const L = (a: Animal | undefined) => (a ? ANIMAL_LETTER[a] : "?");
   const stackCode = secondSavior
     ? `${L(ordered[0])}${L(ordered[1])}/${L(ordered[2])}(${L(ordered[3])})`
@@ -302,7 +302,7 @@ export function growthAnimal(sig: OpsSignature): AnimalSlot {
 }
 
 /* ------------------------------ coins ------------------------------ */
-/* The eight coins are read off the OPS saviors, so they live here. */
+/* The eight coins are read off the saviors, so they live here. */
 
 const DIRECTING = new Set<MbtiType>([
   "ESTJ", "ENTJ", "ISTJ", "INTJ", "ESTP", "ISTP", "ENFJ", "INFJ",

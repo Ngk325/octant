@@ -101,7 +101,7 @@ export default function ChatRail() {
           <>
             <p className="small" style={{ margin: 0 }}>
               Ask anything about what is on screen, or about how two people fit. Answers come from
-              this app&rsquo;s own model — the stacks, the four sides, the OPS overlay and both
+              this app&rsquo;s own model — the stacks, the four sides, the exchange overlay and both
               directions of ease — not from generic type descriptions.
             </p>
             <p className="small muted" style={{ margin: "var(--s3) 0 0" }}>

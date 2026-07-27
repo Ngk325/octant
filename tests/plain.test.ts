@@ -46,7 +46,7 @@ describe("plain language coverage", () => {
   it("keeps the plain layer free of the jargon it is meant to replace", () => {
     const banned = /\b(cognitive function|involution|Model A|Socionics|Beebe|auxiliary|dominant function)\b/i;
     const offenders = Object.entries(PLAIN_BY_ID)
-      .filter(([id, text]) => id !== "model-a" && banned.test(text))
+      .filter(([id, text]) => id !== "stack-map" && banned.test(text))
       .map(([id]) => id);
     expect(offenders).toEqual([]);
   });
@@ -65,7 +65,7 @@ describe("assistant grounding", () => {
     expect(facts).toContain("Ne");
     expect(facts).toContain("Subconscious=ISFJ");   // ENTP's Dual
     expect(facts).toContain("gateway Si");           // the Inferior
-    expect(facts).toContain("OPS demons: Si");       // corrected demons
+    expect(facts).toContain("Demons: Si");       // corrected demons
     expect(facts).toContain("Energy-dominant");
   });
 
@@ -89,7 +89,7 @@ describe("assistant grounding", () => {
     const s = buildSystemInstruction({ kind: "type", type: "INFJ" });
     expect(s).toContain("EASE IS DIRECTIONAL");
     expect(s).toContain("FOUR SIDES OF THE MIND");
-    expect(s).toContain("CSJ AND OPS ARE NOT RECONCILED");
+    expect(s).toContain("THE TWO GROWTH READINGS ARE NOT RECONCILED");
     expect(s).toContain("INFJ");
   });
 

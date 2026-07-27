@@ -59,16 +59,36 @@ describe("Berens' 16 Type Patterns (external validation)", () => {
   });
 });
 
-describe("CS Joseph's Type Grid archetype names (external validation)", () => {
-  // Transcribed from IMG_7482. Already present as ARCHETYPE[t]'s 4th entry.
-  const CSJ: Record<string, string> = {
-    ESTJ: "Judicator", ESTP: "Gladiator", ENTJ: "Marshal", ENFJ: "Cleric",
-    ESFJ: "Cavalier", ESFP: "Duelist", ENTP: "Rogue", ENFP: "Bard",
-    ISTJ: "Archivist", ISTP: "Artificer", INTJ: "Ranger", INFJ: "Paladin",
-    ISFJ: "Knight", ISFP: "Druid", INTP: "Ardent", INFP: "Mystic",
-  };
-  it.each(TYPES)("%s carries its CSJ name", (t) => {
-    expect(ARCHETYPE[t].split("/").pop()!.trim()).toBe(CSJ[t]);
+describe("role names are this app's own", () => {
+  /* ARCHETYPE used to concatenate four other projects' published role names —
+     "Debater / Inventor / Visionary / Rogue" and so on. It now carries one
+     name per type, authored here. This block guards the replacement: complete,
+     unique, single-word, and none of them a name we previously carried. */
+  const RETIRED = new Set([
+    "Debater", "Inventor", "Visionary", "Rogue", "Logician", "Architect",
+    "Engineer", "Ardent", "Commander", "Fieldmarshal", "Chief", "Marshal",
+    "Mastermind", "Ranger", "Campaigner", "Champion", "Advocate", "Bard",
+    "Mediator", "Healer", "Dreamer", "Mystic", "Protagonist", "Teacher",
+    "Mentor", "Cleric", "Counselor", "Sage", "Paladin", "Entrepreneur",
+    "Promoter", "Dynamo", "Gladiator", "Virtuoso", "Crafter", "Craftsman",
+    "Artificer", "Executive", "Supervisor", "Overseer", "Judicator",
+    "Logistician", "Inspector", "Examiner", "Archivist", "Entertainer",
+    "Performer", "Duelist", "Adventurer", "Composer", "Artist", "Druid",
+    "Consul", "Provider", "Cavalier", "Defender", "Protector", "Knight",
+  ]);
+
+  it("covers all sixteen types", () => {
+    expect(Object.keys(ARCHETYPE).sort()).toEqual([...TYPES].sort());
+  });
+
+  it("gives every type a distinct name", () => {
+    expect(new Set(TYPES.map((t) => ARCHETYPE[t])).size).toBe(16);
+  });
+
+  it.each(TYPES)("%s has one authored word, not a retired one", (t) => {
+    const name = ARCHETYPE[t];
+    expect(name).toMatch(/^[A-Z][a-z]+$/);
+    expect(RETIRED.has(name)).toBe(false);
   });
 });
 
@@ -118,8 +138,8 @@ describe("per-function depth", () => {
   });
 });
 
-describe("OPS savior/demon markers", () => {
-  it("has three of each, with a quote and a note", () => {
+describe("savior/demon markers", () => {
+  it("has three of each, with a line and a note", () => {
     for (const set of [SAVIOR_MARKERS, DEMON_MARKERS]) {
       expect(set).toHaveLength(3);
       for (const m of set) {
@@ -129,8 +149,8 @@ describe("OPS savior/demon markers", () => {
       }
     }
   });
-  it("names the three demon tells from the source sheet", () => {
-    expect(DEMON_MARKERS.map((m) => m.name)).toEqual(["Tidalwaves", "Fear / Pain", "Peacocking"]);
+  it("names the three demon tells", () => {
+    expect(DEMON_MARKERS.map((m) => m.name)).toEqual(["Weather", "Recurrence", "Display"]);
   });
 });
 

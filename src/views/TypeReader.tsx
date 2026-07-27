@@ -15,7 +15,7 @@ import {
   type Development, type Focus,
 } from "../engine/octagram";
 import {
-  TYPES, ARCHETYPE, GROUP, SOCIONICS, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE,
+  TYPES, ARCHETYPE, GROUP, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE,
   BEHAVIOURAL, COIN_LABELS, DETERMINING, FN_LONG, FN_SHADOW, SLOT_NAMES,
   type MbtiType,
 } from "../engine/data";
@@ -47,15 +47,15 @@ import FnIcon from "../components/glyphs/FnIcon";
 const SECTIONS = [
   ["slots", "The eight slots"],
   ["sides", "Four sides"],
-  ["ops", "The OPS overlay"],
-  ["ops-coins", "Your coins"],
+  ["exchange", "The exchange overlay"],
+  ["exchange-coins", "Your coins"],
   ["growth", "Growth"],
   ["octagram", "The Octagram"],
   ["theme", "Your theme"],
   ["fit", "Who you fit"],
 ] as const;
 
-/** One type, read in full: slots, four sides, OPS, growth, the Octagram, and fit. */
+/** One type, read in full: slots, four sides, the exchange overlay, growth, the Octagram, and fit. */
 export default function TypeReader() {
   const { type } = useParams();
   const nav = useNavigate();
@@ -68,9 +68,9 @@ export default function TypeReader() {
      attributes your answer to a type you never answered for. React keeps this
      component mounted across /type/X → /type/Y, so the reset is explicit. */
   const [sub, setSub] = useState<Subtype>({});
-  /* The Octagram coins are kept SEPARATE from the OPS ones rather than bolted
-     onto Subtype. The two systems are not reconciled anywhere else in this app
-     and merging their self-report into one object would quietly imply they are. */
+  /* The Octagram coins are kept SEPARATE from the exchange ones rather than
+     bolted onto Subtype. The two layers are not reconciled anywhere else in this
+     app and merging their self-report into one object would quietly imply they are. */
   const [oct, setOct] = useState<{ development?: Development; focus?: Focus }>({});
   const [subFor, setSubFor] = useState<MbtiType>(t);
   if (subFor !== t) {
@@ -99,7 +99,6 @@ export default function TypeReader() {
           <i className="dot" style={{ background: p.quadra(quadra(t)) }} />
           <Term>{quadra(t)}</Term> quadra
         </span>
-        <span className="chip mono">{SOCIONICS[t]}</span>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "var(--s5)", flexWrap: "wrap" }}>
@@ -122,7 +121,7 @@ export default function TypeReader() {
         plain={`Eight habits of mind, in ${t}'s order of strength. The top four feel like "me". The bottom four run anyway, and feel like things that happen to you.`}
       >
         <p>
-          The full Beebe stack, generated from the (dominant, auxiliary) pair by the three
+          The full eight-slot stack, generated from the (dominant, auxiliary) pair by the three
           involutions. Slots 1–4 are the ego block; 5–8 are the shadow.
         </p>
       </Explain>
@@ -139,10 +138,11 @@ export default function TypeReader() {
         label="Strongest at the top."
         caption={
           <>
-            Two regions are marked. CS Joseph puts the growth point at the <b>Inferior</b> alone.
-            OPS marks a wider pair — the tertiary <i>and</i> the inferior — as its demons. They
-            agree on slot 4 and disagree about slot 3, which CS Joseph treats as a delight and OPS
-            treats as neglected. Neither reading is corrected into the other. The dashed arcs
+            Two regions are marked, because this model carries two readings of the same stack.
+            One puts the growth point at the <b>Inferior</b> alone. The other marks a wider pair —
+            the tertiary <i>and</i> the inferior — as its demons. They agree on slot 4 and disagree
+            about slot 3, which the first treats as a delight and the second treats as neglected.
+            Neither reading is corrected into the other. The dashed arcs
             pair each ego slot with its shadow mirror: same capacity, facing the other way.
           </>
         }
@@ -197,12 +197,12 @@ export default function TypeReader() {
         plain="You are not one type — you are four. Split those eight slots into groups of four and each group is itself one of the sixteen. You move between them all day."
       >
         <p>
-          CS Joseph&rsquo;s four sides, derived from the same three involutions that generate the
+          The four sides are derived from the same three involutions that generate the
           relation table. Which is why each side stands in a fixed relation to the ego: the
           subconscious is your <Term id="rel-du">Dual</Term>, the unconscious your{" "}
           <Term id="rel-ex">Extinguishment</Term> partner, and the superego your{" "}
-          <Term id="rel-se">Super-Ego</Term> partner. The Socionics relation and the Jungian
-          structure land on the same type because they are the same operator.
+          <Term id="rel-se">Super-Ego</Term> partner. The relation and the structural side land on
+          the same type because they are the same operator.
         </p>
       </Explain>
 
@@ -273,16 +273,16 @@ export default function TypeReader() {
       </p>
 
       {/* ------------------------------------------------ ops */}
-      <h2 id="ops" className="sec">The OPS overlay</h2>
+      <h2 id="exchange" className="sec">The exchange overlay</h2>
 
       <Explain
         big
-        plain="A second instrument reads the same top four functions and asks a different question: which two do you trust completely, and which two make you nervous?"
+        plain="A second reading looks at the same top four functions and asks a different question: which two do you trust completely, and which two make you nervous?"
       >
         <p>
-          Objective Personality splits the ego block into two saviors and two demons. The demons
-          are the Model A opposites of the saviors, which puts them at the tertiary and inferior —
-          OPS does not reach into the shadow block at all.
+          The overlay splits the ego block into two saviors and two demons. The demons are the axis
+          opposites of the saviors, which puts them at the tertiary and inferior — the overlay does
+          not reach into the shadow block at all.
         </p>
       </Explain>
 
@@ -354,16 +354,17 @@ export default function TypeReader() {
         caption={
           o.unset.length
             ? <>Still open: {o.unset.join(", ")}. These are self-reported coins, not derivable from a four-letter type — set them below and the code completes.</>
-            : <>Fully coined. This is the complete OPS notation for the reading you have set.</>
+            : <>Fully coined. This is the complete notation for the reading you have set.</>
         }
       >
         <AnimalStack sig={o} />
       </Figure>
 
-      <h3 id="ops-coins" className="sec">Your coins</h3>
+      <h3 id="exchange-coins" className="sec">Your coins</h3>
       <Panel title="Subtype coins — self-reported, not derived">
         <p className="small">
-          OPS reaches 512 types by adding coins this app&rsquo;s sixteen-type core does not carry.
+          The full overlay reaches 512 readings by adding coins this app&rsquo;s sixteen-type core
+          does not carry.
           They are kept separate on purpose: nothing below changes a single relation, score or
           playbook. Set them if you know yours.
         </p>
@@ -419,7 +420,7 @@ export default function TypeReader() {
           />
           <span className="small">
             <b>Jumper</b> — saviors are the dominant and the <i>tertiary</i> rather than the
-            auxiliary. OPS&rsquo;s other sixteen base types.
+            auxiliary. The overlay&rsquo;s other sixteen base readings.
           </span>
         </label>
 
@@ -427,7 +428,7 @@ export default function TypeReader() {
           Currently <b>{o.dominance}-dominant</b>.{" "}
           {sub.jumper
             ? "Jumpers are info-dominant: both saviors share an attitude, so an energy animal is last."
-            : "Every non-jumper is energy-dominant, because a dominant and an auxiliary always run opposite attitudes — which is exactly the line where OPS's 32 base types leave this app's 16 behind."}
+            : "Every non-jumper is energy-dominant, because a dominant and an auxiliary always run opposite attitudes — which is exactly the line where the overlay's 32 base readings leave this app's 16 types behind."}
         </p>
       </Panel>
 
@@ -449,12 +450,12 @@ export default function TypeReader() {
         </Panel>
         <Panel title="Two readings, not reconciled">
           <Row
-            k="CS Joseph says"
+            k="Open the subconscious"
             v={<span className="small">{s.subconscious.opensWith}</span>}
             stacked
           />
           <Row
-            k="OPS says"
+            k="Work the demons"
             v={<span className="small">
               Stop letting {o.saviorObs} and {o.saviorDec} solve everything, and put deliberate
               hours into {o.demonObs} and {o.demonDec} — the two you keep telling yourself you
@@ -508,9 +509,9 @@ export default function TypeReader() {
           Two layers. The wheel layer is structural and derived here rather than looked up: your{" "}
           <Term id="temple-wheel">wheel</Term> is you and your <Term id="subconscious">subconscious</Term>,
           which is your <Term id="rel-du">Dual</Term>, and your <Term id="temple">temple</Term> is your
-          full four-sides orbit. Both match CS Joseph&rsquo;s published lists exactly, 16 of 16, with no
-          table anywhere in the engine. The theme layer is biographical, so it is set below rather
-          than computed.
+          full four-sides orbit. Both fall out of the same three involutions the rest of the engine
+          runs on, 16 of 16, with no lookup table anywhere. The theme layer is biographical, so it
+          is set below rather than computed.
         </p>
       </Explain>
 
@@ -557,7 +558,7 @@ export default function TypeReader() {
         >
           <p style={{ margin: 0 }}>
             Development is described as set early and largely fixed; focus is mutable and is what
-            the growth section above is actually about. Held in the same posture as the OPS subtype
+            the growth section above is actually about. Held in the same posture as the subtype
             coins — nothing is stored, and nothing is inferred.
           </p>
         </Explain>

@@ -18,7 +18,7 @@ import { REL_NAME, type MbtiType } from "./data";
  *
  * That is not a bug in either. They answer different questions. The
  * survey measures self-reported LIKING, and people report liking people
- * like themselves. Socionics duality claims structural LOW FRICTION,
+ * like themselves. Duality claims structural LOW FRICTION,
  * which is a different claim and arguably in tension with the first —
  * your Dual leads with the function you are most defensive about.
  *

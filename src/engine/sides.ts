@@ -4,8 +4,8 @@ import { DOM_AUX, SLOT_NAMES, type Fn, type RelCode, type SlotName } from "./dat
 /* ------------------------------------------------------------------ *
  * THE FOUR SIDES OF THE MIND
  *
- * CS Joseph's claim is that a type is only a quarter of a person. The
- * eight-slot stack is not one stack — it is four four-slot stacks, each
+ * A type is only a quarter of a person. The eight-slot stack is not one
+ * stack — it is four four-slot stacks, each
  * of which is itself one of the sixteen types, and each of which has a
  * single function as its door.
  *
@@ -19,8 +19,8 @@ import { DOM_AUX, SLOT_NAMES, type Fn, type RelCode, type SlotName } from "./dat
  * That is not a coincidence and it is not decoration. REL_OPS.DU, .EX
  * and .SE in core.ts are literally the same three operators. The four
  * sides are four relations you hold with yourself, which is why the
- * Socionics relation named "Super-Ego" and the Jungian structure named
- * "superego" land on the same type. Asserted in tests/sides.test.ts.
+ * relation named "Super-Ego" and the structural side named "superego"
+ * land on the same type. Asserted in tests/sides.test.ts.
  *
  * Each side's own Hero is the gateway into it:
  *   Ego          <- Hero      (open by default)

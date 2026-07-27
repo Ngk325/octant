@@ -2,7 +2,7 @@ import { type Animal, ANIMAL_DOES } from "../../engine/ops";
 import { person, arrowhead } from "./geometry";
 
 /**
- * The four OPS animals as arrow signatures around one person:
+ * The four animals as arrow signatures around one person:
  *
  *   Consume  arrows in, and a loop — takes in more than it shares
  *   Blast    a loop, and arrows out — shares more than it takes in

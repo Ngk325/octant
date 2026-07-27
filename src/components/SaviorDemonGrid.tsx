@@ -4,9 +4,9 @@ import { usePalette } from "./Theme";
 import { FnTag } from "./Bits";
 
 /**
- * The savior/demon structure as the 2×2 OPS itself teaches from: one
+ * The savior/demon structure as the 2×2 the overlay itself reads from: one
  * observer and one decider are saviors (obvious, easy, matter-of-fact), and
- * their Model-A opposites are demons (nervous, performative, crushed by
+ * their axis opposites are demons (nervous, performative, crushed by
  * criticism). The app used to state this in two separate panels of prose;
  * the grid shows that it is one structure with two axes, not four facts.
  */
@@ -29,7 +29,7 @@ export default function SaviorDemonGrid({ type, sub }: { type: MbtiType; sub?: S
     <div
       role="img"
       aria-label={
-        `${type}'s OPS savior functions are ${o.saviorObs} and ${o.saviorDec}; ` +
+        `${type}'s savior functions are ${o.saviorObs} and ${o.saviorDec}; ` +
         `its demons are ${o.demonObs} and ${o.demonDec}.`
       }
       style={{

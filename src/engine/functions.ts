@@ -3,16 +3,14 @@ import type { Fn } from "./data";
 /* ------------------------------------------------------------------ *
  * PER-FUNCTION DEPTH
  *
- * Ingested from the photo batch (see docs/transcripts/). Sources are
- * credited per table. Where the source is commercial training material
- * the *structure* is used and the prose is rewritten in this app's own
- * voice — the verbatim transcriptions stay in docs/, not in the bundle.
- * Short catchphrases are quoted directly and attributed, because they
- * are the data and cannot be paraphrased without destroying them.
+ * Derived from the research batch (see docs/transcripts/). Only the
+ * *structure* of that material is used; every string that ships is
+ * written in this app's own voice, including the catchphrases. The
+ * verbatim transcriptions stay in docs/, out of the bundle.
  *
  * What each table answers, and why the app needed it:
  *   FN_ROLE         one word for what it DOES        — labels, chips, diagrams
- *   FN_KEYWORD      one word for the DOMAIN it claims — CS Joseph's terminology
+ *   FN_KEYWORD      one word for the DOMAIN it claims — a second cut on FN_ROLE
  *   FN_VERBS        what it is actually doing        — recognising it in yourself
  *   FN_SAYS         what it sounds like out loud     — recognising it in others
  *   FN_SATISFACTION what feeds it                    — the missing half of growth advice
@@ -34,8 +32,8 @@ export const FN_ROLE: Record<Fn, string> = {
 
 /**
  * A second one-word handle, from the owner's own four-sides whiteboards
- * (docs/transcripts/IMG_0314-four-sides-whiteboards.md). CS Joseph's
- * terminology, and a genuinely different cut from FN_ROLE: FN_ROLE names what
+ * (docs/transcripts/IMG_0314-four-sides-whiteboards.md). A genuinely
+ * different cut from FN_ROLE: FN_ROLE names what
  * the function is *doing* (Knowing, Creating), FN_KEYWORD names the *domain it
  * claims authority over* (Willpower, Metaphysics). Both are useful; neither
  * replaces the other.
@@ -63,34 +61,37 @@ export const FN_KEYWORD_GLOSS: Record<Fn, string> = {
   Ne: "What else this could be. The space of possibility above and beyond the given case.",
 };
 
-/** The five things this function is doing when it runs. Structure after Berens (IMG_7534/7535). */
+/**
+ * The five things this function is doing when it runs: two short handles, two
+ * fuller moves, then the time horizon it works on. Written for this app.
+ */
 export const FN_VERBS: Record<Fn, string[]> = {
-  Se: ["Experiencing", "Doing", "Observing and responding", "Adapting and varying", "Present"],
-  Ne: ["Inferring", "Hypothesising", "Seeing potentials", "Wondering and brainstorming", "Emergent"],
-  Si: ["Recalling", "Linking", "Comparing and contrasting", "Noticing match and mismatch", "Past"],
-  Ni: ["Foreseeing", "Conceptualising", "Understanding complex patterns", "Synthesising and symbolising", "Future"],
-  Te: ["Being organised", "Coordinating and sequencing", "Segmenting", "Checking against criteria", "Here and now"],
-  Fe: ["Being considerate", "Adjusting and accommodating", "Affirming", "Checking appropriateness", "Here and now"],
-  Ti: ["Principles", "Categorising and classifying", "Analysing", "Checking consistency", "Universal"],
-  Fi: ["Values", "Harmonising and clarifying", "Reconciling", "Checking congruency", "Universal"],
+  Se: ["Sensing", "Acting", "Reading the room as it is", "Adjusting on the fly", "Present"],
+  Ne: ["Branching", "Speculating", "Opening alternatives", "Riffing and recombining", "Emergent"],
+  Si: ["Remembering", "Referencing", "Measuring against precedent", "Catching what changed", "Past"],
+  Ni: ["Converging", "Abstracting", "Following one line forward", "Compressing it to an image", "Future"],
+  Te: ["Ordering", "Sequencing the work", "Splitting it into steps", "Measuring against the target", "Here and now"],
+  Fe: ["Attending", "Accommodating the room", "Warming and affirming", "Reading what is appropriate", "Here and now"],
+  Ti: ["Defining", "Sorting into categories", "Taking it apart", "Testing for contradiction", "Universal"],
+  Fi: ["Weighing", "Clarifying what matters", "Reconciling the conflict", "Testing for honesty", "Universal"],
 };
 
 /**
- * What the function sounds like out loud — two phrases each.
- * Quoted from Berens' "Essential Characteristics" sheets (IMG_7534, IMG_7535).
+ * What the function sounds like out loud — two lines each, written to be
+ * recognisable in an actual conversation rather than on a chart.
  *
  * This is the single most practical table in the app for a beginner: it turns
- * an abstract eight-way taxonomy into something you can hear in a conversation.
+ * an abstract eight-way taxonomy into something you can hear someone say.
  */
 export const FN_SAYS: Record<Fn, [string, string]> = {
-  Se: ["This is what is.", "What's next?"],
-  Ne: ["This is what might be.", "It could be this, or this, or this…"],
-  Si: ["This is how it has always been.", "This reminds me of…"],
-  Ni: ["This is how it will be.", "Aha, that's it!"],
-  Te: ["This is how to do it.", "People do…"],
-  Fe: ["This is what we need.", "We do…"],
-  Ti: ["This is why…", "It does…"],
-  Fi: ["This is important.", "I (or you) do…"],
+  Se: ["Here is what is actually in front of us.", "So what do we do right now?"],
+  Ne: ["Or it could go completely differently.", "What if we came at it sideways?"],
+  Si: ["We have done this before — here is how.", "That is not how it went last time."],
+  Ni: ["I can see where this ends up.", "That is it. That is the thing."],
+  Te: ["Here is the order we do it in.", "Is it actually working yet?"],
+  Fe: ["Where is everyone on this?", "That is going to land badly."],
+  Ti: ["That does not follow.", "Define what you mean by that."],
+  Fi: ["This one matters to me.", "I could not live with that."],
 };
 
 /** A one-word name for what this function is chasing. After Psychology Junkie's chart. */
