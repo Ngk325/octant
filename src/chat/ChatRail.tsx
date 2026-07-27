@@ -104,6 +104,9 @@ export default function ChatRail() {
               this app&rsquo;s own model — the stacks, the four sides, the OPS overlay and both
               directions of ease — not from generic type descriptions.
             </p>
+            <p className="small muted" style={{ margin: "var(--s3) 0 0" }}>
+              Conversations may be reviewed by the site owner.
+            </p>
             <div className="rail-suggest">
               {suggestedPrompts(context).map((q) => (
                 <button key={q} disabled={streaming} onClick={() => void send(q)}>{q}</button>

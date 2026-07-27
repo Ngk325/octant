@@ -52,7 +52,11 @@
   // and the wall falls back to invite codes. It degrades, it does not fail
   // open.
   "kv_namespaces": [
-    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
+    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" },
+    // Chat transcripts, 90-day TTL, mailed to the owner at session end.
+    // Same posture as USERS: without the binding, logging silently disables
+    // and chat itself keeps working.
+    { "binding": "CHAT_LOGS", "id": "2f26c80cb0e143d48c4c559f8bd44cb8" }
   ],
 
   "observability": { "enabled": true }

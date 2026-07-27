@@ -477,6 +477,16 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 
 .lex-entry { scroll-margin-top: calc(var(--masthead-h) + var(--s5)); }
 
+/* ------------------------- chat figures ----------------------------- */
+/* A diagram the assistant drew into its answer — see chat-figures.tsx. */
+.chat-fig {
+  margin: var(--s3) 0;
+  padding: var(--s3);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+}
+
 /* ----------------------- calculator dock ----------------------------- */
 /* Hidden on desktop, where the sticky results column does this job. */
 .calc-dock {

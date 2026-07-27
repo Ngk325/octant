@@ -23,7 +23,7 @@ export interface UserEnv {
 /** Minimal KV surface this module uses, so tests can supply a plain object. */
 export interface KVNamespace {
   get(key: string): Promise<string | null>;
-  put(key: string, value: string): Promise<void>;
+  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
   delete(key: string): Promise<void>;
   list(options?: { prefix?: string; cursor?: string }): Promise<{
     keys: { name: string }[];

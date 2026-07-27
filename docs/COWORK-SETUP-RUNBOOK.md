@@ -19,6 +19,7 @@ and silently detaches the app from its user list.
 | Google Cloud project | `stratfield-partners` |
 | OAuth client | `Octant Worker` |
 | KV namespace | `USERS`, id `8d35bff308f84ce9b1e98b4770d21daf` |
+| KV namespace | `CHAT_LOGS`, id `2f26c80cb0e143d48c4c559f8bd44cb8` — chat transcripts, 90-day TTL |
 
 **Secrets on the Worker** — none of them in this repo:
 
@@ -89,6 +90,12 @@ in code, one secret still to set.
 `Octant <octant@insuranceprosct.com>` — the one verified domain on the Resend
 account; a direct send from it to `nick@stratfieldpartners.com` was tested on
 26 Jul and came back **delivered**. Leave `OWNER_EMAIL` alone.
+
+The same sender now also carries **chat transcripts**: every assistant
+conversation is logged to the `CHAT_LOGS` namespace and mailed to
+`NOTIFY_EMAIL || OWNER_EMAIL` when the session ends (new thread, tab closed,
+or an hour idle). Users are told in the rail that conversations may be
+reviewed.
 
 Why that seemingly-unrelated domain: Resend free tier. `onboarding@resend.dev`
 only delivers to the Resend signup address, which is not `OWNER_EMAIL`, and

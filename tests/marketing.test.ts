@@ -119,6 +119,27 @@ describe("the /signin route", () => {
   });
 });
 
+describe("the /api/chat/end beacon", () => {
+  const post = (cookie?: string) =>
+    worker.fetch(
+      new Request("https://octant.example/api/chat/end", {
+        method: "POST",
+        body: JSON.stringify({ threadId: "thread-aaaa-1111" }),
+        ...(cookie ? { headers: { cookie } } : {}),
+      }),
+      ENV,
+    );
+
+  it("is behind the wall", async () => {
+    expect((await post()).status).toBe(401);
+  });
+
+  it("returns 204 for a signed-in caller, even with no log binding", async () => {
+    const token = await issueSession("tester", "code", undefined, SECRET, NOW);
+    expect((await post(`octant_session=${token}`)).status).toBe(204);
+  });
+});
+
 describe("the marketing page itself", () => {
   it("is cacheable and carries the origin it was asked for", () => {
     const res = marketingPage("https://octant.example");

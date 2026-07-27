@@ -9,6 +9,7 @@ import {
   type GoogleEnv,
 } from "./google";
 import { handleAdmin, type AdminEnv } from "./admin";
+import { endSession, validThreadId } from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 
@@ -84,7 +85,31 @@ export default {
       return (await handleAdmin(request, env, { email: session?.email, owner }, now))!;
     }
 
-    if (url.pathname === "/api/chat") return handleChat(request, env);
+    if (url.pathname === "/api/chat") {
+      const session = await readSession(request, env, now);
+      return handleChat(request, env, {
+        who: {
+          email: session?.email,
+          label: session?.label ?? "unknown",
+          kind: session?.kind ?? "code",
+        },
+        ua: request.headers.get("user-agent") ?? undefined,
+        waitUntil: ctx?.waitUntil?.bind(ctx),
+      }, now);
+    }
+
+    // The session-end beacon: mails the thread's transcript to the owner.
+    // Behind the wall, idempotent, and always 204 — a beacon cannot retry, so
+    // there is nothing useful to tell it.
+    if (url.pathname === "/api/chat/end" && request.method === "POST") {
+      const body = (await request.json().catch(() => ({}))) as { threadId?: unknown };
+      if (validThreadId(body.threadId)) {
+        const work = endSession(env, body.threadId, now);
+        if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
+      }
+      return new Response(null, { status: 204 });
+    }
+
     if (url.pathname.startsWith("/api/")) {
       return new Response(JSON.stringify({ error: "Not found." }), {
         status: 404,
