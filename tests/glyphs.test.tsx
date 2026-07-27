@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { type ReactNode } from "react";
 import { TYPES, stack } from "../src/engine/core";
@@ -27,6 +27,8 @@ beforeAll(() => {
     real(...(args as Parameters<typeof console.error>));
   });
 });
+
+afterAll(() => vi.restoreAllMocks());
 
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
 const ANIMALS: Animal[] = ["Play", "Blast", "Consume", "Sleep"];
@@ -128,8 +130,12 @@ describe("SideDoor", () => {
   });
 
   it("only the superego is barred", () => {
-    expect(draw(<SideDoor side="superego" fn="Se" />)).toContain("var(--danger)");
-    expect(draw(<SideDoor side="ego" fn="Ne" />)).not.toContain("var(--danger)");
+    const s = sides("ENTP");
+    for (const k of SIDE_ORDER) {
+      const html = draw(<SideDoor side={k} fn={s[k].gateway.fn} />);
+      if (k === "superego") expect(html, k).toContain("var(--danger)");
+      else expect(html, `${k} carries no danger styling`).not.toContain("var(--danger)");
+    }
   });
 });
 

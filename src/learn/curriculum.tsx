@@ -95,7 +95,7 @@ export const STAGES: Stage[] = [
         </Explain>
 
         <Figure
-          minWidth={560}
+          minWidth={648}
           label="Three splits, eight results."
           caption="Read downward. Each level is one binary choice, and the eight at the bottom are every combination of them — which is why the list is exactly this long."
         >
