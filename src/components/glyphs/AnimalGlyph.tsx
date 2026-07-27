@@ -1,4 +1,4 @@
-import { type Animal, ANIMAL_DOES } from "../../engine/ops";
+import { type Animal, ANIMAL_DOES, ANIMAL_LABEL } from "../../engine/ops";
 import { person, arrowhead } from "./geometry";
 
 /**
@@ -59,7 +59,7 @@ export default function AnimalGlyph({ animal }: { animal: Animal }) {
       width="100%"
       viewBox="0 0 96 66"
       role="img"
-      aria-label={`${animal}: ${ANIMAL_DOES[animal]}`}
+      aria-label={`${ANIMAL_LABEL[animal]}: ${ANIMAL_DOES[animal]}`}
       style={{ display: "block", maxWidth: 132 }}
     >
       {(animal === "Consume" || animal === "Play") && inflow}

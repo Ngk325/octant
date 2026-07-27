@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { stack, quadra, TYPES, REL, ease } from "../engine/core";
-import { ops } from "../engine/ops";
+import { ops, ANIMAL_LABEL } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { wheelOf, templeOf } from "../engine/octagram";
 import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
@@ -61,7 +61,7 @@ export const STAGES: Stage[] = [
           <p>
             Eight cognitive functions: four perceiving (Ne, Ni, Se, Si) and four judging
             (Te, Ti, Fe, Fi), each in an extraverted or introverted attitude. This app treats them
-            as the eight information elements, and the whole model is three involutions over them.
+            as the eight information elements, and the whole model is three moves over them.
           </p>
         </Explain>
 
@@ -173,7 +173,7 @@ export const STAGES: Stage[] = [
           <Explain big plain={CONCEPT_PLAIN.stack}>
             <p>
               The eight-slot stack is generated, not listed. Given a dominant and an auxiliary,
-              the other six slots follow by applying the three involutions — so sixteen pairs
+              the other six slots follow by applying the three moves — so sixteen pairs
               produce sixteen complete stacks with no lookup table.
             </p>
           </Explain>
@@ -336,10 +336,10 @@ export const STAGES: Stage[] = [
             <p>
               The four sides. The subconscious is the ego stack reversed; the
               unconscious is the shadow block read forwards; the superego is the shadow reversed.
-              Because the three involutions that generate the relation table also generate the
+              Because the three moves that generate the relation table also generate the
               sides, each side stands in a fixed relation to the ego — your subconscious is
-              literally your <Term id="rel-du">Dual</Term>, your unconscious your{" "}
-              <Term id="rel-ex">Extinguishment</Term> partner, and your superego your{" "}
+              literally your <Term id="rel-du">Counterpart</Term>, your unconscious your{" "}
+              <Term id="rel-ex">Damper</Term> partner, and your superego your{" "}
               <Term id="rel-se">Super-Ego</Term> partner.
             </p>
           </Explain>
@@ -449,15 +449,15 @@ export const STAGES: Stage[] = [
             plain="This overlay looks at the same top four functions and asks a different question: which two do you trust so completely you never think about them, and which two make you nervous?"
           >
             <p>
-              It splits the ego block into two <Term id="savior">saviors</Term> and two{" "}
+              It splits the ego block into two <Term id="savior">anchors</Term> and two{" "}
               <Term id="demon-fn">demons</Term>. The demons are the axis opposites of the
-              saviors, which places them at the tertiary and inferior — the overlay does not reach
+              anchors, which places them at the tertiary and inferior — the overlay does not reach
               into the shadow block at all.
             </p>
           </Explain>
 
           <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
-            <Panel title={`Saviors — ${o.saviorObs} and ${o.saviorDec}`}>
+            <Panel title={`Anchors —  and `}>
               <p style={{ fontSize: "var(--t-base)", margin: 0 }}>{CONCEPT_PLAIN.savior}</p>
             </Panel>
             <Panel title={`Demons — ${o.demonObs} and ${o.demonDec}`}>
@@ -468,19 +468,19 @@ export const STAGES: Stage[] = [
           <h3>The four animals</h3>
           <Explain plain={CONCEPT_PLAIN.animal}>
             <p>
-              Each animal pairs one observer attitude with one decider attitude.{" "}
-              <b>Play</b> (Oe+De) and <b>Sleep</b> (Oi+Di) are the energy animals;{" "}
-              <b>Blast</b> (Oi+De) and <b>Consume</b> (Oe+Di) are the information animals.
+              Each current pairs one observer attitude with one decider attitude.{" "}
+              <b>Charge</b> (Oe+De) and <b>Settle</b> (Oi+Di) move energy;{" "}
+              <b>Broadcast</b> (Oi+De) and <b>Absorb</b> (Oe+Di) move information.
             </p>
           </Explain>
 
           <Figure
-            label="What each animal does with the world."
+            label="What each current does with the world."
             caption={
               <>
                 Arrows in = taking in; arrows out = sharing; the loop = processing alone.{" "}
-                <b>Consume</b> takes in more than it shares, <b>Blast</b> shares more than it
-                takes in, <b>Play</b> is live exchange, <b>Sleep</b> is the closed loop.
+                <b>Absorb</b> takes in more than it shares, <b>Broadcast</b> shares more than it
+                takes in, <b>Charge</b> is live exchange, <b>Settle</b> is the closed loop.
               </>
             }
           >
@@ -488,7 +488,7 @@ export const STAGES: Stage[] = [
               {(["Consume", "Blast", "Play", "Sleep"] as const).map((a) => (
                 <div key={a} style={{ width: 118, textAlign: "center" }}>
                   <AnimalGlyph animal={a} />
-                  <span className="small muted">{a}</span>
+                  <span className="small muted">{ANIMAL_LABEL[a]}</span>
                 </div>
               ))}
             </div>
@@ -499,7 +499,7 @@ export const STAGES: Stage[] = [
             caption={
               <>
                 The first and last are fixed by your type. The middle two are genuinely open —
-                that ordering is its own coin, so this app leaves it blank rather than guessing.
+                that ordering is its own switch, so this app leaves it blank rather than guessing.
                 Set it on the type page if you know yours.
               </>
             }
@@ -516,7 +516,7 @@ export const STAGES: Stage[] = [
         </>
       );
     },
-    check: "Which of your two saviors do you reach for first when something goes wrong?",
+    check: "Which of your two anchors do you reach for first when something goes wrong?",
   },
 
   {
@@ -603,8 +603,8 @@ export const STAGES: Stage[] = [
         </Figure>
 
         <Panel title="Three worth knowing" style={{ marginTop: "var(--s5)" }}>
-          <Row stacked k={<Term id="rel-du">Duality</Term>} v={<span className="small">{REL_PLAIN.DU}</span>} />
-          <Row stacked k={<Term id="rel-sr">Supervision</Term>} v={<span className="small">{REL_PLAIN.SR}</span>} />
+          <Row stacked k={<Term id="rel-du">Counterpart</Term>} v={<span className="small">{REL_PLAIN.DU}</span>} />
+          <Row stacked k={<Term id="rel-sr">Examiner</Term>} v={<span className="small">{REL_PLAIN.SR}</span>} />
           <Row stacked k={<Term id="rel-cf">Conflict</Term>} v={<span className="small">{REL_PLAIN.CF}</span>} />
         </Panel>
 
@@ -713,7 +713,7 @@ export const STAGES: Stage[] = [
             You do not get your own origin. You share one with your{" "}
             <Term id="subconscious">subconscious</Term> — the type you become when you develop
             through your <Term id="inferior">Inferior</Term>, which is also your{" "}
-            <Term id="rel-du">Dual</Term>. Sixteen types, paired off, make eight. Two of those
+            <Term id="rel-du">Counterpart</Term>. Sixteen types, paired off, make eight. Two of those
             wheels make a <Term id="temple">temple</Term>, and a temple turns out to be exactly the
             four sides of one mind: your ego, your subconscious, your unconscious and your superego
             are all in it. That is why the picture has eight points and four arcs.
@@ -784,8 +784,8 @@ export const STAGES: Stage[] = [
             plain="The wheel said what you want and the honest way to get it. This layer says what your particular childhood did to how you go about it — and no four-letter type can tell you that."
           >
             <p>
-              Two coins, and neither is readable off the type. They are self-reported in the same
-              posture as the subtype coins: nothing here changes a relation, a score or a
+              Two switches, and neither is readable off the type. They are self-reported in the same
+              posture as the subtype switches: nothing here changes a relation, a score or a
               playbook.
             </p>
           </Explain>

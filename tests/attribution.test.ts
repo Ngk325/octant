@@ -20,6 +20,16 @@ import { join } from "node:path";
 const SRC = join(__dirname, "..", "src");
 
 /**
+ * The single exemption: the translation surface exists to name other
+ * systems, so a reader arriving with someone else's vocabulary can find
+ * their footing. It is an allowlist of one file, not a policy — the type
+ * reader, lexicon, curriculum and assistant primer all stay banned, and
+ * anything that wants to show a translation imports from here rather than
+ * repeating a name locally.
+ */
+const ALLOWED = new Set(["engine/translation.ts"]);
+
+/**
  * `OPS` is matched case-sensitively with word boundaries on purpose. That
  * catches it in prose ("the OPS overlay") while ignoring the internal
  * identifiers `REL_OPS`, `OpsSignature` and `engine/ops` — `_` is a word
@@ -52,13 +62,20 @@ function walk(dir: string): string[] {
   });
 }
 
-const FILES = walk(SRC);
+const FILES = walk(SRC).filter((f) => !ALLOWED.has(f.slice(SRC.length + 1).replace(/\\/g, "/")));
 
 describe("nothing that ships names another system or author", () => {
   it("finds a source tree to scan at all", () => {
     // Guards against the walk silently returning nothing and the suite
     // then passing for the wrong reason.
     expect(FILES.length).toBeGreaterThan(20);
+  });
+
+  it("exempts exactly one file, and it exists", () => {
+    // A shrinking scan is the failure mode to catch: if the allowlist ever
+    // grows quietly, the guard stops guarding without any test going red.
+    expect([...ALLOWED]).toEqual(["engine/translation.ts"]);
+    expect(readFileSync(join(SRC, "engine/translation.ts"), "utf8").length).toBeGreaterThan(0);
   });
 
   it.each(FILES.map((f) => [f.slice(SRC.length + 1), f] as const))(

@@ -4,7 +4,7 @@ import { type ReactNode } from "react";
 import { TYPES, stack } from "../src/engine/core";
 import { SLOT_NAMES, type Fn } from "../src/engine/data";
 import { SIDE_ORDER, sides } from "../src/engine/sides";
-import { type Animal } from "../src/engine/ops";
+import { type Animal, ANIMAL_LABEL } from "../src/engine/ops";
 import { ThemeProvider } from "../src/components/Theme";
 import { RANK_RATIO, outward } from "../src/components/glyphs/geometry";
 import FnIcon from "../src/components/glyphs/FnIcon";
@@ -98,11 +98,13 @@ describe("SelfTribeCone", () => {
 });
 
 describe("AnimalGlyph", () => {
-  it("renders each animal with its arrow signature described", () => {
+  it("renders each current with its arrow signature described", () => {
     for (const a of ANIMALS) {
       const html = draw(<AnimalGlyph animal={a} />);
       expectAccessible(html);
-      expect(html).toContain(`${a}:`);
+      // Labelled with what a reader sees, not the engine's internal value for
+      // it — the union member stays "Play" while the label reads "Charge".
+      expect(html).toContain(`${ANIMAL_LABEL[a]}:`);
     }
   });
 });

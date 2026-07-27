@@ -93,14 +93,14 @@ describe("the animal stack", () => {
     expect(ops(t, { jumper: true }).dominance).toBe("Information");
   });
 
-  it("leaves the middle ordering open until the coin is set", () => {
+  it("leaves the middle ordering open until the switch is set", () => {
     const bare = ops("ENTP");
-    expect(bare.unset).toContain("second savior animal");
+    expect(bare.unset).toContain("second anchor current");
     expect(bare.animals.filter((a) => a.role === "open")).toHaveLength(2);
-    expect(bare.stackCode).toBe("C?/?(B)");
+    expect(bare.stackCode).toBe("A?/?(B)");
   });
 
-  it("completes the OPS code once every coin is set", () => {
+  it("completes the code once every switch is set", () => {
     const full = ops("ENTP", {
       secondSavior: "Play",
       lead: "second-savior",
@@ -108,7 +108,7 @@ describe("the animal stack", () => {
       decider: "F",
     });
     expect(full.unset).toEqual([]);
-    expect(full.code).toBe("FF-Ne/Ti-PC/S(B)");
+    expect(full.code).toBe("FF-Ne/Ti-CA/S(B)");
     expect(full.animals.map((a) => a.position)).toEqual([1, 2, 3, 4]);
     expect(full.animals.map((a) => a.role)).toEqual(["savior", "savior", "activated", "last"]);
   });

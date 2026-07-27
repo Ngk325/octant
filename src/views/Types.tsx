@@ -76,8 +76,11 @@ export default function Types() {
                     />
                   </div>
 
+                  {/* One epithet on a tile — there are three, but a grid of
+                      sixteen cards has no room for range. The type page shows
+                      all of them. */}
                   <p className="small muted" style={{ margin: "2px 0 var(--s3)" }}>
-                    {ARCHETYPE[t].split("/")[0].trim()}
+                    {ARCHETYPE[t][0]}
                   </p>
 
                   <p style={{ fontSize: "var(--t-sm)", lineHeight: 1.5, marginBottom: "var(--s3)" }}>

@@ -95,7 +95,7 @@ export default function Matrix() {
           stacked
           k="The grid is asymmetric on purpose"
           v={<span className="small">
-            Supervision and benefit run one way, so cell (a, b) and cell (b, a) genuinely differ.
+            Examination and lift run one way, so cell (a, b) and cell (b, a) genuinely differ.
             Read a row <i>and</i> its column: green across a row with red down the same column
             means that type finds everyone easy while everyone finds them hard.
           </span>}

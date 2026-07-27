@@ -5,20 +5,30 @@ import { FnTag } from "./Bits";
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
 
 /**
- * The three involutions as one table — the whole "no lookup table" claim,
- * visible. Every derived structure in this app is some composition of these
- * three moves: α flips the attitude, β swaps the element, ω does both. The
- * shadow is α of the ego, the Dual is ω of you, the four sides are these
- * same operators applied to the (dominant, auxiliary) pair.
+ * The three moves as one table — the whole "no lookup table" claim, visible.
+ * Every derived structure in this app is some composition of them: the shadow
+ * is a flip of the ego, your Counterpart is a turn of you, and the four sides
+ * are the same three moves applied to the (dominant, auxiliary) pair.
+ *
+ * The header used to read `α · flip attitude`, which was reported as the most
+ * confusing thing in the lexicon and deserved it. It led with a Greek symbol —
+ * the most prominent mark on screen, and the one piece of information a reader
+ * never needs — and then explained it with two more words of vocabulary,
+ * "attitude" and "element", that a newcomer has no reason to know yet.
+ *
+ * So: the moves are named for what they do, each carries a worked example in
+ * its own header, and the symbols live here in the comment where they belong.
+ * (α flip, β swap, ω turn, if you are reading the engine.)
  *
  * A CSS grid rather than SVG: four narrow columns of mono tags reflow for
  * free and cost nothing on a phone.
  */
 export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
-  const cols: [string, string, (f: Fn) => Fn][] = [
-    ["α", "flip attitude", (f) => alpha[f]],
-    ["β", "swap element", (f) => beta[f]],
-    ["ω", "flip both", (f) => omega[f]],
+  /** name · what it does, in words a first-time reader already has · a worked example */
+  const cols: [name: string, what: string, eg: string, op: (f: Fn) => Fn][] = [
+    ["flip", "same letter, other direction", "Ne → Ni", (f) => alpha[f]],
+    ["swap", "other letter, same direction", "Ne → Se", (f) => beta[f]],
+    ["turn", "both at once", "Ne → Si", (f) => omega[f]],
   ];
 
   const cell: React.CSSProperties = {
@@ -29,7 +39,7 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
   return (
     <div
       role="table"
-      aria-label="The three involutions applied to each of the eight functions"
+      aria-label="Each of the eight functions after each of the three moves — flip, swap and turn"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
@@ -38,10 +48,15 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
         fontSize: "var(--t-sm)",
       }}
     >
-      <div style={{ ...cell, borderTop: 0 }} className="small muted">function</div>
-      {cols.map(([sym, what]) => (
-        <div key={sym} style={{ ...cell, borderTop: 0 }} className="small muted">
-          <b style={{ color: "var(--ink-2)" }}>{sym}</b> · {what}
+      <div style={{ ...cell, borderTop: 0 }} className="small muted">start with</div>
+      {cols.map(([name, what, eg]) => (
+        <div key={name} style={{ ...cell, borderTop: 0 }} className="small muted">
+          {/* The name leads, because it is the only part a reader carries away.
+              The example sits under it so the column explains itself before the
+              description is read at all. */}
+          <b style={{ color: "var(--ink)", fontSize: "var(--t-sm)" }}>{name}</b>
+          <span className="mono" style={{ display: "block", color: "var(--accent-ink)" }}>{eg}</span>
+          <span style={{ display: "block" }}>{what}</span>
         </div>
       ))}
 
@@ -52,8 +67,8 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
             <div style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
               <FnTag fn={f} />
             </div>
-            {cols.map(([sym, , op]) => (
-              <div key={sym} style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
+            {cols.map(([name, , , op]) => (
+              <div key={name} style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
                 <FnTag fn={op(f)} />
               </div>
             ))}

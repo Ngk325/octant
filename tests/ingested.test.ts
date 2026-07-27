@@ -61,9 +61,14 @@ describe("Berens' 16 Type Patterns (external validation)", () => {
 
 describe("role names are this app's own", () => {
   /* ARCHETYPE used to concatenate four other projects' published role names —
-     "Debater / Inventor / Visionary / Rogue" and so on. It now carries one
-     name per type, authored here. This block guards the replacement: complete,
-     unique, single-word, and none of them a name we previously carried. */
+     "Debater / Inventor / Visionary / Rogue" and so on. It now carries THREE
+     authored epithets per type, because one label boxes a reader in.
+
+     This block guards the replacement: complete, three each, every one of the
+     48 distinct, single-word, none a name we previously carried, and none
+     colliding with a term that means something else in this system. That last
+     one has already bitten — Anchor, Spark and Examiner all became system
+     vocabulary after the first draft of these names. */
   const RETIRED = new Set([
     "Debater", "Inventor", "Visionary", "Rogue", "Logician", "Architect",
     "Engineer", "Ardent", "Commander", "Fieldmarshal", "Chief", "Marshal",
@@ -77,18 +82,37 @@ describe("role names are this app's own", () => {
     "Consul", "Provider", "Cavalier", "Defender", "Protector", "Knight",
   ]);
 
+  /* Words that are system vocabulary elsewhere. An epithet that collides with
+     one would have a reader meeting "Anchor" as a type name and again as a
+     trusted function, meaning something different each time. */
+  const TAKEN = new Set([
+    "Anchor", "Flinch", "Charge", "Settle", "Broadcast", "Absorb",
+    "Counterpart", "Spark", "Twin", "Cousin", "Colleague", "Examiner",
+    "Examined", "Damper", "Standoff", "Headwind", "Upstream", "Downstream",
+    "Lead", "Support", "Delight", "Cave", "Doubt", "Scold", "Dread",
+    "Front", "Reach", "Reserve", "Guard", "Hearth", "Forge", "Market", "Field",
+  ]);
+
+  const ALL = TYPES.flatMap((t) => ARCHETYPE[t]);
+
   it("covers all sixteen types", () => {
     expect(Object.keys(ARCHETYPE).sort()).toEqual([...TYPES].sort());
   });
 
-  it("gives every type a distinct name", () => {
-    expect(new Set(TYPES.map((t) => ARCHETYPE[t])).size).toBe(16);
+  it("gives every type exactly three", () => {
+    for (const t of TYPES) expect(ARCHETYPE[t], t).toHaveLength(3);
   });
 
-  it.each(TYPES)("%s has one authored word, not a retired one", (t) => {
-    const name = ARCHETYPE[t];
-    expect(name).toMatch(/^[A-Z][a-z]+$/);
-    expect(RETIRED.has(name)).toBe(false);
+  it("keeps all forty-eight distinct", () => {
+    expect(new Set(ALL).size).toBe(48);
+  });
+
+  it.each(TYPES)("%s carries three authored words, none retired or taken", (t) => {
+    for (const name of ARCHETYPE[t]) {
+      expect(name, `${t}: ${name}`).toMatch(/^[A-Z][a-z]+$/);
+      expect(RETIRED.has(name), `${t}: ${name} is a retired vendor name`).toBe(false);
+      expect(TAKEN.has(name), `${t}: ${name} already means something else`).toBe(false);
+    }
   });
 });
 

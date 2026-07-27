@@ -94,28 +94,28 @@ export const DOM_AUX: Record<MbtiType, [Fn, Fn]> = {
   ]
 };
 export const REL_NAME: Record<RelCode, string> = {
-  "DU": "Duality",
-  "AC": "Activity",
-  "HD": "Semi-Duality",
-  "MG": "Mirage",
-  "ID": "Identity",
-  "MI": "Mirror",
-  "KD": "Kindred",
-  "BU": "Business",
-  "BR": "Benefactor",
-  "BE": "Beneficiary",
-  "SV": "Supervisee",
-  "QI": "Quasi-Identity",
-  "SR": "Supervisor",
-  "EX": "Extinguishment",
-  "SE": "Super-Ego",
-  "CF": "Conflict"
+  "DU": "Counterpart",
+  "AC": "Spark",
+  "HD": "Near fit",
+  "MG": "False fit",
+  "ID": "Twin",
+  "MI": "Opposite hand",
+  "KD": "Cousin",
+  "BU": "Colleague",
+  "BR": "Upstream",
+  "BE": "Downstream",
+  "SV": "Examined",
+  "QI": "Near-twin",
+  "SR": "Examiner",
+  "EX": "Damper",
+  "SE": "Standoff",
+  "CF": "Headwind"
 };
 export const REL_DEF: Record<RelCode, string> = {
   "DU": "Their wiring completes yours: your weak functions are their strong ones and vice versa. Lowest-friction pairing in the model.",
   "AC": "Energising and fast to warm, because each of you feeds the other's mobilising function. Exhausting if never stepped out of.",
-  "HD": "Partial completion. Shares the dual's base channel but not the creative one; comfortable until the unshared half is what is needed.",
-  "MG": "Relaxing and slightly unserious. Shares the dual's creative channel only; good for rest, poor for joint execution.",
+  "HD": "Partial completion. Shares the Counterpart base channel but not the creative one; comfortable until the unshared half is what is needed.",
+  "MG": "Relaxing and slightly unserious. Shares the Counterpart creative channel only; good for rest, poor for joint execution.",
   "ID": "Same wiring. Instant mutual understanding and perfectly shared blind spots, so no one covers the gap.",
   "MI": "Same two functions in opposite order. Agreement on what matters, persistent argument about sequence.",
   "KD": "Same leading function, different second. You perceive the same thing and then do different things with it.",
@@ -238,102 +238,112 @@ export const TRICKSTER_BLIND: Record<Fn, string> = {
 };
 export const REL_FRAME: Record<RelCode, string> = {
   "ID": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap.",
-  "DU": "Duality. Their wiring completes yours; this is the lowest-friction pairing in the model.",
+  "DU": "Counterpart. Their wiring completes yours; this is the lowest-friction pairing in the model.",
   "AC": "Activity. Genuinely energising, and quietly draining if you never step out of it.",
   "MI": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence.",
-  "KD": "Kindred. Shared leading function: you see the same thing and then do different things with it.",
+  "KD": "Cousin. Shared leading function: you see the same thing and then do different things with it.",
   "BU": "Business. Shared second function — easy to work alongside, harder to get close to.",
-  "HD": "Semi-Duality. Partial completion; comfortable until the half you do not share is the half that is needed.",
-  "MG": "Mirage. Relaxing and slightly unserious — good for rest, poor for joint execution.",
+  "HD": "Near fit. Partial completion; comfortable until the half you do not share is the half that is needed.",
+  "MG": "False fit. Relaxing and slightly unserious — good for rest, poor for joint execution.",
   "SE": "Super-Ego. Fascinating at a distance, abrasive up close.",
   "CF": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours.",
-  "QI": "Quasi-Identity. You look alike from outside and arrive by routes that do not translate.",
-  "EX": "Extinguishment. Same functions, every attitude flipped — a constant near-miss on intent.",
+  "QI": "Near-twin. You look alike from outside and arrive by routes that do not translate.",
+  "EX": "Damper. Same functions, every attitude flipped — a constant near-miss on intent.",
   "SR": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
   "SV": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
-  "BR": "You are their Benefactor. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
-  "BE": "You are their Beneficiary. You will find them more compelling than they find you; do not read the asymmetry as rejection."
+  "BR": "You are Upstream of them. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
+  "BE": "You are Downstream of them. You will find them more compelling than they find you; do not read the asymmetry as rejection."
 };
 
 /**
- * One role name per type, in this app's own voice.
+ * THREE role names per type, in this app's own voice — never one.
  *
- * Each is a plain vocation noun chosen for the type's Hero function and what
- * that function is for — the Prospector opens seams (Ne), the Steward keeps
- * what worked (Si), the Forecaster commits to one long read (Ni). They are
- * labels, not inputs: nothing in the engine reads this table.
+ * A single label boxes a person in, and readers reported exactly that. Three
+ * give range: someone who does not recognise themselves in "Prospector" may
+ * well recognise "Provocateur", and the spread is itself informative about
+ * what the type actually is.
+ *
+ * Each is a plain vocation noun chosen for the type's lead and support — the
+ * Prospector opens seams (Ne), the Steward keeps what worked (Si), the
+ * Forecaster commits to one long read (Ni). All original: none is a role name
+ * belonging to another product, and none collides with a term used elsewhere
+ * in this system (which rules out Anchor, Spark and Examiner, all of which
+ * are now something else). Asserted in tests/ingested.test.ts.
+ *
+ * Labels, not inputs: nothing in the engine reads this table. What OTHER
+ * systems call each type lives in engine/translation.ts.
  */
-export const ARCHETYPE: Record<MbtiType, string> = {
-  "ENTP": "Prospector",
-  "INTP": "Theorist",
-  "ENTJ": "Strategist",
-  "INTJ": "Forecaster",
-  "ENFP": "Kindler",
-  "INFP": "Believer",
-  "ENFJ": "Shepherd",
-  "INFJ": "Diviner",
-  "ESTP": "Improviser",
-  "ISTP": "Tinkerer",
-  "ESTJ": "Administrator",
-  "ISTJ": "Steward",
-  "ESFP": "Reveller",
-  "ISFP": "Maker",
-  "ESFJ": "Host",
-  "ISFJ": "Custodian"
+export const ARCHETYPE: Record<MbtiType, [string, string, string]> = {
+  "ENTP": ["Prospector", "Provocateur", "Igniter"],
+  "INTP": ["Theorist", "Cartographer", "Skeptic"],
+  "ENTJ": ["Strategist", "Operator", "Closer"],
+  "INTJ": ["Forecaster", "Planner", "Watchman"],
+  "ENFP": ["Kindler", "Wanderer", "Enthusiast"],
+  "INFP": ["Believer", "Poet", "Conscience"],
+  "ENFJ": ["Shepherd", "Convener", "Rouser"],
+  "INFJ": ["Diviner", "Confidant", "Seer"],
+  "ESTP": ["Improviser", "Opportunist", "Daredevil"],
+  "ISTP": ["Tinkerer", "Mechanic", "Marksman"],
+  "ESTJ": ["Administrator", "Foreman", "Enforcer"],
+  "ISTJ": ["Steward", "Registrar", "Keeper"],
+  "ESFP": ["Reveller", "Showman", "Firestarter"],
+  "ISFP": ["Maker", "Naturalist", "Aesthete"],
+  "ESFJ": ["Host", "Caretaker", "Organiser"],
+  "ISFJ": ["Custodian", "Homemaker", "Quartermaster"]
 };
 export const GROUP: Record<MbtiType, string> = {
-  "ENTP": "Intellectuals (NT)",
-  "INTP": "Intellectuals (NT)",
-  "ENTJ": "Intellectuals (NT)",
-  "INTJ": "Intellectuals (NT)",
-  "ENFP": "Idealists (NF)",
-  "INFP": "Idealists (NF)",
-  "ENFJ": "Idealists (NF)",
-  "INFJ": "Idealists (NF)",
-  "ESTP": "Artisans (SP)",
-  "ISTP": "Artisans (SP)",
-  "ESTJ": "Guardians (SJ)",
-  "ISTJ": "Guardians (SJ)",
-  "ESFP": "Artisans (SP)",
-  "ISFP": "Artisans (SP)",
-  "ESFJ": "Guardians (SJ)",
-  "ISFJ": "Guardians (SJ)"
+  "ENTP": "Systems (NT)",
+  "INTP": "Systems (NT)",
+  "ENTJ": "Systems (NT)",
+  "INTJ": "Systems (NT)",
+  "ENFP": "Meaning (NF)",
+  "INFP": "Meaning (NF)",
+  "ENFJ": "Meaning (NF)",
+  "INFJ": "Meaning (NF)",
+  "ESTP": "Contact (SP)",
+  "ISTP": "Contact (SP)",
+  "ESTJ": "Order (SJ)",
+  "ISTJ": "Order (SJ)",
+  "ESFP": "Contact (SP)",
+  "ISFP": "Contact (SP)",
+  "ESFJ": "Order (SJ)",
+  "ISFJ": "Order (SJ)"
 };
 export const INTERACTION_STYLE: Record<MbtiType, string> = {
-  "ENTP": "Get-Things-Going (Starter)",
-  "INTP": "Behind-the-Scenes",
-  "ENTJ": "In-Charge",
-  "INTJ": "Chart-the-Course",
-  "ENFP": "Get-Things-Going (Starter)",
-  "INFP": "Behind-the-Scenes",
-  "ENFJ": "In-Charge",
-  "INFJ": "Chart-the-Course",
-  "ESTP": "In-Charge",
-  "ISTP": "Chart-the-Course",
-  "ESTJ": "In-Charge",
-  "ISTJ": "Chart-the-Course",
-  "ESFP": "Get-Things-Going (Starter)",
-  "ISFP": "Behind-the-Scenes",
-  "ESFJ": "Get-Things-Going (Starter)",
-  "ISFJ": "Behind-the-Scenes"
+  "ENTP": "Rallies",
+  "INTP": "Steadies",
+  "ENTJ": "Directs",
+  "INTJ": "Navigates",
+  "ENFP": "Rallies",
+  "INFP": "Steadies",
+  "ENFJ": "Directs",
+  "INFJ": "Navigates",
+  "ESTP": "Directs",
+  "ISTP": "Navigates",
+  "ESTJ": "Directs",
+  "ISTJ": "Navigates",
+  "ESFP": "Rallies",
+  "ISFP": "Steadies",
+  "ESFJ": "Rallies",
+  "ISFJ": "Steadies"
 };
 export const ROMANCE: Record<MbtiType, string> = {
-  "ENTP": "Infantile",
-  "INTP": "Infantile",
-  "ENTJ": "Victim",
-  "INTJ": "Victim",
-  "ENFP": "Infantile",
-  "INFP": "Infantile",
-  "ENFJ": "Victim",
-  "INFJ": "Victim",
-  "ESTP": "Aggressor",
-  "ISTP": "Aggressor",
-  "ESTJ": "Caregiver",
-  "ISTJ": "Caregiver",
-  "ESFP": "Aggressor",
-  "ISFP": "Aggressor",
-  "ESFJ": "Caregiver",
-  "ISFJ": "Caregiver"
+  "ENTP": "Playful",
+  "INTP": "Playful",
+  "ENTJ": "Pursued",
+  "INTJ": "Pursued",
+  "ENFP": "Playful",
+  "INFP": "Playful",
+  "ENFJ": "Pursued",
+  "INFJ": "Pursued",
+  "ESTP": "Pursuing",
+  "ISTP": "Pursuing",
+  "ESTJ": "Caring",
+  "ISTJ": "Caring",
+  "ESFP": "Pursuing",
+  "ISFP": "Pursuing",
+  "ESFJ": "Caring",
+  "ISFJ": "Caring"
 };
 export const VIRTUE_VICE: Record<MbtiType, [string, string]> = {
   "ENTP": [

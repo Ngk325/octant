@@ -3,7 +3,7 @@ import { type Entry, type Category } from "../engine/lexicon";
 import { type Fn, type SlotName } from "../engine/data";
 import { type MbtiType, type Quadra } from "../engine/core";
 import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
-import { type Animal } from "../engine/ops";
+import { type Animal, ANIMAL_LABEL } from "../engine/ops";
 import FnIcon from "./glyphs/FnIcon";
 import SelfTribeCone from "./glyphs/SelfTribeCone";
 import AnimalGlyph from "./glyphs/AnimalGlyph";
@@ -104,7 +104,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
         {(["Consume", "Blast", "Play", "Sleep"] as const).map((a) => (
           <div key={a} style={{ width: 120, textAlign: "center" }}>
             <AnimalGlyph animal={a} />
-            <span className="small muted">{a}</span>
+            <span className="small muted">{ANIMAL_LABEL[a]}</span>
           </div>
         ))}
       </div>

@@ -63,9 +63,25 @@ export const ANIMAL_DOES: Record<Animal, string> = {
   Consume: "Pulls information in. Learning, researching, taking it all in before moving.",
 };
 
+/**
+ * What a reader sees. The union values above are the engine's identity for
+ * each current — they key ANIMAL_KIND, the glyph components, the chat figure
+ * directives and 110 tests — so they stay put, exactly as relation CODES stay
+ * put while REL_NAME moves. Display lives here.
+ *
+ * The names carry what the old ones never did: which two move energy and which
+ * two move information, and which direction each runs. Nobody guesses "Blast".
+ */
+export const ANIMAL_LABEL: Record<Animal, string> = {
+  Play: "Charge",     // energy, outward
+  Sleep: "Settle",    // energy, inward
+  Blast: "Broadcast", // information, outward
+  Consume: "Absorb",  // information, inward
+};
+
 /** Single-letter abbreviations, used when printing a full code. */
 export const ANIMAL_LETTER: Record<Animal, string> = {
-  Play: "P", Blast: "B", Consume: "C", Sleep: "S",
+  Play: "C", Blast: "B", Consume: "A", Sleep: "S",
 };
 
 /* --------------------------- savior / demon --------------------------- */
@@ -245,10 +261,10 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
   };
 
   const NOTES: Record<AnimalSlot["role"], string> = {
-    savior: "Savior animal. Trusted, used constantly, and rarely thought about.",
-    activated: "The activated or hobby animal. A demon you use anyway, and the easiest place to grow.",
-    last: "The last or missing animal. Barely used without deliberate effort, and the sorest spot.",
-    open: "Undecided. One of these two joins the savior pair and the other becomes the hobby animal — that is a coin you set, not something the type determines.",
+    savior: "Anchor current. Trusted, used constantly, and rarely thought about.",
+    activated: "The activated or hobby current. A flinch you use anyway, and the easiest place to grow.",
+    last: "The last or missing current. Barely used without deliberate effort, and the sorest spot.",
+    open: "Undecided. One of these two joins the anchor pair and the other becomes the hobby current — that is a switch you set, not something the type determines.",
   };
 
   const listed: Animal[] = secondSavior
@@ -283,7 +299,7 @@ export function ops(t: MbtiType, sub: Subtype = {}): OpsSignature {
   const code = `${mod}-${saviorObs}/${saviorDec}-${stackCode}`;
 
   const unset: string[] = [];
-  if (!secondSavior) unset.push("second savior animal");
+  if (!secondSavior) unset.push("second anchor current");
   if (!sub.lead) unset.push("info vs energy lead");
   if (!sub.sensory) unset.push("sensory modality");
   if (!sub.decider) unset.push("decider modality");

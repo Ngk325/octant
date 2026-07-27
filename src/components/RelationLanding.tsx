@@ -9,8 +9,7 @@ import { usePalette } from "./Theme";
  *
  * This is the whole engine in one picture. All 256 relations, both ease
  * directions, supervision and the playbooks reduce to this question — when
- * your Hero and Parent arrive, which of my eight slots do they hit? A Dual's
- * strengths land on the Inferior and Child (relief); a Conflictor's land on
+ * your Hero and Parent arrive, which of my eight slots do they hit? A Counterpart's  * strengths land on the Inferior and Child (relief); a Headwind pairing's land on
  * the Trickster and Demon (nobody can tell what is happening).
  *
  * `a` is the person being read, `b` the person doing the reading — the same

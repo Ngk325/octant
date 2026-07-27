@@ -40,8 +40,8 @@ export default function SaviorDemonGrid({ type, sub }: { type: MbtiType; sub?: S
       }}
     >
       <div />
-      <div style={{ ...label, textAlign: "center" }}>Savior — trusted</div>
-      <div style={{ ...label, textAlign: "center" }}>Demon — distrusted</div>
+      <div style={{ ...label, textAlign: "center" }}>Anchors — trusted</div>
+      <div style={{ ...label, textAlign: "center" }}>Flinches — distrusted</div>
 
       {(["Observer", "Decider"] as const).map((axis) => (
         <RowOf key={axis} axis={axis} cells={cells.filter((c) => c.axis === axis)} glow={p.glow} />

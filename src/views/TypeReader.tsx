@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { quadra, stack, gate, complements, catalysts, frictions } from "../engine/core";
 import {
-  ops, coins, SAVIOR_STATE, DEMON_STATE, SAVIOR_MARKERS, DEMON_MARKERS,
+  ops, coins, SAVIOR_STATE, DEMON_STATE, SAVIOR_MARKERS, DEMON_MARKERS, ANIMAL_LABEL,
   type Subtype, type Animal,
 } from "../engine/ops";
 import {
@@ -20,6 +20,7 @@ import {
   type MbtiType,
 } from "../engine/data";
 import { FN_PLAIN, SLOT_PLAIN, GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, typePlain } from "../engine/plain";
+import { typeElsewhere } from "../engine/translation";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
@@ -48,7 +49,7 @@ const SECTIONS = [
   ["slots", "The eight slots"],
   ["sides", "Four sides"],
   ["exchange", "The exchange overlay"],
-  ["exchange-coins", "Your coins"],
+  ["exchange-switches", "Your switches"],
   ["growth", "Growth"],
   ["octagram", "The Octagram"],
   ["theme", "Your theme"],
@@ -107,9 +108,16 @@ export default function TypeReader() {
       </div>
       <p className="lede">{typePlain(t, st[0], st[1], st[3])}</p>
 
+      {/* Three epithets, not one. A single label boxes a reader in, and the
+          spread is itself informative — someone who does not see themselves in
+          the first often does in the third. */}
+      <p className="lede" style={{ margin: "var(--s2) 0 0", color: "var(--ink-2)" }}>
+        {ARCHETYPE[t].join(" · ")}
+      </p>
+
       <p className="small muted">
-        {ARCHETYPE[t]} · <Term>{GROUP[t]}</Term> ·{" "}
-        <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term> · <Term>{ROMANCE[t]}</Term> romance style
+        <Term>{GROUP[t]}</Term> · <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term> ·{" "}
+        <Term>{ROMANCE[t]}</Term> romance style
       </p>
 
       <SectionNav items={SECTIONS} />
@@ -122,7 +130,7 @@ export default function TypeReader() {
       >
         <p>
           The full eight-slot stack, generated from the (dominant, auxiliary) pair by the three
-          involutions. Slots 1–4 are the ego block; 5–8 are the shadow.
+          moves. Slots 1–4 are the ego block; 5–8 are the shadow.
         </p>
       </Explain>
 
@@ -140,7 +148,7 @@ export default function TypeReader() {
           <>
             Two regions are marked, because this model carries two readings of the same stack.
             One puts the growth point at the <b>Inferior</b> alone. The other marks a wider pair —
-            the tertiary <i>and</i> the inferior — as its demons. They agree on slot 4 and disagree
+            the tertiary <i>and</i> the inferior — as its flinches. They agree on slot 4 and disagree
             about slot 3, which the first treats as a delight and the second treats as neglected.
             Neither reading is corrected into the other. The dashed arcs
             pair each ego slot with its shadow mirror: same capacity, facing the other way.
@@ -197,10 +205,10 @@ export default function TypeReader() {
         plain="You are not one type — you are four. Split those eight slots into groups of four and each group is itself one of the sixteen. You move between them all day."
       >
         <p>
-          The four sides are derived from the same three involutions that generate the
+          The four sides are derived from the same three moves that generate the
           relation table. Which is why each side stands in a fixed relation to the ego: the
-          subconscious is your <Term id="rel-du">Dual</Term>, the unconscious your{" "}
-          <Term id="rel-ex">Extinguishment</Term> partner, and the superego your{" "}
+          subconscious is your <Term id="rel-du">Counterpart</Term>, the unconscious your{" "}
+          <Term id="rel-ex">Damper</Term> partner, and the superego your{" "}
           <Term id="rel-se">Super-Ego</Term> partner. The relation and the structural side land on
           the same type because they are the same operator.
         </p>
@@ -280,8 +288,8 @@ export default function TypeReader() {
         plain="A second reading looks at the same top four functions and asks a different question: which two do you trust completely, and which two make you nervous?"
       >
         <p>
-          The overlay splits the ego block into two saviors and two demons. The demons are the axis
-          opposites of the saviors, which puts them at the tertiary and inferior — the overlay does
+          The overlay splits the ego block into two anchors and two flinches. The flinches are the axis
+          opposites of the anchors, which puts them at the tertiary and inferior — the overlay does
           not reach into the shadow block at all.
         </p>
       </Explain>
@@ -290,8 +298,8 @@ export default function TypeReader() {
         label="One structure, two axes."
         caption={
           <>
-            {CONCEPT_PLAIN.savior} {CONCEPT_PLAIN.demon} The demons sit in the same rows as
-            their saviors — same axis, everything else flipped.
+            {CONCEPT_PLAIN.savior} {CONCEPT_PLAIN.demon} The flinches sit in the same rows as
+            their anchors — same axis, everything else flipped.
           </>
         }
       >
@@ -300,11 +308,11 @@ export default function TypeReader() {
 
       <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
         <p className="note" style={{ margin: 0 }}>
-          <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Savior state.</b>{" "}
+          <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Anchor state.</b>{" "}
           <span className="small">{SAVIOR_STATE}</span>
         </p>
         <p className="note warn" style={{ margin: 0 }}>
-          <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Demon state.</b>{" "}
+          <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Flinch state.</b>{" "}
           <span className="small">{DEMON_STATE}</span>
         </p>
       </div>
@@ -315,7 +323,7 @@ export default function TypeReader() {
         </p>
         <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
           <div>
-            <h4 style={{ marginTop: 0 }}>Savior tells</h4>
+            <h4 style={{ marginTop: 0 }}>Anchor tells</h4>
             {SAVIOR_MARKERS.map((m) => (
               <Row
                 key={m.name}
@@ -326,7 +334,7 @@ export default function TypeReader() {
             ))}
           </div>
           <div>
-            <h4 style={{ marginTop: 0 }}>Demon tells</h4>
+            <h4 style={{ marginTop: 0 }}>Flinch tells</h4>
             {DEMON_MARKERS.map((m) => (
               <Row
                 key={m.name}
@@ -339,31 +347,31 @@ export default function TypeReader() {
         </div>
       </Panel>
 
-      <h3>Your four animals</h3>
+      <h3>Your four currents</h3>
       <Explain plain={CONCEPT_PLAIN.animal}>
         <p>
-          Play (Oe+De) and Sleep (Oi+Di) are the <b>energy</b> animals; Blast (Oi+De) and Consume
-          (Oe+Di) are the <b>information</b> animals. Positions 1 and 4 fall out of the type: the
-          double-savior animal is always in the savior pair and the double-demon animal is always
-          last. The two in between need a coin you set.
+          Charge (Oe+De) and Settle (Oi+Di) move <b>energy</b>; Broadcast (Oi+De) and Absorb
+          (Oe+Di) move <b>information</b>. Positions 1 and 4 fall out of the type: the
+          double-anchor current is always in the anchor pair and the double-flinch current is always
+          last. The two in between need a switch you set.
         </p>
       </Explain>
 
       <Figure
-        label={`Animal stack · ${o.code}`}
+        label={`Current stack · `}
         caption={
           o.unset.length
-            ? <>Still open: {o.unset.join(", ")}. These are self-reported coins, not derivable from a four-letter type — set them below and the code completes.</>
+            ? <>Still open: {o.unset.join(", ")}. These are self-reported switches, not derivable from a four-letter type — set them below and the code completes.</>
             : <>Fully coined. This is the complete notation for the reading you have set.</>
         }
       >
         <AnimalStack sig={o} />
       </Figure>
 
-      <h3 id="exchange-coins" className="sec">Your coins</h3>
-      <Panel title="Subtype coins — self-reported, not derived">
+      <h3 id="exchange-switches" className="sec">Your switches</h3>
+      <Panel title="Subtype switches — self-reported, not derived">
         <p className="small">
-          The full overlay reaches 512 readings by adding coins this app&rsquo;s sixteen-type core
+          The full overlay reaches 512 readings by adding switches this app&rsquo;s sixteen-type core
           does not carry.
           They are kept separate on purpose: nothing below changes a single relation, score or
           playbook. Set them if you know yours.
@@ -371,13 +379,13 @@ export default function TypeReader() {
 
         <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
           <label className="field">
-            <span>Which animal joins the savior pair?</span>
+            <span>Which current joins the anchor pair?</span>
             <select
               value={sub.secondSavior ?? ""}
               onChange={(e) => setSub((v) => ({ ...v, secondSavior: (e.target.value || undefined) as Animal | undefined }))}
             >
               <option value="">Not set</option>
-              {o.middles.map((m) => <option key={m} value={m}>{m}</option>)}
+              {o.middles.map((m) => <option key={m} value={m}>{ANIMAL_LABEL[m]}</option>)}
             </select>
           </label>
 
@@ -388,8 +396,8 @@ export default function TypeReader() {
               onChange={(e) => setSub((v) => ({ ...v, lead: (e.target.value || undefined) as Subtype["lead"] }))}
             >
               <option value="">Not set</option>
-              <option value="double-savior">{o.doubleSavior} (both saviors)</option>
-              <option value="second-savior">The other savior animal</option>
+              <option value="double-savior">{ANIMAL_LABEL[o.doubleSavior]} (both anchors)</option>
+              <option value="second-savior">The other anchor current</option>
             </select>
           </label>
 
@@ -419,7 +427,7 @@ export default function TypeReader() {
             onChange={(e) => setSub((v) => ({ ...v, jumper: e.target.checked }))}
           />
           <span className="small">
-            <b>Jumper</b> — saviors are the dominant and the <i>tertiary</i> rather than the
+            <b>Jumper</b> — anchors are the dominant and the <i>tertiary</i> rather than the
             auxiliary. The overlay&rsquo;s other sixteen base readings.
           </span>
         </label>
@@ -427,7 +435,7 @@ export default function TypeReader() {
         <p className="small muted" style={{ marginTop: "var(--s3)", marginBottom: 0 }}>
           Currently <b>{o.dominance}-dominant</b>.{" "}
           {sub.jumper
-            ? "Jumpers are info-dominant: both saviors share an attitude, so an energy animal is last."
+            ? "Jumpers are info-dominant: both anchors share an attitude, so an energy current is last."
             : "Every non-jumper is energy-dominant, because a dominant and an auxiliary always run opposite attitudes — which is exactly the line where the overlay's 32 base readings leave this app's 16 types behind."}
         </p>
       </Panel>
@@ -508,8 +516,8 @@ export default function TypeReader() {
         <p>
           Two layers. The wheel layer is structural and derived here rather than looked up: your{" "}
           <Term id="temple-wheel">wheel</Term> is you and your <Term id="subconscious">subconscious</Term>,
-          which is your <Term id="rel-du">Dual</Term>, and your <Term id="temple">temple</Term> is your
-          full four-sides orbit. Both fall out of the same three involutions the rest of the engine
+          which is your <Term id="rel-du">Counterpart</Term>, and your <Term id="temple">temple</Term> is your
+          full four-sides orbit. Both fall out of the same three moves the rest of the engine
           runs on, 16 of 16, with no lookup table anywhere. The theme layer is biographical, so it
           is set below rather than computed.
         </p>
@@ -611,7 +619,7 @@ export default function TypeReader() {
         plain={`Fit is mechanical before it is chemical: how easy someone is for ${t} to be around depends on which of ${t}'s slots their strengths land in.`}
       >
         <p>
-          The figure shows the best case — {t}&rsquo;s Dual, whose Hero and Parent land exactly on{" "}
+          The figure shows the best case — {t}&rsquo;s Counterpart, whose Hero and Parent land exactly on{" "}
           {t}&rsquo;s Inferior and Child. Every pairing below is the same picture with different
           landing spots; open one to see its version.
         </p>
@@ -694,6 +702,37 @@ export default function TypeReader() {
             }
           />
         ))}
+      </Panel>
+
+      {/* Cross-reference, so it sits at the bottom and stays closed. A reader
+          who arrived from another framework needs this once; everyone else
+          should never have to see another system's vocabulary on their own
+          type page. Every name comes from engine/translation.ts — the one
+          module allowed to hold them — so nothing is duplicated here. */}
+      <Panel style={{ marginTop: "var(--s4)" }}>
+        <details>
+          <summary className="card-title" style={{ cursor: "pointer", marginBottom: 0 }}>
+            Known elsewhere as
+          </summary>
+          <p className="small muted" style={{ margin: "var(--s3) 0" }}>
+            Octant is one model, derived here — these are not its sources, and the names below are
+            not interchangeable with ours. They are here so that if you arrived carrying somebody
+            else&rsquo;s vocabulary, you can find your footing.
+          </p>
+          {typeElsewhere(t).map((e) => (
+            <Row
+              key={e.system}
+              stacked
+              k={<span>{e.system}</span>}
+              v={
+                <span className="small">
+                  {e.term}
+                  {e.note && <span className="muted"> — {e.note}</span>}
+                </span>
+              }
+            />
+          ))}
+        </details>
       </Panel>
     </>
   );
