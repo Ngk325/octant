@@ -1,11 +1,15 @@
 import { Fragment, type ReactNode } from "react";
+import { chatFigure } from "./chat-figures";
 
 /**
  * A deliberately small markdown renderer for assistant replies.
  *
  * It builds React elements rather than setting innerHTML, so model output can
  * never inject markup. It covers exactly what the assistant is asked to emit:
- * paragraphs, headings, bullet and numbered lists, bold, italic and code.
+ * paragraphs, headings, bullet and numbered lists, bold, italic and code —
+ * plus `{{figure:…}}` directive lines, which render the app's own diagrams
+ * in place (see chat-figures.tsx). A directive only swaps in once complete,
+ * so a still-streaming one shows as text and then snaps to the figure.
  */
 export default function Markdown({ text }: { text: string }) {
   return <>{blocks(text)}</>;
@@ -41,6 +45,14 @@ function blocks(src: string): ReactNode[] {
     if (!line.trim()) {
       flushPara();
       flushList();
+      continue;
+    }
+
+    const figure = chatFigure(line);
+    if (figure) {
+      flushPara();
+      flushList();
+      out.push(<Fragment key={`f${out.length}`}>{figure}</Fragment>);
       continue;
     }
 

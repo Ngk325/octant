@@ -69,7 +69,11 @@ function devApi(): Plugin {
               response =
                 req.url === "/api/chat"
                   ? await handleChat(request, { GEMINI_API_KEY: env.GEMINI_API_KEY })
-                  : new Response(JSON.stringify({ error: "Not found." }), { status: 404 });
+                  : req.url === "/api/chat/end"
+                    // No KV locally: the beacon is accepted and dropped, same
+                    // as production without the binding.
+                    ? new Response(null, { status: 204 })
+                    : new Response(JSON.stringify({ error: "Not found." }), { status: 404 });
             }
 
             // ssrLoadModule is untyped, so the narrowing above does not survive. Asserted

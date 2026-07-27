@@ -9,7 +9,37 @@ export interface Message {
 }
 
 const KEY = "chat.thread";
+const ID_KEY = "chat.threadId";
 const MAX_STORED = 40;
+
+/** The thread's server-side identity. Survives navigation; replaced on reset. */
+function loadThreadId(): string {
+  try {
+    const v = readStored(ID_KEY);
+    if (v && /^[A-Za-z0-9-]{8,64}$/.test(v)) return v;
+  } catch { /* fall through */ }
+  const id = crypto.randomUUID();
+  try { writeStored(ID_KEY, id); } catch { /* storage may be unavailable */ }
+  return id;
+}
+
+/**
+ * Tell the server the session is over so the transcript can be mailed.
+ * sendBeacon when available (survives tab close), fetch keepalive otherwise.
+ * Fire-and-forget by design — there is nothing to do about a failure.
+ */
+function signalEnd(threadId: string) {
+  const payload = JSON.stringify({ threadId });
+  try {
+    if (navigator.sendBeacon?.("/api/chat/end", payload)) return;
+  } catch { /* fall through to fetch */ }
+  void fetch("/api/chat/end", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: payload,
+    keepalive: true,
+  }).catch(() => {});
+}
 
 /** Restore the last thread, dropping anything that is not a well-formed message. */
 function load(): Message[] {
@@ -37,12 +67,26 @@ export function useChat(context: ChatContext) {
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abort = useRef<AbortController | null>(null);
+  const threadId = useRef<string>(loadThreadId());
 
   useEffect(() => {
     writeStored(KEY, JSON.stringify(messages.slice(-MAX_STORED)));
   }, [messages]);
 
   useEffect(() => () => abort.current?.abort(), []);
+
+  /* Leaving the site ends the session. pagehide rather than unload — it fires
+     on mobile and on bfcache navigations — and only when there is something
+     to send. The ref sidesteps re-subscribing on every message. */
+  const hasMessages = useRef(false);
+  hasMessages.current = messages.length > 0;
+  useEffect(() => {
+    const onHide = () => {
+      if (hasMessages.current) signalEnd(threadId.current);
+    };
+    window.addEventListener("pagehide", onHide);
+    return () => window.removeEventListener("pagehide", onHide);
+  }, []);
 
   const stop = useCallback(() => {
     abort.current?.abort();
@@ -52,6 +96,12 @@ export function useChat(context: ChatContext) {
 
   const reset = useCallback(() => {
     stop();
+    /* This thread is over — mail its transcript, then mint a fresh identity
+       so the next conversation is its own record. */
+    if (hasMessages.current) signalEnd(threadId.current);
+    const fresh = crypto.randomUUID();
+    threadId.current = fresh;
+    try { writeStored(ID_KEY, fresh); } catch { /* storage may be unavailable */ }
     setMessages([]);
     setError(null);
     removeStored(KEY);
@@ -74,7 +124,7 @@ export function useChat(context: ChatContext) {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ messages: outgoing, context }),
+          body: JSON.stringify({ messages: outgoing, context, threadId: threadId.current }),
           signal: controller.signal,
         });
 

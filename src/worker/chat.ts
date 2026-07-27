@@ -1,4 +1,7 @@
 import { buildSystemInstruction, type ChatContext } from "../engine/context";
+import {
+  recordExchange, sweepIdle, validThreadId, type ChatLogEnv, type ChatWho,
+} from "./chatlog";
 
 /* ------------------------------------------------------------------ *
  * /api/chat -- a thin, streaming proxy to Gemini.
@@ -10,8 +13,18 @@ import { buildSystemInstruction, type ChatContext } from "../engine/context";
  * the request.
  * ------------------------------------------------------------------ */
 
-export interface Env {
+export interface Env extends ChatLogEnv {
   GEMINI_API_KEY?: string;
+}
+
+/** How handleChat reports back to the runtime and the transcript log. */
+export interface ChatHooks {
+  /** Who is talking, from the session layer. Absent in tests/dev without auth. */
+  who?: ChatWho;
+  /** The caller's user agent, for the transcript metadata. */
+  ua?: string;
+  /** ExecutionContext.waitUntil, so logging outlives the streamed response. */
+  waitUntil?(p: Promise<unknown>): void;
 }
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
@@ -37,6 +50,21 @@ interface ChatRequest {
   messages?: ChatTurn[];
   context?: ChatContext;
   model?: ModelKey;
+  /** Client-generated thread id, for the transcript log. */
+  threadId?: string;
+}
+
+/** A short human label of the screen a question was asked from, for the log. */
+function contextLabel(ctx: ChatContext): string {
+  switch (ctx.kind) {
+    case "type": return `type ${ctx.type}`;
+    case "pair": return `pair ${ctx.a}·${ctx.b}`;
+    case "learn": return `course ${ctx.stage}: ${ctx.title}`;
+    case "network": return `group of ${ctx.members.length}`;
+    case "lexicon": return ctx.term ? `lexicon: ${ctx.term}` : "lexicon";
+    case "calculator": return `calculator${ctx.best ? ` → ${ctx.best}` : ""}`;
+    default: return ctx.kind;
+  }
 }
 
 /** A JSON response with the right content type. */
@@ -73,7 +101,13 @@ function rateLimited(ip: string, now: number): boolean {
  * the Vite dev server both call THIS function, so local and deployed behaviour
  * cannot drift apart. The API key is read from env and never reaches the client.
  */
-export async function handleChat(request: Request, env: Env, now = Date.now()): Promise<Response> {
+export async function handleChat(
+  request: Request, env: Env, hooks: ChatHooks = {}, now = Date.now(),
+): Promise<Response> {
+  /* Piggyback the idle-transcript sweep on chat traffic. Fire-and-forget;
+     with no CHAT_LOGS binding it is a no-op. */
+  const defer = hooks.waitUntil ?? ((p: Promise<unknown>) => void p.catch(() => {}));
+  defer(sweepIdle(env, now));
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
   if (request.method !== "POST") return json({ error: "Use POST." }, 405);
 
@@ -146,7 +180,26 @@ export async function handleChat(request: Request, env: Env, now = Date.now()): 
     return json({ error: `The model returned ${upstream.status}.` }, 502);
   }
 
-  return new Response(upstream.body.pipeThrough(toTextStream()), {
+  /* The transcript hook. The reply is accumulated by the stream transform as
+     it passes through; when the stream finishes, the exchange — the user's
+     last message plus the model's whole reply — is appended to the thread's
+     KV record. waitUntil keeps that write alive past the response. */
+  const lastUser = [...messages].reverse().find((m) => m.role === "user")?.text ?? "";
+  const threadId = validThreadId(body.threadId) ? body.threadId : crypto.randomUUID();
+  const onComplete = (fullReply: string) => {
+    defer(recordExchange(
+      env,
+      threadId,
+      hooks.who ?? { label: "unknown", kind: "code" },
+      contextLabel(body.context ?? { kind: "home" }),
+      lastUser,
+      fullReply,
+      now,
+      hooks.ua,
+    ));
+  };
+
+  return new Response(upstream.body.pipeThrough(toTextStream(onComplete)), {
     headers: {
       "content-type": "text/event-stream; charset=utf-8",
       "cache-control": "no-cache, no-transform",
@@ -159,11 +212,16 @@ export async function handleChat(request: Request, env: Env, now = Date.now()): 
  * Gemini's SSE frames carry a whole GenerateContentResponse each. Reduce them to
  * newline-delimited `{"text": "..."}` so the client only has to append strings.
  * Thought parts are dropped — they are not the answer.
+ *
+ * `onComplete` receives the fully-assembled reply when the stream ends — the
+ * transform already parses every text chunk, so the transcript log rides along
+ * for free instead of parsing the stream a second time.
  */
-function toTextStream(): TransformStream<Uint8Array, Uint8Array> {
+function toTextStream(onComplete?: (fullReply: string) => void): TransformStream<Uint8Array, Uint8Array> {
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
   let buffer = "";
+  let assembled = "";
 
   /** Push one decoded text chunk to the client as it arrives from Gemini. */
   const emit = (controller: TransformStreamDefaultController<Uint8Array>, payload: string) => {
@@ -179,7 +237,10 @@ function toTextStream(): TransformStream<Uint8Array, Uint8Array> {
           .filter((p: { thought?: boolean; text?: string }) => !p.thought && typeof p.text === "string")
           .map((p: { text: string }) => p.text)
           .join("");
-        if (text) controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
+        if (text) {
+          assembled += text;
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
+        }
       } catch {
         /* a partial frame — the next chunk completes it */
       }
@@ -197,6 +258,7 @@ function toTextStream(): TransformStream<Uint8Array, Uint8Array> {
     flush(controller) {
       if (buffer.trim()) emit(controller, buffer);
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
+      onComplete?.(assembled);
     },
   });
 }
