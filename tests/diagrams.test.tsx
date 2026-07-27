@@ -114,7 +114,10 @@ describe("relation landing", () => {
     for (const [a, b] of pairs) {
       const html = draw(<RelationLanding a={a} b={b} />);
       expectFloor(html);
-      expect(html).toContain("being read");
+      // Both columns name their person — the diagram is read alongside the
+      // pair page's "You are / Them" bar and has to agree with it.
+      expect(html).toContain(`Them — ${a}`);
+      expect(html).toContain(`You — ${b}`);
     }
   });
 });

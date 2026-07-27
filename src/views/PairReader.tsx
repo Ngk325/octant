@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { TYPES, REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/data";
-import { REL_PLAIN, CONCEPT_PLAIN, SLOT_PLAIN } from "../engine/plain";
+import { REL_PLAIN, CONCEPT_PLAIN, slotAbout } from "../engine/plain";
 import { playbook } from "../engine/playbook";
 import { compareAspects } from "../engine/lexicon";
 import { correlation, divergence, EMPIRICAL_SOURCE } from "../engine/empirical";
@@ -33,6 +33,10 @@ export default function PairReader() {
   const easeTarget = ease(target, persp);
   const easePersp = ease(persp, target);
   const symmetric = RECIPROCAL[code] === code;
+  /* For the asymmetry note: naming who actually has the harder time beats
+     restating the two relation names and leaving the reader to work it out. */
+  const easier = easePersp >= easeTarget ? persp : target;
+  const harder = easier === persp ? target : persp;
 
   const tStack = stack(target);
   const [pHero, pParent] = DOM_AUX[persp];
@@ -47,16 +51,34 @@ export default function PairReader() {
 
   return (
     <>
-      <div className="cluster" style={{ gap: "var(--s5)", marginTop: "var(--s5)", alignItems: "flex-end" }}>
-        <TypePicker label="Being read" value={target} onChange={(x) => nav(`/pair/${x}/${persp}`)} />
-        <TypePicker label="Doing the reading" value={persp} onChange={(x) => nav(`/pair/${target}/${x}`)} />
+      {/* Sticky, because the whole page is written from one side and the reader
+          loses track of which side that is the moment this scrolls away. The
+          labels are the sentence in the h1, not "being read"/"doing the
+          reading" — which described the mechanism rather than the person. */}
+      <div className="persp-bar">
+        <TypePicker label="You are" value={persp} onChange={(x) => nav(`/pair/${target}/${x}`)} />
+        <span className="persp-verb" aria-hidden="true">reading about</span>
+        <TypePicker label="Them" value={target} onChange={(x) => nav(`/pair/${x}/${persp}`)} />
         <button className="btn ghost" onClick={() => nav(`/pair/${persp}/${target}`)}>Swap ⇄</button>
       </div>
 
-      <h1>{REL_NAME[code]}</h1>
+      <h1>How {persp} should handle {target}</h1>
       <p className="lede">{REL_PLAIN[code]}</p>
 
-      <Explain plain={`${persp} is ${target}'s ${REL_NAME[code]}.`}>
+      {/* The advice was the last panel on the page, in the narrow column, under
+          the ease bars and the landing table. It is the thing the reader came
+          for, so it now runs directly under the title. */}
+      <Panel title="The short version">
+        <p style={{ fontSize: "var(--t-lg)", lineHeight: 1.55, margin: 0 }}>{playbook(persp, target)}</p>
+      </Panel>
+
+      <Explain
+        plain={`In this model the relationship has a name: ${persp} is ${target}'s ${REL_NAME[code]}. ${
+          symmetric
+            ? "It works the same way in both directions."
+            : `Read the other way round it is different — ${target} is ${persp}'s ${REL_NAME[RECIPROCAL[code]]}.`
+        }`}
+      >
         <p>{REL_DEF[code]}</p>
       </Explain>
 
@@ -68,10 +90,11 @@ export default function PairReader() {
         label="Why this pairing behaves the way it does."
         caption={
           <>
-            {persp}&rsquo;s <FnTag fn={pHero} /> lands on {target}&rsquo;s <b>{landing[0].slot}</b>{" "}
-            and their <FnTag fn={pParent} /> on {target}&rsquo;s <b>{landing[1].slot}</b>. Which
-            slots get hit is the whole story: land on the Inferior and you are relief; land on
-            the Trickster and neither of you can tell what is happening.
+            Everything {persp} does best arrives somewhere specific in {target}, and where it
+            lands is the whole relationship. {persp}&rsquo;s <FnTag fn={pHero} /> arrives at{" "}
+            {target}&rsquo;s <b>{landing[0].slot}</b>; {persp}&rsquo;s <FnTag fn={pParent} /> at{" "}
+            {target}&rsquo;s <b>{landing[1].slot}</b>. Land on the sore spot and you are a
+            relief; land on the blind spot and neither of you can work out what just happened.
           </>
         }
       >
@@ -81,7 +104,7 @@ export default function PairReader() {
       {/* The data-dense panel takes the wide column; the one-paragraph
           playbook takes the narrow one. The first build had it backwards —
           a short quote floating in 1.35fr beside a packed sidebar. */}
-      <div className="grid g-side" style={{ marginTop: "var(--s5)", alignItems: "start" }}>
+      <div style={{ marginTop: "var(--s5)" }}>
         <Panel title="How easy is it — both ways">
           <p className="small">{CONCEPT_PLAIN.directional}</p>
           <div style={{ margin: "var(--s4) 0" }}>
@@ -94,18 +117,26 @@ export default function PairReader() {
 
           {!symmetric && (
             <p className="note warn" style={{ marginBottom: 0 }}>
-              <b>This one runs differently in each direction.</b> {persp} is {target}&rsquo;s{" "}
-              {REL_NAME[code]}, while {target} is {persp}&rsquo;s {REL_NAME[RECIPROCAL[code]]}.
-              Whoever is on the heavier side usually cannot tell it is happening.
+              <b>This one is not the same from both sides.</b> {harder} has to work harder at it
+              than {easier} does, and the person having the easier time almost never notices.
+              If you are {persp}, that is worth knowing before you assume the effort is shared.
             </p>
           )}
 
+          {/* Every name is spelled out. This row used to say "Their strongest"
+              in the key and "Your worry" in the value — about the same function,
+              meaning two different people, with nothing on screen to say which. */}
           {landing.map(({ fn, slot }) => (
             <Row
               key={fn}
               stacked
-              k={<span>{fn === pHero ? "Their strongest" : "Their second"} — <FnTag fn={fn} /> lands on {target}&rsquo;s <b>{slot}</b></span>}
-              v={<span className="small">{SLOT_PLAIN[slot]}</span>}
+              k={
+                <span>
+                  {persp}&rsquo;s {fn === pHero ? "strongest" : "second"} — <FnTag fn={fn} /> —
+                  arrives at {target}&rsquo;s <b>{slot}</b>
+                </span>
+              }
+              v={<span className="small">{slotAbout(slot, target)}</span>}
             />
           ))}
           <Row
@@ -118,10 +149,6 @@ export default function PairReader() {
             }
           />
           <Row k="Relation code" v={<span className="mono">{code} · reciprocal {RECIPROCAL[code]}</span>} />
-        </Panel>
-
-        <Panel title={`How ${persp} should handle ${target}`}>
-          <p style={{ fontSize: "var(--t-lg)", lineHeight: 1.55, marginBottom: 0 }}>{playbook(persp, target)}</p>
         </Panel>
       </div>
 
@@ -180,9 +207,10 @@ export default function PairReader() {
 
       <h2>Aspect by aspect</h2>
       <p className="prose">
-        Every dimension the two share, and what this specific combination does with it. Order
-        matters — reading someone is not the same as being read by them. Two families: the
-        taxonomy both types sit in, and the coins that build the types themselves.
+        Every dimension {persp} and {target} both sit on, and what this particular combination
+        does with it. Each row reads <b>{target}&rsquo;s side → {persp}&rsquo;s side</b>, in that
+        order. The first group is the taxonomy they share; the second is the coins the types are
+        built from.
       </p>
 
       <Panel title="The taxonomy they share">

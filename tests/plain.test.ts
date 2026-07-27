@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { TYPES, REL, stack } from "../src/engine/core";
 import { ENTRIES } from "../src/engine/lexicon";
 import {
-  PLAIN_BY_ID, FN_PLAIN, SLOT_PLAIN, REL_PLAIN, QUADRA_PLAIN, GATE_PLAIN,
-  COIN_PLAIN, CONCEPT_PLAIN, SIDE_PLAIN,
+  PLAIN_BY_ID, FN_PLAIN, SLOT_PLAIN, SLOT_ABOUT, slotAbout, REL_PLAIN, QUADRA_PLAIN,
+  GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, SIDE_PLAIN,
 } from "../src/engine/plain";
 import { SLOT_NAMES, REL_NAME, FN_FULL, type Fn } from "../src/engine/data";
 import { buildSystemInstruction, typeFacts, pairFacts } from "../src/engine/context";
@@ -124,5 +124,36 @@ describe("assistant grounding", () => {
   it("names the reader's own stack slots rather than generic advice", () => {
     const facts = typeFacts("ISFJ").join("\n");
     for (const fn of stack("ISFJ")) expect(facts).toContain(fn);
+  });
+});
+
+/* The pair page has two people on it, so second-person copy is ambiguous
+   there. SLOT_PLAIN stays second-person for the type page; SLOT_ABOUT is the
+   same eight slots with the owner named. */
+describe("slot copy written from outside", () => {
+  it("covers exactly the eight slots", () => {
+    expect(Object.keys(SLOT_ABOUT).sort()).toEqual([...SLOT_NAMES].sort());
+  });
+
+  it("names the type instead of saying 'you' or 'your'", () => {
+    for (const slot of SLOT_NAMES) {
+      const line = slotAbout(slot, "ENTP");
+      expect(line, slot).toContain("ENTP");
+      expect(line, `${slot} still addresses the reader`).not.toMatch(/\byou\b|\byour\b/i);
+    }
+  });
+
+  it("substitutes every occurrence of the placeholder", () => {
+    for (const slot of SLOT_NAMES) {
+      expect(slotAbout(slot, "INFJ"), slot).not.toContain("{who}");
+    }
+  });
+
+  it("keeps the second-person originals intact for the type page", () => {
+    for (const slot of SLOT_NAMES) expect(SLOT_PLAIN[slot]).toMatch(/\bYou\b|\bYour\b/);
+  });
+
+  it("returns empty rather than throwing on an unknown slot", () => {
+    expect(slotAbout("Nonesuch", "ENTP")).toBe("");
   });
 });

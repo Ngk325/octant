@@ -55,11 +55,14 @@ export default function RelationLanding({ a, b }: { a: MbtiType; b: MbtiType }) 
         ))}
       </defs>
 
+      {/* Matched to the pair page's perspective bar, which says "You are B"
+          and "Them: A". "being read" / "reading" named the mechanism and left
+          the reader to work out which column was which person. */}
       <text x={COL_A.x} y="18" fill="var(--ink)" fontSize="15" fontWeight="600">
-        {a} — being read
+        Them — {a}
       </text>
       <text x={COL_B.x + COL_B.w} y="18" fill="var(--ink)" fontSize="15" fontWeight="600" textAnchor="end">
-        {b} — reading
+        You — {b}
       </text>
 
       {/* a's ego band */}
