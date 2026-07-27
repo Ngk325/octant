@@ -49,7 +49,7 @@ export default function Home() {
         <Tile to="/type/ENTP">
           <h3 style={{ margin: "0 0 var(--s2)" }}>A type, in full →</h3>
           <p className="small" style={{ margin: 0 }}>
-            The eight slots, all four sides of the mind, the OPS overlay, the growth gate and who
+            The eight slots, all four sides of the mind, the exchange overlay, the growth gate and who
             you fit with — with the plain reading on top of each.
           </p>
         </Tile>
@@ -80,11 +80,11 @@ export default function Home() {
             and names the asymmetry when there is one.
           </p>
         </Panel>
-        <Panel title="Two instruments, not blended">
+        <Panel title="Two readings, not blended">
           <p className="small">
-            CS Joseph and Objective Personality model a different number of psychic parts and give
-            different growth readings for the same person. Where they diverge you get both,
-            labelled — not an average neither would recognise.
+            The same stack supports two readings of where a person grows, and they mark a different
+            number of psychic parts. Where they diverge you get both, labelled — not an average that
+            quietly hides the disagreement.
           </p>
         </Panel>
       </div>

@@ -113,7 +113,6 @@ export default function Lexicon() {
                   {e.category === "Function" && <FunctionExtras fn={e.term as Fn} />}
 
                   <p className="small muted" style={{ margin: 0 }}>
-                    {e.source && <>Source: {e.source}. </>}
                     {e.seeAlso?.length ? (
                       <>
                         See also{" "}

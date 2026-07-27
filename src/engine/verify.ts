@@ -15,13 +15,13 @@ export function verify(): string[] {
     const col = TYPES.map((q) => REL[q][t]);
     if (new Set(col).size !== 16) problems.push(`column ${t}: ${new Set(col).size} distinct codes`);
 
-    /* ---- OPS ---- */
+    /* ---- the exchange overlay ---- */
     const o = ops(t);
-    // Saviors are the ego's top two; demons are their Model A opposites, which are
-    // the ego's tertiary and inferior. OPS never reaches into the shadow block.
+    // Saviors are the ego's top two; demons are their axis opposites, which are
+    // the ego's tertiary and inferior. the overlay never reaches into the shadow block.
     const top4 = new Set(stack(t).slice(0, 4));
     for (const fn of [o.saviorObs, o.saviorDec, o.demonObs, o.demonDec]) {
-      if (!top4.has(fn)) problems.push(`${t}: OPS function ${fn} is outside the ego block`);
+      if (!top4.has(fn)) problems.push(`${t}: overlay function ${fn} is outside the ego block`);
     }
     if (o.demonObs !== omega[o.saviorObs]) problems.push(`${t}: demon observer is not omega(savior)`);
     if (o.demonDec !== omega[o.saviorDec]) problems.push(`${t}: demon decider is not omega(savior)`);
@@ -33,7 +33,7 @@ export function verify(): string[] {
     // Because dominant and auxiliary always run opposite attitudes, both saviors
     // never share one -- so the first and last animals are the two INFORMATION
     // animals, and every non-jumper type is energy-dominant. Jumpers invert this,
-    // which is precisely the half of OPS's 32 this app's 16-type core cannot hold.
+    // which is precisely the half of the overlay's 32 this app's 16-type core cannot hold.
     const expectPrimary = t[3] === "P" ? "Consume" : "Blast";
     if (o.doubleSavior !== expectPrimary) problems.push(`${t}: double-savior animal ${o.doubleSavior}`);
     if (ANIMAL_KIND[o.doubleDemon] !== "Information") problems.push(`${t}: last animal is not an info animal`);

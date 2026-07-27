@@ -4,10 +4,9 @@ import { TYPES, type MbtiType } from "./data";
 /* ------------------------------------------------------------------ *
  * THE OCTAGRAM
  *
- * CS Joseph's advanced layer, and the hardest material in this app. The
- * guiding rule for this module is the same one the rest of the engine
- * follows: SAY WHAT IS DERIVED AND SAY WHAT IS SOURCED, and never blur
- * the two.
+ * The advanced layer, and the hardest material in this app. The guiding
+ * rule for this module is the same one the rest of the engine follows:
+ * SAY WHAT IS DERIVED AND SAY WHAT IS AUTHORED, and never blur the two.
  *
  * ── What is DERIVED (computed here, asserted in tests/octagram.test.ts)
  *
@@ -40,16 +39,12 @@ import { TYPES, type MbtiType } from "./data";
  *   aspirational. One published summary transposes the two columns
  *   relative to the others. The orientation used here — shadow = where
  *   the unconscious-developed sit, aspirational = where the
- *   subconscious-developed sit — is the one given explicitly in the
- *   dedicated ESTP/INFJ episode and on the temple-wheels page. It is
- *   cross-checked on two wheels of eight, and that limit is recorded in
- *   UNSETTLED rather than glossed over.
+ *   subconscious-developed sit — is the one the research batch states
+ *   explicitly. It is cross-checked on two wheels of eight only, and
+ *   that limit is recorded in UNSETTLED rather than glossed over.
  *
- * Sources: csjoseph.life — "The 8 Temple Wheels of the Octagram",
- * "EgoHacking Via Cognitive Origins and the Golden Rule", "INFJ & ESTP
- * Octagram Development (Objectification vs Idolatry)", "The Four Themes
- * of the Octagram", "How ENTJ & ISFP Find Their Cognitive Origin of
- * Purpose". All prose below is written for this app.
+ * Research notes for this layer are in docs/; every string below is
+ * written for this app.
  * ------------------------------------------------------------------ */
 
 export type TempleName = "Soul" | "Mind" | "Heart" | "Body";

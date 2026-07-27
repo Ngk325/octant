@@ -10,7 +10,7 @@ import { empirical, divergence, EMPIRICAL_SOURCE } from "./empirical";
 import { compareAspects } from "./lexicon";
 import {
   SLOT_NAMES, REL_NAME, REL_DEF, RECIPROCAL, COIN_LABELS, DETERMINING,
-  ARCHETYPE, GROUP, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE, BEHAVIOURAL, SOCIONICS,
+  ARCHETYPE, GROUP, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE, BEHAVIOURAL,
   FN_FULL, type MbtiType,
 } from "./data";
 
@@ -18,7 +18,7 @@ import {
  * GROUNDING FOR THE ASSISTANT
  *
  * The chat is only worth having if it answers from THIS model rather
- * than from whatever MBTI folklore is lying around on the internet. So
+ * than from whatever type folklore is lying around on the internet. So
  * every request carries a system instruction built from the engine's
  * own derived output for whatever the reader is currently looking at.
  *
@@ -55,7 +55,6 @@ export function typeFacts(t: MbtiType): string[] {
 
   return [
     line("Type", `${t} — ${ARCHETYPE[t]}`),
-    line("Socionics", SOCIONICS[t]),
     line("Quadra", quadra(t)),
     line("Temperament", GROUP[t]),
     line("Interaction style", INTERACTION_STYLE[t]),
@@ -67,10 +66,10 @@ export function typeFacts(t: MbtiType): string[] {
     }).join(" · ")),
     line("Subconscious opens by", s.subconscious.opensWith),
     line("Unconscious opens by", s.unconscious.opensWith),
-    line("OPS saviors", `${o.saviorObs} (observer) + ${o.saviorDec} (decider)`),
-    line("OPS demons", `${o.demonObs} (observer) + ${o.demonDec} (decider)`),
-    line("OPS animals", o.animals.map((a) => `${a.animal} = ${a.obs}+${a.dec} [${a.role}]`).join(" · ")),
-    line("OPS dominance", `${o.dominance}-dominant`),
+    line("Saviors", `${o.saviorObs} (observer) + ${o.saviorDec} (decider)`),
+    line("Demons", `${o.demonObs} (observer) + ${o.demonDec} (decider)`),
+    line("Animals", o.animals.map((a) => `${a.animal} = ${a.obs}+${a.dec} [${a.role}]`).join(" · ")),
+    line("Dominance", `${o.dominance}-dominant`),
     line("Growth gate", `${g.gate} — fears ${g.fear}; the cave is ${g.cave}; the treasure is ${g.treasure}`),
     line("Octagram temple", `${temple.name} — ${temple.about} Holds ${temple.types.join(", ")}, which are this type's four sides.`),
     line("Octagram wheel", `Origin ${w.origin} (shared with ${w.pair[1]}). ${w.originPlain} ` +
@@ -133,7 +132,7 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
 const MODEL_PRIMER = `
 You are the resident guide inside Octant, a typology instrument. Answer from the model
 described below, which is derived rather than looked up, and which differs in specific ways
-from popular MBTI writing on the internet. When the two disagree, this model wins.
+from the popular type writing on the internet. When the two disagree, this model wins.
 
 THE MODEL IN BRIEF
 - A type is a fixed order of eight cognitive functions. Slots 1-4 are the ego block
@@ -144,20 +143,20 @@ THE MODEL IN BRIEF
   from sixteen (dominant, auxiliary) pairs.
 - EASE IS DIRECTIONAL. Supervisor/Supervisee and Benefactor/Beneficiary are asymmetric, so
   always give both directions rather than a single compatibility number.
-- FOUR SIDES OF THE MIND (CS Joseph). Every person is four types at once. The subconscious
+- FOUR SIDES OF THE MIND. Every person is four types at once. The subconscious
   is the ego stack reversed and is structurally the ego's Dual; the unconscious is the shadow
   block and is the ego's Extinguishment partner; the superego is the shadow reversed and is
   the ego's Super-Ego partner. Each side has one gateway function: Hero into the ego,
   Inferior into the subconscious (blocked by insecurity), Nemesis into the unconscious
   (blocked by worry), Demon into the superego (blocked by fear). Undeveloped subconscious
   gets forced open by a midlife crisis; undeveloped unconscious by a three-quarter-life crisis.
-- OPS OVERLAY. Objective Personality reads the same four ego functions as two saviors
-  (trusted, effortless) and two demons (distrusted, effortful). The demons are the Model A
-  opposites of the saviors, which means they are the ego's tertiary and inferior — OPS does
-  not reach into the shadow block. Animals pair one observer attitude with one decider
+- THE EXCHANGE OVERLAY. A second reading of the same four ego functions: two saviors
+  (trusted, effortless) and two demons (distrusted, effortful). The demons are the axis
+  opposites of the saviors, which means they are the ego's tertiary and inferior — the overlay
+  does not reach into the shadow block. Animals pair one observer attitude with one decider
   attitude: Play = Oe+De and Sleep = Oi+Di are the energy animals; Blast = Oi+De and
   Consume = Oe+Di are the information animals.
-- THE OCTAGRAM (CS Joseph's advanced layer). Sixteen types pair off into eight DYADS — a type
+- THE OCTAGRAM (the advanced layer). Sixteen types pair off into eight DYADS — a type
   and its subconscious, i.e. a Dual pair — and each dyad shares one COGNITIVE ORIGIN, the thing
   it has been after its whole life. Two dyads make a TEMPLE, which is exactly one four-sides
   orbit: Soul (identity), Mind (knowledge and judgement), Heart (desire and regard), Body
@@ -168,8 +167,9 @@ THE MODEL IN BRIEF
   set in childhood) crossed with FOCUS (SF/UF, mutable) gives four THEMES — Joy, Decay, Hope,
   Despair. Never guess someone's theme from their type; ask, or answer conditionally.
   Say plainly that the shadow/aspirational labelling is the least certain part of this layer.
-- CSJ AND OPS ARE NOT RECONCILED HERE, deliberately. They model a different number of psychic
-  parts. Say so when it matters rather than blending them.
+- THE TWO GROWTH READINGS ARE NOT RECONCILED HERE, deliberately. One puts the growth point at
+  the Inferior alone; the exchange overlay marks the tertiary and inferior together. They count
+  the parts of a mind differently. Say so when it matters rather than blending them.
 - AN EMPIRICAL COUNTERWEIGHT is carried alongside the derived scores: a self-reported
   compatibility survey that correlates at r = -0.15 with this model. Where the two disagree, say
   so and say why — the survey measures who people report liking (so same-type pairs top it), and
@@ -187,7 +187,7 @@ when a picture genuinely carries the point):
 - {{figure:wiring TYPE}} — the eight slots with ego–shadow correspondence arcs.
 - {{figure:four-sides TYPE}} — all four sides with their stacks and gateways.
 - {{figure:gateway-path TYPE}} — the four development doors in order.
-- {{figure:savior-demon TYPE}} — the OPS savior/demon 2x2.
+- {{figure:savior-demon TYPE}} — the savior/demon 2x2.
 - {{figure:animal-stack TYPE}} — the four animals in order.
 - {{figure:wheel TYPE}} — the type's Octagram wheel: origin, virtue, sin, poles.
 - {{figure:archetype-grid TYPE}} — the ego archetypes on aware x optimistic (TYPE optional).

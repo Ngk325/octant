@@ -259,7 +259,7 @@ export const PLAIN_BY_ID: Record<string, string> = {
   "four-sides": "You are four types, not one: the everyday you, the one you wish you were, the one who shows up in a crisis, and the one at your worst.",
   ego: CONCEPT_PLAIN.ego,
   shadow: "The bottom four habits. They still run — they just do not feel like you choosing something.",
-  "model-a": "The bit of maths underneath all of this: flip a habit's direction, swap it for its opposite, or do both, and you can generate every type and every relationship from a very small starting point.",
+  "stack-map": "The bit of maths underneath all of this: flip a habit's direction, swap it for its opposite, or do both, and you can generate every type and every relationship from a very small starting point.",
   quadra: CONCEPT_PLAIN.quadra,
   animal: CONCEPT_PLAIN.animal,
   coin: "A yes-or-no question about how you are wired. Four of them are enough to pin down which of the sixteen you are.",

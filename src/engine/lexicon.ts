@@ -25,7 +25,6 @@ export interface Entry {
   short: string;
   definition: string;
   inSystem?: string;
-  source?: string;
   seeAlso?: string[];
 }
 
@@ -46,50 +45,50 @@ const FUNCTIONS: Draft[] = [
     short: "Extraverted Intuition — branching possibility read off the outside world.",
     definition:
       "Perceives the field of what a thing could become. Ne takes any object, person or situation and fans it into alternatives, analogies and adjacent possibilities, then keeps every branch live rather than collapsing to one. It is a perceiving function, so it gathers rather than concludes; the pleasure is in the proliferation itself. Its characteristic failure is never landing: an enormous inventory of openings and nothing carried to completion.",
-    inSystem: "Extraverted observer. Pairs with an introverted decider (Ti or Fi) to form a Play-primary signature. Its attitude-flip is Ni; its Model A opposite is Si.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["ni", "si", "observer", "gather"] }),
+    inSystem: "Extraverted observer. Pairs with an introverted decider (Ti or Fi) to form a Play-primary signature. Its attitude-flip is Ni; its axis opposite is Si.",
+    seeAlso: ["ni", "si", "observer", "gather"] }),
   E({ id: "ni", term: "Ni", category: "Function",
     short: "Introverted Intuition — convergence on the single line a situation is already running down.",
     definition:
       "Perceives where things are heading. Ni takes a mass of impressions and compresses them into one reading of the underlying trajectory, arriving as a conviction rather than a chain of reasoning. Because the process is largely unconscious, the conclusion often cannot be shown — only asserted, and then defended after the fact. Its failure is premature certainty: the vision arrives whole and resists correction by anything the present is actually doing.",
     inSystem: "Introverted observer. Pairs with an extraverted decider (Te or Fe) to form a Blast-primary signature.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["ne", "se", "observer", "organize"] }),
+    seeAlso: ["ne", "se", "observer", "organize"] }),
   E({ id: "se", term: "Se", category: "Function",
     short: "Extraverted Sensing — the physical present, read at full resolution and in real time.",
     definition:
       "Perceives what is concretely there, now. Se registers the room's actual physics — force, distance, tempo, who is about to move — and reacts inside the window rather than after it. It is the least mediated function: no model sits between the sensor and the world. Its failure is the tyranny of the immediate, where the next vivid thing displaces whatever was being built.",
-    inSystem: "Extraverted observer. Its attitude-flip is Si; its Model A opposite is Ni.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["si", "ni", "observer", "gather"] }),
+    inSystem: "Extraverted observer. Its attitude-flip is Si; its axis opposite is Ni.",
+    seeAlso: ["si", "ni", "observer", "gather"] }),
   E({ id: "si", term: "Si", category: "Function",
     short: "Introverted Sensing — continuity, precedent, and the body's own record.",
     definition:
       "Perceives the present against everything the same body has already met. Si holds a detailed internal register of how things have gone before — procedures that worked, foods that disagreed, the exact way this was done last time — and reads any new situation as a deviation from that record. It is what makes institutions and habits possible. Its failure is that the record becomes the authority: what is unprecedented is treated as unsafe rather than merely unfamiliar.",
     inSystem: "Introverted observer. As an Inferior it produces the Gate of Obligation in ENTP and ENFP.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["se", "ne", "observer", "organize"] }),
+    seeAlso: ["se", "ne", "observer", "organize"] }),
   E({ id: "te", term: "Te", category: "Function",
     short: "Extraverted Thinking — ordering the outside world toward a stated objective.",
     definition:
       "Decides by arranging external reality efficiently. Te asks what the measurable objective is and what sequence of resources, people and steps reaches it fastest, then imposes that sequence. It trusts what can be verified publicly — metrics, track record, results — over what can only be argued internally. Its failure is the unexamined goal: exquisite machinery driving toward an objective nobody checked was worth reaching.",
     inSystem: "Extraverted decider. Pairs with an introverted observer (Ni or Si) to form a Blast-primary signature.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["ti", "fi", "decider", "tribe"] }),
+    seeAlso: ["ti", "fi", "decider", "tribe"] }),
   E({ id: "ti", term: "Ti", category: "Function",
     short: "Introverted Thinking — a private framework that must remain free of contradiction.",
     definition:
       "Decides by internal consistency. Ti builds a model of how something actually works and tests every new input against it, discarding whatever will not fit. Precision matters more than consensus: a definition that most people accept but that leaks under pressure is worse than useless. Its failure is that the model can become the point — refinement continues indefinitely and nothing is ever released into the world where it could be wrong.",
     inSystem: "Introverted decider. Pairs with an extraverted observer (Ne or Se) to form a Play-primary signature.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["te", "fe", "decider", "identity"] }),
+    seeAlso: ["te", "fe", "decider", "identity"] }),
   E({ id: "fe", term: "Fe", category: "Function",
     short: "Extraverted Feeling — reading and then setting the emotional state of a group.",
     definition:
       "Decides by what the collective needs. Fe registers the room's mood as a fact about the world, holds itself responsible for it, and actively moves it — warming, defusing, including, escalating when escalation is what the group requires. It treats shared values as real constraints rather than preferences. Its failure is that harmony becomes the criterion: the true thing goes unsaid because saying it would cost the room.",
     inSystem: "Extraverted decider. As an Inferior it produces the Gate of the Tribe in INTP and ISTP.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["fi", "ti", "decider", "tribe"] }),
+    seeAlso: ["fi", "ti", "decider", "tribe"] }),
   E({ id: "fi", term: "Fi", category: "Function",
     short: "Introverted Feeling — a private register of worth that does not require agreement.",
     definition:
       "Decides by internal value. Fi holds a finely graded sense of what is right, true and worth caring about, calibrated by direct experience rather than argument, and it does not need the tribe to ratify it. This is what makes conviction possible under social pressure. Its failure is unfalsifiability: because the judgement is felt rather than reasoned, it can be neither examined nor explained, only defended or withdrawn.",
     inSystem: "Introverted decider. As an Inferior it produces the Gate of the Self in ENTJ and ESTJ.",
-    source: "Jung, Psychological Types (1921)", seeAlso: ["fe", "te", "decider", "identity"] }),
+    seeAlso: ["fe", "te", "decider", "identity"] }),
 ];
 
 /* ══════════════════════════════ ARCHETYPES ══════════════════════════════ */
@@ -98,45 +97,45 @@ const ARCHETYPES: Draft[] = [
     short: "Slot 1. The function you are best at and most identified with.",
     definition:
       "The apex of the conscious stack: fastest, most confident, least effortful, and the one you would name if asked what you are good at. It operates optimistically and with awareness, which is exactly what makes it dangerous — it will keep going long after it should have stopped, because from the inside its competence feels total. The Parent exists to brake it.",
-    source: "Beebe, Energies and Patterns in Psychological Type", seeAlso: ["parent", "ego", "inferior"] }),
+    seeAlso: ["parent", "ego", "inferior"] }),
   E({ id: "parent", term: "Parent", category: "Archetype",
     short: "Slot 2. The responsible, pessimistic filter that keeps the Hero from doing damage.",
     definition:
       "Conscious and aware like the Hero, but cautious where the Hero is expansive. The Parent takes responsibility for consequences — it prunes, verifies and protects, including protecting other people from the Hero's momentum. It is the function you use when you are being careful on someone else's behalf, and it is tiring in a way the Hero is not.",
-    source: "Beebe", seeAlso: ["hero", "child", "ego"] }),
+    seeAlso: ["hero", "child", "ego"] }),
   E({ id: "child", term: "Child", category: "Archetype",
     short: "Slot 3. Playful, sincere, and easily wounded. The most direct way in.",
     definition:
       "Conscious but unaware — used with genuine delight and no maturity requirement. The Child is where a person is most charming and least defended, which makes it the best point of contact and the cruellest place to attack. Engage someone here and they open; mock them here and the shutter comes down for good.",
-    source: "Beebe", seeAlso: ["parent", "inferior", "ego"] }),
+    seeAlso: ["parent", "inferior", "ego"] }),
   E({ id: "inferior", term: "Inferior", category: "Archetype",
     short: "Slot 4. The fear. Also the doorway to everything the type is not yet.",
     definition:
-      "The gateway to the subconscious: the function a person feels chronically inadequate at and quietly organises their life to avoid. Under stress it erupts in crude, exaggerated form. Faced deliberately rather than avoided, it converts into what CS Joseph calls aspirational power — which is why every growth gate in this system is named for an Inferior.",
+      "The gateway to the subconscious: the function a person feels chronically inadequate at and quietly organises their life to avoid. Under stress it erupts in crude, exaggerated form. Faced deliberately rather than avoided, it converts into what this model calls aspirational power — which is why every growth gate in this system is named for an Inferior.",
     inSystem: "Determines the type's Gate. The Dual supplies precisely this function as their Hero.",
-    source: "Beebe; Jung", seeAlso: ["gate", "rel-du", "child", "shadow"] }),
+    seeAlso: ["gate", "rel-du", "child", "shadow"] }),
   E({ id: "nemesis", term: "Nemesis", category: "Archetype",
     short: "Slot 5. The Hero's attitude-flip, running as worry.",
     definition:
       "The first shadow position: aware but pessimistic, and in constant orbit around the Hero. Where the Hero is certain, the Nemesis supplies the alternative reading and the reason it might not work. It is genuinely useful — it is the type's own internal opposition — but it arrives as anxiety rather than analysis, so it is usually experienced as an obstacle rather than a resource.",
     inSystem: "The two types whose Hero is your Nemesis function are your Catalysts.",
-    source: "Beebe; CS Joseph", seeAlso: ["hero", "catalyst", "shadow"] }),
+    seeAlso: ["hero", "catalyst", "shadow"] }),
   E({ id: "critic", term: "Critic", category: "Archetype",
     short: "Slot 6. The senile elder. Analytical, harsh, demands proof of everything.",
     definition:
       "Shadow, aware, pessimistic. The Critic is where a person is most cuttingly evaluative of both themselves and others, and where they demand a standard of verification they would never apply to their Hero. It carries real discernment and terrible delivery.",
-    source: "Beebe; CS Joseph", seeAlso: ["parent", "shadow"] }),
+    seeAlso: ["parent", "shadow"] }),
   E({ id: "trickster", term: "Trickster", category: "Archetype",
     short: "Slot 7. The blind spot you are confident you do not have.",
     definition:
       "Shadow, unaware, optimistic — the most treacherous position in the stack. The person is not merely bad here; they are unaware of being bad here, and will produce fluent-sounding output that is structurally wrong. Agreement obtained on someone's Trickster is worth nothing, because they are not tracking the thing they think they are tracking.",
     inSystem: "Every playbook names the target's Trickster explicitly, because it is where confirmation is least reliable.",
-    source: "Beebe; CS Joseph", seeAlso: ["child", "demon", "shadow"] }),
+    seeAlso: ["child", "demon", "shadow"] }),
   E({ id: "demon", term: "Demon", category: "Archetype",
     short: "Slot 8. The lowest position. Emerges as destruction when the ego is genuinely threatened.",
     definition:
       "Shadow, unaware, pessimistic. Almost never visible, and when it appears the person is not being difficult — they are past the point of strategy. The Demon disregards every norm of its own function and operates from resentment. Cornering someone into it does not win the exchange; it ends the relationship.",
-    source: "Beebe; CS Joseph", seeAlso: ["trickster", "shadow", "inferior"] }),
+    seeAlso: ["trickster", "shadow", "inferior"] }),
 ];
 
 /* ══════════════════════════════ QUADRAS ══════════════════════════════ */
@@ -150,22 +149,22 @@ const QUADRAS: Draft[] = [
     definition:
       "ENTP, INTP, ESFJ, ISFJ. Ideas are floated for their own sake and nothing is off the table for discussion, but the emotional temperature of the group must stay warm — Fe holds the room while Ti takes the argument apart. Comfort, continuity and possibility are values; power, urgency and confrontation are not. Alpha groups generate a great deal and finish comparatively little.",
     inSystem: "Quadra membership is derived from the four functions in the ego block.",
-    source: "Augustinavičiūtė", seeAlso: ["quadra", "gamma", "ne", "ti"] }),
+    seeAlso: ["quadra", "gamma", "ne", "ti"] }),
   E({ id: "beta", term: "Beta", category: "Quadra",
     short: "Se · Ni · Ti · Fe. Conviction, hierarchy and intensity in the service of a vision.",
     definition:
       "ESTP, ISTP, ENFJ, INFJ. Beta reads the world as a place where force and belief decide outcomes: Ni supplies a single compelling reading of the future, Se acts on it now, Fe mobilises people around it. Loyalty, decisiveness and dramatic commitment are valued; detachment and hedging read as weakness. Beta groups cohere hard and can close to outsiders.",
-    source: "Augustinavičiūtė", seeAlso: ["quadra", "delta", "se", "ni"] }),
+    seeAlso: ["quadra", "delta", "se", "ni"] }),
   E({ id: "gamma", term: "Gamma", category: "Quadra",
     short: "Se · Ni · Te · Fi. Results, self-reliance, and loyalty earned rather than assumed.",
     definition:
       "ENTJ, INTJ, ESFP, ISFP. Gamma trusts what performs and what a person actually values, not what a group declares: Te measures, Fi judges privately, and neither defers to consensus. Long-horizon ambition sits beside blunt present-tense realism. Gamma groups are small, candid and unsentimental about people who do not deliver.",
-    source: "Augustinavičiūtė", seeAlso: ["quadra", "alpha", "te", "fi"] }),
+    seeAlso: ["quadra", "alpha", "te", "fi"] }),
   E({ id: "delta", term: "Delta", category: "Quadra",
     short: "Ne · Si · Te · Fi. Competence, craft and quiet improvement of something that already works.",
     definition:
       "ENFP, INFP, ESTJ, ISTJ. Delta wants the work done properly by people who care about it: Si supplies standards, Te supplies method, Fi supplies the reason it matters, Ne keeps it from ossifying. Drama and hierarchy are unwelcome; sustained practical care is the highest value. Delta groups are durable and can be slow to admit when the thing they maintain has stopped being worth maintaining.",
-    source: "Augustinavičiūtė", seeAlso: ["quadra", "beta", "si", "te"] }),
+    seeAlso: ["quadra", "beta", "si", "te"] }),
 ];
 
 /* ══════════════════════════════ ANIMALS ══════════════════════════════ */
@@ -175,25 +174,25 @@ const ANIMALS: Draft[] = [
     definition:
       "Energy that goes outward to gather and inward to judge. Play engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the animal most comfortable with an unfinished situation.",
     inSystem: "Every xxxP type is Play-primary; every xxxJ type has Play as its demon animal.",
-    source: "Objective Personality System", seeAlso: ["blast", "animal", "savior"] }),
+    seeAlso: ["blast", "animal", "savior"] }),
   E({ id: "blast", term: "Blast", category: "Animal",
     short: "Introverted observing + extraverted deciding. Directive, convergent, outcome-driven.",
     definition:
       "Energy that goes inward to read and outward to act. Blast forms a private conclusion and then moves the world to match it — the animal of decisions announced and executed. It is the fastest route from perception to result and the least tolerant of open questions.",
     inSystem: "Every xxxJ type is Blast-primary; every xxxP type has Blast as its demon animal.",
-    source: "Objective Personality System", seeAlso: ["play", "animal", "demon-animal"] }),
+    seeAlso: ["play", "animal", "demon-animal"] }),
   E({ id: "consume", term: "Consume", category: "Animal",
     short: "Both functions extraverted. Intake and output at once — the social, high-throughput animal.",
     definition:
       "Everything pointed outward: gathering from the world and acting on it in the same motion. Consume is the animal of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain.",
     inSystem: "Always a middle animal in this build. Its ordering against Sleep is the deferred fine-coin layer.",
-    source: "Objective Personality System", seeAlso: ["sleep", "animal", "fine-coins"] }),
+    seeAlso: ["sleep", "animal", "fine-coins"] }),
   E({ id: "sleep", term: "Sleep", category: "Animal",
     short: "Both functions introverted. Withdrawal into private processing.",
     definition:
       "Everything pointed inward: observing internally and deciding internally, with no external limb. Sleep is where a person integrates, recovers and works things out unobserved. Starved of it, the other animals degrade.",
     inSystem: "Always a middle animal in this build. Its ordering against Consume is deferred.",
-    source: "Objective Personality System", seeAlso: ["consume", "animal", "fine-coins"] }),
+    seeAlso: ["consume", "animal", "fine-coins"] }),
 ];
 
 /* ══════════════════════════════ ROMANCE STYLES ══════════════════════════════ */
@@ -203,25 +202,25 @@ const ROMANCE_STYLES: Draft[] = [
     definition:
       "The Infantile style approaches intimacy as shared play: teasing, novelty, silliness, and an ongoing refusal to make the relationship heavy. Care is expressed by being fun to be around and by keeping the other person entertained rather than by anticipating their needs. It wants to be enjoyed rather than looked after, and reads too much practical fussing as a loss of charge. Its blind side is logistics: the Infantile partner can be genuinely devoted and still leave the shared life unadministered.",
     inSystem: "Held by the Alpha and Delta intuitive-leading types. Structurally complementary to Caregiver.",
-    source: "Socionics erotic attitudes; CS Joseph", seeAlso: ["caregiver", "aggressor", "victim"] }),
+    seeAlso: ["caregiver", "aggressor", "victim"] }),
   E({ id: "caregiver", term: "Caregiver", category: "Romance Style",
     short: "Relates through provision. Expresses love by noticing and supplying what is needed.",
     definition:
       "The Caregiver style approaches intimacy as tending: feeding, arranging, remembering, smoothing the practical world so the other person can be at ease in it. Affection is demonstrated rather than declared, and the relationship is made secure by being reliably maintained. It wants to be needed and trusted with the running of things. Its blind side is that provision can shade into control, and that a partner who never asks to be looked after can leave the Caregiver without a role.",
     inSystem: "Held by the Alpha and Delta sensing-leading types. Structurally complementary to Infantile.",
-    source: "Socionics erotic attitudes; CS Joseph", seeAlso: ["infantile", "aggressor", "victim"] }),
+    seeAlso: ["infantile", "aggressor", "victim"] }),
   E({ id: "aggressor", term: "Aggressor", category: "Romance Style",
     short: "Relates through pursuit. Direct, physical, and comfortable initiating.",
     definition:
       "The Aggressor style approaches intimacy by closing distance: claiming attention, initiating contact, making desire explicit rather than implied. It is confident about wanting and unembarrassed about showing it, and it reads hesitation as an invitation to be clearer rather than to retreat. Its blind side is calibration — the same directness that reads as thrilling to one partner reads as pressure to another, and the Aggressor often cannot tell the difference from the inside.",
     inSystem: "Held by the Beta and Gamma sensing-leading types. Structurally complementary to Victim.",
-    source: "Socionics erotic attitudes; CS Joseph", seeAlso: ["victim", "infantile", "caregiver"] }),
+    seeAlso: ["victim", "infantile", "caregiver"] }),
   E({ id: "victim", term: "Victim", category: "Romance Style",
     short: "Relates through surrender. Drawn to strength, ambivalence and being pursued.",
     definition:
       "The name is a term of art, not a judgement. The Victim style approaches intimacy by yielding to someone whose force it respects: it wants to be sought, convinced and somewhat overwhelmed, and it charges the relationship with a productive tension rather than resolving it. Complexity, ambivalence and a degree of unattainability are part of the appeal. Its blind side is that the same tension can be manufactured where it is not warranted, turning a settled relationship into a drama it did not need.",
     inSystem: "Held by the Beta and Gamma intuitive-leading types. Structurally complementary to Aggressor.",
-    source: "Socionics erotic attitudes; CS Joseph", seeAlso: ["aggressor", "infantile", "caregiver"] }),
+    seeAlso: ["aggressor", "infantile", "caregiver"] }),
 ];
 
 /* ══════════════════════════════ INTERACTION STYLES ══════════════════════════════ */
@@ -231,25 +230,25 @@ const INTERACTION_STYLES: Draft[] = [
     definition:
       "Takes the lead by default and communicates in instructions rather than options. In-Charge sets the pace, assigns the work and closes the discussion, and is comfortable being accountable for having done so. It is fast and unambiguous. Its cost is that it fills the room: quieter or informing styles read the same behaviour as steamrolling and stop contributing.",
     inSystem: "ENTJ, ENFJ, ESTP, ESTJ. Derived from the Initiating and Direct coins.",
-    source: "CS Joseph; Berens", seeAlso: ["chart-the-course", "get-things-going", "behind-the-scenes"] }),
+    seeAlso: ["chart-the-course", "get-things-going", "behind-the-scenes"] }),
   E({ id: "chart-the-course", term: "Chart-the-Course", category: "Interaction Style",
     short: "Responding + Directing. Waits, then tells you the plan.",
     definition:
       "Does not open the conversation, but when it speaks it speaks in conclusions. Chart-the-Course wants a route mapped before movement begins and is uncomfortable improvising in public. It is precise and low-noise. Its cost is that the deliberation is invisible, so others read the silence as agreement and the eventual directive as arriving from nowhere.",
     inSystem: "INTJ, INFJ, ISTP, ISTJ. Derived from the Responding and Direct coins.",
-    source: "CS Joseph; Berens", seeAlso: ["in-charge", "behind-the-scenes", "get-things-going"] }),
+    seeAlso: ["in-charge", "behind-the-scenes", "get-things-going"] }),
   E({ id: "get-things-going", term: "Get-Things-Going", category: "Interaction Style",
     short: "Initiating + Informing. Opens the conversation and hands you the context.",
     definition:
       "Starts things, brings energy, and communicates by supplying background so the other person can choose. Get-Things-Going is enthusiastic and inclusive and treats a decision as something to be arrived at together. Its cost is that the point can go missing: directing styles hear all context and no instruction, and conclude nothing was actually asked for.",
     inSystem: "ENTP, ENFP, ESFP, ESFJ. Derived from the Initiating and Informative coins.",
-    source: "CS Joseph; Berens", seeAlso: ["behind-the-scenes", "in-charge", "chart-the-course"] }),
+    seeAlso: ["behind-the-scenes", "in-charge", "chart-the-course"] }),
   E({ id: "behind-the-scenes", term: "Behind-the-Scenes", category: "Interaction Style",
     short: "Responding + Informing. Waits, then offers rather than instructs.",
     definition:
       "Neither opens nor directs. Behind-the-Scenes contributes by improving what already exists, offering information sideways and leaving the other person entirely free to act on it. It is the least imposing style and often the most quietly consequential. Its cost is invisibility: the contribution is real, unattributed, and easily talked over.",
     inSystem: "INTP, INFP, ISFP, ISFJ. Derived from the Responding and Informative coins.",
-    source: "CS Joseph; Berens", seeAlso: ["get-things-going", "chart-the-course", "in-charge"] }),
+    seeAlso: ["get-things-going", "chart-the-course", "in-charge"] }),
 ];
 
 /* ══════════════════════════════ GATES ══════════════════════════════ */
@@ -281,19 +280,19 @@ const TEMPERAMENTS: Draft[] = [
   E({ id: "nt", term: "Intellectuals (NT)", category: "Temperament",
     short: "Competence. Wants to understand the system well enough to command it.",
     definition: "ENTP, INTP, ENTJ, INTJ. Organised around mastery and models: the point of a thing is to understand its mechanism well enough to predict or command it. Status is conferred by being right and by knowing why, and competence is assumed until disproved. Impatient with claims that cannot be defended, and with process observed for its own sake.",
-    source: "Keirsey", seeAlso: ["nf", "sj", "sp"] }),
+    seeAlso: ["nf", "sj", "sp"] }),
   E({ id: "nf", term: "Idealists (NF)", category: "Temperament",
     short: "Meaning. Wants people and work to be authentic to something.",
     definition: "ENFP, INFP, ENFJ, INFJ. Organised around significance and human potential: work is worth doing if it means something and if it leaves people better than it found them. Status is conferred by integrity rather than output. Impatient with the merely procedural, and with competence deployed toward nothing in particular.",
-    source: "Keirsey", seeAlso: ["nt", "sj", "sp"] }),
+    seeAlso: ["nt", "sj", "sp"] }),
   E({ id: "sj", term: "Guardians (SJ)", category: "Temperament",
     short: "Stewardship. Wants the thing to keep working after everyone goes home.",
     definition: "ESTJ, ISTJ, ESFJ, ISFJ. Organised around duty and continuity: someone has to keep the thing running, and that someone is reasonably assumed to be you. Status is conferred by reliability over time rather than by brilliance. Impatient with novelty that has not proven itself and with people who leave the clearing-up to others.",
-    source: "Keirsey", seeAlso: ["sp", "nt", "nf"] }),
+    seeAlso: ["sp", "nt", "nf"] }),
   E({ id: "sp", term: "Artisans (SP)", category: "Temperament",
     short: "Effect. Wants contact with the real thing, now.",
     definition: "ESTP, ISTP, ESFP, ISFP. Organised around action and skill: contact with the real material, now, done well. Status is conferred by visible capability under live conditions rather than by credential or plan. Impatient with abstraction that never touches ground, and with meetings held about work instead of work.",
-    source: "Keirsey", seeAlso: ["sj", "nt", "nf"] }),
+    seeAlso: ["sj", "nt", "nf"] }),
 ];
 
 /* ══════════════════════════════ COIN POLES ══════════════════════════════ */
@@ -335,7 +334,7 @@ const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) =>
   E({ id, term, category: "Coin", short, definition,
       inSystem: `Coin ${Math.floor(i / 2) + 1} — ${COIN_LABELS[Math.floor(i / 2)]}. ` +
         ([0, 2, 3, 4].includes(Math.floor(i / 2)) ? "Determining." : "Confirming: derivable from the determining coins."),
-      source: "Objective Personality System; CS Joseph", seeAlso: ["coin", "savior"] }));
+      seeAlso: ["coin", "savior"] }));
 
 /* ══════════════════════════════ CONCEPTS ══════════════════════════════ */
 const CONCEPTS: Draft[] = [
@@ -358,27 +357,27 @@ const CONCEPTS: Draft[] = [
     inSystem: "Derived from the relation code, never stored separately, so the two cannot disagree.",
     seeAlso: ["rel-sr", "rel-be", "relation"] }),
   E({ id: "dual-lighting", term: "Dual-lighting", category: "Concept",
-    short: "Holding CSJ and OPS as two instruments, unreconciled, because they disagree.",
+    short: "Holding the two growth readings unreconciled, because they disagree.",
     definition:
-      "CS Joseph runs an eight-function stack across all four letters; OPS tracks two letters across four orientations and does not use 'inferior function' the same way. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system names both and lets the divergence stand as content.",
-    inSystem: "The wiring schematic marks the CSJ Inferior as the cave and the OPS demon-animal loop as an open circuit. They are in different slots.",
+      "One reading runs an eight-function stack across all four letters and puts the weak point at the Inferior; the exchange overlay tracks two letters across four orientations and marks the tertiary and inferior together. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system carries both and lets the divergence stand as content.",
+    inSystem: "The wiring schematic marks the Inferior as the cave and the demon-animal loop as an open circuit. They are in different slots.",
     seeAlso: ["inferior", "demon-animal", "savior"] }),
   E({ id: "savior", term: "Savior", category: "Concept",
-    short: "In OPS, the two functions a type actually uses well — one observer, one decider.",
+    short: "The two functions a type actually uses well — one observer, one decider.",
     definition:
       "The savior pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary animal. The attitude-flipped counterparts are the demons.",
-    source: "Objective Personality System", seeAlso: ["demon-animal", "animal", "dual-lighting"] }),
+    seeAlso: ["demon-animal", "animal", "dual-lighting"] }),
   E({ id: "demon-animal", term: "Demon animal", category: "Concept",
     short: "The double-demon loop: the energy pattern a type is worst at sustaining.",
     definition:
       "Formed from the attitude-flips of both saviors. Because the saviors always run opposite attitudes, the demon animal is always Play or Blast — never a middle animal — which is why every xxxP type is Blast-demon and every xxxJ type is Play-demon.",
     inSystem: "Rendered as the open circuit in the wiring schematic.",
-    source: "Objective Personality System", seeAlso: ["savior", "animal", "dual-lighting"] }),
+    seeAlso: ["savior", "animal", "dual-lighting"] }),
   E({ id: "four-sides", term: "Four Sides of the Mind", category: "Concept",
     short: "Ego, Subconscious, Unconscious and Superego — four whole types inside one person.",
     definition:
-      "CS Joseph's model in which each person carries four complete type-patterns: the Ego they identify with, the Subconscious they aspire to (their Dual), the Unconscious that runs when the Ego is exhausted (their Extinguisher) and the Superego they perform under threat. Useful as a reading of state rather than of identity.",
-    source: "CS Joseph", seeAlso: ["ego", "shadow", "rel-du"] }),
+      "The reading in which each person carries four complete type-patterns: the Ego they identify with, the Subconscious they aspire to (their Dual), the Unconscious that runs when the Ego is exhausted (their Extinguisher) and the Superego they perform under threat. Useful as a reading of state rather than of identity.",
+    seeAlso: ["ego", "shadow", "rel-du"] }),
   E({ id: "ego", term: "Ego", category: "Concept",
     short: "Slots 1–4. The conscious stack a person identifies with.",
     definition: "Hero, Parent, Child and Inferior. Two aware positions and two unaware, two optimistic and two pessimistic. This is the part of the wiring a person will describe if asked who they are.",
@@ -386,32 +385,32 @@ const CONCEPTS: Draft[] = [
   E({ id: "shadow", term: "Shadow", category: "Concept",
     short: "Slots 5–8. The same four functions, attitudes flipped, running mostly unwatched.",
     definition: "Nemesis, Critic, Trickster and Demon — the attitude-flips of the ego block. Rarely chosen and usually visible only under stress, but continuously operating.",
-    source: "Beebe; Jung", seeAlso: ["ego", "nemesis", "trickster", "demon"] }),
-  E({ id: "model-a", term: "Model A", category: "Concept",
-    short: "The Socionics eight-position map from which all intertype relations are derived.",
+    seeAlso: ["ego", "nemesis", "trickster", "demon"] }),
+  E({ id: "stack-map", term: "Stack map", category: "Concept",
+    short: "The eight-position map of a type's information elements, from which every relation is derived.",
     definition:
-      "Positions a type's eight information elements into four blocks. Every relation in this system is a statement about how two Model A arrangements line up — which of my functions lands on which of yours.",
-    source: "Augustinavičiūtė", seeAlso: ["relation", "quadra", "rel-du"] }),
+      "Positions a type's eight information elements into four blocks. Every relation in this system is a statement about how two stack maps line up — which of my functions lands on which of yours.",
+    seeAlso: ["relation", "quadra", "rel-du"] }),
   E({ id: "quadra", term: "Quadra", category: "Concept",
     short: "One of four groups of types sharing the same four ego functions, and so the same values.",
     definition:
       "Alpha, Beta, Gamma and Delta. Types within a quadra find each other's priorities self-evident because they are literally running the same four elements. Quadra membership is the single most efficient predictor of whether a group will argue about goals or only about methods.",
-    source: "Augustinavičiūtė", seeAlso: ["alpha", "beta", "gamma", "delta"] }),
+    seeAlso: ["alpha", "beta", "gamma", "delta"] }),
   E({ id: "animal", term: "Animal", category: "Concept",
-    short: "An OPS energy pattern formed by pairing an observer attitude with a decider attitude.",
+    short: "An energy pattern formed by pairing an observer attitude with a decider attitude.",
     definition:
       "Four combinations: Play, Blast, Consume and Sleep. They describe where energy goes rather than what a person is good at, and are held as an overlay on the stack rather than fused with it.",
-    source: "Objective Personality System", seeAlso: ["play", "blast", "consume", "sleep"] }),
+    seeAlso: ["play", "blast", "consume", "sleep"] }),
   E({ id: "coin", term: "Coin", category: "Concept",
     short: "A binary structural distinction. Four determine the type; four confirm it.",
     definition:
       "Coins 1, 3, 4 and 5 give sixteen unique signatures and fix the type exactly. Coins 2, 6, 7 and 8 are mathematically derivable from them — coin 2 is the exact inverse of coin 3, and coin 8 is a function of 6 and 7 — so they cannot add evidence. They are retained because disagreement between a person's self-report and the structure is itself informative.",
-    source: "Objective Personality System; CS Joseph", seeAlso: ["observer", "identity", "savior"] }),
+    seeAlso: ["observer", "identity", "savior"] }),
   E({ id: "relation", term: "Intertype relation", category: "Concept",
     short: "One of sixteen structural relationships between two types.",
     definition:
-      "Derived from how two Model A arrangements overlay. Twelve are symmetric and four — Supervisor/Supervisee and Benefactor/Beneficiary — are asymmetric, meaning the relationship is genuinely different from each side.",
-    source: "Augustinavičiūtė", seeAlso: ["ease", "model-a", "rel-du", "rel-cf"] }),
+      "Derived from how two stack maps overlay. Twelve are symmetric and four — Supervisor/Supervisee and Benefactor/Beneficiary — are asymmetric, meaning the relationship is genuinely different from each side.",
+    seeAlso: ["ease", "stack-map", "rel-du", "rel-cf"] }),
   E({ id: "gate", term: "Growth gate", category: "Concept",
     short: "The structural fear a type is built around, and what integrating it unlocks.",
     definition:
@@ -419,10 +418,10 @@ const CONCEPTS: Draft[] = [
     inSystem: "Derived from the Inferior function and the type's E/I and J/P letters.",
     seeAlso: ["inferior", "gate-of-chaos", "gate-of-obligation", "gate-of-the-tribe", "gate-of-the-self"] }),
   E({ id: "fine-coins", term: "Fine-coins", category: "Concept",
-    short: "The deferred OPS layer: middle-animal ordering, modality, masculine/feminine coins.",
+    short: "The deferred fine layer: middle-animal ordering, modality, masculine/feminine coins.",
     definition:
-      "The most contested and least stable part of OPS. This build deliberately holds it out: the base type is exactly four bits, and the fine layer adds further independent bits on top. Modelled as a bit vector with a fixed four-bit head, the extension can attach later without touching the 256-cell core.",
-    source: "Objective Personality System", seeAlso: ["coin", "animal", "consume", "sleep"] }),
+      "The most contested and least stable part of the overlay. This build deliberately holds it out: the base type is exactly four bits, and the fine layer adds further independent bits on top. Modelled as a bit vector with a fixed four-bit head, the extension can attach later without touching the 256-cell core.",
+    seeAlso: ["coin", "animal", "consume", "sleep"] }),
 
   /* ── the three non-ego sides. `ego` and `shadow` had entries; these did
      not, which left the four-sides material and everything the Octagram
@@ -433,32 +432,32 @@ const CONCEPTS: Draft[] = [
     definition:
       "Take your four ego slots and read them backwards: your Inferior becomes its Hero, your Hero becomes its Inferior. The resulting type is your Dual, which is why being around a Dual feels like being handed a version of yourself you cannot reach alone. The gateway is the Inferior, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
     inSystem: "fourSides(t)[1]. Derived by omega — flip both attitude and element on the dominant and auxiliary. relation(t, subconscious) is always DU.",
-    source: "CS Joseph", seeAlso: ["four-sides", "inferior", "rel-du", "unconscious", "subconscious-development"] }),
+    seeAlso: ["four-sides", "inferior", "rel-du", "unconscious", "subconscious-development"] }),
 
   E({ id: "unconscious", term: "Unconscious", category: "Concept",
     short: "Your shadow four in order. Who you become in a crisis.",
     definition:
       "Its Hero is your Nemesis, and its stack runs Nemesis, Critic, Trickster, Demon. Access is through worry rather than choice, which is why it shows up under pressure without being invited. Developed deliberately it produces wisdom and a kind of maturity available no other way; left alone it gets forced later — the three-quarter-life crisis is this side arriving whether or not you went looking for it.",
     inSystem: "fourSides(t)[2]. Derived by alpha — flip attitude only. relation(t, unconscious) is always EX.",
-    source: "CS Joseph", seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego"] }),
+    seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego"] }),
 
   E({ id: "superego", term: "Superego", category: "Concept",
     short: "Your shadow reversed. Who you are at your worst, and where the sins live.",
     definition:
       "Its Hero is your Demon — the single function you trust least, running the show. That is exactly why the superego reads as a parasite persona rather than as you: it is competent, it is confident, and none of it is yours. The gateway is fear. It produces power, and the material is blunt that the power is destructive until the other three sides have been developed first. The Octagram's Deadly Sins are described as this side overriding the ego's stated values.",
     inSystem: "fourSides(t)[3]. Derived by beta — swap element only. relation(t, superego) is always SE.",
-    source: "CS Joseph", seeAlso: ["four-sides", "demon", "rel-se", "deadly-sin", "unconscious"] }),
+    seeAlso: ["four-sides", "demon", "rel-se", "deadly-sin", "unconscious"] }),
 
   E({ id: "midlife-crisis", term: "Midlife crisis", category: "Concept",
     short: "The subconscious forcing its way in when it was not developed on purpose.",
     definition:
       "Described as arriving roughly between 38 and 48: the ego's usual moves keep working externally and stop landing internally, and the pressure is the subconscious demanding to be lived rather than admired. Read structurally it is not a breakdown but a deadline. The same mechanism arrives later for the unconscious, as the three-quarter-life crisis. The whole point of doing gateway work early is that both can be walked through instead of waited for.",
     inSystem: "Not computed — it is the narrative consequence of leaving the subconscious undeveloped.",
-    source: "CS Joseph", seeAlso: ["subconscious", "inferior", "gate", "octagram-theme"] }),
+    seeAlso: ["subconscious", "inferior", "gate", "octagram-theme"] }),
 
   /* ── the Octagram. The most advanced material the app carries. Each entry
-     says which parts are derived by this engine and which are taken from
-     source, because the difference matters more here than anywhere else. ── */
+     says which parts this engine derives and which are authored, because the
+     difference matters more here than anywhere else. ── */
 
   E({ id: "octagram", term: "Octagram", category: "Concept",
     short: "A second layer over the sixteen: what a type is chasing, and what nurture did to how it chases.",
@@ -466,7 +465,6 @@ const CONCEPTS: Draft[] = [
       "Where the type model describes wiring, the Octagram describes what that wiring has been reaching for and the shape a particular life has bent it into. It has two layers. The wheel layer is structural: sixteen types make eight dyads, each dyad shares one lifelong want called a Cognitive Origin, and each origin is drawn as a wheel with four surrounding positions. The theme layer is biographical: two coins, neither derivable from type, that say whether the subconscious was nurtured in childhood and which side of the mind is running the show now. Two people of the same type can sit in the same wheel and completely different themes, and that is the whole reason the layer exists.",
     inSystem:
       "Fully derived here. A dyad is a type and its subconscious, which is its Dual; a temple is one orbit of the four-sides operation. tests/octagram.test.ts checks all eight dyads and all four temples against the published lists — they match 16/16 with no lookup table. Only the NAMES are authored.",
-    source: "CS Joseph",
     seeAlso: ["temple", "temple-wheel", "cognitive-origin", "octagram-theme", "four-sides"] }),
 
   E({ id: "temple", term: "Temple", category: "Concept",
@@ -475,7 +473,7 @@ const CONCEPTS: Draft[] = [
       "Soul is identity and character: who somebody actually is. Mind is knowledge and judgement. Heart is desire and regard. Body is action, achievement and what is left behind. The four types in a temple are not four similar people — they are the four sides of one mind, which is why they belong together and why a temple is closed under the four-sides operation.",
     inSystem:
       "Derived, not listed. templeOf(t) returns the sorted four-sides orbit of t. Soul = {ENFP, ISTJ, ESTP, INFJ}; Mind = {ESTJ, INFP, ENFJ, ISTP}; Heart = {ENTP, ISFJ, ESFP, INTJ}; Body = {ESFJ, INTP, ENTJ, ISFP}. Each matches the published membership exactly.",
-    source: "CS Joseph", seeAlso: ["octagram", "temple-wheel", "four-sides", "subconscious"] }),
+    seeAlso: ["octagram", "temple-wheel", "four-sides", "subconscious"] }),
 
   E({ id: "temple-wheel", term: "Temple wheel", category: "Concept",
     short: "A dyad's origin drawn as a cross: virtue above, sin below, two poles either side.",
@@ -483,7 +481,6 @@ const CONCEPTS: Draft[] = [
       "Eight wheels, two per temple. At the centre is the Cognitive Origin — the thing this dyad wants. Directly above is the Living Virtue, the honest route to it, which characteristically involves giving somebody else some of what you want. Directly below is the Deadly Sin, the counterfeit: easier to reach, resembles the origin, and leaves you hungrier. To either side are the two poles, which are not good and bad but two different distortions — the drift of a childhood that fed you and the drift of one that did not.",
     inSystem:
       "A wheel is a Dual pair, so wheelOf(t).pair is always [t, subconscious(t)]. Both members share one origin. The four contents are authored from source; the membership is computed.",
-    source: "CS Joseph",
     seeAlso: ["cognitive-origin", "living-virtue", "deadly-sin", "shadow-pole", "rel-du"] }),
 
   E({ id: "cognitive-origin", term: "Cognitive origin", category: "Concept",
@@ -491,56 +488,55 @@ const CONCEPTS: Draft[] = [
     definition:
       "Not a goal — you do not complete an origin; it is what sits underneath the goals. Justification (ENFP/ISTJ), Intimacy (ESTP/INFJ), Satisfaction (ENTP/ISFJ), Reverence (ESFP/INTJ), Authority (ESTJ/INFP), Validation (ENFJ/ISTP), Discovery (ESFJ/INTP), Purpose (ENTJ/ISFP). Described as emerging from the hero function and shared with the subconscious, which is why a dyad and not a type is the unit.",
     inSystem: "Authored, but the dyad each belongs to is derived. Origins for ENFP/ISTJ, ENTP/ISFJ, ENTJ/ISFP and ESFJ/INTP are corroborated across more than one published source.",
-    source: "CS Joseph", seeAlso: ["temple-wheel", "octagram", "hero", "subconscious"] }),
+    seeAlso: ["temple-wheel", "octagram", "hero", "subconscious"] }),
 
   E({ id: "living-virtue", term: "Living virtue", category: "Concept",
     short: "The honest route to an origin — what the wheel claims to be.",
     definition:
       "Absolution, Chastity, Compassion, Modesty, Initiative, Humility, Generativity, Generosity. Each is the traditional contrary of its wheel's Deadly Sin, and each involves relinquishing something: forgiving the debt, spending closeness sparingly, wanting somebody else to be satisfied too. Described as what the ego temple aspires to be rather than what it reliably is.",
     inSystem: "Authored from source. The eight are exactly the classical contrary virtues, which is a strong internal check on the table.",
-    source: "CS Joseph", seeAlso: ["deadly-sin", "temple-wheel", "cognitive-origin"] }),
+    seeAlso: ["deadly-sin", "temple-wheel", "cognitive-origin"] }),
 
   E({ id: "deadly-sin", term: "Deadly sin", category: "Concept",
     short: "The counterfeit of an origin — what the superego reaches for instead.",
     definition:
       "Wrath, Lust, Envy, Vainglory, Sloth, Pride, Gluttony, Greed: the classical eight of the Evagrian tradition, one per wheel. Each is the shortest path to something that looks like the origin. Wrath is Justification collected by force; Gluttony is Discovery consumed rather than made. Described as the superego overriding the ego's stated values, which lines up with this app's account of the superego as a persona that produces power and is destructive until the other three sides are developed.",
     inSystem: "Authored from source. Landing on the exact classical eight is why the table is trusted despite thin sourcing elsewhere.",
-    source: "CS Joseph", seeAlso: ["living-virtue", "superego", "temple-wheel"] }),
+    seeAlso: ["living-virtue", "superego", "temple-wheel"] }),
 
   E({ id: "shadow-pole", term: "Shadow pole", category: "Concept",
     short: "Where somebody whose subconscious was denied in childhood drifts.",
     definition:
       "A strategy that once worked, still running long after the situation that required it. The clearest published example is the Intimacy wheel: a child in a disabling environment learns to put others on a pedestal in order to get needs met, and Idolatry is what that becomes in an adult. The pole is not a moral failing; it is an adaptation with an expiry date.",
     inSystem: "Paired with the aspirational pole. Which of a wheel's two poles is the shadow is the least certain part of the Octagram data this app carries — see the app's recorded gaps.",
-    source: "CS Joseph", seeAlso: ["aspirational-pole", "subconscious-development", "temple-wheel"] }),
+    seeAlso: ["aspirational-pole", "subconscious-development", "temple-wheel"] }),
 
   E({ id: "aspirational-pole", term: "Aspirational pole", category: "Concept",
     short: "Where somebody whose subconscious was nurtured in childhood drifts.",
     definition:
       "The other distortion — the one that comes from having been given something early. On the Intimacy wheel it is Objectification: a child rewarded and enabled for high performance is, in effect, valued as a producer, and learns to treat people including themselves as things that perform. Having your needs met is not the same as being undamaged, and this pole is where that shows.",
     inSystem: "Paired with the shadow pole. Both are distortions of the same origin, so 'aspirational' names a direction rather than a recommendation.",
-    source: "CS Joseph", seeAlso: ["shadow-pole", "subconscious-development", "temple-wheel"] }),
+    seeAlso: ["shadow-pole", "subconscious-development", "temple-wheel"] }),
 
   E({ id: "subconscious-development", term: "Subconscious development (SD / UD)", category: "Concept",
     short: "Whether the subconscious was fed in childhood. Set early, and largely fixed.",
     definition:
       "SD means the subconscious side was nurtured; UD means it was denied. It is described as a fact about upbringing rather than about wiring, so it cannot be read off a four-letter type, and two people of one type routinely differ. It decides which pole of the wheel a person drifts toward, and it is half of what fixes the Octagram theme.",
-    inSystem: "Not derivable. Presented as a self-reported coin, in the same posture as the OPS subtype coins.",
-    source: "CS Joseph", seeAlso: ["octagram-focus", "octagram-theme", "subconscious", "shadow-pole"] }),
+    inSystem: "Not derivable. Presented as a self-reported coin, in the same posture as the subtype coins.",
+    seeAlso: ["octagram-focus", "octagram-theme", "subconscious", "shadow-pole"] }),
 
   E({ id: "octagram-focus", term: "Focus (SF / UF)", category: "Concept",
     short: "Which half of the mind is doing the work right now. Unlike development, this moves.",
     definition:
       "SF means running out of the subconscious side, UF means running out of the shadow. This is the mutable coin, and moving it is what most of the growth material in this app is actually about — the gateway functions, the two crises, the deliberate shadow work. Where development says what you were given, focus says what you are doing with it this year.",
     inSystem: "Not derivable. Combined with development it fixes one of four themes.",
-    source: "CS Joseph", seeAlso: ["subconscious-development", "octagram-theme", "gate", "four-sides"] }),
+    seeAlso: ["subconscious-development", "octagram-theme", "gate", "four-sides"] }),
 
   E({ id: "octagram-theme", term: "Octagram theme", category: "Concept",
     short: "Joy, Decay, Hope or Despair — the season a life is currently in.",
     definition:
       "Development crossed with focus. SD|SF is Joy, the psychological summer, described as the variant most resistant to despair. SD|UF is Decay, autumn: good roots running on the shadow, and an entropic position — taking other people's ideas, rules and norms and testing them to breaking. UD|SF is Hope, spring: denied early, but in conditions that now feed you, with the direction of travel upward. UD|UF is Despair, winter: denied and still constrained, with the shadow and superego doing the work because nothing else is available. Everyone cycles through all four; none is a verdict.",
     inSystem: "Computed from the two coins by themeFor(). The coins themselves are self-reported.",
-    source: "CS Joseph",
     seeAlso: ["subconscious-development", "octagram-focus", "octagram", "midlife-crisis"] }),
 ];
 
@@ -570,7 +566,7 @@ const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
      inSystem: `Code ${c}. Ease ${REL_SCORE[c]}/100. ${
        c === "SR" || c === "SV" || c === "BR" || c === "BE"
          ? "Asymmetric — the reciprocal relation is different." : "Symmetric."}`,
-     source: "Augustinavičiūtė", seeAlso: ["relation", "ease", "model-a"] }));
+     seeAlso: ["relation", "ease", "stack-map"] }));
 
 const DRAFTS: Draft[] = [
   ...FUNCTIONS, ...ARCHETYPES, ...QUADRAS, ...ANIMALS, ...ROMANCE_STYLES,
@@ -744,7 +740,7 @@ function functionPair(a: Fn, b: Fn): Pairing {
       body: `${a} and ${b} process the same information pointed in opposite directions. This is the sharpest kind of near-miss: you are talking about the same thing and will not agree on what it means. In the eight-slot stack these two are always Hero and Nemesis of each other's type family.` };
     case "beta": return { headline: `${a} and ${b} — same attitude, different element`,
       body: `Both pointed the same way, drawing on different material. Compatible tempo, different subject matter — usually experienced as talking past each other rather than as conflict.` };
-    case "omega": return { headline: `${a} and ${b} — the Model A opposite`,
+    case "omega": return { headline: `${a} and ${b} — the axis opposite`,
       body: `Full complement. ${b} is exactly what ${a} does not do, which is why this pairing sits at the heart of Duality: one supplies the other's Inferior directly.` };
     default: return { headline: `${a} and ${b}`,
       body: `A perceiving function meeting a judging one, or two functions with no direct structural relation. They do not compete: one supplies material, the other decides about it.` };

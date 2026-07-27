@@ -16,7 +16,7 @@ export const alpha: Record<Fn, Fn> = {
 export const beta: Record<Fn, Fn> = {
   Ne: "Se", Se: "Ne", Ni: "Si", Si: "Ni", Te: "Fe", Fe: "Te", Ti: "Fi", Fi: "Ti",
 };
-/** flip both — the Model A opposite */
+/** flip both — the axis opposite */
 export const omega: Record<Fn, Fn> = {
   Ne: "Si", Si: "Ne", Ni: "Se", Se: "Ni", Te: "Fi", Fi: "Te", Ti: "Fe", Fe: "Ti",
 };
@@ -32,7 +32,7 @@ export const isObserver = (f: Fn) => f[0] === "N" || f[0] === "S";
 /** Does this function face outward? The second letter is the attitude. */
 export const isExtraverted = (f: Fn) => f[1] === "e";
 
-/** Full eight-slot Beebe stack: Hero Parent Child Inferior | Nemesis Critic Trickster Demon */
+/** Full eight-slot stack: Hero Parent Child Inferior | Nemesis Critic Trickster Demon */
 export function stack(t: MbtiType): Fn[] {
   const [d, x] = DOM_AUX[t];
   return [d, x, omega[x], omega[d], alpha[d], alpha[x], beta[x], beta[d]];
@@ -124,7 +124,7 @@ export const catalysts = (t: MbtiType): MbtiType[] => {
   return TYPES.filter((p) => DOM_AUX[p][0] === nemesis);
 };
 
-/* The OPS overlay — saviors, demons and the animal stack — lives in ops.ts. */
+/* The exchange overlay — saviors, demons and the animal stack — lives in ops.ts. */
 
 /* ------------------------------ gates ------------------------------ */
 export interface Gate { gate: string; fear: string; cave: string; treasure: string }
@@ -148,7 +148,7 @@ export function gate(t: MbtiType): Gate {
   }
 }
 
-/* The eight coins and the type calculator are OPS-derived — see ops.ts. */
+/* The eight coins and the type calculator come off the overlay — see ops.ts. */
 
 export { TYPES, DOM_AUX, REL_SCORE, RECIPROCAL, COIN_LABELS, DETERMINING, CONFIRMING };
 export type { MbtiType, Fn, RelCode };

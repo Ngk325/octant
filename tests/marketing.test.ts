@@ -1,6 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import worker, { type Env } from "../src/worker/index";
 import { issueSession } from "../src/worker/auth";
 import { marketingPage } from "../src/worker/marketing";
@@ -81,13 +79,9 @@ describe("the public front door", () => {
     expect(html).toContain('rel="icon" href="data:image/svg+xml');
   });
 
-  it("names no third-party system or source", () => {
-    // The positioning rule: the product is described in its own vocabulary.
-    const src = readFileSync(join(__dirname, "..", "src/worker/marketing.ts"), "utf8");
-    for (const banned of ["MBTI", "Myers", "Briggs", "Jung", "Socionics", "CS Joseph", "csjoseph", "Objective Personality", "OPS"]) {
-      expect(src, `marketing copy must not mention "${banned}"`).not.toContain(banned);
-    }
-  });
+  /* The "names no third-party system or source" check used to live here,
+     scoped to marketing.ts alone. It now covers everything under src/ —
+     see tests/attribution.test.ts. */
 });
 
 describe("the /signin route", () => {
