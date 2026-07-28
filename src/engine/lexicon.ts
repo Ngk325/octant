@@ -139,9 +139,10 @@ const ARCHETYPES: Draft[] = [
 ];
 
 /* ══════════════════════════════ QUADRAS ══════════════════════════════ */
+/** Keyed by id, not by display term — the camp names are due to be renamed (Set D pass 3) and ids do not move; labels do. */
 const QUADRA_ELEMENTS: Record<string, Fn[]> = {
-  Alpha: ["Ne", "Si", "Ti", "Fe"], Beta: ["Se", "Ni", "Ti", "Fe"],
-  Gamma: ["Se", "Ni", "Te", "Fi"], Delta: ["Ne", "Si", "Te", "Fi"],
+  alpha: ["Ne", "Si", "Ti", "Fe"], beta: ["Se", "Ni", "Ti", "Fe"],
+  gamma: ["Se", "Ni", "Te", "Fi"], delta: ["Ne", "Si", "Te", "Fi"],
 };
 const QUADRAS: Draft[] = [
   E({ id: "alpha", term: "Alpha", category: "Quadra",
@@ -787,10 +788,7 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
       if (aId === bId) return GATE_PAIRS.same;
       return GATE_PAIRS[`${aId}|${bId}`] ?? GATE_PAIRS[`${bId}|${aId}`] ?? null;
     case "Quadra": {
-      /* QUADRA_ELEMENTS is still keyed by term because the quadra names have
-         not moved yet. When they do (pass 3), this needs the same id-keying
-         the Animal branch above just received, or it fails the same way. */
-      const ea = QUADRA_ELEMENTS[a.term], eb = QUADRA_ELEMENTS[b.term];
+      const ea = QUADRA_ELEMENTS[aId], eb = QUADRA_ELEMENTS[bId];
       if (aId === bId) return QUADRA_TEXT.same(a.term, ea);
       const shared = ea.filter((f) => eb.includes(f));
       return shared.length
