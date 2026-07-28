@@ -718,6 +718,8 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - var(--s9) * 2);
+  max-width: var(--measure);
+  margin: 0 auto;
   padding: var(--s6) 0;
 }
 .onboard-top {
@@ -749,14 +751,18 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   flex-direction: column;
   align-items: flex-start;
   gap: var(--s6);
-  max-width: var(--measure);
 }
 .onboard-idea {
   font-size: var(--t-2xl);
   line-height: var(--lh-tight);
   margin: 0;
 }
-.onboard-figure { padding: var(--s3) 0; }
+.onboard-figure {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: var(--s3) 0;
+}
 .onboard-unlock { margin: 0; }
 
 .onboard-nav {
