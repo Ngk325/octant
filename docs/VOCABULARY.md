@@ -32,6 +32,11 @@ them costs more than it wins.
 
 ## 2. The stack
 
+> **Shipped.** The eight slots below are now the live terms throughout the
+> app — `src/engine/data.ts`'s `SLOT_NAMES` and everywhere that reads from
+> it. The table stays as the record of the decision; it is no longer the
+> gap between spec and code.
+
 ### The eight slots
 
 | # | New | Was | One line |

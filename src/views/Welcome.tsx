@@ -47,8 +47,8 @@ function screens(): Screen[] {
       idea: "The top of the order is genuinely strong. The bottom is real too — it's just the one you're least practiced at defending.",
       figure: (
         <div style={{ display: "flex", gap: "var(--s7)", alignItems: "center", flexWrap: "wrap" }}>
-          <BestOrSore fn={st[0]} label="Hero — your best" />
-          <BestOrSore fn={st[3]} label="Inferior — your sore spot" />
+          <BestOrSore fn={st[0]} label="Lead — your best" />
+          <BestOrSore fn={st[3]} label="Cave — your sore spot" />
         </div>
       ),
       unlock: "You now know where to look for your own best move, and your own sore spot.",

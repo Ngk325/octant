@@ -47,7 +47,7 @@ const expectAccessible = (html: string) => {
 };
 
 describe("the language's ground rules", () => {
-  it("rank ratio is strictly decreasing from Hero to Inferior", () => {
+  it("rank ratio is strictly decreasing from Lead to Cave", () => {
     for (let i = 1; i < RANK_RATIO.length; i++) {
       expect(RANK_RATIO[i]).toBeLessThan(RANK_RATIO[i - 1]);
     }

@@ -89,7 +89,7 @@ describe("role names are this app's own", () => {
     "Anchor", "Flinch", "Charge", "Settle", "Broadcast", "Absorb",
     "Counterpart", "Spark", "Twin", "Cousin", "Colleague", "Examiner",
     "Examined", "Damper", "Standoff", "Headwind", "Upstream", "Downstream",
-    "Lead", "Support", "Delight", "Cave", "Doubt", "Scold", "Dread",
+    "Lead", "Support", "Delight", "Cave", "Doubt", "Scold", "Blind spot", "Dread",
     "Front", "Reach", "Reserve", "Guard", "Hearth", "Forge", "Market", "Field",
   ]);
 

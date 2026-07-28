@@ -32,7 +32,7 @@ export const isObserver = (f: Fn) => f[0] === "N" || f[0] === "S";
 /** Does this function face outward? The second letter is the attitude. */
 export const isExtraverted = (f: Fn) => f[1] === "e";
 
-/** Full eight-slot stack: Hero Parent Child Inferior | Nemesis Critic Trickster Demon */
+/** Full eight-slot stack: Lead Support Delight Cave | Doubt Scold Blind spot Dread */
 export function stack(t: MbtiType): Fn[] {
   const [d, x] = DOM_AUX[t];
   return [d, x, omega[x], omega[d], alpha[d], alpha[x], beta[x], beta[d]];
@@ -102,7 +102,7 @@ export const ease = (target: MbtiType, perspective: MbtiType): number =>
   REL_SCORE[REL[target][perspective]];
 
 /**
- * The two types that supply this one's Inferior — its Dual and its Activity
+ * The two types that supply this one's Cave — its Dual and its Activity
  * partner. Restful company: effortlessly good at the thing you are afraid of.
  */
 export const complements = (t: MbtiType): MbtiType[] =>
@@ -113,15 +113,15 @@ export const frictions = (t: MbtiType): MbtiType[] =>
   TYPES.filter((p) => REL[t][p] === "CF").concat(TYPES.filter((p) => REL[t][p] === "SE"));
 
 /**
- * The two types whose Hero is your Nemesis function.
+ * The two types whose Lead is your Doubt function.
  * Always resolves to your Extinguishment and Mirage partners, because both are
  * built from alpha(dominant) -- which is exactly slot 5. Where Complements supply
  * the function you FEAR, Catalysts supply the one you are consciously reaching
  * for and reflexively arguing with: stimulating rather than restful.
  */
 export const catalysts = (t: MbtiType): MbtiType[] => {
-  const nemesis = stack(t)[4];
-  return TYPES.filter((p) => DOM_AUX[p][0] === nemesis);
+  const doubt = stack(t)[4];
+  return TYPES.filter((p) => DOM_AUX[p][0] === doubt);
 };
 
 /* The exchange overlay — saviors, demons and the animal stack — lives in ops.ts. */

@@ -53,7 +53,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   ),
   /* Shadow slots highlight their ego mirror — the grid names the mirror in-cell. */
   ...Object.fromEntries(
-    ([["nemesis", "Hero"], ["critic", "Parent"], ["trickster", "Child"], ["demon", "Inferior"]] as const)
+    ([["nemesis", "Lead"], ["critic", "Support"], ["trickster", "Delight"], ["demon", "Cave"]] as const)
       .map(([id, mirror]) => [
         id,
         () => <Plain><ArchetypeGrid highlight={mirror as SlotName} /></Plain>,

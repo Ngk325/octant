@@ -155,8 +155,8 @@ export default function TypeReader() {
         caption={
           <>
             Two regions are marked, because this model carries two readings of the same stack.
-            One puts the growth point at the <b>Inferior</b> alone. The other marks a wider pair —
-            the tertiary <i>and</i> the inferior — as its flinches. They agree on slot 4 and disagree
+            One puts the growth point at the <b>Cave</b> alone. The other marks a wider pair —
+            <b>Delight</b> <i>and</i> <b>Cave</b> — as its flinches. They agree on slot 4 and disagree
             about slot 3, which the first treats as a delight and the second treats as neglected.
             Neither reading is corrected into the other. The dashed arcs
             pair each ego slot with its shadow mirror: same capacity, facing the other way.
@@ -226,8 +226,8 @@ export default function TypeReader() {
         label="The same eight functions, sorted four ways."
         caption={
           <>
-            Your <b>Inferior</b> is the subconscious&rsquo;s Hero and your <b>Demon</b> is the
-            superego&rsquo;s Hero. What you are worst at is what another side of you leads with —
+            Your <b>Cave</b> is the subconscious&rsquo;s Lead and your <b>Dread</b> is the
+            superego&rsquo;s Lead. What you are worst at is what another side of you leads with —
             which is why those sides feel like meeting someone else.
           </>
         }
@@ -297,7 +297,7 @@ export default function TypeReader() {
       >
         <p>
           The overlay splits the ego block into two anchors and two flinches. The flinches are the axis
-          opposites of the anchors, which puts them at the tertiary and inferior — the overlay does
+          opposites of the anchors, which puts them at Delight and Cave — the overlay does
           not reach into the shadow block at all.
         </p>
       </Explain>
@@ -454,7 +454,8 @@ export default function TypeReader() {
       <Explain big plain={GATE_PLAIN[g.gate]}>
         <p>
           The growth gate is determined by the ego&rsquo;s attitude/orientation group, and its cave
-          is the Inferior function — which is also the gateway into the subconscious.
+          is the function sitting in your Cave slot — which is also the gateway into the
+          subconscious.
         </p>
       </Explain>
 
@@ -484,7 +485,7 @@ export default function TypeReader() {
 
       <Panel title={`What ${st[3]} actually wants`} style={{ marginTop: "var(--s4)" }}>
         <Explain
-          plain={`Everything above says to develop your Inferior ${st[3]}. This is what that function is actually chasing — and what to go and do about it.`}
+          plain={`Everything above says to develop your Cave ${st[3]}. This is what that function is actually chasing — and what to go and do about it.`}
         >
           <p style={{ margin: 0 }}>
             Structure from &ldquo;What Makes Each Cognitive Function Happy&rdquo;
@@ -498,7 +499,7 @@ export default function TypeReader() {
             <div key={fn}>
               <div className="cluster" style={{ marginBottom: "var(--s2)" }}>
                 <FnTag fn={fn} size="var(--t-lg)" />
-                <span className="chip">{n === 0 ? "Inferior" : "Nemesis"}</span>
+                <span className="chip">{n === 0 ? "Cave" : "Doubt"}</span>
                 <span className="chip">wants {FN_WANTS[fn].toLowerCase()}</span>
               </div>
               <Row stacked k="What feeds it" v={<span className="small">{FN_SATISFACTION[fn]}</span>} />
@@ -627,8 +628,8 @@ export default function TypeReader() {
         plain={`Fit is mechanical before it is chemical: how easy someone is for ${t} to be around depends on which of ${t}'s slots their strengths land in.`}
       >
         <p>
-          The figure shows the best case — {t}&rsquo;s Counterpart, whose Hero and Parent land exactly on{" "}
-          {t}&rsquo;s Inferior and Child. Every pairing below is the same picture with different
+          The figure shows the best case — {t}&rsquo;s Counterpart, whose Lead and Support land exactly on{" "}
+          {t}&rsquo;s Cave and Delight. Every pairing below is the same picture with different
           landing spots; open one to see its version.
         </p>
       </Explain>
@@ -637,8 +638,8 @@ export default function TypeReader() {
         label={`The best case: ${complements(t)[0]}.`}
         caption={
           <>
-            {complements(t)[0]}&rsquo;s strengths arrive on {t}&rsquo;s <b>Inferior</b> and{" "}
-            <b>Child</b> — supplying the feared thing and delighting the playful one. That is
+            {complements(t)[0]}&rsquo;s strengths arrive on {t}&rsquo;s <b>Cave</b> and{" "}
+            <b>Delight</b> — supplying the feared thing and delighting the playful one. That is
             what &ldquo;restful&rdquo; means mechanically.
           </>
         }
@@ -652,14 +653,14 @@ export default function TypeReader() {
           <p className="small">{CONCEPT_PLAIN.complement}</p>
           <Links list={complements(t)} from={t} />
           <p className="small muted" style={{ marginTop: "var(--s3)", marginBottom: 0 }}>
-            They supply your Inferior <b className="mono">{st[3]}</b>.
+            They supply your Cave <b className="mono">{st[3]}</b>.
           </p>
         </Panel>
         <Panel title="Catalysts — stimulating">
           <p className="small">{CONCEPT_PLAIN.catalyst}</p>
           <Links list={catalysts(t)} from={t} />
           <p className="small muted" style={{ marginTop: "var(--s3)", marginBottom: 0 }}>
-            They lead with your Nemesis <b className="mono">{st[4]}</b>.
+            They lead with your Doubt <b className="mono">{st[4]}</b>.
           </p>
         </Panel>
         <Panel title="Frictions — hard work">

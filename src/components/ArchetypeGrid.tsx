@@ -4,8 +4,8 @@ import { FnTag } from "./Bits";
 
 /**
  * The ego's four archetypes as the 2×2 they secretly are: aware/unaware of
- * using it × optimistic/pessimistic about it. Hero is aware and optimistic,
- * Parent aware and pessimistic, Child unaware and optimistic, Inferior
+ * using it × optimistic/pessimistic about it. Lead is aware and optimistic,
+ * Support aware and pessimistic, Delight unaware and optimistic, Cave
  * unaware and pessimistic — the lexicon states these eight facts in prose,
  * one entry at a time; here they are one picture.
  *
@@ -21,10 +21,10 @@ export default function ArchetypeGrid({ type, highlight }: {
   const st = type ? stack(type) : null;
 
   const CELLS: { slot: SlotName; idx: number; blurb: string }[] = [
-    { slot: "Hero", idx: 0, blurb: "Best at it, sure of it, overruns with it." },
-    { slot: "Child", idx: 2, blurb: "Delights in it, undefended about it." },
-    { slot: "Parent", idx: 1, blurb: "Careful with it, responsible for the Hero." },
-    { slot: "Inferior", idx: 3, blurb: "Afraid of it — and the way through." },
+    { slot: "Lead", idx: 0, blurb: "Best at it, sure of it, overruns with it." },
+    { slot: "Delight", idx: 2, blurb: "Delights in it, undefended about it." },
+    { slot: "Support", idx: 1, blurb: "Careful with it, responsible for the Lead." },
+    { slot: "Cave", idx: 3, blurb: "Afraid of it — and the way through." },
   ];
 
   const label: React.CSSProperties = {
@@ -35,8 +35,8 @@ export default function ArchetypeGrid({ type, highlight }: {
     <div
       role="img"
       aria-label={
-        "The four ego archetypes on two axes: Hero aware and optimistic, Parent aware and " +
-        "pessimistic, Child unaware and optimistic, Inferior unaware and pessimistic."
+        "The four ego archetypes on two axes: Lead aware and optimistic, Support aware and " +
+        "pessimistic, Delight unaware and optimistic, Cave unaware and pessimistic."
       }
       style={{
         display: "grid",

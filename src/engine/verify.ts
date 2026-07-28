@@ -18,7 +18,7 @@ export function verify(): string[] {
     /* ---- the exchange overlay ---- */
     const o = ops(t);
     // Saviors are the ego's top two; demons are their axis opposites, which are
-    // the ego's tertiary and inferior. the overlay never reaches into the shadow block.
+    // Delight and Cave. the overlay never reaches into the shadow block.
     const top4 = new Set(stack(t).slice(0, 4));
     for (const fn of [o.saviorObs, o.saviorDec, o.demonObs, o.demonDec]) {
       if (!top4.has(fn)) problems.push(`${t}: overlay function ${fn} is outside the ego block`);
@@ -52,7 +52,7 @@ export function verify(): string[] {
       const own = stack(side.type).slice(0, 4);
       const claimed = side.slots.map((sl) => sl.fn);
       if (own.join() !== claimed.join()) problems.push(`${t}/${k}: slots do not match ${side.type}`);
-      if (side.gateway.fn !== claimed[0]) problems.push(`${t}/${k}: gateway is not the side's Hero`);
+      if (side.gateway.fn !== claimed[0]) problems.push(`${t}/${k}: gateway is not the side's Lead`);
     }
     // The three involutions that generate the relation table also generate the
     // sides, so each side stands in a fixed relation to the ego.
@@ -62,9 +62,9 @@ export function verify(): string[] {
         problems.push(`${t}/${k}: relation to ego is ${relation(t, s[k].type)}, expected ${expectRel[k]}`);
       }
     }
-    // The Demon is the Inferior of the unconscious and the Hero of the superego.
+    // The Dread is the Cave of the unconscious and the Lead of the superego.
     if (s.unconscious.slots[3].fn !== s.superego.slots[0].fn) {
-      problems.push(`${t}: demon is not both unconscious Inferior and superego Hero`);
+      problems.push(`${t}: dread is not both unconscious Cave and superego Lead`);
     }
   }
 

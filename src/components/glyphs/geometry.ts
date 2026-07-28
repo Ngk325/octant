@@ -14,7 +14,7 @@
  *      custom properties.
  *   3. Attitude is motion. Extraverted = outward (rays, fans, arrows
  *      out); introverted = inward (cores, beams, arrows in).
- *   4. Rank is size. Hero > Parent > Child > Inferior at one fixed
+ *   4. Rank is size. Lead > Support > Delight > Cave at one fixed
  *      ratio, everywhere a stack is drawn small.
  *   5. People are geometry. A person is a circle head over a shoulder
  *      arc, ink-coloured; a crowd is a row of them, quieter.
@@ -22,7 +22,7 @@
  *      animal computes its shape from the engine.
  * ------------------------------------------------------------------ */
 
-/** Rule 4: the rank-to-size ratio, Hero → Inferior. */
+/** Rule 4: the rank-to-size ratio, Lead → Cave. */
 export const RANK_RATIO = [1, 0.78, 0.56, 0.42] as const;
 
 /** Is this function extraverted? Rule 3 decides everything else. */

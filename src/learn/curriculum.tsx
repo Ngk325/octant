@@ -242,15 +242,15 @@ export const STAGES: Stage[] = [
   {
     slug: "ego",
     title: "Your top four",
-    blurb: "Hero, Parent, Child, Inferior — the four you experience as yourself.",
+    blurb: "Lead, Support, Delight, Cave — the four you experience as yourself.",
     body: (t) => {
       const st = stack(t);
       return (
         <>
           <Explain big plain={CONCEPT_PLAIN.ego}>
             <p>
-              The ego block. Slots 1–4 carry the archetypes Hero, Parent, Child and
-              Inferior; the Inferior is simultaneously the weakest conscious function
+              The ego block. Slots 1–4 carry the archetypes Lead, Support, Delight and
+              Cave; the Cave is simultaneously the weakest conscious function
               and the one carrying the most developmental charge.
             </p>
           </Explain>
@@ -269,7 +269,7 @@ export const STAGES: Stage[] = [
           </div>
 
           <p className="note warn" style={{ marginTop: "var(--s5)" }}>
-            The <b>Inferior</b> is the one to remember. It is the thing you most want to be good
+            The <b>Cave</b> is the one to remember. It is the thing you most want to be good
             at and quietly fear you are not — and almost everything about growth, later in this
             course, runs through it.
           </p>
@@ -282,7 +282,7 @@ export const STAGES: Stage[] = [
   {
     slug: "shadow",
     title: "Your bottom four",
-    blurb: "Nemesis, Critic, Trickster, Demon — the ones that run without your permission.",
+    blurb: "Doubt, Scold, Blind spot, Dread — the ones that run without your permission.",
     body: (t) => {
       const st = stack(t);
       return (
@@ -293,7 +293,7 @@ export const STAGES: Stage[] = [
           >
             <p>
               The shadow block. Each shadow slot is the attitude-flip of its ego counterpart:
-              the Nemesis is the Hero&rsquo;s function in the opposite attitude, and so on down.
+              the Doubt is the Lead&rsquo;s function in the opposite attitude, and so on down.
               They are not lesser functions, they are the same functions running unsupervised.
             </p>
           </Explain>
@@ -312,8 +312,8 @@ export const STAGES: Stage[] = [
           </div>
 
           <p style={{ marginTop: "var(--s5)" }}>
-            The useful one to spot in yourself is the <b>Trickster</b>. It is a genuine blind
-            spot, and the tell is that you will bluff fluency rather than admit you cannot see it.
+            The useful one to spot in yourself is the <b>Blind spot</b>. You genuinely cannot see
+            it, and the tell is that you will bluff fluency rather than admit it.
           </p>
         </>
       );
@@ -348,8 +348,8 @@ export const STAGES: Stage[] = [
             label="The same eight functions, sorted four ways."
             caption={
               <>
-                Look at what moves. Your <b>Inferior</b> is the subconscious&rsquo;s Hero, and your{" "}
-                <b>Demon</b> is the superego&rsquo;s Hero. The thing you are worst at is the thing
+                Look at what moves. Your <b>Cave</b> is the subconscious&rsquo;s Lead, and your{" "}
+                <b>Dread</b> is the superego&rsquo;s Lead. The thing you are worst at is the thing
                 another side of you leads with — which is exactly why those sides feel like
                 someone else.
               </>
@@ -404,8 +404,8 @@ export const STAGES: Stage[] = [
         <>
           <Explain big plain={CONCEPT_PLAIN.gateway}>
             <p>
-              Four gateway functions: Hero into the ego, Inferior into the subconscious, Nemesis
-              into the unconscious, Demon into the superego. Development is the deliberate
+              Four gateway functions: Lead into the ego, Cave into the subconscious, Doubt
+              into the unconscious, Dread into the superego. Development is the deliberate
               conversion of a gateway from a defended position into an aspirational one.
             </p>
           </Explain>
@@ -433,7 +433,7 @@ export const STAGES: Stage[] = [
         </>
       );
     },
-    check: "What is your Inferior function, and what would practising it deliberately actually look like this week?",
+    check: "What is your Cave function, and what would practising it deliberately actually look like this week?",
   },
 
   {
@@ -451,7 +451,7 @@ export const STAGES: Stage[] = [
             <p>
               It splits the ego block into two <Term id="savior">anchors</Term> and two{" "}
               <Term id="demon-fn">demons</Term>. The demons are the axis opposites of the
-              anchors, which places them at the tertiary and inferior — the overlay does not reach
+              anchors, which places them at Delight and Cave — the overlay does not reach
               into the shadow block at all.
             </p>
           </Explain>
@@ -583,8 +583,8 @@ export const STAGES: Stage[] = [
         </Explain>
 
         <p>
-          If your strongest function lands on their <b>Child</b>, they light up. If it lands on
-          their <b>Inferior</b>, they get defensive. Same behaviour from you, opposite result —
+          If your strongest function lands on their <b>Delight</b>, they light up. If it lands on
+          their <b>Cave</b>, they get defensive. Same behaviour from you, opposite result —
           and you will not be able to tell which is happening without knowing the wiring.
         </p>
 
@@ -594,7 +594,7 @@ export const STAGES: Stage[] = [
           caption={
             <>
               {t} being read by INFJ — the pair the button below opens. The arrows are INFJ&rsquo;s
-              Hero and Parent arriving in {t}&rsquo;s stack; the lit rows are where they land.
+              Lead and Support arriving in {t}&rsquo;s stack; the lit rows are where they land.
               Every one of the 256 relations is this same picture with different landing spots.
             </>
           }
@@ -712,7 +712,7 @@ export const STAGES: Stage[] = [
           <p>
             You do not get your own origin. You share one with your{" "}
             <Term id="subconscious">subconscious</Term> — the type you become when you develop
-            through your <Term id="inferior">Inferior</Term>, which is also your{" "}
+            through your <Term id="inferior">Cave</Term>, which is also your{" "}
             <Term id="rel-du">Counterpart</Term>. Sixteen types, paired off, make eight. Two of those
             wheels make a <Term id="temple">temple</Term>, and a temple turns out to be exactly the
             four sides of one mind: your ego, your subconscious, your unconscious and your superego

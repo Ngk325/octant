@@ -77,8 +77,8 @@ export function typeFacts(t: MbtiType): string[] {
       `shadow pole ${w.shadowPole} (where UD drifts); aspirational pole ${w.aspirationalPole} (where SD drifts).`),
     line("Octagram theme", "NOT DERIVABLE — depends on this person's childhood (SD/UD) and current focus (SF/UF). Ask or answer conditionally."),
     line("Coins", c.map((v, i) => `${COIN_LABELS[i].split(" vs ")[0]}=${v}${(DETERMINING as readonly number[]).includes(i) ? "*" : ""}`).join(" · ") + "  (* = determining)"),
-    line("Complements (restful, supply the Inferior)", complements(t).join(", ")),
-    line("Catalysts (stimulating, lead with the Nemesis)", catalysts(t).join(", ")),
+    line("Complements (restful, supply the Cave)", complements(t).join(", ")),
+    line("Catalysts (stimulating, lead with the Doubt)", catalysts(t).join(", ")),
     line("Frictions", frictions(t).join(", ")),
     line("Motivation", b.motivation),
     line("Decides by", b.decisionStyle),
@@ -88,9 +88,9 @@ export function typeFacts(t: MbtiType): string[] {
     line("Communication flaw", b.commsFlaw),
     line("Appeal to", virtue),
     line("Avoid triggering", vice),
-    line(`Inferior ${st[3]} — what it wants`, `${FN_WANTS[st[3]]}. ${FN_SATISFACTION[st[3]]}`),
-    line(`Inferior ${st[3]} — practices`, FN_PRACTICE[st[3]].join("; ")),
-    line(`Nemesis ${st[4]} — what it wants`, `${FN_WANTS[st[4]]}. ${FN_SATISFACTION[st[4]]}`),
+    line(`Cave ${st[3]} — what it wants`, `${FN_WANTS[st[3]]}. ${FN_SATISFACTION[st[3]]}`),
+    line(`Cave ${st[3]} — practices`, FN_PRACTICE[st[3]].join("; ")),
+    line(`Doubt ${st[4]} — what it wants`, `${FN_WANTS[st[4]]}. ${FN_SATISFACTION[st[4]]}`),
     line("Function roles", st.slice(0, 4).map((fn) => `${fn}=${FN_ROLE[fn]}`).join(" · ")),
     line("How the ego functions sound", st.slice(0, 4).map((fn) => `${fn}: "${FN_SAYS[fn][0]}"`).join(" · ")),
   ];
@@ -101,7 +101,7 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
   const code = REL[a][b];
   const rec = RECIPROCAL[code];
   const aStack = stack(a);
-  const bHero = stack(b)[0], bParent = stack(b)[1];
+  const bLead = stack(b)[0], bSupport = stack(b)[1];
   /** Which of the eight slots this function occupies for that type. */
   const slotOf = (fn: string) => SLOT_NAMES[aStack.indexOf(fn as never)];
 
@@ -116,7 +116,7 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
     line("Symmetric", rec === code ? "yes" : "NO — this relation runs differently in each direction, and that asymmetry is the point"),
     line(`Ease for ${a} of being around ${b}`, `${ease(a, b)}/100`),
     line(`Ease for ${b} of being around ${a}`, `${ease(b, a)}/100`),
-    line(`Where ${b}'s instruments land in ${a}`, `their Hero ${bHero} → ${a}'s ${slotOf(bHero)}; their Parent ${bParent} → ${a}'s ${slotOf(bParent)}`),
+    line(`Where ${b}'s instruments land in ${a}`, `their Lead ${bLead} → ${a}'s ${slotOf(bLead)}; their Support ${bSupport} → ${a}'s ${slotOf(bSupport)}`),
     line(`Playbook written to ${b} about ${a}`, playbook(b, a)),
     line(
       "Empirical cross-check",
@@ -136,8 +136,8 @@ from the popular type writing on the internet. When the two disagree, this model
 
 THE MODEL IN BRIEF
 - A type is a fixed order of eight cognitive functions. Slots 1-4 are the ego block
-  (Hero, Parent, Child, Inferior); slots 5-8 are the shadow block (Nemesis, Critic,
-  Trickster, Demon).
+  (Lead, Support, Delight, Cave); slots 5-8 are the shadow block (Doubt, Scold,
+  Blind spot, Dread).
 - Three moves generate everything, and they are named for what they do rather than by a Greek
   letter: FLIP keeps the letter and changes direction (Ne -> Ni); SWAP changes the letter and
   keeps the direction (Ne -> Se); TURN does both (Ne -> Si). All 256 relations, all 256 ease
@@ -148,13 +148,13 @@ THE MODEL IN BRIEF
 - FOUR SIDES OF THE MIND. Every person is four types at once. The subconscious
   is the ego stack reversed and is structurally the ego's Dual; the unconscious is the shadow
   block and is the ego's Extinguishment partner; the superego is the shadow reversed and is
-  the ego's Super-Ego partner. Each side has one gateway function: Hero into the ego,
-  Inferior into the subconscious (blocked by insecurity), Nemesis into the unconscious
-  (blocked by worry), Demon into the superego (blocked by fear). Undeveloped subconscious
+  the ego's Super-Ego partner. Each side has one gateway function: Lead into the ego,
+  Cave into the subconscious (blocked by insecurity), Doubt into the unconscious
+  (blocked by worry), Dread into the superego (blocked by fear). Undeveloped subconscious
   gets forced open by a midlife crisis; undeveloped unconscious by a three-quarter-life crisis.
 - THE EXCHANGE OVERLAY. A second reading of the same four ego functions: two saviors
   (trusted, effortless) and two demons (distrusted, effortful). The demons are the axis
-  opposites of the saviors, which means they are the ego's tertiary and inferior — the overlay
+  opposites of the saviors, which means they are Delight and Cave — the overlay
   does not reach into the shadow block. Animals pair one observer attitude with one decider
   attitude: Play = Oe+De and Sleep = Oi+Di are the energy animals; Blast = Oi+De and
   Consume = Oe+Di are the information animals.
@@ -170,14 +170,14 @@ THE MODEL IN BRIEF
   Despair. Never guess someone's theme from their type; ask, or answer conditionally.
   Say plainly that the shadow/aspirational labelling is the least certain part of this layer.
 - THE TWO GROWTH READINGS ARE NOT RECONCILED HERE, deliberately. One puts the growth point at
-  the Inferior alone; the exchange overlay marks the tertiary and inferior together. They count
+  the Cave alone; the exchange overlay marks Delight and Cave together. They count
   the parts of a mind differently. Say so when it matters rather than blending them.
 - AN EMPIRICAL COUNTERWEIGHT is carried alongside the derived scores: a self-reported
   compatibility survey that correlates at r = -0.15 with this model. Where the two disagree, say
   so and say why — the survey measures who people report liking (so same-type pairs top it), and
   this model measures how the wiring meshes (so Duals top it). Neither settles the other.
-- COMPLEMENT vs CATALYST. Complements (Dual + Activity) supply your Inferior — restful.
-  Catalysts lead with your Nemesis — stimulating and slightly abrasive.
+- COMPLEMENT vs CATALYST. Complements (Dual + Activity) supply your Cave — restful.
+  Catalysts lead with your Doubt — stimulating and slightly abrasive.
 
 FIGURES YOU CAN DRAW
 The app renders these directives as its own live diagrams when you put one on a line by
@@ -196,7 +196,7 @@ when a picture genuinely carries the point):
 - {{figure:involution-table FN}} — alpha/beta/omega for the eight functions (FN optional).
 - {{figure:quadra-grid QUADRA}} — the four quadras' valued functions (QUADRA optional).
 - {{figure:octagram-map TYPE}} — the full eight-wheel ring (TYPE optional highlight).
-- {{figure:molecule TYPE}} — the type's identity glyph: four beads sized Hero to Inferior.
+- {{figure:molecule TYPE}} — the type's identity glyph: four beads sized Lead to Cave.
 - {{figure:fn-icon FN}} — one function's pictorial icon (e.g. Ne branching, Fi plumb line).
 - {{figure:animal ANIMAL}} — Play, Blast, Consume or Sleep as its arrow signature.
 Never invent other figure names, never put a directive inside a sentence, and keep

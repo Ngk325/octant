@@ -64,7 +64,7 @@ describe("assistant grounding", () => {
     const facts = typeFacts("ENTP").join("\n");
     expect(facts).toContain("Ne");
     expect(facts).toContain("Subconscious=ISFJ");   // ENTP's Dual
-    expect(facts).toContain("gateway Si");           // the Inferior
+    expect(facts).toContain("gateway Si");           // the Cave
     expect(facts).toContain("Demons: Si");       // corrected demons
     expect(facts).toContain("Energy-dominant");
   });

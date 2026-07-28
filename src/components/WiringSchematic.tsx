@@ -9,12 +9,12 @@ import { usePalette } from "./Theme";
  *
  * Two regions are marked, and with the demons taken as the axis opposites of
  * the saviors they now OVERLAP rather than sitting in different blocks:
- *   · cave    — the Inferior alone (slot 4)
- *   · demons  — the tertiary and inferior (slots 3 and 4)
+ *   · cave    — the Cave, alone (slot 4)
+ *   · demons  — Delight and Cave (slots 3 and 4)
  * So the two readings agree that slot 4 is the sore spot and disagree about
- * slot 3: one calls it the Child and treats it as a delight, the other calls
- * it a demon and treats it as neglected. That is the real divergence, and it
- * is more interesting than the one the first build drew.
+ * slot 3: one calls it the Delight and treats it as something to enjoy, the
+ * other calls it a demon and treats it as neglected. That is the real
+ * divergence, and it is more interesting than the one the first build drew.
  *
  * No text below 14px. Nothing depends on colour alone.
  */
@@ -47,7 +47,7 @@ export default function WiringSchematic({ type, showCorrespondence }: {
       viewBox={`0 0 ${W} ${H}`}
       width="100%"
       role="img"
-      aria-label={`The eight function slots of ${type}, from Hero down to Demon`}
+      aria-label={`The eight function slots of ${type}, from Lead down to Dread`}
       style={{ display: "block", maxWidth: 700, fontFamily: "Inter, system-ui, sans-serif" }}
     >
       <text x="0" y="16" fill="var(--muted)" fontSize="14" fontWeight="600">

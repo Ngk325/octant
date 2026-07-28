@@ -1,4 +1,4 @@
-import type { Fn, RelCode, MbtiType } from "./data";
+import type { Fn, RelCode, MbtiType, SlotName } from "./data";
 import type { Quadra } from "./core";
 
 /* ------------------------------------------------------------------ *
@@ -34,15 +34,15 @@ export const FN_HANDLE: Record<Fn, string> = {
 };
 
 /** The eight positions, said plainly. */
-export const SLOT_PLAIN: Record<string, string> = {
-  Hero: "Your strongest move. You reach for it automatically, you are genuinely good at it, and you overuse it.",
-  Parent: "Your sense of duty. You are good at this too, but it feels like work rather than fun, so you skip it when tired.",
-  Child: "Your fun. You are not brilliant at it, but you love it and it is where you go to feel light.",
-  Inferior: "Your sore spot. You want to be good at this and you are afraid you are not. Growth lives here.",
-  Nemesis: "Your worry. The voice that asks what you have not thought of.",
-  Critic: "Your cynicism. Where you get dismissive, usually about other people doing this badly.",
-  Trickster: "Your blind spot. You genuinely cannot see this one, and you will bluff rather than admit it.",
-  Demon: "Your worst setting. Rarely on — and when it is on, it is doing damage.",
+export const SLOT_PLAIN: Record<SlotName, string> = {
+  Lead: "Your strongest move. You reach for it automatically, you are genuinely good at it, and you overuse it.",
+  Support: "Your sense of duty. You are good at this too, but it feels like work rather than fun, so you skip it when tired.",
+  Delight: "Your fun. You are not brilliant at it, but you love it and it is where you go to feel light.",
+  Cave: "Your sore spot. You want to be good at this and you are afraid you are not. Growth lives here.",
+  Doubt: "Your worry. The voice that asks what you have not thought of.",
+  Scold: "Your cynicism. Where you get dismissive, usually about other people doing this badly.",
+  "Blind spot": "The one you genuinely cannot see. You will bluff rather than admit it.",
+  Dread: "Your worst setting. Rarely on — and when it is on, it is doing damage.",
 };
 
 /* ------------------------------------------------------------------ *
@@ -58,20 +58,20 @@ export const SLOT_PLAIN: Record<string, string> = {
  * belongs to, so nothing on the pair page depends on the reader tracking
  * which of "your" and "their" is currently which.
  * ------------------------------------------------------------------ */
-export const SLOT_ABOUT: Record<string, string> = {
-  Hero: "{who}'s strongest move. They reach for it without thinking, they are genuinely good at it, and they overuse it.",
-  Parent: "{who}'s sense of duty. They are good at this too, but it feels like work rather than fun, so it slips when they are tired.",
-  Child: "{who}'s fun. Not brilliant at it, but they love it — it is where they go to feel light.",
-  Inferior: "{who}'s sore spot. They want to be good at this and are afraid they are not. Their growth lives here.",
-  Nemesis: "{who}'s worry. The voice asking what they have not thought of.",
-  Critic: "{who}'s cynicism. Where they get dismissive, usually about other people doing this badly.",
-  Trickster: "{who}'s blind spot. They genuinely cannot see this one, and will bluff rather than admit it.",
-  Demon: "{who}'s worst setting. Rarely on — and when it is on, it is doing damage.",
+export const SLOT_ABOUT: Record<SlotName, string> = {
+  Lead: "{who}'s strongest move. They reach for it without thinking, they are genuinely good at it, and they overuse it.",
+  Support: "{who}'s sense of duty. They are good at this too, but it feels like work rather than fun, so it slips when they are tired.",
+  Delight: "{who}'s fun. Not brilliant at it, but they love it — it is where they go to feel light.",
+  Cave: "{who}'s sore spot. They want to be good at this and are afraid they are not. Their growth lives here.",
+  Doubt: "{who}'s worry. The voice asking what they have not thought of.",
+  Scold: "{who}'s cynicism. Where they get dismissive, usually about other people doing this badly.",
+  "Blind spot": "The one {who} genuinely cannot see. They will bluff rather than admit it.",
+  Dread: "{who}'s worst setting. Rarely on — and when it is on, it is doing damage.",
 };
 
 /** One slot described from outside, with the owner named rather than pronouned. */
 export const slotAbout = (slot: string, who: string): string =>
-  (SLOT_ABOUT[slot] ?? "").replace(/\{who\}/g, who);
+  (SLOT_ABOUT[slot as SlotName] ?? "").replace(/\{who\}/g, who);
 
 /** The four sides, said plainly, without any structure attached. */
 export const SIDE_PLAIN: Record<string, string> = {
@@ -221,9 +221,9 @@ export const PLAIN_BY_ID: Record<string, string> = {
   te: FN_PLAIN.Te, ti: FN_PLAIN.Ti, fe: FN_PLAIN.Fe, fi: FN_PLAIN.Fi,
 
   /* archetypes */
-  hero: SLOT_PLAIN.Hero, parent: SLOT_PLAIN.Parent, child: SLOT_PLAIN.Child,
-  inferior: SLOT_PLAIN.Inferior, nemesis: SLOT_PLAIN.Nemesis, critic: SLOT_PLAIN.Critic,
-  trickster: SLOT_PLAIN.Trickster, demon: SLOT_PLAIN.Demon,
+  hero: SLOT_PLAIN.Lead, parent: SLOT_PLAIN.Support, child: SLOT_PLAIN.Delight,
+  inferior: SLOT_PLAIN.Cave, nemesis: SLOT_PLAIN.Doubt, critic: SLOT_PLAIN.Scold,
+  trickster: SLOT_PLAIN["Blind spot"], demon: SLOT_PLAIN.Dread,
 
   /* quadras */
   alpha: QUADRA_PLAIN.Alpha, beta: QUADRA_PLAIN.Beta,
