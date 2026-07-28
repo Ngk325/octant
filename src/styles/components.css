@@ -712,6 +712,72 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 }
 .check > p:first-child { font-weight: 500; }
 
+/* --------------------------- onboarding gate ------------------------- */
+
+.onboard {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--s9) * 2);
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s6) 0;
+}
+.onboard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s7);
+}
+
+/* A filling row, not a countdown — the catalogue's "reads as building
+   rather than remaining". Dots behind the current step stay open. */
+.onboard-progress {
+  display: flex;
+  gap: var(--s2);
+  margin-bottom: var(--s8);
+}
+.onboard-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sunk);
+  border: 1px solid var(--rule-strong);
+}
+.onboard-dot.on { background: var(--accent); border-color: transparent; }
+
+.onboard-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s6);
+  text-align: center;
+}
+.onboard-idea {
+  font-size: var(--t-2xl);
+  line-height: var(--lh-tight);
+  margin: 0;
+}
+.onboard-figure {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: var(--s3) 0;
+}
+.onboard-unlock { margin: 0; max-width: 46ch; }
+
+.onboard-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-top: var(--s8);
+  padding-top: var(--s5);
+}
+
+@media (max-width: 640px) {
+  .onboard-idea { font-size: var(--t-xl); }
+}
+
 /* ----------------------------- chat rail ---------------------------- */
 
 /* Below 1180px the rail is position:fixed and overlays the page. The scrim

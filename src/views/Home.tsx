@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { usePublishContext } from "../chat/ChatContext";
 import { Panel, Tile } from "../components/Bits";
 import { STAGES } from "../learn/curriculum";
@@ -94,6 +95,10 @@ export default function Home() {
         measure ability, predict outcomes, diagnose anything, or tell you who to hire, date or
         forgive — and it is at its worst when used to decide something about a person before
         you have met them.
+      </p>
+
+      <p className="small muted">
+        New here? <Link to="/welcome">Retake the two-minute orientation →</Link>
       </p>
     </>
   );

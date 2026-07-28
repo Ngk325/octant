@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./views/Home";
+import Welcome, { ONBOARDING_DONE_KEY } from "./views/Welcome";
 import Learn from "./views/Learn";
 import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
@@ -13,6 +14,7 @@ import Admin from "./views/Admin";
 import ChatRail from "./chat/ChatRail";
 import { useChatCtx } from "./chat/ChatContext";
 import { usePalette } from "./components/Theme";
+import { readStored } from "./storage";
 
 const TABS: [string, string][] = [
   ["/learn", "Learn"],
@@ -73,6 +75,25 @@ export default function App() {
       window.location.assign("/");
     });
   };
+
+  /* The foundation gate gets its own bare shell — no tabs, no assistant rail
+     — because showing the fully-loaded application is exactly the problem
+     it exists to defer. Still inside .app/.main/.main-inner for the same
+     canvas, padding and max-width as everywhere else. */
+  if (pathname.startsWith("/welcome")) {
+    return (
+      <div className="app">
+        <div className="main">
+          <main className="main-inner">
+            <Routes>
+              <Route path="/welcome" element={<Welcome />} />
+              <Route path="/welcome/:step" element={<Welcome />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -135,7 +156,10 @@ export default function App() {
 
         <main className="main-inner">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={readStored(ONBOARDING_DONE_KEY) === "1" ? <Home /> : <Navigate to="/welcome" replace />}
+            />
             <Route path="/learn" element={<Learn />} />
             <Route path="/learn/:stage" element={<Learn />} />
             <Route path="/calculator" element={<Calculator />} />

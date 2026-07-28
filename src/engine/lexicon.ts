@@ -63,7 +63,7 @@ const FUNCTIONS: Draft[] = [
     short: "Introverted Sensing — continuity, precedent, and the body's own record.",
     definition:
       "Perceives the present against everything the same body has already met. Si holds a detailed internal register of how things have gone before — procedures that worked, foods that disagreed, the exact way this was done last time — and reads any new situation as a deviation from that record. It is what makes institutions and habits possible. Its failure is that the record becomes the authority: what is unprecedented is treated as unsafe rather than merely unfamiliar.",
-    inSystem: "Introverted observer. As an Inferior it produces the Gate of Obligation in ENTP and ENFP.",
+    inSystem: "Introverted observer. As a Cave it produces the Gate of Obligation in ENTP and ENFP.",
     seeAlso: ["se", "ne", "observer", "organize"] }),
   E({ id: "te", term: "Te", category: "Function",
     short: "Extraverted Thinking — ordering the outside world toward a stated objective.",
@@ -81,67 +81,68 @@ const FUNCTIONS: Draft[] = [
     short: "Extraverted Feeling — reading and then setting the emotional state of a group.",
     definition:
       "Decides by what the collective needs. Fe registers the room's mood as a fact about the world, holds itself responsible for it, and actively moves it — warming, defusing, including, escalating when escalation is what the group requires. It treats shared values as real constraints rather than preferences. Its failure is that harmony becomes the criterion: the true thing goes unsaid because saying it would cost the room.",
-    inSystem: "Extraverted decider. As an Inferior it produces the Gate of the Tribe in INTP and ISTP.",
+    inSystem: "Extraverted decider. As a Cave it produces the Gate of the Tribe in INTP and ISTP.",
     seeAlso: ["fi", "ti", "decider", "tribe"] }),
   E({ id: "fi", term: "Fi", category: "Function",
     short: "Introverted Feeling — a private register of worth that does not require agreement.",
     definition:
       "Decides by internal value. Fi holds a finely graded sense of what is right, true and worth caring about, calibrated by direct experience rather than argument, and it does not need the tribe to ratify it. This is what makes conviction possible under social pressure. Its failure is unfalsifiability: because the judgement is felt rather than reasoned, it can be neither examined nor explained, only defended or withdrawn.",
-    inSystem: "Introverted decider. As an Inferior it produces the Gate of the Self in ENTJ and ESTJ.",
+    inSystem: "Introverted decider. As a Cave it produces the Gate of the Self in ENTJ and ESTJ.",
     seeAlso: ["fe", "te", "decider", "identity"] }),
 ];
 
 /* ══════════════════════════════ ARCHETYPES ══════════════════════════════ */
 const ARCHETYPES: Draft[] = [
-  E({ id: "hero", term: "Hero", category: "Archetype",
+  E({ id: "hero", term: "Lead", category: "Archetype",
     short: "Slot 1. The function you are best at and most identified with.",
     definition:
-      "The apex of the conscious stack: fastest, most confident, least effortful, and the one you would name if asked what you are good at. It operates optimistically and with awareness, which is exactly what makes it dangerous — it will keep going long after it should have stopped, because from the inside its competence feels total. The Parent exists to brake it.",
+      "The apex of the conscious stack: fastest, most confident, least effortful, and the one you would name if asked what you are good at. It operates optimistically and with awareness, which is exactly what makes it dangerous — it will keep going long after it should have stopped, because from the inside its competence feels total. The Support exists to brake it.",
     seeAlso: ["parent", "ego", "inferior"] }),
-  E({ id: "parent", term: "Parent", category: "Archetype",
-    short: "Slot 2. The responsible, pessimistic filter that keeps the Hero from doing damage.",
+  E({ id: "parent", term: "Support", category: "Archetype",
+    short: "Slot 2. The responsible, pessimistic filter that keeps the Lead from doing damage.",
     definition:
-      "Conscious and aware like the Hero, but cautious where the Hero is expansive. The Parent takes responsibility for consequences — it prunes, verifies and protects, including protecting other people from the Hero's momentum. It is the function you use when you are being careful on someone else's behalf, and it is tiring in a way the Hero is not.",
+      "Conscious and aware like the Lead, but cautious where the Lead is expansive. The Support takes responsibility for consequences — it prunes, verifies and protects, including protecting other people from the Lead's momentum. It is the function you use when you are being careful on someone else's behalf, and it is tiring in a way the Lead is not.",
     seeAlso: ["hero", "child", "ego"] }),
-  E({ id: "child", term: "Child", category: "Archetype",
+  E({ id: "child", term: "Delight", category: "Archetype",
     short: "Slot 3. Playful, sincere, and easily wounded. The most direct way in.",
     definition:
-      "Conscious but unaware — used with genuine delight and no maturity requirement. The Child is where a person is most charming and least defended, which makes it the best point of contact and the cruellest place to attack. Engage someone here and they open; mock them here and the shutter comes down for good.",
+      "Conscious but unaware — used with genuine delight and no maturity requirement. The Delight is where a person is most charming and least defended, which makes it the best point of contact and the cruellest place to attack. Engage someone here and they open; mock them here and the shutter comes down for good.",
     seeAlso: ["parent", "inferior", "ego"] }),
-  E({ id: "inferior", term: "Inferior", category: "Archetype",
+  E({ id: "inferior", term: "Cave", category: "Archetype",
     short: "Slot 4. The fear. Also the doorway to everything the type is not yet.",
     definition:
-      "The gateway to the subconscious: the function a person feels chronically inadequate at and quietly organises their life to avoid. Under stress it erupts in crude, exaggerated form. Faced deliberately rather than avoided, it converts into what this model calls aspirational power — which is why every growth gate in this system is named for an Inferior.",
+      "The gateway to the subconscious: the function a person feels chronically inadequate at and quietly organises their life to avoid. Under stress it erupts in crude, exaggerated form. Faced deliberately rather than avoided, it converts into what this model calls aspirational power — which is why every growth gate in this system is named for a Cave.",
     inSystem: "Determines the type's Gate. Their Counterpart supplies precisely this function as their Lead.",
     seeAlso: ["gate", "rel-du", "child", "shadow"] }),
-  E({ id: "nemesis", term: "Nemesis", category: "Archetype",
-    short: "Slot 5. The Hero's attitude-flip, running as worry.",
+  E({ id: "nemesis", term: "Doubt", category: "Archetype",
+    short: "Slot 5. The Lead's attitude-flip, running as worry.",
     definition:
-      "The first shadow position: aware but pessimistic, and in constant orbit around the Hero. Where the Hero is certain, the Nemesis supplies the alternative reading and the reason it might not work. It is genuinely useful — it is the type's own internal opposition — but it arrives as anxiety rather than analysis, so it is usually experienced as an obstacle rather than a resource.",
-    inSystem: "The two types whose Hero is your Nemesis function are your Catalysts.",
+      "The first shadow position: aware but pessimistic, and in constant orbit around the Lead. Where the Lead is certain, the Doubt supplies the alternative reading and the reason it might not work. It is genuinely useful — it is the type's own internal opposition — but it arrives as anxiety rather than analysis, so it is usually experienced as an obstacle rather than a resource.",
+    inSystem: "The two types whose Lead is your Doubt function are your Catalysts.",
     seeAlso: ["hero", "catalyst", "shadow"] }),
-  E({ id: "critic", term: "Critic", category: "Archetype",
+  E({ id: "critic", term: "Scold", category: "Archetype",
     short: "Slot 6. The senile elder. Analytical, harsh, demands proof of everything.",
     definition:
-      "Shadow, aware, pessimistic. The Critic is where a person is most cuttingly evaluative of both themselves and others, and where they demand a standard of verification they would never apply to their Hero. It carries real discernment and terrible delivery.",
+      "Shadow, aware, pessimistic. The Scold is where a person is most cuttingly evaluative of both themselves and others, and where they demand a standard of verification they would never apply to their Lead. It carries real discernment and terrible delivery.",
     seeAlso: ["parent", "shadow"] }),
-  E({ id: "trickster", term: "Trickster", category: "Archetype",
+  E({ id: "trickster", term: "Blind spot", category: "Archetype",
     short: "Slot 7. The blind spot you are confident you do not have.",
     definition:
-      "Shadow, unaware, optimistic — the most treacherous position in the stack. The person is not merely bad here; they are unaware of being bad here, and will produce fluent-sounding output that is structurally wrong. Agreement obtained on someone's Trickster is worth nothing, because they are not tracking the thing they think they are tracking.",
-    inSystem: "Every playbook names the target's Trickster explicitly, because it is where confirmation is least reliable.",
+      "Shadow, unaware, optimistic — the most treacherous position in the stack. The person is not merely bad here; they are unaware of being bad here, and will produce fluent-sounding output that is structurally wrong. Agreement obtained on someone's Blind spot is worth nothing, because they are not tracking the thing they think they are tracking.",
+    inSystem: "Every playbook names the target's Blind spot explicitly, because it is where confirmation is least reliable.",
     seeAlso: ["child", "demon", "shadow"] }),
-  E({ id: "demon", term: "Demon", category: "Archetype",
+  E({ id: "demon", term: "Dread", category: "Archetype",
     short: "Slot 8. The lowest position. Emerges as destruction when the ego is genuinely threatened.",
     definition:
-      "Shadow, unaware, pessimistic. Almost never visible, and when it appears the person is not being difficult — they are past the point of strategy. The Demon disregards every norm of its own function and operates from resentment. Cornering someone into it does not win the exchange; it ends the relationship.",
+      "Shadow, unaware, pessimistic. Almost never visible, and when it appears the person is not being difficult — they are past the point of strategy. The Dread disregards every norm of its own function and operates from resentment. Cornering someone into it does not win the exchange; it ends the relationship.",
     seeAlso: ["trickster", "shadow", "inferior"] }),
 ];
 
 /* ══════════════════════════════ QUADRAS ══════════════════════════════ */
+/** Keyed by id, not by display term — the camp names are due to be renamed (Set D pass 3) and ids do not move; labels do. */
 const QUADRA_ELEMENTS: Record<string, Fn[]> = {
-  Alpha: ["Ne", "Si", "Ti", "Fe"], Beta: ["Se", "Ni", "Ti", "Fe"],
-  Gamma: ["Se", "Ni", "Te", "Fi"], Delta: ["Ne", "Si", "Te", "Fi"],
+  alpha: ["Ne", "Si", "Ti", "Fe"], beta: ["Se", "Ni", "Ti", "Fe"],
+  gamma: ["Se", "Ni", "Te", "Fi"], delta: ["Ne", "Si", "Te", "Fi"],
 };
 const QUADRAS: Draft[] = [
   E({ id: "alpha", term: "Alpha", category: "Quadra",
@@ -256,22 +257,22 @@ const GATES: Draft[] = [
   E({ id: "gate-of-chaos", term: "Gate of Chaos", category: "Gate",
     short: "IxxJ. Fear of the unplanned. Opens onto freedom.",
     definition:
-      "Held by INTJ, INFJ, ISTJ and ISFJ, whose Inferior is Se or Ne. The type organises life so that nothing arrives unprepared for, and experiences the unforeseen as a threat to competence rather than as ordinary weather. Surrendering some control — acting without the plan finished, letting an unproven possibility stand — is what converts the fear into adaptability.",
+      "Held by INTJ, INFJ, ISTJ and ISFJ, whose Cave is Se or Ne. The type organises life so that nothing arrives unprepared for, and experiences the unforeseen as a threat to competence rather than as ordinary weather. Surrendering some control — acting without the plan finished, letting an unproven possibility stand — is what converts the fear into adaptability.",
     seeAlso: ["inferior", "gate-of-obligation", "se", "ne"] }),
   E({ id: "gate-of-obligation", term: "Gate of Obligation", category: "Gate",
     short: "ExxP. Fear of being tied down. Opens onto legacy.",
     definition:
-      "Held by ENTP, ENFP, ESTP and ESFP, whose Inferior is Si or Ni. The type keeps options open and exits available, and experiences commitment as a narrowing rather than a deepening. Deliberately binding yourself to one line and staying past the point where it stops being interesting is what converts the fear into something that compounds.",
+      "Held by ENTP, ENFP, ESTP and ESFP, whose Cave is Si or Ni. The type keeps options open and exits available, and experiences commitment as a narrowing rather than a deepening. Deliberately binding yourself to one line and staying past the point where it stops being interesting is what converts the fear into something that compounds.",
     seeAlso: ["inferior", "gate-of-chaos", "si", "ni"] }),
   E({ id: "gate-of-the-tribe", term: "Gate of the Tribe", category: "Gate",
     short: "IxxP. Fear of the group's verdict. Opens onto leadership.",
     definition:
-      "Held by INTP, INFP, ISTP and ISFP, whose Inferior is Fe or Te. The type keeps its work private rather than risk it being judged inadequate in public, and mistakes the avoidance for preference. Stepping onto the stage — letting the model land with people, being measured externally — is what converts the fear into influence.",
+      "Held by INTP, INFP, ISTP and ISFP, whose Cave is Fe or Te. The type keeps its work private rather than risk it being judged inadequate in public, and mistakes the avoidance for preference. Stepping onto the stage — letting the model land with people, being measured externally — is what converts the fear into influence.",
     seeAlso: ["inferior", "gate-of-the-self", "fe", "te"] }),
   E({ id: "gate-of-the-self", term: "Gate of the Self", category: "Gate",
     short: "ExxJ. Fear of the empty interior. Opens onto authenticity.",
     definition:
-      "Held by ENTJ, ENFJ, ESTJ and ESFJ, whose Inferior is Fi or Ti. The type stays in motion partly to avoid finding out whether there is anything underneath the achievement, and reads unstructured solitude as waste. Sitting alone in the dark long enough to locate what is actually valued is what converts the fear into a self worth being.",
+      "Held by ENTJ, ENFJ, ESTJ and ESFJ, whose Cave is Fi or Ti. The type stays in motion partly to avoid finding out whether there is anything underneath the achievement, and reads unstructured solitude as waste. Sitting alone in the dark long enough to locate what is actually valued is what converts the fear into a self worth being.",
     seeAlso: ["inferior", "gate-of-the-tribe", "fi", "ti"] }),
 ];
 
@@ -341,13 +342,13 @@ const CONCEPTS: Draft[] = [
   E({ id: "complement", term: "Complement", category: "Concept",
     short: "Your Counterpart and your Spark partner. They supply the function you fear.",
     definition:
-      "The two types whose strengths sit exactly where your conscious stack is weakest. Your Counterpart leads with your Inferior; your Spark partner leads with the function that mobilises you. Time with a Complement is restful rather than exciting: they handle, without effort or resentment, the thing you have organised your life around avoiding.",
+      "The two types whose strengths sit exactly where your conscious stack is weakest. Your Counterpart leads with your Cave; your Spark partner leads with the function that mobilises you. Time with a Complement is restful rather than exciting: they handle, without effort or resentment, the thing you have organised your life around avoiding.",
     inSystem: "Derived as {Counterpart, Spark}. This is what the network layer optimises on, because it measures structural fit rather than felt chemistry.",
     seeAlso: ["catalyst", "rel-du", "rel-ac", "inferior"] }),
   E({ id: "catalyst", term: "Catalyst", category: "Concept",
-    short: "The two types whose Hero is your Nemesis. Stimulating rather than restful.",
+    short: "The two types whose Lead is your Doubt. Stimulating rather than restful.",
     definition:
-      "Your Nemesis is your Hero's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Nemesis.",
+      "Your Doubt is your Lead's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Doubt.",
     inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Damper and False fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
     seeAlso: ["complement", "nemesis", "rel-ex", "rel-mi"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
@@ -359,8 +360,8 @@ const CONCEPTS: Draft[] = [
   E({ id: "dual-lighting", term: "The two readings", category: "Concept",
     short: "Holding the two growth readings unreconciled, because they disagree.",
     definition:
-      "One reading runs an eight-function stack across all four letters and puts the weak point at the Inferior; the exchange overlay tracks two letters across four orientations and marks the tertiary and inferior together. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system carries both and lets the divergence stand as content.",
-    inSystem: "The wiring schematic marks the Inferior as the cave and the demon-animal loop as an open circuit. They are in different slots.",
+      "One reading runs an eight-function stack across all four letters and puts the weak point at the Cave; the exchange overlay tracks two letters across four orientations and marks Delight and Cave together. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system carries both and lets the divergence stand as content.",
+    inSystem: "The wiring schematic marks the Cave as its own region and the demon-animal loop as a wider open circuit. They are in different slots.",
     seeAlso: ["inferior", "demon-animal", "savior"] }),
   E({ id: "savior", term: "Anchor", category: "Concept",
     short: "The two functions a type actually uses well — one observer, one decider.",
@@ -380,11 +381,11 @@ const CONCEPTS: Draft[] = [
     seeAlso: ["ego", "shadow", "rel-du"] }),
   E({ id: "ego", term: "Ego", category: "Concept",
     short: "Slots 1–4. The conscious stack a person identifies with.",
-    definition: "Hero, Parent, Child and Inferior. Two aware positions and two unaware, two optimistic and two pessimistic. This is the part of the wiring a person will describe if asked who they are.",
+    definition: "Lead, Support, Delight and Cave. Two aware positions and two unaware, two optimistic and two pessimistic. This is the part of the wiring a person will describe if asked who they are.",
     seeAlso: ["shadow", "hero", "inferior"] }),
   E({ id: "shadow", term: "Shadow", category: "Concept",
     short: "Slots 5–8. The same four functions, attitudes flipped, running mostly unwatched.",
-    definition: "Nemesis, Critic, Trickster and Demon — the attitude-flips of the ego block. Rarely chosen and usually visible only under stress, but continuously operating.",
+    definition: "Doubt, Scold, Blind spot and Dread — the attitude-flips of the ego block. Rarely chosen and usually visible only under stress, but continuously operating.",
     seeAlso: ["ego", "nemesis", "trickster", "demon"] }),
   E({ id: "stack-map", term: "Stack map", category: "Concept",
     short: "The eight-position map of a type's information elements, from which every relation is derived.",
@@ -414,8 +415,8 @@ const CONCEPTS: Draft[] = [
   E({ id: "gate", term: "Growth gate", category: "Concept",
     short: "The structural fear a type is built around, and what integrating it unlocks.",
     definition:
-      "Every type's Inferior function names something it quietly organises its life to avoid, and the four Inferior positions across sixteen types collapse into four gates. The gate is not a flaw to be corrected; it is the specific door that only this type has to walk through, and the capability on the other side is unavailable by any other route. Naming it structurally rather than personally is what makes it actionable.",
-    inSystem: "Derived from the Inferior function and the type's E/I and J/P letters.",
+      "Every type's Cave function names something it quietly organises its life to avoid, and the four Cave positions across sixteen types collapse into four gates. The gate is not a flaw to be corrected; it is the specific door that only this type has to walk through, and the capability on the other side is unavailable by any other route. Naming it structurally rather than personally is what makes it actionable.",
+    inSystem: "Derived from the Cave function and the type's E/I and J/P letters.",
     seeAlso: ["inferior", "gate-of-chaos", "gate-of-obligation", "gate-of-the-tribe", "gate-of-the-self"] }),
   E({ id: "fine-coins", term: "Fine switches", category: "Concept",
     short: "The deferred fine layer: middle-current ordering, modality, masculine/feminine switches.",
@@ -430,21 +431,21 @@ const CONCEPTS: Draft[] = [
   E({ id: "subconscious", term: "Subconscious", category: "Concept",
     short: "Your ego stack reversed. The person you wish you were, and your Counterpart.",
     definition:
-      "Take your four ego slots and read them backwards: your Inferior becomes its Hero, your Hero becomes its Inferior. The resulting type is your Counterpart, which is why being around one feels like being handed a version of yourself you cannot reach alone. The gateway is the Inferior, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
+      "Take your four ego slots and read them backwards: your Cave becomes its Lead, your Lead becomes its Cave. The resulting type is your Counterpart, which is why being around one feels like being handed a version of yourself you cannot reach alone. The gateway is the Cave, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
     inSystem: "fourSides(t)[1]. Derived by omega — flip both attitude and element on the dominant and auxiliary. relation(t, subconscious) is always DU.",
     seeAlso: ["four-sides", "inferior", "rel-du", "unconscious", "subconscious-development"] }),
 
   E({ id: "unconscious", term: "Unconscious", category: "Concept",
     short: "Your shadow four in order. Who you become in a crisis.",
     definition:
-      "Its Hero is your Nemesis, and its stack runs Nemesis, Critic, Trickster, Demon. Access is through worry rather than choice, which is why it shows up under pressure without being invited. Developed deliberately it produces wisdom and a kind of maturity available no other way; left alone it gets forced later — the three-quarter-life crisis is this side arriving whether or not you went looking for it.",
+      "Its Lead is your Doubt, and its stack runs Doubt, Scold, Blind spot, Dread. Access is through worry rather than choice, which is why it shows up under pressure without being invited. Developed deliberately it produces wisdom and a kind of maturity available no other way; left alone it gets forced later — the three-quarter-life crisis is this side arriving whether or not you went looking for it.",
     inSystem: "fourSides(t)[2]. Derived by alpha — flip attitude only. relation(t, unconscious) is always EX.",
     seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego"] }),
 
   E({ id: "superego", term: "Superego", category: "Concept",
     short: "Your shadow reversed. Who you are at your worst, and where the sins live.",
     definition:
-      "Its Hero is your Demon — the single function you trust least, running the show. That is exactly why the superego reads as a parasite persona rather than as you: it is competent, it is confident, and none of it is yours. The gateway is fear. It produces power, and the material is blunt that the power is destructive until the other three sides have been developed first. The Octagram's Deadly Sins are described as this side overriding the ego's stated values.",
+      "Its Lead is your Dread — the single function you trust least, running the show. That is exactly why the superego reads as a parasite persona rather than as you: it is competent, it is confident, and none of it is yours. The gateway is fear. It produces power, and the material is blunt that the power is destructive until the other three sides have been developed first. The Octagram's Deadly Sins are described as this side overriding the ego's stated values.",
     inSystem: "fourSides(t)[3]. Derived by beta — swap element only. relation(t, superego) is always SE.",
     seeAlso: ["four-sides", "demon", "rel-se", "deadly-sin", "unconscious"] }),
 
@@ -486,7 +487,7 @@ const CONCEPTS: Draft[] = [
   E({ id: "cognitive-origin", term: "Cognitive origin", category: "Concept",
     short: "The one thing a dyad has been after its whole life. Eight of them.",
     definition:
-      "Not a goal — you do not complete an origin; it is what sits underneath the goals. Justification (ENFP/ISTJ), Intimacy (ESTP/INFJ), Satisfaction (ENTP/ISFJ), Reverence (ESFP/INTJ), Authority (ESTJ/INFP), Validation (ENFJ/ISTP), Discovery (ESFJ/INTP), Purpose (ENTJ/ISFP). Described as emerging from the hero function and shared with the subconscious, which is why a dyad and not a type is the unit.",
+      "Not a goal — you do not complete an origin; it is what sits underneath the goals. Justification (ENFP/ISTJ), Intimacy (ESTP/INFJ), Satisfaction (ENTP/ISFJ), Reverence (ESFP/INTJ), Authority (ESTJ/INFP), Validation (ENFJ/ISTP), Discovery (ESFJ/INTP), Purpose (ENTJ/ISFP). Described as emerging from the lead function and shared with the subconscious, which is why a dyad and not a type is the unit.",
     inSystem: "Authored, but the dyad each belongs to is derived. Origins for ENFP/ISTJ, ENTP/ISFJ, ENTJ/ISFP and ESFJ/INTP are corroborated across more than one published source.",
     seeAlso: ["temple-wheel", "octagram", "hero", "subconscious"] }),
 
@@ -542,7 +543,7 @@ const CONCEPTS: Draft[] = [
 
 /* ══════════════════════════════ RELATIONS ══════════════════════════════ */
 const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
-  DU: "The lowest-friction pairing available. Your Inferior is their Hero and their Inferior is yours, so each covers the other's fear without effort or resentment. Duals often report that nothing in particular is happening and that it is restful anyway.",
+  DU: "The lowest-friction pairing available. Your Cave is their Lead and their Cave is yours, so each covers the other's fear without effort or resentment. Duals often report that nothing in particular is happening and that it is restful anyway.",
   AC: "Fast to warm and genuinely energising, because each feeds the other's mobilising function. Sustained without breaks it becomes tiring in a way neither party can quite name.",
   HD: "Shares the dual's base channel but not its creative one. Comfortable and slightly incomplete: fine until the half you do not share is the half the situation needs.",
   MG: "Shares the dual's creative channel only. Relaxing, playful and slightly unserious — good company, poor co-execution.",
@@ -749,27 +750,35 @@ function functionPair(a: Fn, b: Fn): Pairing {
     case "same": return { headline: `${a} meets ${a}`,
       body: `The same function on both sides. Immediate recognition and no coverage: whatever ${FN_FULL[a]} does not attend to, neither of you will raise.` };
     case "alpha": return { headline: `${a} against ${b} — same element, opposite attitude`,
-      body: `${a} and ${b} process the same information pointed in opposite directions. This is the sharpest kind of near-miss: you are talking about the same thing and will not agree on what it means. In the eight-slot stack these two are always Hero and Nemesis of each other's type family.` };
+      body: `${a} and ${b} process the same information pointed in opposite directions. This is the sharpest kind of near-miss: you are talking about the same thing and will not agree on what it means. In the eight-slot stack these two are always Lead and Doubt of each other's type family.` };
     case "beta": return { headline: `${a} and ${b} — same attitude, different element`,
       body: `Both pointed the same way, drawing on different material. Compatible tempo, different subject matter — usually experienced as talking past each other rather than as conflict.` };
     case "omega": return { headline: `${a} and ${b} — the axis opposite`,
-      body: `Full complement. ${b} is exactly what ${a} does not do, which is why this pairing is the Counterpart relation itself: one supplies the other's Inferior directly.` };
+      body: `Full complement. ${b} is exactly what ${a} does not do, which is why this pairing is the Counterpart relation itself: one supplies the other's Cave directly.` };
     default: return { headline: `${a} and ${b}`,
       body: `A perceiving function meeting a judging one, or two functions with no direct structural relation. They do not compete: one supplies material, the other decides about it.` };
   }
 }
 
-/** What happens when two archetype slots meet. */
-function slotPair(a: string, b: string): Pairing {
-  /** The ego-block position of a slot, used to pitch the pairing text. */
-  const ego = (s: string) => ["Hero", "Parent", "Child", "Inferior"].includes(s);
-  if (a === b) return { headline: `${a} meets ${a}`,
+/**
+ * What happens when two archetype slots meet.
+ *
+ * Takes the full Entry rather than just the display term: the ego/shadow
+ * check has to key off the STABLE id ("hero", "parent", ...), which never
+ * changes, rather than the display term, which is mid-rename. Keying it off
+ * the term would silently break the moment "Hero" became "Lead" — the exact
+ * failure this system has already hit twice with other renamed labels.
+ */
+function slotPair(a: Entry, b: Entry): Pairing {
+  /** The ego-block position of a slot, by its stable lexicon id. */
+  const ego = (id: string) => ["hero", "parent", "child", "inferior"].includes(id);
+  if (a.id === b.id) return { headline: `${a.term} meets ${a.term}`,
     body: `The same position on both sides, so the same function is being used with the same degree of awareness. Mutual recognition, and no correction available in either direction.` };
-  if (ego(a) && ego(b)) return { headline: `${a} meets ${b}`,
+  if (ego(a.id) && ego(b.id)) return { headline: `${a.term} meets ${b.term}`,
     body: `Two conscious positions. Both parties know they are doing this, so whatever happens between these slots is negotiable — it can be discussed, adjusted and apologised for.` };
-  if (!ego(a) && !ego(b)) return { headline: `${a} meets ${b}`,
+  if (!ego(a.id) && !ego(b.id)) return { headline: `${a.term} meets ${b.term}`,
     body: `Two shadow positions. Neither party is choosing this, and it usually surfaces under stress as something that seems to come from nowhere. Not negotiable in the moment; only avoidable in advance.` };
-  return { headline: `${a} meets ${b}`,
+  return { headline: `${a.term} meets ${b.term}`,
     body: `A conscious position meeting a shadow one. The party using the ego slot is deliberate; the party in shadow is not. This asymmetry is where most unintended damage happens, because one side experiences a choice and the other experiences an event.` };
 }
 
@@ -787,10 +796,7 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
       if (aId === bId) return GATE_PAIRS.same;
       return GATE_PAIRS[`${aId}|${bId}`] ?? GATE_PAIRS[`${bId}|${aId}`] ?? null;
     case "Quadra": {
-      /* QUADRA_ELEMENTS is still keyed by term because the quadra names have
-         not moved yet. When they do (pass 3), this needs the same id-keying
-         the Animal branch above just received, or it fails the same way. */
-      const ea = QUADRA_ELEMENTS[a.term], eb = QUADRA_ELEMENTS[b.term];
+      const ea = QUADRA_ELEMENTS[aId], eb = QUADRA_ELEMENTS[bId];
       if (aId === bId) return QUADRA_TEXT.same(a.term, ea);
       const shared = ea.filter((f) => eb.includes(f));
       return shared.length
@@ -818,7 +824,7 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
     case "Function":
       return functionPair(a.term as Fn, b.term as Fn);
     case "Archetype":
-      return slotPair(a.term, b.term);
+      return slotPair(a, b);
     case "Temperament":
       return aId === bId
         ? { headline: `Two ${a.term}`, body: `The same organising value on both sides. Mutual legibility about what counts as a good outcome, and a shared indifference to whatever this temperament does not weigh.` }
@@ -865,8 +871,8 @@ export function compareAspects(a: MbtiType, b: MbtiType): AspectRow[] {
   push("Primary current", canonicalId(ops(a).primary), canonicalId(ops(b).primary),
        ANIMAL_LABEL[ops(a).primary], ANIMAL_LABEL[ops(b).primary]);
   push("Growth gate", canonicalId(gate(a).gate), canonicalId(gate(b).gate), gate(a).gate, gate(b).gate);
-  push("Hero function", canonicalId(stack(a)[0]), canonicalId(stack(b)[0]), stack(a)[0], stack(b)[0]);
-  push("Inferior function", canonicalId(stack(a)[3]), canonicalId(stack(b)[3]), stack(a)[3], stack(b)[3]);
+  push("Lead function", canonicalId(stack(a)[0]), canonicalId(stack(b)[0]), stack(a)[0], stack(b)[0]);
+  push("Cave function", canonicalId(stack(a)[3]), canonicalId(stack(b)[3]), stack(a)[3], stack(b)[3]);
 
   const ca = coins(a), cb = coins(b);
   COIN_LABELS.forEach((label, i) => {

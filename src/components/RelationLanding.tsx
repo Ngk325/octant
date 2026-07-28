@@ -9,8 +9,10 @@ import { usePalette } from "./Theme";
  *
  * This is the whole engine in one picture. All 256 relations, both ease
  * directions, supervision and the playbooks reduce to this question — when
- * your Hero and Parent arrive, which of my eight slots do they hit? A Counterpart's  * strengths land on the Inferior and Child (relief); a Headwind pairing's land on
- * the Trickster and Demon (nobody can tell what is happening).
+ * your Lead and Support arrive, which of my eight slots do they hit? A
+ * Counterpart's strengths land on the Cave and Delight (relief); a Headwind
+ * pairing's land on the Blind spot and Dread (nobody can tell what is
+ * happening).
  *
  * `a` is the person being read, `b` the person doing the reading — the same
  * orientation as the pair reader. Arrows run from b's top two into a's stack.
@@ -21,8 +23,8 @@ export default function RelationLanding({ a, b }: { a: MbtiType; b: MbtiType }) 
   const p = usePalette();
   const aStack = stack(a);
   const bStack = stack(b);
-  const [bHero, bParent] = DOM_AUX[b];
-  const landings = [bHero, bParent].map((fn) => aStack.indexOf(fn));
+  const [bLead, bSupport] = DOM_AUX[b];
+  const landings = [bLead, bSupport].map((fn) => aStack.indexOf(fn));
 
   const ROW = 44;
   const TOP = 46;
@@ -38,13 +40,13 @@ export default function RelationLanding({ a, b }: { a: MbtiType; b: MbtiType }) 
       width="100%"
       role="img"
       aria-label={
-        `${b}'s strongest functions landing in ${a}'s stack: ${bHero} lands on ${a}'s ` +
-        `${SLOT_NAMES[landings[0]]}, ${bParent} on ${a}'s ${SLOT_NAMES[landings[1]]}.`
+        `${b}'s strongest functions landing in ${a}'s stack: ${bLead} lands on ${a}'s ` +
+        `${SLOT_NAMES[landings[0]]}, ${bSupport} on ${a}'s ${SLOT_NAMES[landings[1]]}.`
       }
       style={{ display: "block", maxWidth: 620, fontFamily: "var(--sans)" }}
     >
       <defs>
-        {[bHero, bParent].map((fn) => (
+        {[bLead, bSupport].map((fn) => (
           <marker
             key={fn} id={`arrow-${fn}`} viewBox="0 0 8 8"
             refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"
@@ -116,7 +118,7 @@ export default function RelationLanding({ a, b }: { a: MbtiType; b: MbtiType }) 
 
       {/* the landing arrows */}
       {landings.map((slot, n) => {
-        const fn = n === 0 ? bHero : bParent;
+        const fn = n === 0 ? bLead : bSupport;
         const x1 = COL_B.x - 10;
         const y1 = midY(n);
         const x2 = COL_A.x + COL_A.w + 14;

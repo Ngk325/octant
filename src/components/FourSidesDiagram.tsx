@@ -9,8 +9,8 @@ import TypeMolecule from "./glyphs/TypeMolecule";
  * All four sides side by side, each showing its own four-slot stack.
  *
  * The point the diagram has to make is that these are the SAME eight functions
- * re-sorted, not four separate people: the ego's Inferior is the subconscious's
- * Hero, and the ego's Demon is the superego's Hero. So each cell is labelled
+ * re-sorted, not four separate people: the ego's Cave is the subconscious's
+ * Lead, and the ego's Dread is the superego's Lead. So each cell is labelled
  * with both names — what it is here, and what it is in the ego. Each card
  * leads with its side's molecule for the same reason: four different
  * arrangements, recognisably built from the same beads.

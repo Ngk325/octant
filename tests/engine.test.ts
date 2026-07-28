@@ -196,10 +196,10 @@ describe("catalysts", () => {
       expect(codes).toEqual(["EX", "MG"]);
     }
   });
-  it("always lead with the type's Nemesis function", () => {
+  it("always lead with the type's Doubt function", () => {
     for (const t of TYPES) {
-      const nem = stack(t)[4];
-      for (const c of catalysts(t)) expect(stack(c)[0]).toBe(nem);
+      const doubt = stack(t)[4];
+      for (const c of catalysts(t)) expect(stack(c)[0]).toBe(doubt);
     }
   });
   it("never overlap with complements", () => {

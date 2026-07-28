@@ -196,15 +196,15 @@ export const FN_INSTRUMENT: Record<Fn, string> = {
   "Fe": "set the temperature of the room",
   "Fi": "say plainly what you value"
 };
-export const SLOT_EFFECT: Record<string, string> = {
-  "Hero": "their strongest ground — you will move fast together and share the same blind spot",
-  "Parent": "their sense of duty — expect it pruned and stress-tested before it is accepted",
-  "Child": "their delight — keep it light and they will open immediately",
-  "Inferior": "their fear — approach it slowly or not at all",
-  "Nemesis": "their guard — it reads as a challenge to their competence",
-  "Critic": "their cynicism — expect it audited harshly",
-  "Trickster": "a blind spot — they will bluff fluency they do not have",
-  "Demon": "the tripwire — leading with this reads as an attack"
+export const SLOT_EFFECT: Record<SlotName, string> = {
+  "Lead": "their strongest ground — you will move fast together and share the same blind spot",
+  "Support": "their sense of duty — expect it pruned and stress-tested before it is accepted",
+  "Delight": "their fun side — keep it light and they will open immediately",
+  "Cave": "their fear — approach it slowly or not at all",
+  "Doubt": "their guard — it reads as a challenge to their competence",
+  "Scold": "their cynicism — expect it audited harshly",
+  "Blind spot": "something they cannot see in themselves — they will bluff fluency they do not have",
+  "Dread": "the tripwire — leading with this reads as an attack"
 };
 export const CHILD_HOOK: Record<Fn, string> = {
   "Ne": "riff on what-ifs with nothing riding on them",
@@ -249,7 +249,7 @@ export const REL_FRAME: Record<RelCode, string> = {
   "CF": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours.",
   "QI": "Near-twin. You look alike from outside and arrive by routes that do not translate.",
   "EX": "Damper. Same functions, every attitude flipped — a constant near-miss on intent.",
-  "SR": "You supervise them. Asymmetric: your Hero lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
+  "SR": "You supervise them. Asymmetric: your Lead lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
   "SV": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
   "BR": "You are Upstream of them. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
   "BE": "You are Downstream of them. You will find them more compelling than they find you; do not read the asymmetry as rejection."
@@ -645,6 +645,6 @@ export const FN_FULL: Record<Fn, string> = {
   "Fe": "Extraverted Feeling",
   "Fi": "Introverted Feeling"
 };
-export const SLOT_NAMES = ["Hero","Parent","Child","Inferior","Nemesis","Critic","Trickster","Demon"] as const;
+export const SLOT_NAMES = ["Lead","Support","Delight","Cave","Doubt","Scold","Blind spot","Dread"] as const;
 export const SLOT_TAGS  = ["Power","Responsibility","Innocence","Fear","Worry","Cynicism","Blindspot","Hate"] as const;
 export type SlotName = (typeof SLOT_NAMES)[number];

@@ -5,7 +5,7 @@ import { RANK_RATIO } from "./geometry";
 
 /**
  * A type drawn as a molecule: its four ego functions as beads, sized by
- * rank (Hero largest, Inferior smallest), joined by crossed bonds. Every
+ * rank (Lead largest, Cave smallest), joined by crossed bonds. Every
  * type's molecule is visibly different, every one is computed from
  * stack(), and together they give each of the sixteen a face — the same
  * glyph on its tile, its page header and its node in a group ring.
@@ -26,8 +26,8 @@ export default function TypeMolecule({ type, size = 64, labels }: {
   const st = stack(type).slice(0, 4);
   const showLabels = labels ?? size >= 56;
 
-  /* Hero upper-left, Parent right, Child lower-left, Inferior lower-right —
-     bonds cross Hero↔Inferior and Parent↔Child, so the strongest and the
+  /* Lead upper-left, Support right, Delight lower-left, Cave lower-right —
+     bonds cross Lead↔Cave and Support↔Delight, so the strongest and the
      feared sit on one axis, the steady and the playful on the other. */
   const POS = [
     { x: 36, y: 38 },

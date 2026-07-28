@@ -58,24 +58,24 @@ describe("four sides", () => {
     expect(relation(t, s.superego.type)).toBe("SE");
   });
 
-  it.each(TYPES)("%s: the gateway is always that side's own Hero", (t) => {
+  it.each(TYPES)("%s: the gateway is always that side's own Lead", (t) => {
     const s = sides(t);
     for (const k of SIDE_ORDER) {
       expect(s[k].gateway.fn).toBe(s[k].slots[0].fn);
     }
   });
 
-  it.each(TYPES)("%s: gateways are Hero, Inferior, Nemesis, Demon in order", (t) => {
+  it.each(TYPES)("%s: gateways are Lead, Cave, Doubt, Dread in order", (t) => {
     const st = stack(t);
     expect(gateways(t).map((g) => g.fn)).toEqual([st[0], st[3], st[4], st[7]]);
-    expect(gateways(t).map((g) => g.egoSlot)).toEqual(["Hero", "Inferior", "Nemesis", "Demon"]);
+    expect(gateways(t).map((g) => g.egoSlot)).toEqual(["Lead", "Cave", "Doubt", "Dread"]);
   });
 
-  it.each(TYPES)("%s: the Demon is the unconscious's Inferior and the superego's Hero", (t) => {
+  it.each(TYPES)("%s: the Dread is the unconscious's Cave and the superego's Lead", (t) => {
     const s = sides(t);
-    const demon = stack(t)[7];
-    expect(s.unconscious.slots[3].fn).toBe(demon);
-    expect(s.superego.slots[0].fn).toBe(demon);
+    const dread = stack(t)[7];
+    expect(s.unconscious.slots[3].fn).toBe(dread);
+    expect(s.superego.slots[0].fn).toBe(dread);
   });
 
   it.each(TYPES)("%s: every side carries complete copy", (t) => {

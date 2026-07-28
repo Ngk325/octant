@@ -13,6 +13,9 @@ import SelfTribeCone from "../src/components/glyphs/SelfTribeCone";
 import AnimalGlyph from "../src/components/glyphs/AnimalGlyph";
 import DerivationTree from "../src/components/glyphs/DerivationTree";
 import SideDoor from "../src/components/glyphs/SideDoor";
+import EightSet from "../src/components/glyphs/EightSet";
+import AttitudeMark from "../src/components/glyphs/AttitudeMark";
+import Agency from "../src/components/glyphs/Agency";
 
 /* ------------------------------------------------------------------ *
  * The glyph language, held to its own rules: every glyph renders for
@@ -45,7 +48,7 @@ const expectAccessible = (html: string) => {
 };
 
 describe("the language's ground rules", () => {
-  it("rank ratio is strictly decreasing from Hero to Inferior", () => {
+  it("rank ratio is strictly decreasing from Lead to Cave", () => {
     for (let i = 1; i < RANK_RATIO.length; i++) {
       expect(RANK_RATIO[i]).toBeLessThan(RANK_RATIO[i - 1]);
     }
@@ -141,6 +144,35 @@ describe("SideDoor", () => {
   });
 });
 
+describe("EightSet", () => {
+  it("draws all eight functions, split into an outward row and an inward row", () => {
+    const html = draw(<EightSet />);
+    expectAccessible(html);
+    for (const fn of FNS) expect(html, fn).toContain(`>${fn}<`);
+    expect(html).toContain("Facing out");
+    expect(html).toContain("Facing in");
+  });
+});
+
+describe("AttitudeMark", () => {
+  it("draws the bare attitude, outward then inward, in neutral ink — no function hue yet", () => {
+    const html = draw(<AttitudeMark />);
+    expectAccessible(html);
+    expect(html).toContain("facing out");
+    expect(html).toContain("facing in");
+    expect(html).toContain("var(--ink)");
+  });
+});
+
+describe("Agency", () => {
+  it("draws both rows — reached-for and self-triggered — without throwing", () => {
+    const html = draw(<Agency />);
+    expectAccessible(html);
+    expect(html).toContain("You reach for these");
+    expect(html).toContain("These go off on their own");
+  });
+});
+
 describe("the whole set respects the 14px floor", () => {
   it("no glyph declares smaller text", () => {
     const all = [
@@ -150,6 +182,9 @@ describe("the whole set respects the 14px floor", () => {
       draw(<TypeMolecule type="ISFJ" size={64} />),
       draw(<DerivationTree />),
       draw(<SideDoor side="unconscious" fn="Ni" />),
+      draw(<EightSet />),
+      draw(<AttitudeMark />),
+      draw(<Agency />),
     ];
     for (const html of all) {
       for (const s of fontSizes(html)) expect(s).toBeGreaterThanOrEqual(14);
