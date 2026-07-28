@@ -1,12 +1,13 @@
 import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { stack, quadra, TYPES, REL, ease } from "../engine/core";
-import { ops, ANIMAL_LABEL } from "../engine/ops";
+import { ops, ANIMAL_LABEL, DEMON_MARKERS } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { wheelOf, templeOf } from "../engine/octagram";
+import { playbook } from "../engine/playbook";
 import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
 import { FN_ROLE, FN_KEYWORD, FN_SAYS } from "../engine/functions";
-import { SLOT_NAMES, FN_FULL, type Fn, type MbtiType } from "../engine/data";
+import { SLOT_NAMES, FN_FULL, BEHAVIOURAL, SLOT_COST, type Fn, type MbtiType } from "../engine/data";
 import Explain from "../components/Explain";
 import Figure from "../components/Figure";
 import WiringSchematic from "../components/WiringSchematic";
@@ -31,7 +32,7 @@ import DivergingEase from "../components/DivergingEase";
 /* ------------------------------------------------------------------ *
  * The course.
  *
- * Twelve stages, each one assuming only what the previous ones taught. The
+ * Thirteen stages, each one assuming only what the previous ones taught. The
  * rule for every stage: a plain-language explanation you could give to
  * someone in a pub comes first, the machinery goes inside "the exact
  * mechanics", and there is always something on screen to look at.
@@ -840,6 +841,111 @@ export const STAGES: Stage[] = [
     },
     check:
       "Which of the four themes are you living in right now — and which pole of your wheel does your development lean you toward?",
+  },
+
+  {
+    slug: "borrowed-wiring",
+    title: "Borrowed wiring",
+    blurb:
+      "Knowing where you land in someone else's stack is half of this skill. Running a function that isn't natively yours is the other half — and it is not free.",
+    body: (t) => {
+      const st = stack(t);
+      const s = sides(t);
+      const b = BEHAVIOURAL[t];
+      return (
+        <>
+          <Explain
+            big
+            plain="Everything so far described your own wiring. This stage turns it outward: reading someone else on purpose, and — the harder half — running a function that is not natively yours."
+          >
+            <p>
+              The app already composes a full approach for every one of the 256 ordered pairs,
+              from where your Lead and Support land in the other stack. That composition is not
+              new machinery — it is the same landing operation from the relations stage, read as
+              instruction instead of description.
+            </p>
+          </Explain>
+
+          <h3>One: reading — the paragraph the app already writes</h3>
+          <Figure
+            minWidth={480}
+            label="The same picture as the relations stage, now with the paragraph it produces."
+            caption={
+              <>
+                INFJ reading {t} — the same pairing as before. The arrows are INFJ&rsquo;s Lead and
+                Support arriving in {t}&rsquo;s stack; the panel below is composed from exactly
+                this picture.
+              </>
+            }
+          >
+            <RelationLanding a={t} b="INFJ" />
+          </Figure>
+
+          <Panel title="What the app writes from that picture">
+            <p style={{ margin: 0 }}>{playbook("INFJ", t)}</p>
+          </Panel>
+
+          <Panel title={`${t}, read`} style={{ marginTop: "var(--s4)" }}>
+            <Row stacked k="What moves them" v={<span className="small">{b.persuasionTrigger}</span>} />
+            <Row stacked k="How to build rapport" v={<span className="small">{b.rapportBuilder}</span>} />
+            <Row stacked k="How to earn trust" v={<span className="small">{b.trustBuilder}</span>} />
+            <Row stacked k="Under disagreement" v={<span className="small">{b.conflictStyle}</span>} />
+          </Panel>
+
+          <p className="note warn" style={{ marginTop: "var(--s5)" }}>
+            <b>This is the most ethically loaded page in the course.</b> Everything above is the
+            difference between rapport and manipulation, and the difference was never the
+            technique — it is whether the other person would still choose it if they could see
+            what you were doing. Use this to understand people. The moment you are hiding your
+            reasoning from the person you are reading, you have crossed the line.
+          </p>
+
+          <h3>Two: performing — what it costs to run someone else&rsquo;s function</h3>
+          <p>
+            Every function you have is already sitting at one of your own eight slots. Performing
+            one that sits near the top costs almost nothing, because it is already close to who
+            you are. Performing one near the bottom is a real, measurable strain.
+          </p>
+
+          <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
+            {SLOT_NAMES.map((name, i) => (
+              <Panel key={name} title={`${name} — ${st[i]}`}>
+                <p className="small" style={{ margin: 0 }}>{SLOT_COST[name]}</p>
+              </Panel>
+            ))}
+          </div>
+
+          <p className="note warn">
+            <b>Sustain the last one and you are not performing any more.</b> Your{" "}
+            <Term id="superego">superego</Term> is exactly this mechanism, run too long: its Lead
+            is your own Dread. {s.superego.undeveloped} What starts as an act stops being one.
+          </p>
+
+          <h3>Spotting a performance in someone else</h3>
+          <p className="small">
+            The tell is rarely the function itself — it is what the person says about doing it.
+          </p>
+          <div className="grid g2">
+            {DEMON_MARKERS.map((m) => (
+              <Row
+                key={m.name}
+                stacked
+                k={<span><b>{m.name}</b> — &ldquo;{m.says}&rdquo;</span>}
+                v={<span className="small">{m.note}</span>}
+              />
+            ))}
+          </div>
+
+          <p className="note">
+            None of this second half is sourced against the ingested material the way the rest of
+            the course is. It is written for this stage, presented as a reasoned extension of what
+            the engine already computes — not as settled fact.
+          </p>
+        </>
+      );
+    },
+    check:
+      "Name a function you can already perform even though it isn't your own Lead. Which of your own eight slots does it sit in — and what would it actually cost to keep running it for a whole day?",
   },
 ];
 

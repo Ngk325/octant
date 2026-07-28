@@ -399,7 +399,7 @@ export function marketingPage(origin: string): Response {
         <div class="card">
           <h3>Learn it properly</h3>
           <p>
-            A built-in twelve-stage course takes you from &ldquo;what is a habit of mind&rdquo;
+            A built-in thirteen-stage course takes you from &ldquo;what is a habit of mind&rdquo;
             to reading whole groups, every concept drawn as a diagram, plus an assistant that
             answers questions from the instrument&rsquo;s own model — not from internet folklore.
           </p>
@@ -504,7 +504,7 @@ export function marketingPage(origin: string): Response {
             <li>All sixteen pattern readings, in full</li>
             <li>All 256 pair readings, both directions</li>
             <li>Group composition &amp; team graphs</li>
-            <li>The complete twelve-stage course</li>
+            <li>The complete thirteen-stage course</li>
             <li>The grounded assistant</li>
             <li>Cancel anytime</li>
           </ul>

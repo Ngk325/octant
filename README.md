@@ -24,7 +24,7 @@ src/engine/
   lexicon.ts    103 term definitions + pairing logic for every category
   data.ts       GENERATED copy tables (see "Provenance")
 src/worker/     Cloudflare Worker: the access wall, /api/chat proxying Gemini, assets behind both
-src/learn/      the eleven-stage course
+src/learn/      the thirteen-stage course
 ```
 
 ## Plain first, technical underneath
@@ -39,7 +39,7 @@ not smuggle back the jargon it exists to replace.
 
 | Route | What it does |
 |---|---|
-| `/learn` · `/learn/:stage` | Eleven stages, in order, from "what is a cognitive function" to the Octagram. Each assumes only what the ones before it taught. |
+| `/learn` · `/learn/:stage` | Thirteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. Each assumes only what the ones before it taught. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
 | `/types` | All sixteen at a glance, grouped by quadra or temperament. |
 | `/type/:type` | The eight slots, all four sides of the mind built out, the OPS overlay with its subtype coins, growth gate, the Octagram wheel and theme grid, behavioural profile, and what each function actually wants. |
