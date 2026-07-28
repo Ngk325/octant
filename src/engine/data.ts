@@ -206,6 +206,24 @@ export const SLOT_EFFECT: Record<SlotName, string> = {
   "Blind spot": "something they cannot see in themselves — they will bluff fluency they do not have",
   "Dread": "the tripwire — leading with this reads as an attack"
 };
+/**
+ * Authored for the course stage "Borrowed wiring," not sourced from the ingested
+ * material like the tables around it — this is a reasoned extension of the slot
+ * structure, not a transcribed fact, and it is pending the project owner's read.
+ * What it costs to deliberately RUN a function sitting at each of a type's own
+ * eight slots (as opposed to SLOT_EFFECT, which is what that slot means when
+ * someone else's function lands on it).
+ */
+export const SLOT_COST: Record<SlotName, string> = {
+  "Lead": "nothing to speak of — it is already who you are, not a performance",
+  "Support": "little — it already backs the Lead, so it feels like an extension of yourself",
+  "Delight": "little, and it is the one slot that feels like play rather than effort",
+  "Cave": "real strain — it works, but it drains fast and starts to show within a day",
+  "Doubt": "discomfort more than cost — like arguing yourself into a stance you do not hold",
+  "Scold": "real effort — sustainable for a meeting, not a life; the edge is borrowed, not felt",
+  "Blind spot": "a bluff, not a performance — convincing in short bursts, and it collapses under real pressure",
+  "Dread": "the wrong question — sustain this and you are not performing any more; that is the superego"
+};
 export const CHILD_HOOK: Record<Fn, string> = {
   "Ne": "riff on what-ifs with nothing riding on them",
   "Ni": "let them float a hunch about where it goes",
