@@ -7,6 +7,7 @@ import { wheels } from "../src/engine/octagram";
 import { ENTRIES } from "../src/engine/lexicon";
 import { ThemeProvider } from "../src/components/Theme";
 import WiringSchematic from "../src/components/WiringSchematic";
+import StackOrder from "../src/components/StackOrder";
 import OctagramWheel from "../src/components/OctagramWheel";
 import OctagramMap from "../src/components/OctagramMap";
 import FourSidesDiagram from "../src/components/FourSidesDiagram";
@@ -87,6 +88,17 @@ describe("every diagram renders for every type without throwing", () => {
       draw(<SaviorDemonGrid type={t} sub={{ jumper: true }} />);
     });
   }
+});
+
+describe("stack order (onboarding figure A)", () => {
+  it("renders every type at the floor, front four solid and back four quiet", () => {
+    for (const t of TYPES) {
+      const html = draw(<StackOrder type={t} />);
+      expectFloor(html);
+      expect(html).toContain('opacity="0.32"'); // the back four
+      expect((html.match(/opacity="0\.32"/g) ?? []).length).toBe(4);
+    }
+  });
 });
 
 describe("the octagram wheels render in both layouts", () => {
