@@ -80,6 +80,19 @@ export function typeElsewhere(t: MbtiType): Elsewhere[] {
   ];
 }
 
+/**
+ * The same three role-name alternates `typeElsewhere` carries, stripped of
+ * which system each came from — an explicit product decision, not an
+ * oversight. Owner's call: color from other systems belongs on every type
+ * page, but only the translation surface (above) names sources. Do not
+ * "restore" a system label onto this list; add it to `typeElsewhere` instead
+ * and let the type page keep importing this one.
+ */
+export function archetypeAliases(t: MbtiType): string[] {
+  const [, , popular, keirsey, grid] = TYPE_ROWS[t];
+  return [...new Set([popular, keirsey, grid])];
+}
+
 /* ---------------------------- relations ---------------------------- */
 
 /** Every relation is a clean one-to-one rename. Their name, by our code. */

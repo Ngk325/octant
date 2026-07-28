@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { TYPES, stack, alpha, beta, omega, REL, type MbtiType, type RelCode } from "../src/engine/core";
 import { DOM_AUX, SLOT_NAMES } from "../src/engine/data";
 import { ENTRIES } from "../src/engine/lexicon";
+import { ARCHETYPE } from "../src/engine/data";
 import {
-  typeElsewhere, relationElsewhere, slotElsewhere, conceptElsewhere,
+  typeElsewhere, relationElsewhere, slotElsewhere, conceptElsewhere, archetypeAliases,
   TRANSLATED_IDS, MODEL_A_POSITION, DIVERGENCES, SYSTEMS,
 } from "../src/engine/translation";
 
@@ -99,6 +100,26 @@ describe("coverage", () => {
   it("returns empty rather than throwing for a term nobody else names", () => {
     expect(conceptElsewhere("gate-of-chaos")).toEqual([]);
     expect(conceptElsewhere("nonesuch")).toEqual([]);
+  });
+});
+
+describe("archetypeAliases — the unsourced list on the type page itself", () => {
+  it("gives every type three distinct alternates, none matching our own epithets", () => {
+    for (const t of TYPES) {
+      const aliases = archetypeAliases(t);
+      expect(aliases, t).toHaveLength(3);
+      expect(new Set(aliases).size, t).toBe(3);
+      for (const a of aliases) expect(ARCHETYPE[t], t).not.toContain(a);
+    }
+  });
+
+  it("is exactly the popular/temperament/grid rows of typeElsewhere, without the system that named them", () => {
+    for (const t of TYPES) {
+      const sourced = typeElsewhere(t)
+        .filter((e) => e.system !== SYSTEMS[0]) // drop the Socionics code+full-name row
+        .map((e) => e.term);
+      expect(archetypeAliases(t)).toEqual(sourced);
+    }
   });
 });
 

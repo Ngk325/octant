@@ -20,7 +20,7 @@ import {
   type MbtiType,
 } from "../engine/data";
 import { FN_PLAIN, SLOT_PLAIN, GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, typePlain } from "../engine/plain";
-import { typeElsewhere } from "../engine/translation";
+import { typeElsewhere, archetypeAliases } from "../engine/translation";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
@@ -113,6 +113,14 @@ export default function TypeReader() {
           the first often does in the third. */}
       <p className="lede" style={{ margin: "var(--s2) 0 0", color: "var(--ink-2)" }}>
         {ARCHETYPE[t].join(" · ")}
+      </p>
+
+      {/* More color, still unsourced — same three role-names the "Known
+          elsewhere as" section cites further down, but here without which
+          system named them. Our own epithets above stay what every picker
+          and pair page uses; this line is this page only. */}
+      <p className="small muted" style={{ margin: "var(--s1) 0 0" }}>
+        Also pictured as {archetypeAliases(t).join(" · ")}
       </p>
 
       <p className="small muted">
