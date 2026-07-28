@@ -1,10 +1,12 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { stack, ease, type MbtiType } from "../engine/core";
-import type { Fn } from "../engine/data";
+import { ARCHETYPE, type Fn } from "../engine/data";
 import { writeStored } from "../storage";
 import FnIcon from "../components/glyphs/FnIcon";
 import EightSet from "../components/glyphs/EightSet";
 import AttitudeMark from "../components/glyphs/AttitudeMark";
+import Agency from "../components/glyphs/Agency";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
 import StackOrder from "../components/StackOrder";
 import RelationLanding from "../components/RelationLanding";
 import DivergingEase from "../components/DivergingEase";
@@ -24,7 +26,7 @@ interface Screen {
   unlock: string;
 }
 
-/** Six screens, one idea each — the foundation gate from the design catalogue. */
+/** Eight screens, one idea each — the foundation gate from the design catalogue. */
 function screens(): Screen[] {
   const st = stack(EXAMPLE);
   return [
@@ -44,6 +46,11 @@ function screens(): Screen[] {
       unlock: "That order is what a type actually is — not a list of what you ‘have’.",
     },
     {
+      idea: "The top four are yours to choose. The bottom four move on their own, faster than you can catch.",
+      figure: <Agency />,
+      unlock: "Not weaker — just not yours to time. You'll still see them; you just won't see them coming.",
+    },
+    {
       idea: "The top of the order is genuinely strong. The bottom is real too — it's just the one you're least practiced at defending.",
       figure: (
         <div style={{ display: "flex", gap: "var(--s7)", alignItems: "center", flexWrap: "wrap" }}>
@@ -52,6 +59,16 @@ function screens(): Screen[] {
         </div>
       ),
       unlock: "You now know where to look for your own best move, and your own sore spot.",
+    },
+    {
+      idea: "Sixteen four-letter codes are precise, but forgettable. So every type carries a few names too — not a box, just a way in.",
+      figure: (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--s3)" }}>
+          <TypeMolecule type={EXAMPLE} size={96} />
+          <p className="lede" style={{ margin: 0, textAlign: "center" }}>{ARCHETYPE[EXAMPLE].join(" · ")}</p>
+        </div>
+      ),
+      unlock: "Three ways to picture the same wiring, not three different people.",
     },
     {
       idea: "When two people meet, each one's strongest move lands somewhere specific in the other's order — sometimes gently, sometimes not.",
@@ -88,7 +105,7 @@ export function resolveStep(raw: string | undefined, count: number): number {
 }
 
 /**
- * The foundation gate: six screens, one idea and one figure each, before a
+ * The foundation gate: eight screens, one idea and one figure each, before a
  * reader reaches the fully-loaded application. Skippable at every step and
  * re-enterable afterward (Home links back here) — never a quiz, nothing to
  * get wrong, and each screen has to survive being the only one someone reads.

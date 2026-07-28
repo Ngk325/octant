@@ -5,7 +5,7 @@ import { ThemeProvider } from "../src/components/Theme";
 import Welcome, { resolveStep, ONBOARDING_DONE_KEY } from "../src/views/Welcome";
 
 /* ------------------------------------------------------------------ *
- * The foundation gate (design catalogue, "Onboarding"): six screens,
+ * The foundation gate (design catalogue, "Onboarding"): eight screens,
  * skippable, re-enterable, clamped against a bad or missing :step.
  * ------------------------------------------------------------------ */
 
@@ -19,7 +19,7 @@ beforeAll(() => {
 
 afterAll(() => vi.restoreAllMocks());
 
-const SCREEN_COUNT = 6;
+const SCREEN_COUNT = 8;
 
 const draw = (path: string) =>
   renderToStaticMarkup(
@@ -67,6 +67,18 @@ describe("Welcome", () => {
     expect(html).toContain('href="/welcome/2"');
     expect(html).toContain('href="/welcome/4"');
     expect(dotsOn(html)).toBe(3);
+  });
+
+  it("screen 4 introduces the back four as automatic rather than weaker", () => {
+    const html = draw("/welcome/4");
+    expect(html).toContain("faster than you can catch");
+    expect(html).toContain("not yours to time");
+  });
+
+  it("screen 6 introduces archetypes without naming which system they came from", () => {
+    const html = draw("/welcome/6");
+    expect(html).toContain("Prospector");
+    expect(html).not.toMatch(/16 ?Personalities|Keirsey|CS ?Joseph/i);
   });
 
   it("swaps Next for the finishing action on the last screen", () => {

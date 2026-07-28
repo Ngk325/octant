@@ -15,6 +15,7 @@ import DerivationTree from "../src/components/glyphs/DerivationTree";
 import SideDoor from "../src/components/glyphs/SideDoor";
 import EightSet from "../src/components/glyphs/EightSet";
 import AttitudeMark from "../src/components/glyphs/AttitudeMark";
+import Agency from "../src/components/glyphs/Agency";
 
 /* ------------------------------------------------------------------ *
  * The glyph language, held to its own rules: every glyph renders for
@@ -163,6 +164,15 @@ describe("AttitudeMark", () => {
   });
 });
 
+describe("Agency", () => {
+  it("draws both rows — reached-for and self-triggered — without throwing", () => {
+    const html = draw(<Agency />);
+    expectAccessible(html);
+    expect(html).toContain("You reach for these");
+    expect(html).toContain("These go off on their own");
+  });
+});
+
 describe("the whole set respects the 14px floor", () => {
   it("no glyph declares smaller text", () => {
     const all = [
@@ -174,6 +184,7 @@ describe("the whole set respects the 14px floor", () => {
       draw(<SideDoor side="unconscious" fn="Ni" />),
       draw(<EightSet />),
       draw(<AttitudeMark />),
+      draw(<Agency />),
     ];
     for (const html of all) {
       for (const s of fontSizes(html)) expect(s).toBeGreaterThanOrEqual(14);
