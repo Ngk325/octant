@@ -884,6 +884,20 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 }
 .rail-suggest button:hover { background: var(--surface-2); color: var(--ink); }
 
+.rail-history-item {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  padding: var(--s3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.rail-history-item:hover { background: var(--surface-2); color: var(--ink); }
+.rail-history-item + .rail-history-item { margin-top: var(--s2); }
+
 /* Rendered only when the rail is closed — see ChatRail. Must therefore be
    visible at EVERY width: it is the only way back in once you close the rail. */
 .rail-launch {

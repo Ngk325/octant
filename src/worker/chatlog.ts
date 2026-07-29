@@ -121,6 +121,61 @@ export async function recordExchange(
   }
 }
 
+/** Whether a logged thread belongs to the caller asking for it. */
+function belongsTo(rec: ChatLogRecord, who: ChatWho): boolean {
+  if (who.email) return rec.who.email === who.email;
+  return rec.who.kind === "code" && rec.who.label === who.label;
+}
+
+export interface ThreadSummary {
+  threadId: string;
+  started: number;
+  updated: number;
+  contexts: string[];
+  turns: number;
+  preview: string;
+}
+
+/** The caller's own past threads, most recently updated first. History, not archive. */
+export async function listThreads(env: ChatLogEnv, who: ChatWho): Promise<ThreadSummary[]> {
+  if (!env.CHAT_LOGS) return [];
+  const out: ThreadSummary[] = [];
+  try {
+    let cursor: string | undefined;
+    do {
+      const page = await env.CHAT_LOGS.list({ prefix: "chat:", cursor });
+      for (const { name } of page.keys) {
+        const threadId = name.slice("chat:".length);
+        const rec = await readRecord(env, threadId);
+        if (rec && rec.turns.length > 0 && belongsTo(rec, who)) {
+          const firstUser = rec.turns.find((t) => t.role === "user");
+          out.push({
+            threadId,
+            started: rec.started,
+            updated: rec.updated,
+            contexts: rec.contexts,
+            turns: rec.turns.length,
+            preview: (firstUser?.text ?? "").slice(0, 140),
+          });
+        }
+      }
+      cursor = page.list_complete === false ? page.cursor : undefined;
+    } while (cursor);
+  } catch (err) {
+    console.error("chatlog: listThreads failed", String(err));
+  }
+  return out.sort((a, b) => b.updated - a.updated).slice(0, 50);
+}
+
+/** One of the caller's own past threads, in full — or null if it is not theirs. */
+export async function getThreadFor(
+  env: ChatLogEnv, who: ChatWho, threadId: string,
+): Promise<ChatLogRecord | null> {
+  const rec = await readRecord(env, threadId);
+  if (!rec || !belongsTo(rec, who)) return null;
+  return rec;
+}
+
 /**
  * The session is over — mail the transcript to the owner, once.
  * Idempotent via the `mailed` stamp, so the beacon, the reset button and the
