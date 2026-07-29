@@ -46,3 +46,33 @@ export function removeStored(name: string): void {
     /* nothing to do */
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Session storage — scoped to the tab, gone when it closes. Used for
+ * state that should start fresh each session rather than persist
+ * indefinitely (e.g. the active chat thread).
+ * ------------------------------------------------------------------ */
+
+export function readSessionStored(name: string): string | null {
+  try {
+    return sessionStorage.getItem(PREFIX + name);
+  } catch {
+    return null;
+  }
+}
+
+export function writeSessionStored(name: string, value: string): void {
+  try {
+    sessionStorage.setItem(PREFIX + name, value);
+  } catch {
+    /* private mode — it just will not persist */
+  }
+}
+
+export function removeSessionStored(name: string): void {
+  try {
+    sessionStorage.removeItem(PREFIX + name);
+  } catch {
+    /* nothing to do */
+  }
+}

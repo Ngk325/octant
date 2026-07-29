@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatContext } from "../engine/context";
-import { readStored, writeStored, removeStored } from "../storage";
+import { readSessionStored, writeSessionStored, removeSessionStored } from "../storage";
 
 /** One message in a thread, as stored and rendered. */
 export interface Message {
@@ -8,18 +8,38 @@ export interface Message {
   text: string;
 }
 
+/** A past thread's summary, as returned by GET /api/chat/history. */
+export interface ThreadSummary {
+  threadId: string;
+  started: number;
+  updated: number;
+  contexts: string[];
+  turns: number;
+  preview: string;
+}
+
 const KEY = "chat.thread";
 const ID_KEY = "chat.threadId";
 const MAX_STORED = 40;
 
-/** The thread's server-side identity. Survives navigation; replaced on reset. */
+/*
+ * Thread identity and the live transcript are kept in sessionStorage, not
+ * localStorage: a conversation belongs to the browser session it happened
+ * in, not forever. Closing the tab already ends the session server-side
+ * (the pagehide beacon mails the transcript) — sessionStorage just makes
+ * the client agree, so reopening the app starts a clean thread instead of
+ * resuming whatever was last on screen. Past threads remain reachable
+ * through /api/chat/history, not by silently re-loading them.
+ */
+
+/** The thread's server-side identity. Survives navigation within the tab; replaced on reset. */
 function loadThreadId(): string {
   try {
-    const v = readStored(ID_KEY);
+    const v = readSessionStored(ID_KEY);
     if (v && /^[A-Za-z0-9-]{8,64}$/.test(v)) return v;
   } catch { /* fall through */ }
   const id = crypto.randomUUID();
-  try { writeStored(ID_KEY, id); } catch { /* storage may be unavailable */ }
+  try { writeSessionStored(ID_KEY, id); } catch { /* storage may be unavailable */ }
   return id;
 }
 
@@ -44,7 +64,7 @@ function signalEnd(threadId: string) {
 /** Restore the last thread, dropping anything that is not a well-formed message. */
 function load(): Message[] {
   try {
-    const raw = readStored(KEY);
+    const raw = readSessionStored(KEY);
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -70,7 +90,7 @@ export function useChat(context: ChatContext) {
   const threadId = useRef<string>(loadThreadId());
 
   useEffect(() => {
-    writeStored(KEY, JSON.stringify(messages.slice(-MAX_STORED)));
+    writeSessionStored(KEY, JSON.stringify(messages.slice(-MAX_STORED)));
   }, [messages]);
 
   useEffect(() => () => abort.current?.abort(), []);
@@ -101,10 +121,10 @@ export function useChat(context: ChatContext) {
     if (hasMessages.current) signalEnd(threadId.current);
     const fresh = crypto.randomUUID();
     threadId.current = fresh;
-    try { writeStored(ID_KEY, fresh); } catch { /* storage may be unavailable */ }
+    try { writeSessionStored(ID_KEY, fresh); } catch { /* storage may be unavailable */ }
     setMessages([]);
     setError(null);
-    removeStored(KEY);
+    removeSessionStored(KEY);
   }, [stop]);
 
   const send = useCallback(
@@ -184,5 +204,24 @@ export function useChat(context: ChatContext) {
     [messages, streaming, context],
   );
 
-  return { messages, streaming, error, send, stop, reset };
+  /** The caller's own past threads, most recently updated first. */
+  const listHistory = useCallback(async (): Promise<ThreadSummary[]> => {
+    const res = await fetch("/api/chat/history");
+    if (!res.ok) throw new Error(`Could not load history (${res.status}).`);
+    const body = (await res.json()) as { threads?: ThreadSummary[] };
+    return body.threads ?? [];
+  }, []);
+
+  /** One past thread's full transcript, read-only — for viewing, not resuming. */
+  const loadHistoryThread = useCallback(async (id: string): Promise<Message[]> => {
+    const res = await fetch(`/api/chat/thread/${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error(`Could not load that conversation (${res.status}).`);
+    const body = (await res.json()) as { thread?: { turns?: { role: string; text: string }[] } };
+    return (body.thread?.turns ?? []).map((t) => ({
+      role: t.role === "user" ? "user" : "model",
+      text: t.text,
+    }));
+  }, []);
+
+  return { messages, streaming, error, send, stop, reset, listHistory, loadHistoryThread };
 }

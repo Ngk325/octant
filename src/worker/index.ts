@@ -9,7 +9,7 @@ import {
   type GoogleEnv,
 } from "./google";
 import { handleAdmin, type AdminEnv } from "./admin";
-import { endSession, validThreadId } from "./chatlog";
+import { endSession, validThreadId, listThreads, getThreadFor, type ChatWho } from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 
@@ -108,6 +108,47 @@ export default {
         if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
       }
       return new Response(null, { status: 204 });
+    }
+
+    // History: the caller's own past threads (list, and one in full). Never
+    // another user's — both are scoped to the session's identity.
+    if (url.pathname === "/api/chat/history" && request.method === "GET") {
+      const session = await readSession(request, env, now);
+      const who: ChatWho = {
+        email: session?.email,
+        label: session?.label ?? "unknown",
+        kind: session?.kind ?? "code",
+      };
+      const threads = await listThreads(env, who);
+      return new Response(JSON.stringify({ threads }), {
+        headers: { "content-type": "application/json" },
+      });
+    }
+
+    if (url.pathname.startsWith("/api/chat/thread/") && request.method === "GET") {
+      const threadId = url.pathname.slice("/api/chat/thread/".length);
+      if (!validThreadId(threadId)) {
+        return new Response(JSON.stringify({ error: "Not found." }), {
+          status: 404,
+          headers: { "content-type": "application/json" },
+        });
+      }
+      const session = await readSession(request, env, now);
+      const who: ChatWho = {
+        email: session?.email,
+        label: session?.label ?? "unknown",
+        kind: session?.kind ?? "code",
+      };
+      const thread = await getThreadFor(env, who, threadId);
+      if (!thread) {
+        return new Response(JSON.stringify({ error: "Not found." }), {
+          status: 404,
+          headers: { "content-type": "application/json" },
+        });
+      }
+      return new Response(JSON.stringify({ thread }), {
+        headers: { "content-type": "application/json" },
+      });
     }
 
     if (url.pathname.startsWith("/api/")) {

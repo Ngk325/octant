@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useChatCtx } from "./ChatContext";
-import { useChat } from "./useChat";
+import { useChat, type Message, type ThreadSummary } from "./useChat";
 import Markdown from "./Markdown";
 import { suggestedPrompts } from "../engine/context";
+
+const when = (ms: number) => new Date(ms).toLocaleString();
 
 /** A one-line description of what the assistant currently knows you are reading. */
 function contextLabel(kind: string, detail: string): string {
@@ -15,11 +17,37 @@ function contextLabel(kind: string, detail: string): string {
  */
 export default function ChatRail() {
   const { context, open, setOpen } = useChatCtx();
-  const { messages, streaming, error, send, stop, reset } = useChat(context);
+  const { messages, streaming, error, send, stop, reset, listHistory, loadHistoryThread } = useChat(context);
   const [draft, setDraft] = useState("");
   const overlay = useMatchMedia("(max-width: 1180px)");
   const logRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLTextAreaElement>(null);
+
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [history, setHistory] = useState<ThreadSummary[] | null>(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<{ id: string; turns: Message[] } | null>(null);
+
+  const openHistory = () => {
+    setHistoryOpen(true);
+    setViewing(null);
+    setHistoryError(null);
+    setHistory(null);
+    void listHistory()
+      .then(setHistory)
+      .catch((e) => setHistoryError((e as Error).message));
+  };
+
+  const viewThread = (id: string) => {
+    setViewing({ id, turns: [] });
+    setHistoryError(null);
+    void loadHistoryThread(id)
+      .then((turns) => setViewing({ id, turns }))
+      .catch((e) => {
+        setHistoryError((e as Error).message);
+        setViewing(null);
+      });
+  };
 
   useEffect(() => {
     const el = logRef.current;
@@ -84,8 +112,19 @@ export default function ChatRail() {
       <aside className="rail" aria-label="Assistant">
       <div className="rail-head">
         <h2>Ask</h2>
+        <button
+          className="btn ghost"
+          onClick={historyOpen ? () => setHistoryOpen(false) : openHistory}
+          title="Past conversations"
+        >
+          {historyOpen ? "Back" : "History"}
+        </button>
         {messages.length > 0 && (
-          <button className="btn ghost" onClick={reset} title="Start a new thread">
+          <button
+            className="btn ghost"
+            onClick={() => { reset(); setHistoryOpen(false); }}
+            title="Start a new conversation"
+          >
             New
           </button>
         )}
@@ -96,6 +135,49 @@ export default function ChatRail() {
 
       <div className="rail-ctx">Reading: {contextLabel(label.kind, label.detail)}</div>
 
+      {historyOpen ? (
+        <div className="rail-log" ref={logRef}>
+          {viewing ? (
+            <>
+              <button className="btn ghost" onClick={() => setViewing(null)} style={{ marginBottom: "var(--s2)" }}>
+                ← All conversations
+              </button>
+              {viewing.turns.length === 0 && !historyError && <p className="small muted">Loading…</p>}
+              {viewing.turns.map((m, i) => (
+                <div key={i} className={`msg ${m.role === "user" ? "you" : "bot"}`}>
+                  {m.role === "user" ? m.text : <Markdown text={m.text} />}
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <p className="small muted" style={{ margin: "0 0 var(--s3)" }}>
+                Past conversations from this account, most recent first.
+              </p>
+              {historyError && <div className="msg err">{historyError}</div>}
+              {history === null && !historyError && <p className="small muted">Loading…</p>}
+              {history !== null && history.length === 0 && (
+                <p className="small muted">No past conversations yet.</p>
+              )}
+              {history?.map((t) => (
+                <button
+                  key={t.threadId}
+                  className="rail-history-item"
+                  onClick={() => viewThread(t.threadId)}
+                >
+                  <div className="small" style={{ fontWeight: 600 }}>
+                    {t.contexts[t.contexts.length - 1] ?? "Conversation"}
+                  </div>
+                  <div className="small muted">{t.preview || "…"}</div>
+                  <div className="small muted" style={{ fontSize: "var(--t-xs)" }}>
+                    {when(t.updated)} · {t.turns} messages
+                  </div>
+                </button>
+              ))}
+            </>
+          )}
+        </div>
+      ) : (
       <div className="rail-log" ref={logRef}>
         {messages.length === 0 && (
           <>
@@ -137,7 +219,9 @@ export default function ChatRail() {
 
         {error && <div className="msg err">{error}</div>}
       </div>
+      )}
 
+      {!historyOpen && (
       <div className="rail-form">
         <textarea
           ref={boxRef}
@@ -166,6 +250,7 @@ export default function ChatRail() {
           </span>
         </div>
       </div>
+      )}
       </aside>
     </>
   );

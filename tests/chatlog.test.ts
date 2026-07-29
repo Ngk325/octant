@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   recordExchange, endSession, sweepIdle, validThreadId, IDLE_MS,
+  listThreads, getThreadFor,
   type ChatLogEnv, type ChatLogRecord, type ChatWho,
 } from "../src/worker/chatlog";
 import type { KVNamespace } from "../src/worker/users";
@@ -180,5 +181,49 @@ describe("the idle sweep", () => {
   it("is a no-op without the binding", async () => {
     await sweepIdle({}, NOW);
     expect(sent).toHaveLength(0);
+  });
+});
+
+describe("history", () => {
+  const OTHER: ChatWho = { email: "other@example.com", label: "Other", kind: "google" };
+  const CODE_WHO: ChatWho = { label: "invite-42", kind: "code" };
+
+  it("lists only the caller's own threads, most recently updated first, with a preview", async () => {
+    await recordExchange(ENV, "thread-hist-0001", WHO, "type ENTP", "first question", "answer", NOW);
+    await recordExchange(ENV, "thread-hist-0002", WHO, "pair ENTP·INFJ", "second question", "answer", NOW + 5000);
+    await recordExchange(ENV, "thread-hist-0003", OTHER, "type INFJ", "not mine", "answer", NOW + 1000);
+
+    const mine = await listThreads(ENV, WHO);
+    expect(mine.map((t) => t.threadId)).toEqual(["thread-hist-0002", "thread-hist-0001"]);
+    expect(mine[0].preview).toBe("second question");
+    expect(mine[0].contexts).toEqual(["pair ENTP·INFJ"]);
+    expect(mine[0].turns).toBe(2);
+  });
+
+  it("matches invite-code sessions by label, not email", async () => {
+    await recordExchange(ENV, "thread-hist-0004", CODE_WHO, "x", "q", "a", NOW);
+    const mine = await listThreads(ENV, CODE_WHO);
+    expect(mine.map((t) => t.threadId)).toEqual(["thread-hist-0004"]);
+    expect(await listThreads(ENV, { label: "invite-42", kind: "code" } as ChatWho)).toHaveLength(1);
+    expect(await listThreads(ENV, { label: "someone-else", kind: "code" } as ChatWho)).toHaveLength(0);
+  });
+
+  it("omits threads with no turns yet", async () => {
+    await ENV.CHAT_LOGS!.put(
+      "chat:thread-hist-empty",
+      JSON.stringify({ who: WHO, started: NOW, updated: NOW, contexts: [], turns: [] } satisfies ChatLogRecord),
+    );
+    expect(await listThreads(ENV, WHO)).toHaveLength(0);
+  });
+
+  it("is a no-op without the binding", async () => {
+    expect(await listThreads({}, WHO)).toEqual([]);
+  });
+
+  it("returns a thread only to the person it belongs to", async () => {
+    await recordExchange(ENV, "thread-hist-0005", WHO, "x", "q", "a", NOW);
+    expect((await getThreadFor(ENV, WHO, "thread-hist-0005"))?.turns).toHaveLength(2);
+    expect(await getThreadFor(ENV, OTHER, "thread-hist-0005")).toBeNull();
+    expect(await getThreadFor(ENV, WHO, "thread-hist-nonexistent")).toBeNull();
   });
 });
