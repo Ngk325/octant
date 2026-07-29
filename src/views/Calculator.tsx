@@ -10,6 +10,7 @@ import Explain from "../components/Explain";
 import { ChoiceCard, Panel } from "../components/Bits";
 import FnIcon from "../components/glyphs/FnIcon";
 import SelfTribeCone from "../components/glyphs/SelfTribeCone";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
 
 const PROMPTS: [string, string][] = [
   ["I take things in first and make up my mind later.",
@@ -46,6 +47,7 @@ function coinGlyph(coin: number, side: 0 | 1): JSX.Element | null {
     );
   }
   if (coin === 2) return <FnIcon fn={side === 0 ? "Si" : "Se"} size={44} />;
+  if (coin === 3) return <FnIcon fn={side === 0 ? "Te" : "Fe"} size={44} />;
   if (coin === 4) return <FnIcon fn={side === 0 ? "Se" : "Ne"} size={44} />;
   return null;
 }
@@ -124,7 +126,8 @@ export default function Calculator() {
         <div className="stack-v" style={{ position: "sticky", top: "calc(var(--masthead-h) + var(--s5))" }}>
           {result.best && (
             <Panel title="Your type">
-              <div className="cluster" style={{ gap: "var(--s4)" }}>
+              <div className="cluster" style={{ gap: "var(--s4)", alignItems: "center" }}>
+                <TypeMolecule type={result.best} size={56} />
                 <span className="score" style={{ fontSize: "var(--t-3xl)" }}>{result.best}</span>
                 <Link to={`/type/${result.best}`} className="btn primary">Read it →</Link>
               </div>
