@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { usePublishContext } from "../chat/ChatContext";
 import { Panel, Tile } from "../components/Bits";
 import { STAGES } from "../learn/curriculum";
+import EightSet from "../components/glyphs/EightSet";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
 
 /** The orientation page: what this is, and the ways in. */
 export default function Home() {
@@ -32,6 +34,9 @@ export default function Home() {
           row naming the same three destinations twenty pixels above. */}
       <div className="grid g-auto">
         <Tile to="/learn">
+          <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
+            <EightSet size={18} />
+          </span>
           <h3 style={{ margin: "0 0 var(--s2)" }}>The course →</h3>
           <p className="small" style={{ margin: 0 }}>
             New to this? {STAGES.length} stages from &ldquo;what is a cognitive function&rdquo;
@@ -48,6 +53,9 @@ export default function Home() {
         </Tile>
 
         <Tile to="/type/ENTP">
+          <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
+            <TypeMolecule type="ENTP" size={40} />
+          </span>
           <h3 style={{ margin: "0 0 var(--s2)" }}>A type, in full →</h3>
           <p className="small" style={{ margin: 0 }}>
             The eight slots, all four sides of the mind, the exchange overlay, the growth gate and who
@@ -56,6 +64,10 @@ export default function Home() {
         </Tile>
 
         <Tile to="/pair/ENTP/INFJ">
+          <span aria-hidden="true" style={{ display: "flex", gap: "var(--s2)", marginBottom: "var(--s3)" }}>
+            <TypeMolecule type="ENTP" size={36} />
+            <TypeMolecule type="INFJ" size={36} />
+          </span>
           <h3 style={{ margin: "0 0 var(--s2)" }}>A pair →</h3>
           <p className="small" style={{ margin: 0 }}>
             What the relationship actually is, how easy it is in <i>each</i> direction, and a
