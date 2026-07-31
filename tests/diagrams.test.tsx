@@ -21,6 +21,9 @@ import GatewayPath from "../src/components/GatewayPath";
 import ArchetypeGrid from "../src/components/ArchetypeGrid";
 import SaviorDemonGrid from "../src/components/SaviorDemonGrid";
 import QuadraFunctionGrid from "../src/components/QuadraFunctionGrid";
+import CoinSet from "../src/components/CoinSet";
+import TwoReadings from "../src/components/TwoReadings";
+import { COIN_LABELS, DETERMINING, CONFIRMING } from "../src/engine/data";
 import { ops } from "../src/engine/ops";
 import { LEX_FIGURES, lexiconFigure } from "../src/components/lexicon-figures";
 import { BY_ID } from "../src/engine/lexicon";
@@ -86,6 +89,7 @@ describe("every diagram renders for every type without throwing", () => {
       draw(<ArchetypeGrid type={t} />);
       draw(<SaviorDemonGrid type={t} />);
       draw(<SaviorDemonGrid type={t} sub={{ jumper: true }} />);
+      expectFloor(draw(<TwoReadings type={t} />));
     });
   }
 });
@@ -155,6 +159,33 @@ describe("the small grids", () => {
     draw(<ThemeSeasons />);
     draw(<ThemeSeasons development="SD" focus="SF" onPick={() => {}} />);
   });
+
+  it("the switch set splits the eight by what they can decide", () => {
+    const html = draw(<CoinSet />);
+    expectFloor(html);
+    /* Membership is read from DETERMINING/CONFIRMING, so the figure cannot
+       disagree with the calculator that scores them — assert the split it
+       actually drew, not a copy of the list. */
+    for (const i of DETERMINING) expect(html).toContain(COIN_LABELS[i]);
+    for (const i of CONFIRMING) expect(html).toContain(COIN_LABELS[i]);
+    expect(html).toContain("Fix the type");
+    expect(html).toContain("Cannot add evidence");
+  });
+
+  it("the two readings are drawn disagreeing, not merged", () => {
+    /* The point of the figure. If it ever renders one weak point, or styles
+       one reading as the answer, it has started asserting what the entry
+       explicitly declines to. */
+    const html = draw(<TwoReadings type="ENTP" />);
+    expect(html).toContain("Eight-function stack");
+    expect(html).toContain("Exchange overlay");
+    /* Three MARKED CELLS in total: Cave from one reading, Delight+Cave from
+       the other. Matched as element text (`>weak point<`) rather than as a
+       bare substring, because the aria-label uses the phrase too and would
+       inflate the count to four. */
+    expect(html.match(/>weak point</g)?.length).toBe(3);
+    expect(html).toContain("disagree");
+  });
 });
 
 describe("the lexicon figure registry", () => {
@@ -199,16 +230,22 @@ describe("the lexicon figure registry", () => {
   });
 
   it("leaves undrawn only the concepts that refuse a picture", () => {
-    /* Two of these are refusals on the entry's own terms: `fine-coins` says
-       the build holds that material unsettled, and `dual-lighting` exists to
-       say two readings disagree and are NOT reconciled — a diagram of either
-       would assert what the entry declines to. The other two have no mark in
-       the language that means them. Listed so drawing one is a decision. */
+    /* `fine-coins` says of itself that this build holds that material
+       unsettled, so a diagram would assert what the entry declines to.
+       `midlife-crisis` is about timing and pressure, which no mark in the
+       language means. Listed so drawing one is a decision.
+
+       `coin` and `dual-lighting` were on this list and are not any more.
+       The reasoning that put them here confused "must not RESOLVE this" with
+       "must not DRAW this": the switch set draws a split the entry states as
+       arithmetic, and the two readings are drawn side by side so the slot
+       they disagree about is the one you look at. Showing a disagreement is
+       the entry's content; merging it would have been the dishonest figure. */
     const bare = ENTRIES
       .filter((e) => e.category === "Concept" && !lexiconFigure(e))
       .map((e) => e.id)
       .sort();
-    expect(bare).toEqual(["coin", "dual-lighting", "fine-coins", "midlife-crisis"]);
+    expect(bare).toEqual(["fine-coins", "midlife-crisis"]);
   });
 
   it("draws the coin poles the glyph language can state, and no others", () => {
