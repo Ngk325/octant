@@ -1,11 +1,21 @@
 import { Link } from "react-router-dom";
 import { TYPES, REL, ease, quadra } from "../engine/core";
-import { REL_NAME, REL_SCORE, REL_DEF, type RelCode } from "../engine/data";
+import { REL_NAME, REL_SCORE, REL_DEF, type RelCode, type MbtiType } from "../engine/data";
 import { REL_PLAIN } from "../engine/plain";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
+import Figure from "../components/Figure";
+import DivergingEase from "../components/DivergingEase";
 import { Panel, Row } from "../components/Bits";
+
+/**
+ * The worked asymmetry, drawn above the grid. A supervision pair, which is
+ * where the two directions diverge most widely — every number and both
+ * relation names are read from the engine, so the example cannot drift away
+ * from the grid it is introducing.
+ */
+const ASYM: [MbtiType, MbtiType] = ["ENTP", "ISTP"];
 
 /** All 256 cells, colour-scaled, every cell a link into the pair reader. */
 export default function Matrix() {
@@ -29,6 +39,29 @@ export default function Matrix() {
         </p>
       </Explain>
 
+      {/* One cell and its mirror, before the reader meets 256 of them. The
+          asymmetry is the single most important thing about this grid and it
+          was asserted twice in prose and never shown — two numbers ten apart
+          make the point faster than either sentence does. */}
+      <Figure
+        label="Why the grid is not a mirror"
+        /* No <b> in here: figcaption's bold is the figure LABEL's style and
+           carries a margin-right, which renders as a space before the
+           punctuation. The relation names are capitalised already. */
+        caption={
+          `The same pairing, read from each side. ` +
+          `${ASYM[0]} finds ${ASYM[1]} their ${REL_NAME[REL[ASYM[0]][ASYM[1]]]}; ` +
+          `${ASYM[1]} finds ${ASYM[0]} their ${REL_NAME[REL[ASYM[1]][ASYM[0]]]}. ` +
+          `Four of the sixteen relations do this, which is why cell (a, b) and ` +
+          `cell (b, a) are worth reading as two separate facts.`
+        }
+      >
+        <DivergingEase
+          toward={ease(ASYM[0], ASYM[1])}
+          from={ease(ASYM[1], ASYM[0])}
+          labels={[`Ease for ${ASYM[0]}`, `Ease for ${ASYM[1]}`]}
+        />
+      </Figure>
 
       <Panel style={{ marginTop: "var(--s5)" }}>
         <div className="matrix-wrap">

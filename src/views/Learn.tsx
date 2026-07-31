@@ -4,7 +4,10 @@ import { STAGES } from "../learn/curriculum";
 import { TYPES, type MbtiType } from "../engine/data";
 import { usePublishContext } from "../chat/ChatContext";
 import { Panel } from "../components/Bits";
+import Figure from "../components/Figure";
 import { readStored, writeStored } from "../storage";
+import EightSet from "../components/glyphs/EightSet";
+import TypeMolecule from "../components/glyphs/TypeMolecule";
 
 const DONE_KEY = "learn.done";
 const TYPE_KEY = "learn.type";
@@ -138,6 +141,13 @@ function ExampleControl({ example, setExample }: {
 }) {
   return (
     <p className="note" style={{ display: "flex", gap: "var(--s3)", alignItems: "center", flexWrap: "wrap" }}>
+      {/* The control said every diagram is drawn for this type and then showed
+          no picture of it. The molecule answers "which one am I looking at?"
+          at a glance, and changes under the reader when they change the
+          select — decorative, so the select still carries the label. */}
+      <span aria-hidden="true" style={{ display: "flex", flex: "0 0 auto" }}>
+        <TypeMolecule type={example} size={44} labels={false} />
+      </span>
       <label className="small" style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <b style={{ fontFamily: "var(--sans)" }}>Worked example</b>
         <select value={example} onChange={(e) => setExample(e.target.value as MbtiType)} aria-label="Example type">
@@ -166,6 +176,20 @@ function Index({ done, example, setExample }: {
         Plain English first; the precise version is always one click underneath, so you can see
         the vocabulary you are growing into rather than being handed it.
       </p>
+
+      {/* What the whole course is about, before stage one names any of it.
+          The index was the one page in the course with no picture on it —
+          thirteen text cards under a text lede, which read as a table of
+          contents for something you could not yet see. */}
+      <Figure
+        label="What you are learning to read"
+        caption="Eight habits of mind, in four families. Each family has one version that faces
+                 outward and one that faces inward. Everything else in the course is built from
+                 these eight and the order they come in."
+        minWidth={320}
+      >
+        <EightSet size={34} />
+      </Figure>
 
       <ExampleControl example={example} setExample={setExample} />
 

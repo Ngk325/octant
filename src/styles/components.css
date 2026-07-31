@@ -487,7 +487,9 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   display: block;
 }
 /* Applied by Term.tsx when a popover would run past the right edge of the
-   viewport — it flips to hang from the trigger's right side instead. */
+   viewport — it flips to hang from the trigger's right side instead. Only
+   ever useful where the popover is narrower than the space beside the term;
+   on a phone neither anchor fits, which is what the sheet below is for. */
 .term-pop.flip { left: auto; right: 0; }
 
 .lex-entry { scroll-margin-top: calc(var(--masthead-h) + var(--s5)); }
@@ -798,7 +800,14 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
   top: 0;
   flex: 0 0 var(--rail);
   width: var(--rail);
+  /* dvh, not vh. On mobile Safari 100vh is the LARGE viewport — the height the
+     page would have if the browser's toolbars were hidden — so a 100vh rail is
+     taller than what you can actually see, and the thing it pushes off the
+     bottom is the composer. The rail was unusable on a phone for exactly that
+     reason: you could read answers but never reach the box to type one. vh
+     first as the fallback for anything without dvh support. */
   height: 100vh;
+  height: 100dvh;
   border-left: 1px solid var(--rule);
   background: var(--surface);
   display: flex;
@@ -832,6 +841,12 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 
 .rail-log {
   flex: 1 1 auto;
+  /* A flex item will not shrink below its content's height without this, so
+     a tall thread (or the opening blurb plus four suggestions) grew the log
+     instead of scrolling it and shoved the composer past the bottom of the
+     rail. The overflow-y above only engages once the item is allowed to be
+     shorter than what is in it. */
+  min-height: 0;
   overflow-y: auto;
   padding: var(--s4);
   display: flex;
@@ -860,7 +875,9 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 .rail-form {
   flex: 0 0 auto;
   border-top: 1px solid var(--rule);
-  padding: var(--s3) var(--s4) var(--s4);
+  /* The home indicator sits over the bottom of the viewport on a modern
+     iPhone. Without the inset the Send button renders underneath it. */
+  padding: var(--s3) var(--s4) max(var(--s4), env(safe-area-inset-bottom));
   display: grid;
   gap: var(--s2);
 }
@@ -1061,6 +1078,22 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 }
 
 @media (max-width: 640px) {
+  /* The glossary popover becomes a sheet pinned to the bottom of the screen.
+     Anchored to the term it was unreadable: at min(340px, 80vw) it is nearly
+     as wide as the phone, so hanging it off either edge of a term in the
+     middle of a line pushed half the definition off-screen — .flip only ever
+     guarded the RIGHT edge, so flipping a mid-line term clipped it on the
+     LEFT instead. Pinned to the viewport it is always whole, whatever was
+     tapped. Both selectors, so .flip cannot re-introduce the overhang. */
+  .term-pop, .term-pop.flip {
+    position: fixed;
+    left: var(--s4);
+    right: var(--s4);
+    top: auto;
+    bottom: max(var(--s4), env(safe-area-inset-bottom));
+    width: auto;
+  }
+
   .g3 { grid-template-columns: minmax(0, 1fr); }
   .row { flex-direction: column; align-items: stretch; gap: var(--s1); }
   .row dd { text-align: left; }
@@ -1080,7 +1113,7 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
 
 @media (max-width: 480px) {
   .rail { width: 100vw; }
-  .rail-launch { right: var(--s4); bottom: var(--s4); }
+  .rail-launch { right: var(--s4); bottom: max(var(--s4), env(safe-area-inset-bottom)); }
 }
 
 @media print {
