@@ -1,7 +1,12 @@
 import { type ReactNode } from "react";
 import { type Entry, type Category } from "../engine/lexicon";
-import { type Fn, type SlotName } from "../engine/data";
-import { type MbtiType, type Quadra } from "../engine/core";
+import {
+  type Fn, type SlotName, type RelCode, REL_NAME,
+  ROMANCE, INTERACTION_STYLE, GROUP,
+} from "../engine/data";
+import { TYPES, REL, ease, gate, type MbtiType, type Quadra } from "../engine/core";
+import TypeMolecule from "./glyphs/TypeMolecule";
+import DivergingEase from "./DivergingEase";
 import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
 import { type Animal, ANIMAL_LABEL } from "../engine/ops";
 import FnIcon from "./glyphs/FnIcon";
@@ -75,6 +80,33 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
 
   relation: () => <Worked><RelationLanding a="ENTP" b="INFJ" /></Worked>,
 
+  /* The two relations these concepts are named for, drawn as the landings
+     that define them rather than described a second time. */
+  complement: () => <RelationFigure code="DU" />,
+  catalyst: () => <RelationFigure code="AC" />,
+
+  /* The app's single most distinctive claim — ease is directional — had no
+     picture on its own entry, only on the pages that use it. */
+  ease: () => {
+    const pair = exemplar("SV");
+    if (!pair) return null;
+    const [a, b] = pair;
+    return (
+      <div style={{ margin: "var(--s3) 0" }}>
+        <DivergingEase
+          toward={ease(a, b)}
+          from={ease(b, a)}
+          labels={[`Ease for ${a}`, `Ease for ${b}`]}
+        />
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          One pairing, read from each side. Four of the sixteen relations differ by
+          direction like this, so a single compatibility number would hide the most
+          useful thing about them.
+        </p>
+      </div>
+    );
+  },
+
   savior: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
   "demon-animal": () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
 
@@ -131,8 +163,142 @@ function SideDoorRow({ type, emphasis }: { type: MbtiType; emphasis?: SideKey })
   );
 }
 
+/**
+ * The first ordered pair that actually exhibits a relation, searched rather
+ * than tabulated — a hard-coded exemplar per code is sixteen chances to be
+ * quietly wrong, and this cannot disagree with the grid it illustrates.
+ *
+ * Orientation follows the rest of the app: REL[a][b] reads "b is a's ___",
+ * and RelationLanding(a, b) draws b's strongest two landing in a's stack.
+ * That pairing is what makes the caption and the arrows the same claim.
+ */
+function exemplar(code: RelCode): [MbtiType, MbtiType] | null {
+  for (const a of TYPES) for (const b of TYPES) if (REL[a][b] === code) return [a, b];
+  return null;
+}
+
+/** One relation drawn as the landing that defines it, with its own caption. */
+function RelationFigure({ code }: { code: RelCode }) {
+  const pair = exemplar(code);
+  if (!pair) return null;
+  const [a, b] = pair;
+  return (
+    <div style={{ margin: "var(--s3) 0" }}>
+      <RelationLanding a={a} b={b} />
+      <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+        Worked example — {b} is {a}&rsquo;s {REL_NAME[code]}. Every pair with this
+        relation lands the same way; only the functions change.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Which four types carry a label, drawn as their molecules.
+ *
+ * Temperament, romance style and interaction style are all the same shape of
+ * fact — a name given to a set of four — and all three were defined in prose
+ * that never said which four. The entry's `term` IS the table's value, so the
+ * membership is looked up rather than restated, and a label that stopped
+ * matching would render an empty row instead of a confident wrong one.
+ */
+function sharedBy(label: (t: MbtiType) => string, term: string): ReactNode {
+  const members = TYPES.filter((t) => label(t) === term);
+  if (!members.length) return null;
+  return (
+    <Plain>
+      <div className="cluster" style={{ gap: "var(--s4)" }}>
+        {members.map((t) => (
+          <div key={t} style={{ textAlign: "center" }}>
+            <TypeMolecule type={t} size={44} labels={false} />
+            <span className="mono small muted">{t}</span>
+          </div>
+        ))}
+      </div>
+      <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+        The {members.length} wirings that share this.
+      </p>
+    </Plain>
+  );
+}
+
+/** The coin poles the glyph language can draw, matching Calculator's set. */
+const COIN_MARKS: Record<string, Fn> = {
+  organize: "Si", gather: "Se",      // the observer's attitude
+  thinking: "Te", feeling: "Fe",     // the decider's element
+  sensing: "Se", intuition: "Ne",    // the observer's element
+};
+
+/** The two coin poles that are a whole family group rather than one function. */
+const COIN_FAMILIES: Record<string, Fn[]> = {
+  observer: ["Ne", "Ni", "Se", "Si"],
+  decider: ["Te", "Ti", "Fe", "Fi"],
+};
+
 /** Category-level fallbacks, when no id-specific figure exists. */
 export const CATEGORY_FIGURES: Partial<Record<Category, (e: Entry) => ReactNode>> = {
+  Temperament: (e) => sharedBy((t) => GROUP[t], e.term),
+  "Romance Style": (e) => sharedBy((t) => ROMANCE[t], e.term),
+  "Interaction Style": (e) => sharedBy((t) => INTERACTION_STYLE[t], e.term),
+
+  /* A gate is the door onto the subconscious, so it gets both halves: who
+     stands at this one, and — for the first of them — the path through it. */
+  Gate: (e) => {
+    const holder = TYPES.find((t) => gate(t).gate === e.term);
+    if (!holder) return null;
+    return (
+      <div style={{ margin: "var(--s3) 0" }}>
+        {sharedBy((t) => gate(t).gate, e.term)}
+        <div style={{ marginTop: "var(--s3) " }}><GatewayPath type={holder} /></div>
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          Worked example — {holder}. The doors are the same four for everyone; which
+          function keys each one is what changes.
+        </p>
+      </div>
+    );
+  },
+
+  /* Sixteen entries that all describe the same mechanism — where the other
+     person's strongest two land in yours — and none of them drew it. The
+     definition is the picture; the prose was restating it. */
+  Relation: (e) => <RelationFigure code={e.id.replace(/^rel-/, "").toUpperCase() as RelCode} />,
+
+  /* A coin is a choice between two poles, and half of them name something the
+     glyph language already draws. The other half — sequencing and delivery —
+     get nothing rather than a stand-in, the same restraint the calculator
+     takes on the questions it cannot picture. */
+  Coin: (e) => {
+    const fam = COIN_FAMILIES[e.id];
+    if (fam) {
+      return (
+        <Plain>
+          <div className="cluster" style={{ gap: "var(--s4)" }}>
+            {fam.map((fn) => (
+              <div key={fn} style={{ textAlign: "center" }}>
+                <FnIcon fn={fn} size={40} />
+                <span className="mono small muted">{fn}</span>
+              </div>
+            ))}
+          </div>
+          <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+            The four functions this pole selects between.
+          </p>
+        </Plain>
+      );
+    }
+    if (e.id === "identity" || e.id === "tribe") {
+      return (
+        <Plain>
+          <div style={{ width: 170 }}>
+            <SelfTribeCone fn={e.id === "identity" ? "Fi" : "Fe"} />
+          </div>
+        </Plain>
+      );
+    }
+    const fn = COIN_MARKS[e.id];
+    return fn ? <Plain><FnIcon fn={fn} size={56} /></Plain> : null;
+  },
+
   /* A Function entry leads with its own icon and its self/tribe reading,
      then the involution table that places it among the eight. */
   Function: (e) => {
