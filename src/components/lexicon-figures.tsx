@@ -7,6 +7,8 @@ import {
 import { TYPES, REL, ease, gate, type MbtiType, type Quadra } from "../engine/core";
 import TypeMolecule from "./glyphs/TypeMolecule";
 import DivergingEase from "./DivergingEase";
+import CoinSet from "./CoinSet";
+import TwoReadings from "./TwoReadings";
 import OctagramMap from "./OctagramMap";
 import OctagramWheel from "./OctagramWheel";
 import ThemeSeasons from "./ThemeSeasons";
@@ -139,6 +141,14 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
    * exists to say two readings disagree and are not reconciled — a diagram of
    * either would assert something the entry is refusing to claim. `coin` and
    * `midlife-crisis` have no mark in the language that means them. */
+
+  /* Two entries that read as refusals but are not. Neither figure resolves
+     anything: the switch set draws the split the entry states as arithmetic,
+     and the two readings are drawn side by side precisely so the slot they
+     disagree about is visible. A picture that MERGED them would be the
+     dishonest one — see TwoReadings. */
+  coin: () => <Plain><CoinSet /></Plain>,
+  "dual-lighting": () => <Worked><TwoReadings /></Worked>,
 
   octagram: () => <Plain><OctagramMap /></Plain>,
   temple: () => <Plain><OctagramMap /></Plain>,
