@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { type ReactNode } from "react";
-import { TYPES } from "../src/engine/core";
+import { TYPES, REL, stack, type MbtiType } from "../src/engine/core";
 import { wheels } from "../src/engine/octagram";
 import { ENTRIES } from "../src/engine/lexicon";
 import { ThemeProvider } from "../src/components/Theme";
@@ -23,7 +23,7 @@ import SaviorDemonGrid from "../src/components/SaviorDemonGrid";
 import QuadraFunctionGrid from "../src/components/QuadraFunctionGrid";
 import CoinSet from "../src/components/CoinSet";
 import TwoReadings from "../src/components/TwoReadings";
-import { COIN_LABELS, DETERMINING, CONFIRMING } from "../src/engine/data";
+import { COIN_LABELS, DETERMINING, CONFIRMING, REL_NAME, DOM_AUX, type RelCode } from "../src/engine/data";
 import { ops } from "../src/engine/ops";
 import { LEX_FIGURES, lexiconFigure } from "../src/components/lexicon-figures";
 import { BY_ID } from "../src/engine/lexicon";
@@ -226,6 +226,55 @@ describe("the lexicon figure registry", () => {
     expect(es).toHaveLength(expected);
     for (const e of es) {
       expect(lexiconFigure(e), `${e.id} has a figure`).not.toBeNull();
+    }
+  });
+
+  /* The relation figures on Complement and Catalyst are the one place in the
+     registry where a code is HAND-KEYED rather than searched for, and it went
+     wrong exactly there: Catalyst drew Spark, which belongs to Complement, so
+     the caption named the wrong relation on a definition of the other one.
+     Both sets are derived here from the entries' own claims, so the figure
+     has to agree with the engine rather than with whoever typed the code. */
+  it("Complement and Catalyst draw a relation those entries actually resolve to", () => {
+    const t: MbtiType = "ENTP";
+
+    /* A Complement is {Counterpart, Spark}, resolved through REL_NAME rather
+       than by writing the codes down — the display names are what the entry
+       says, and the codes are what the figure passes. Deriving one from the
+       other is the whole point. (Going the other way — function to type —
+       does not work: TWO types lead with any given function, so picking one
+       by its dominant is ambiguous. That ambiguity is what made the first
+       version of this test fail.) */
+    const byName = (name: string) =>
+      (Object.keys(REL_NAME) as RelCode[]).find((c) => REL_NAME[c] === name)!;
+    const complement = new Set([byName("Counterpart"), byName("Spark")]);
+
+    // A Catalyst is a type whose Lead is your Doubt — slot 5.
+    const catalyst = new Set(
+      TYPES.filter((x) => DOM_AUX[x][0] === stack(t)[4]).map((x) => REL[t][x]),
+    );
+
+    expect(catalyst, "Catalyst resolves to Damper and False fit").toEqual(new Set(["EX", "MG"]));
+    expect(complement.has("DU"), "Complement includes the Counterpart").toBe(true);
+
+    /* Every relation the caption names, not just the first — the caption
+       names the drawn relation AND the other half of the pair, and both have
+       to belong to the entry. Matched on the name plus its full stop, which
+       is how both appear; the apostrophe before it is HTML-escaped, so
+       anchoring on that is what made the previous attempt match nothing. */
+    const named = (id: string) => {
+      const html = draw(lexiconFigure(BY_ID.get(id)!));
+      return (Object.keys(REL_NAME) as RelCode[]).filter((c) =>
+        html.includes(`${REL_NAME[c]}.`),
+      );
+    };
+
+    for (const [id, allowed] of [["complement", complement], ["catalyst", catalyst]] as const) {
+      const drawn = named(id);
+      expect(drawn.length, `${id} names at least one relation`).toBeGreaterThan(0);
+      for (const c of drawn) {
+        expect(allowed.has(c), `${id} names ${REL_NAME[c]} (${c}), which it does not resolve to`).toBe(true);
+      }
     }
   });
 

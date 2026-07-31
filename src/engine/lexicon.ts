@@ -45,7 +45,7 @@ const FUNCTIONS: Draft[] = [
     short: "Extraverted Intuition — branching possibility read off the outside world.",
     definition:
       "Perceives the field of what a thing could become. Ne takes any object, person or situation and fans it into alternatives, analogies and adjacent possibilities, then keeps every branch live rather than collapsing to one. It is a perceiving function, so it gathers rather than concludes; the pleasure is in the proliferation itself. Its characteristic failure is never landing: an enormous inventory of openings and nothing carried to completion.",
-    inSystem: "Extraverted observer. Pairs with an introverted decider (Ti or Fi) to form a Charge-primary signature. Its attitude-flip is Ni; its axis opposite is Si.",
+    inSystem: "Extraverted observer. Pairs with an introverted decider (Ti or Fi) to form an Absorb-primary signature. Its attitude-flip is Ni; its axis opposite is Si.",
     seeAlso: ["ni", "si", "observer", "gather"] }),
   E({ id: "ni", term: "Ni", category: "Function",
     short: "Introverted Intuition — convergence on the single line a situation is already running down.",
@@ -75,7 +75,7 @@ const FUNCTIONS: Draft[] = [
     short: "Introverted Thinking — a private framework that must remain free of contradiction.",
     definition:
       "Decides by internal consistency. Ti builds a model of how something actually works and tests every new input against it, discarding whatever will not fit. Precision matters more than consensus: a definition that most people accept but that leaks under pressure is worse than useless. Its failure is that the model can become the point — refinement continues indefinitely and nothing is ever released into the world where it could be wrong.",
-    inSystem: "Introverted decider. Pairs with an extraverted observer (Ne or Se) to form a Charge-primary signature.",
+    inSystem: "Introverted decider. Pairs with an extraverted observer (Ne or Se) to form an Absorb-primary signature.",
     seeAlso: ["te", "fe", "decider", "identity"] }),
   E({ id: "fe", term: "Fe", category: "Function",
     short: "Extraverted Feeling — reading and then setting the emotional state of a group.",
@@ -171,11 +171,11 @@ const QUADRAS: Draft[] = [
 /* ══════════════════════════════ ANIMALS ══════════════════════════════ */
 const ANIMALS: Draft[] = [
   E({ id: "play", term: "Charge", category: "Animal",
-    short: "Extraverted observing + introverted deciding. Interactive, exploratory, low-stakes.",
+    short: "Both functions extraverted. Intake and output at once — the social, high-throughput current.",
     definition:
-      "Energy that goes outward to gather and inward to judge. Charge engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the current most comfortable with an unfinished situation.",
-    inSystem: "Every xxxP type is Charge-primary; every xxxJ type has Charge as its last current.",
-    seeAlso: ["blast", "animal", "savior"] }),
+      "Everything pointed outward: gathering from the world and acting on it in the same motion. Charge is the current of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain.",
+    inSystem: "Always a middle current in this build. Its ordering against Settle is the deferred fine-switch layer.",
+    seeAlso: ["sleep", "animal", "fine-coins"] }),
   E({ id: "blast", term: "Broadcast", category: "Animal",
     short: "Introverted observing + extraverted deciding. Directive, convergent, outcome-driven.",
     definition:
@@ -183,17 +183,17 @@ const ANIMALS: Draft[] = [
     inSystem: "Every xxxJ type is Broadcast-primary; every xxxP type has Broadcast as its last current.",
     seeAlso: ["play", "animal", "demon-animal"] }),
   E({ id: "consume", term: "Absorb", category: "Animal",
-    short: "Both functions extraverted. Intake and output at once — the social, high-throughput current.",
+    short: "Extraverted observing + introverted deciding. Interactive, exploratory, low-stakes.",
     definition:
-      "Everything pointed outward: gathering from the world and acting on it in the same motion. Absorb is the current of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain.",
-    inSystem: "Always a middle current in this build. Its ordering against Settle is the deferred fine-switch layer.",
-    seeAlso: ["sleep", "animal", "fine-coins"] }),
+      "Energy that goes outward to gather and inward to judge. Absorb engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the current most comfortable with an unfinished situation.",
+    inSystem: "Every xxxP type is Absorb-primary; every xxxJ type has Absorb as its last current.",
+    seeAlso: ["blast", "animal", "savior"] }),
   E({ id: "sleep", term: "Settle", category: "Animal",
     short: "Both functions introverted. Withdrawal into private processing.",
     definition:
       "Everything pointed inward: observing internally and deciding internally, with no external limb. Settle is where a person integrates, recovers and works things out unobserved. Starved of it, the other currents degrade.",
-    inSystem: "Always a middle current in this build. Its ordering against Absorb is deferred.",
-    seeAlso: ["consume", "animal", "fine-coins"] }),
+    inSystem: "Always a middle current in this build. Its ordering against Charge is deferred.",
+    seeAlso: ["play", "animal", "fine-coins"] }),
 ];
 
 /* ══════════════════════════════ ROMANCE STYLES ══════════════════════════════ */
@@ -202,25 +202,25 @@ const ROMANCE_STYLES: Draft[] = [
     short: "Relates through play. Wants delight and lightness, and resists being managed.",
     definition:
       "The Playful style approaches intimacy as shared play: teasing, novelty, silliness, and an ongoing refusal to make the relationship heavy. Care is expressed by being fun to be around and by keeping the other person entertained rather than by anticipating their needs. It wants to be enjoyed rather than looked after, and reads too much practical fussing as a loss of charge. Its blind side is logistics: a Playful partner can be genuinely devoted and still leave the shared life unadministered.",
-    inSystem: "Held by the Alpha and Delta intuitive-leading types. Structurally complementary to Caring.",
+    inSystem: "Held by the Alpha and Delta intuitives (ENTP, INTP, ENFP, INFP). Structurally complementary to Caring.",
     seeAlso: ["caregiver", "aggressor", "victim"] }),
   E({ id: "caregiver", term: "Caring", category: "Romance Style",
     short: "Relates through provision. Expresses love by noticing and supplying what is needed.",
     definition:
       "The Caring style approaches intimacy as tending: feeding, arranging, remembering, smoothing the practical world so the other person can be at ease in it. Affection is demonstrated rather than declared, and the relationship is made secure by being reliably maintained. It wants to be needed and trusted with the running of things. Its blind side is that provision can shade into control, and that a partner who never asks to be looked after can leave a Caring partner without a role.",
-    inSystem: "Held by the Alpha and Delta sensing-leading types. Structurally complementary to Playful.",
+    inSystem: "Held by the Alpha and Delta sensors (ESTJ, ISTJ, ESFJ, ISFJ). Structurally complementary to Playful.",
     seeAlso: ["infantile", "aggressor", "victim"] }),
   E({ id: "aggressor", term: "Pursuing", category: "Romance Style",
     short: "Relates through pursuit. Direct, physical, and comfortable initiating.",
     definition:
       "The Pursuing style approaches intimacy by closing distance: claiming attention, initiating contact, making desire explicit rather than implied. It is confident about wanting and unembarrassed about showing it, and it reads hesitation as an invitation to be clearer rather than to retreat. Its blind side is calibration — the same directness that reads as thrilling to one partner reads as pressure to another, and a Pursuing partner often cannot tell the difference from the inside.",
-    inSystem: "Held by the Beta and Gamma sensing-leading types. Structurally complementary to Pursued.",
+    inSystem: "Held by the Beta and Gamma sensors (ESTP, ISTP, ESFP, ISFP). Structurally complementary to Pursued.",
     seeAlso: ["victim", "infantile", "caregiver"] }),
   E({ id: "victim", term: "Pursued", category: "Romance Style",
     short: "Relates through surrender. Drawn to strength, ambivalence and being pursued.",
     definition:
       "The Pursued style approaches intimacy by yielding to someone whose force it respects: it wants to be sought, convinced and somewhat overwhelmed, and it charges the relationship with a productive tension rather than resolving it. Complexity, ambivalence and a degree of unattainability are part of the appeal. Its blind side is that the same tension can be manufactured where it is not warranted, turning a settled relationship into a drama it did not need.",
-    inSystem: "Held by the Beta and Gamma intuitive-leading types. Structurally complementary to Pursuing.",
+    inSystem: "Held by the Beta and Gamma intuitives (ENTJ, INTJ, ENFJ, INFJ). Structurally complementary to Pursuing.",
     seeAlso: ["aggressor", "infantile", "caregiver"] }),
 ];
 
@@ -325,7 +325,7 @@ const COIN_POLES: [string, string, string, string][] = [
   ["direct", "Direct", "Says the thing, in fewer words, as an instruction.",
    "Communicates conclusions and expects them to be actionable. Held by the NJ, STP and STJ types."],
   ["informative", "Informative", "Supplies context and leaves the choice open.",
-   "Communicates background so the other person can decide, which directing types can hear as no request having been made. Held by the NP, SFJ and EFJ types."],
+   "Communicates background so the other person can decide, which directing types can hear as no request having been made. Held by the NP and SF types."],
   ["control", "Control", "Optimises for the outcome being right.",
    "Will slow down to get it exactly correct. A derived coin: true when Initiating and Direct agree."],
   ["movement", "Movement", "Optimises for continued progress.",
@@ -371,7 +371,7 @@ const CONCEPTS: Draft[] = [
   E({ id: "demon-animal", term: "Last current", category: "Concept",
     short: "The double-demon loop: the energy pattern a type is worst at sustaining.",
     definition:
-      "Formed from the attitude-flips of both anchors. Because the anchors always run opposite attitudes, the last current is always Charge or Broadcast — never a middle one — which is why every xxxP type ends on Broadcast and every xxxJ type ends on Charge.",
+      "Formed from the attitude-flips of both anchors. Because the anchors always run opposite attitudes, the last current is always Absorb or Broadcast — never a middle one — which is why every xxxP type ends on Broadcast and every xxxJ type ends on Absorb.",
     inSystem: "Rendered as the open circuit in the wiring schematic.",
     seeAlso: ["savior", "animal", "dual-lighting"] }),
   E({ id: "four-sides", term: "Four Sides of the Mind", category: "Concept",
@@ -422,7 +422,7 @@ const CONCEPTS: Draft[] = [
     short: "The deferred fine layer: middle-current ordering, modality, masculine/feminine switches.",
     definition:
       "The most contested and least stable part of the overlay. This build deliberately holds it out: the base type is exactly four bits, and the fine layer adds further independent bits on top. Modelled as a bit vector with a fixed four-bit head, the extension can attach later without touching the 256-cell core.",
-    seeAlso: ["coin", "animal", "consume", "sleep"] }),
+    seeAlso: ["coin", "animal", "play", "sleep"] }),
 
   /* ── the three non-ego sides. `ego` and `shadow` had entries; these did
      not, which left the four-sides material and everything the Octagram

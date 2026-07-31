@@ -86,10 +86,15 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
 
   relation: () => <Worked><RelationLanding a="ENTP" b="INFJ" /></Worked>,
 
-  /* The two relations these concepts are named for, drawn as the landings
-     that define them rather than described a second time. */
-  complement: () => <RelationFigure code="DU" />,
-  catalyst: () => <RelationFigure code="AC" />,
+  /* Each of these names a PAIR of relations, so each figure draws one of the
+     two and the caption names the other rather than implying it is the whole
+     set. Getting the sets from the entries: a Complement is {Counterpart,
+     Spark}; a Catalyst is the two types whose Lead is your Doubt, which
+     resolves to {Damper, False fit} — NOT to Spark. Drawing Spark here was
+     exactly the error this pairing invites, so the sets are asserted against
+     the engine in tests/diagrams.test.tsx. */
+  complement: () => <RelationFigure code="DU" alsoSee="AC" />,
+  catalyst: () => <RelationFigure code="EX" alsoSee="MG" />,
 
   /* The app's single most distinctive claim — ease is directional — had no
      picture on its own entry, only on the pages that use it. */
@@ -250,7 +255,11 @@ function WheelFigure({ development }: { development?: "SD" | "UD" }) {
 }
 
 /** One relation drawn as the landing that defines it, with its own caption. */
-function RelationFigure({ code }: { code: RelCode }) {
+function RelationFigure({ code, alsoSee }: {
+  code: RelCode;
+  /** The other half, where the entry names two relations rather than one. */
+  alsoSee?: RelCode;
+}) {
   const pair = exemplar(code);
   if (!pair) return null;
   const [a, b] = pair;
@@ -260,6 +269,7 @@ function RelationFigure({ code }: { code: RelCode }) {
       <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
         Worked example — {b} is {a}&rsquo;s {REL_NAME[code]}. Every pair with this
         relation lands the same way; only the functions change.
+        {alsoSee && ` This entry names two relations; the other is ${REL_NAME[alsoSee]}.`}
       </p>
     </div>
   );
