@@ -110,3 +110,56 @@ describe("structural guards", () => {
     expect(componentsCss).toMatch(/\.card p[^{]*{\s*max-width:\s*var\(--measure\)/);
   });
 });
+
+/* ------------------------------------------------------------------ *
+ * The mobile-reachability guards.
+ *
+ * These three rules were each a reported bug, and none of them can be
+ * caught by the headless screenshot pass in scripts/shots.mjs: headless
+ * Chromium has no dynamic browser chrome, so its 100vh already equals
+ * the visible height and the broken rail measures fine. They are
+ * asserted as source facts instead, because the failure they prevent —
+ * a composer you cannot reach on a phone — is invisible until someone
+ * opens the real site on a real handset.
+ * ------------------------------------------------------------------ */
+describe("the chat rail stays usable on a phone", () => {
+  it("the rail is sized in dvh, with a vh fallback under it", () => {
+    const rail = componentsCss.match(/\n\.rail\s*{([\s\S]*?)\n}/)?.[1] ?? "";
+    expect(rail, ".rail declares a height").toMatch(/height:/);
+    expect(rail, ".rail sizes itself in dvh").toContain("height: 100dvh");
+    // Order matters: the plain-vh line is the fallback and must come first.
+    expect(rail.indexOf("height: 100vh")).toBeGreaterThanOrEqual(0);
+    expect(rail.indexOf("height: 100vh")).toBeLessThan(rail.indexOf("height: 100dvh"));
+  });
+
+  it("the scrollable log may shrink below its content", () => {
+    // Without min-height:0 a flex item refuses to go shorter than what is
+    // inside it, so a long thread pushes .rail-form out of the rail.
+    const log = componentsCss.match(/\.rail-log\s*{([\s\S]*?)\n}/)?.[1] ?? "";
+    expect(log).toMatch(/min-height:\s*0/);
+    expect(log).toMatch(/overflow-y:\s*auto/);
+  });
+
+  it("the composer clears the home indicator", () => {
+    const form = componentsCss.match(/\.rail-form\s*{([\s\S]*?)\n}/)?.[1] ?? "";
+    expect(form).toContain("env(safe-area-inset-bottom)");
+  });
+});
+
+describe("the glossary popover stays on screen", () => {
+  it("becomes a viewport-pinned sheet on phones", () => {
+    // Anchored to the term it is min(340px, 80vw) wide — nearly the whole
+    // screen — so hanging it off either edge of a mid-line term clipped it.
+    // .flip only ever guarded the right edge; pinning guards both.
+    /* 640px opens more than one block — same caveat the grid test documents,
+       so concatenate them all rather than trusting the first. */
+    const at640 = [...componentsCss.matchAll(/@media \(max-width: 640px\) {([\s\S]*?)\n}/g)]
+      .map((m) => m[1])
+      .join("\n");
+    const sheet = at640.match(/\.term-pop,\s*\.term-pop\.flip\s*{([\s\S]*?)}/)?.[1] ?? "";
+    expect(sheet, "both selectors, so .flip cannot re-introduce the overhang").not.toBe("");
+    expect(sheet).toMatch(/position:\s*fixed/);
+    expect(sheet).toMatch(/left:/);
+    expect(sheet).toMatch(/right:/);
+  });
+});

@@ -33,22 +33,40 @@ const PROMPTS: [string, string][] = [
 
 /**
  * The glyph a choice card leads with, when its pole is something the glyph
- * language can draw. Decorative only (the prompt is the choice, so the
- * pictures are hidden from assistive tech): coin 2 is really a choice
- * between self-calibration and tribe-calibration, drawn with the F pair
- * standing in for both deciders; coins 3 and 5 choose observer postures.
+ * language can draw. Decorative only — the prompt is the choice, so the
+ * pictures are hidden from assistive tech.
+ *
+ * `i` is the ZERO-BASED index into COIN_OPTIONS, so it is one less than the
+ * coin number the page prints and the Explain block above argues about. The
+ * parameter used to be called `coin`, which read as the one-based number and
+ * drew a review asking for `coinGlyph(i + 1, …)` — that slides every pair
+ * onto the neighbouring question and puts the self/tribe cone against
+ * Observer-vs-Decider. Both numbers are given per branch below, and
+ * tests/calculator.test.tsx pins each pair to its question.
+ *
+ * Two rules, because the coins ask two different things. Where the pair IS
+ * an attitude the mark runs inward → outward; where it is an element the
+ * outward member of each family stands in for the family, since attitude is
+ * not what is being asked.
  */
-function coinGlyph(coin: number, side: 0 | 1): JSX.Element | null {
-  if (coin === 1) {
+function coinGlyph(i: number, side: 0 | 1): JSX.Element | null {
+  /* i=1 · coin 2 — self-calibrated vs tribe-calibrated, the F pair standing
+     in for both deciders. */
+  if (i === 1) {
     return (
       <span style={{ display: "block", width: 104 }}>
         <SelfTribeCone fn={side === 0 ? "Fi" : "Fe"} />
       </span>
     );
   }
-  if (coin === 2) return <FnIcon fn={side === 0 ? "Si" : "Se"} size={44} />;
-  if (coin === 3) return <FnIcon fn={side === 0 ? "Te" : "Fe"} size={44} />;
-  if (coin === 4) return <FnIcon fn={side === 0 ? "Se" : "Ne"} size={44} />;
+  /* i=2 · coin 3 — the observer's attitude. */
+  if (i === 2) return <FnIcon fn={side === 0 ? "Si" : "Se"} size={44} />;
+  /* i=3 · coin 4 — the decider's element. */
+  if (i === 3) return <FnIcon fn={side === 0 ? "Te" : "Fe"} size={44} />;
+  /* i=4 · coin 5 — the observer's element. */
+  if (i === 4) return <FnIcon fn={side === 0 ? "Se" : "Ne"} size={44} />;
+  /* Coins 1, 6, 7 and 8 ask about sequencing and delivery, which the glyph
+     language has no honest mark for. The prompt stands alone. */
   return null;
 }
 
