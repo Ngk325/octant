@@ -177,4 +177,37 @@ describe("the lexicon figure registry", () => {
     // Every keyed entry plus the eight function fallbacks must produce something.
     expect(figures).toBeGreaterThanOrEqual(Object.keys(LEX_FIGURES).length);
   });
+
+  /* The categories below are drawn by a RULE, not by a per-entry key: a
+     relation finds a pair that exhibits it, a temperament finds the four
+     types that share it. A rule that silently stops matching — a renamed
+     label, a reordered id — degrades to no figure at all rather than to a
+     wrong one, which is safe but invisible. These assert the whole category
+     stays covered, so the failure is loud. */
+  it.each([
+    ["Relation", 16],
+    ["Temperament", 4],
+    ["Romance Style", 4],
+    ["Interaction Style", 4],
+    ["Gate", 4],
+  ] as const)("draws every %s entry", (category, expected) => {
+    const es = ENTRIES.filter((e) => e.category === category);
+    expect(es).toHaveLength(expected);
+    for (const e of es) {
+      expect(lexiconFigure(e), `${e.id} has a figure`).not.toBeNull();
+    }
+  });
+
+  it("draws the coin poles the glyph language can state, and no others", () => {
+    /* The six left bare ask about sequencing and delivery, which no mark in
+       the language means — the same restraint Calculator takes. Listed, so
+       adding a stand-in for one is a deliberate edit rather than a drift. */
+    const bare = ENTRIES
+      .filter((e) => e.category === "Coin" && !lexiconFigure(e))
+      .map((e) => e.id)
+      .sort();
+    expect(bare).toEqual(
+      ["control", "direct", "informative", "initiating", "movement", "responding"],
+    );
+  });
 });
