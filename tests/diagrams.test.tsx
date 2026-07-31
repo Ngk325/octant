@@ -198,6 +198,19 @@ describe("the lexicon figure registry", () => {
     }
   });
 
+  it("leaves undrawn only the concepts that refuse a picture", () => {
+    /* Two of these are refusals on the entry's own terms: `fine-coins` says
+       the build holds that material unsettled, and `dual-lighting` exists to
+       say two readings disagree and are NOT reconciled — a diagram of either
+       would assert what the entry declines to. The other two have no mark in
+       the language that means them. Listed so drawing one is a decision. */
+    const bare = ENTRIES
+      .filter((e) => e.category === "Concept" && !lexiconFigure(e))
+      .map((e) => e.id)
+      .sort();
+    expect(bare).toEqual(["coin", "dual-lighting", "fine-coins", "midlife-crisis"]);
+  });
+
   it("draws the coin poles the glyph language can state, and no others", () => {
     /* The six left bare ask about sequencing and delivery, which no mark in
        the language means — the same restraint Calculator takes. Listed, so
