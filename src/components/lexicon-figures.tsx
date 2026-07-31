@@ -7,6 +7,10 @@ import {
 import { TYPES, REL, ease, gate, type MbtiType, type Quadra } from "../engine/core";
 import TypeMolecule from "./glyphs/TypeMolecule";
 import DivergingEase from "./DivergingEase";
+import OctagramMap from "./OctagramMap";
+import OctagramWheel from "./OctagramWheel";
+import ThemeSeasons from "./ThemeSeasons";
+import { wheelOf } from "../engine/octagram";
 import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
 import { type Animal, ANIMAL_LABEL } from "../engine/ops";
 import FnIcon from "./glyphs/FnIcon";
@@ -123,6 +127,45 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
     ]),
   ),
 
+  /* ---------------------------- the Octagram ----------------------------
+   *
+   * The advanced layer, and the last of the lexicon that went undrawn. Every
+   * figure here is an existing component fed from the engine — the wheel is
+   * looked up with wheelOf() rather than named, so the worked example cannot
+   * come apart from the dyad it belongs to.
+   *
+   * Four entries in this layer are deliberately left bare. `fine-coins` says
+   * of itself that the build holds that material unsettled, and `dual-lighting`
+   * exists to say two readings disagree and are not reconciled — a diagram of
+   * either would assert something the entry is refusing to claim. `coin` and
+   * `midlife-crisis` have no mark in the language that means them. */
+
+  octagram: () => <Plain><OctagramMap /></Plain>,
+  temple: () => <Plain><OctagramMap /></Plain>,
+
+  /* The wheel itself, then the three parts of it that have their own entries:
+     the origin at the centre, the virtue above, the sin below. */
+  ...Object.fromEntries(
+    (["temple-wheel", "cognitive-origin", "living-virtue", "deadly-sin"] as const)
+      .map((id) => [id, () => <WheelFigure />]),
+  ),
+
+  /* The two poles, each emphasised by the development that drifts toward it.
+     Directions are the engine's: poleFor(w, "SD") is the aspirational pole
+     and poleFor(w, "UD") the shadow one, so the emphasis matches the entry. */
+  "aspirational-pole": () => <WheelFigure development="SD" />,
+  "shadow-pole": () => <WheelFigure development="UD" />,
+
+  /* One 2x2, three entries: the theme is the cell, development is the rows,
+     focus is the columns. Each defines a different input to the same grid. */
+  ...Object.fromEntries(
+    (["octagram-theme", "octagram-focus", "subconscious-development"] as const)
+      .map((id) => [id, () => <Plain><ThemeSeasons /></Plain>]),
+  ),
+
+  /* The generic entry for the thing the four Gate entries each name one of. */
+  gate: () => <Worked><GatewayPath type="ENTP" /></Worked>,
+
   /* The animals as arrow signatures. */
   ...Object.fromEntries(
     (["play", "blast", "consume", "sleep"] as const).map((id) => [
@@ -175,6 +218,25 @@ function SideDoorRow({ type, emphasis }: { type: MbtiType; emphasis?: SideKey })
 function exemplar(code: RelCode): [MbtiType, MbtiType] | null {
   for (const a of TYPES) for (const b of TYPES) if (REL[a][b] === code) return [a, b];
   return null;
+}
+
+/**
+ * One temple wheel as the worked example for the Octagram entries.
+ *
+ * A wheel belongs to a DYAD, not to a type — so the caption names both, which
+ * is also the difference between this and the per-type `Worked` note.
+ */
+function WheelFigure({ development }: { development?: "SD" | "UD" }) {
+  const w = wheelOf("ENTP");
+  return (
+    <div style={{ margin: "var(--s3) 0" }}>
+      <OctagramWheel wheel={w} development={development} />
+      <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+        Worked example — the {w.temple} wheel, shared by {w.pair[0]} and {w.pair[1]}.
+        There are eight of these, two per temple.
+      </p>
+    </div>
+  );
 }
 
 /** One relation drawn as the landing that defines it, with its own caption. */
