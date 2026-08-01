@@ -94,6 +94,37 @@ describe("CHAT_LIMITER", () => {
     expect(res.status).toBe(400);
     expect(charged).toBe(0);
   });
+
+  it("does NOT charge the budget for a malformed CONTEXT either", async () => {
+    /* Not just malformed JSON: a well-formed body with a context that is not
+       one the app produces (here a bad type code) must also 400 before the
+       limiter, so a crafted-context flood cannot spend the budget. This locks
+       in the validate-then-limit ordering against a future reorder. A fresh IP
+       means the in-memory brake cannot be the thing returning 429, so a
+       zero-charge 400 proves the request stopped at context validation, ahead
+       of BOTH limiters. */
+    let charged = 0;
+    const env: ChatEnv = {
+      GEMINI_API_KEY: "k",
+      CHAT_LIMITER: {
+        limit: async () => {
+          charged++;
+          return { success: false };
+        },
+      },
+    };
+    const req = new Request("https://octant.test/api/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json", "cf-connecting-ip": "9.9.9.6" },
+      body: JSON.stringify({
+        messages: [{ role: "user", text: "hi" }],
+        context: { kind: "type", type: "XXXX" },
+      }),
+    });
+    const res = await handleChat(req, env, {}, NOW);
+    expect(res.status).toBe(400);
+    expect(charged).toBe(0);
+  });
 });
 
 describe("the deployed config", () => {
