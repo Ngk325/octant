@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
+import { readStored, writeStored } from "../storage";
 import { quadra, stack, gate, complements, catalysts, frictions } from "../engine/core";
 import {
   ops, coins, SAVIOR_STATE, DEMON_STATE, SAVIOR_MARKERS, DEMON_MARKERS, ANIMAL_LABEL,
@@ -57,6 +58,22 @@ const SECTIONS = [
 ] as const;
 
 /** One type, read in full: slots, four sides, the exchange overlay, growth, the Octagram, and fit. */
+interface OctCoins { development?: Development; focus?: Focus }
+
+/** The stored coins for one type. Anything malformed reads as unset. */
+function loadCoins(t: MbtiType): { sub: Subtype; oct: OctCoins } {
+  try {
+    const raw = readStored(`coins.${t}`);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { sub?: Subtype; oct?: OctCoins };
+      return { sub: parsed.sub ?? {}, oct: parsed.oct ?? {} };
+    }
+  } catch {
+    /* a corrupt record is an unset one */
+  }
+  return { sub: {}, oct: {} };
+}
+
 export default function TypeReader() {
   const { type } = useParams();
   const nav = useNavigate();
@@ -67,18 +84,33 @@ export default function TypeReader() {
      not survive a switch to a different type — otherwise reading ENTP with
      "sensory: masculine" set and then clicking through to INFJ silently
      attributes your answer to a type you never answered for. React keeps this
-     component mounted across /type/X → /type/Y, so the reset is explicit. */
-  const [sub, setSub] = useState<Subtype>({});
+     component mounted across /type/X → /type/Y, so the swap is explicit.
+
+     Since 2026-08 (owner's decision) they PERSIST per type in localStorage:
+     your ENTP answers come back when you return to ENTP, and never leak onto
+     INFJ, because the key carries the type. Still self-reported, still never
+     derived, and clearing a control clears the stored copy too. */
+  const [sub, setSub] = useState<Subtype>(() => loadCoins(t).sub);
   /* The Octagram coins are kept SEPARATE from the exchange ones rather than
      bolted onto Subtype. The two layers are not reconciled anywhere else in this
      app and merging their self-report into one object would quietly imply they are. */
-  const [oct, setOct] = useState<{ development?: Development; focus?: Focus }>({});
+  const [oct, setOct] = useState<OctCoins>(() => loadCoins(t).oct);
   const [subFor, setSubFor] = useState<MbtiType>(t);
   if (subFor !== t) {
     setSubFor(t);
-    setSub({});
-    setOct({});
+    const stored = loadCoins(t);
+    setSub(stored.sub);
+    setOct(stored.oct);
   }
+
+  useEffect(() => {
+    /* Write only when there is something to remember or something to forget —
+       otherwise every first visit litters storage with empty records. */
+    const any = Object.keys(sub).length > 0 || Object.keys(oct).length > 0;
+    if (any || readStored(`coins.${subFor}`)) {
+      writeStored(`coins.${subFor}`, JSON.stringify({ sub, oct }));
+    }
+  }, [sub, oct, subFor]);
 
   const st = stack(t);
   const o = ops(t, sub);
