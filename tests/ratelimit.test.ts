@@ -69,6 +69,31 @@ describe("CHAT_LIMITER", () => {
     expect(fetchStub).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
+
+  it("does NOT charge the shared budget for a malformed request", async () => {
+    /* A flood of malformed POSTs from one NAT must not spend the per-IP chat
+       budget and 429 the legitimate users behind it. The limiter is charged
+       only once the request is a valid chat request; a bad body gets a cheap
+       400 and touches the limiter zero times. */
+    let charged = 0;
+    const env: ChatEnv = {
+      GEMINI_API_KEY: "k",
+      CHAT_LIMITER: {
+        limit: async () => {
+          charged++;
+          return { success: false };
+        },
+      },
+    };
+    const bad = new Request("https://octant.test/api/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json", "cf-connecting-ip": "9.9.9.5" },
+      body: "{not json",
+    });
+    const res = await handleChat(bad, env, {}, NOW);
+    expect(res.status).toBe(400);
+    expect(charged).toBe(0);
+  });
 });
 
 describe("the deployed config", () => {

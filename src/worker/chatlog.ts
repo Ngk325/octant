@@ -144,10 +144,18 @@ export async function recordExchange(
 function belongsTo(rec: ChatLogRecord, who: ChatWho): boolean {
   if (who.email) return rec.who.email === who.email;
   if (rec.who.kind !== "code") return false;
-  // When both sides carry the code identity, it decides. Label matching
-  // survives only for the legacy overlap where one side predates codeId.
-  if (rec.who.codeId && who.codeId) return rec.who.codeId === who.codeId;
-  return rec.who.label === who.label;
+  /* A caller that carries a codeId is proven by it ALONE: the record must
+     carry the same one, and a codeId-less (pre-migration) record is NOT theirs
+     to read. The earlier version fell back to label whenever either side
+     lacked a codeId, which meant a new "guest" session could still read a
+     legacy "guest" record by label for the 90-day retention window — the exact
+     hole the codeId was added to close. Label is not identity. */
+  if (who.codeId) return rec.who.codeId === who.codeId;
+  /* The caller has NO codeId: a session minted before codeId existed, within
+     30 days of expiry. It may match only other codeId-less records, by label —
+     unchanged prior behaviour on a closed, expiring set. A legacy caller never
+     reaches a new record, because new records always carry a codeId. */
+  return !rec.who.codeId && rec.who.label === who.label;
 }
 
 export interface ThreadSummary {

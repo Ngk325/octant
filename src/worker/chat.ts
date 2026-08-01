@@ -268,21 +268,6 @@ export async function handleChat(
     );
   }
 
-  const ip = request.headers.get("cf-connecting-ip") ?? "local";
-  if (rateLimited(ip, now)) {
-    return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
-  }
-  /* Same limit, held across isolates. Fails open on a binding error: a chat
-     message wrongly refused costs a reader their question; a limiter outage
-     wrongly honoured costs nothing the in-memory brake was not already
-     conceding per-isolate. */
-  if (env.CHAT_LIMITER) {
-    const verdict = await env.CHAT_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
-    if (!verdict.success) {
-      return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
-    }
-  }
-
   let body: ChatRequest;
   try {
     body = (await request.json()) as ChatRequest;
@@ -318,6 +303,25 @@ export async function handleChat(
   } catch (err) {
     console.error("chat: buildSystemInstruction failed", String(err));
     return json({ error: "That context is not one this app produces." }, 400);
+  }
+
+  /* Rate limiting is charged HERE, after the request is known to be a valid
+     chat request — not on arrival. The limiter guards the expensive resource
+     (Gemini quota and the shared per-IP chat budget); charging it before
+     validation would let a flood of malformed POSTs from one NAT gateway spend
+     the budget and 429 the legitimate users behind it, without a single model
+     call. Malformed requests still cost only a cheap 400/413 above. Both brakes
+     fail open: a wrongly-refused message costs a reader their question; a
+     limiter outage concedes nothing the per-isolate brake was not already. */
+  const ip = request.headers.get("cf-connecting-ip") ?? "local";
+  if (rateLimited(ip, now)) {
+    return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
+  }
+  if (env.CHAT_LIMITER) {
+    const verdict = await env.CHAT_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
+    if (!verdict.success) {
+      return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
+    }
   }
 
   const call = () => fetch(`${ENDPOINT}/${model}:streamGenerateContent?alt=sse`, {

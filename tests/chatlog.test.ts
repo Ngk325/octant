@@ -241,6 +241,24 @@ describe("history", () => {
     expect((await getThreadFor(ENV, guestA, "thread-hist-0006"))?.turns).toHaveLength(2);
   });
 
+  it("a codeId session cannot read a legacy (codeId-less) record by shared label", async () => {
+    /* The pre-migration hole: two bare codes both label "guest", and a legacy
+       record carries no codeId. A NEW guest session (with a codeId) must not be
+       able to read that legacy record just because the labels match — that was
+       the exact exposure the codeId exists to close, and it would otherwise
+       persist for the 90-day record TTL. */
+    const legacy: ChatWho = { label: "guest", kind: "code" }; // no codeId — pre-migration
+    await recordExchange(ENV, "thread-hist-legacy1", legacy, "x", "written before the fix", "a", NOW);
+
+    const newGuest: ChatWho = { label: "guest", kind: "code", codeId: "eeee000011112222" };
+    expect(await listThreads(ENV, newGuest)).toHaveLength(0);
+    expect(await getThreadFor(ENV, newGuest, "thread-hist-legacy1")).toBeNull();
+
+    // A legacy session (also no codeId) still reaches its own legacy records —
+    // unchanged prior behaviour, bounded by the 30-day session expiry.
+    expect((await getThreadFor(ENV, legacy, "thread-hist-legacy1"))?.turns).toHaveLength(2);
+  });
+
   it("keeps the first writer as owner — an append by someone else is dropped", async () => {
     const owner: ChatWho = { label: "guest", kind: "code", codeId: "cccc000011112222" };
     const intruder: ChatWho = { label: "guest", kind: "code", codeId: "dddd000011112222" };

@@ -168,6 +168,18 @@ Each with its reasoning, in the same posture the code uses for `UNSETTLED`.
   network leg is not, because it would require mocking Google's token endpoint. Live sign-in has
   been exercised manually. *Recommended for a future test pass; low risk given the surrounding
   guards.*
+- **AR-9 · The transcript log is a non-atomic read-modify-write on KV.** `recordExchange` reads
+  the record, checks ownership, appends and writes back; KV has no compare-and-swap, so two
+  writes to the *same* thread id at the *same* instant can lose a turn or flip the transient
+  owner. The blast radius is small and bounded: it needs two requests colliding on one
+  client-chosen thread id in the same moment. For the same user (a duplicated tab) the worst case
+  is a lost log line; for two *different* users it additionally requires guessing each other's
+  UUID thread id, which the ownership check otherwise refuses. No cross-user *read* results — a
+  raced write cannot make a record readable by someone the id was not shared with. The correct
+  fix — serialising per-thread writes through a Durable Object — is a real architectural change
+  (a new binding, a new failure surface) and is **held for the owner's decision** rather than
+  slipped into this pass; at invite-only scale the race is close to unreachable. *Accepted, with
+  the DO migration named as the fix if transcript integrity ever needs to be a guarantee.*
 
 ---
 
