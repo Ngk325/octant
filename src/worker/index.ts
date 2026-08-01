@@ -101,6 +101,7 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
         email: session?.email,
         label: session?.label ?? "unknown",
         kind: session?.kind ?? "code",
+        codeId: session?.codeId,
       },
       ua: request.headers.get("user-agent") ?? undefined,
       waitUntil: ctx?.waitUntil?.bind(ctx),
@@ -127,6 +128,7 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
       email: session?.email,
       label: session?.label ?? "unknown",
       kind: session?.kind ?? "code",
+      codeId: session?.codeId,
     };
     const threads = await listThreads(env, who);
     return new Response(JSON.stringify({ threads }), {
@@ -147,6 +149,7 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
       email: session?.email,
       label: session?.label ?? "unknown",
       kind: session?.kind ?? "code",
+      codeId: session?.codeId,
     };
     const thread = await getThreadFor(env, who, threadId);
     if (!thread) {

@@ -115,12 +115,20 @@ export const googleAvailable = (env: AuthEnv): boolean =>
 export const isConfigured = (env: AuthEnv): boolean =>
   !!env.AUTH_SECRET && (parseCodes(env.ACCESS_CODES).length > 0 || googleAvailable(env));
 
-/** The label attached to a submitted code, or null. Constant-time against every code. */
-async function labelForCode(env: AuthEnv, submitted: string): Promise<string | null> {
+/**
+ * The invite a submitted code matches, or null. Constant-time against every
+ * code. `codeId` is a digest prefix, not the code: enough to tell two codes
+ * apart forever, useless for recovering either.
+ */
+async function labelForCode(
+  env: AuthEnv, submitted: string,
+): Promise<{ label: string; codeId: string } | null> {
   const given = await digest(submitted);
-  let found: string | null = null;
+  let found: { label: string; codeId: string } | null = null;
   for (const invite of parseCodes(env.ACCESS_CODES)) {
-    if (sameDigest(await digest(invite.code), given)) found = invite.label;
+    if (sameDigest(await digest(invite.code), given)) {
+      found = { label: invite.label, codeId: given.slice(0, 16) };
+    }
   }
   return found;
 }
@@ -134,15 +142,23 @@ export interface Session {
   kind: SessionKind;
   /** Present only for Google sessions. The key into the user list. */
   email?: string;
+  /**
+   * Present only for code sessions minted since 2026-08: a prefix of the
+   * code's digest. Labels are not identities — two bare codes both default
+   * to "guest", and anything scoped by label (chat history) would let those
+   * two people read each other. This is the identity the label is not.
+   */
+  codeId?: string;
   exp: number;
 }
 
 /** Mint a session token. Nothing is stored server-side; the signature is the proof. */
 export async function issueSession(
   label: string, kind: SessionKind, email: string | undefined, secret: string, now: number,
+  codeId?: string,
 ): Promise<string> {
   const exp = Math.floor(now / 1000) + SESSION_DAYS * 86_400;
-  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, e: exp }));
+  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, c: codeId, e: exp }));
   return `${payload}.${await sign(payload, secret)}`;
 }
 
@@ -152,14 +168,15 @@ async function open(token: string, secret: string, now: number): Promise<Session
   const payload = token.slice(0, dot);
   if (!(await signatureMatches(token.slice(dot + 1), await sign(payload, secret)))) return null;
   try {
-    const { l, k, m, e } = JSON.parse(unb64url(payload)) as
-      { l?: string; k?: string; m?: string; e?: number };
+    const { l, k, m, c, e } = JSON.parse(unb64url(payload)) as
+      { l?: string; k?: string; m?: string; c?: string; e?: number };
     if (typeof e !== "number" || e * 1000 <= now) return null;
     return {
       label: typeof l === "string" ? l : "guest",
       // Sessions minted before Google existed carry no kind; they are codes.
       kind: k === "google" ? "google" : "code",
       email: typeof m === "string" ? m : undefined,
+      codeId: typeof c === "string" ? c : undefined,
       exp: e,
     };
   } catch {
@@ -256,14 +273,16 @@ export async function handleAuth(
     }
     if (!code) return json({ error: "Enter your access code." }, 400);
 
-    const label = await labelForCode(env, code);
-    if (!label) {
+    const invite = await labelForCode(env, code);
+    if (!invite) {
       recordFailure(ip, now);
       return json({ error: "That code was not recognised." }, 401);
     }
 
-    const token = await issueSession(label, "code", undefined, env.AUTH_SECRET, now);
-    return json({ ok: true, label }, 200, { "set-cookie": setCookie(url, token) });
+    const token = await issueSession(
+      invite.label, "code", undefined, env.AUTH_SECRET, now, invite.codeId,
+    );
+    return json({ ok: true, label: invite.label }, 200, { "set-cookie": setCookie(url, token) });
   }
 
   return json({ error: "Not found." }, 404);

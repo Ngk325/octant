@@ -226,4 +226,32 @@ describe("history", () => {
     expect(await getThreadFor(ENV, OTHER, "thread-hist-0005")).toBeNull();
     expect(await getThreadFor(ENV, WHO, "thread-hist-nonexistent")).toBeNull();
   });
+
+  /* Two people using bare invite codes both carry the label "guest" — the
+     label was never an identity, and matching on it let each read the
+     other's transcripts. Sessions now mint a codeId (a digest prefix of the
+     code) and it, not the label, decides ownership when present. */
+  it("separates two same-labelled codes by their code identity", async () => {
+    const guestA: ChatWho = { label: "guest", kind: "code", codeId: "aaaa000011112222" };
+    const guestB: ChatWho = { label: "guest", kind: "code", codeId: "bbbb000011112222" };
+    await recordExchange(ENV, "thread-hist-0006", guestA, "x", "private to A", "a", NOW);
+
+    expect(await listThreads(ENV, guestB)).toHaveLength(0);
+    expect(await getThreadFor(ENV, guestB, "thread-hist-0006")).toBeNull();
+    expect((await getThreadFor(ENV, guestA, "thread-hist-0006"))?.turns).toHaveLength(2);
+  });
+
+  it("keeps the first writer as owner — an append by someone else is dropped", async () => {
+    const owner: ChatWho = { label: "guest", kind: "code", codeId: "cccc000011112222" };
+    const intruder: ChatWho = { label: "guest", kind: "code", codeId: "dddd000011112222" };
+    await recordExchange(ENV, "thread-hist-0007", owner, "x", "the secret question", "a", NOW);
+
+    /* Before the fix this append re-assigned rec.who, after which the
+       intruder owned the whole prior history. */
+    await recordExchange(ENV, "thread-hist-0007", intruder, "x", "takeover", "a", NOW + 1);
+
+    const rec = await getThreadFor(ENV, owner, "thread-hist-0007");
+    expect(rec?.turns.map((t) => t.text)).toEqual(["the secret question", "a"]);
+    expect(await getThreadFor(ENV, intruder, "thread-hist-0007")).toBeNull();
+  });
 });
