@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router";
 import Home from "./views/Home";
 import Welcome, { ONBOARDING_DONE_KEY } from "./views/Welcome";
 import Learn from "./views/Learn";

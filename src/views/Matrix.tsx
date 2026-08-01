@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { TYPES, REL, ease, quadra } from "../engine/core";
 import { REL_NAME, REL_SCORE, REL_DEF, type RelCode, type MbtiType } from "../engine/data";
 import { REL_PLAIN } from "../engine/plain";

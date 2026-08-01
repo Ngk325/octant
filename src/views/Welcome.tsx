@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 import { stack, ease, type MbtiType } from "../engine/core";
 import { ARCHETYPE, type Fn } from "../engine/data";
 import { writeStored } from "../storage";

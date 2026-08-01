@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
 import { SIDE_PLAIN } from "../engine/plain";
 import type { MbtiType } from "../engine/data";

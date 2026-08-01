@@ -1,5 +1,5 @@
 import { useState, useId } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { lookup, BY_ID, type Entry } from "../engine/lexicon";
 
 /**

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { quadra } from "../engine/core";
 import { calculate, COIN_OPTIONS } from "../engine/ops";
 import { COIN_LABELS, DETERMINING } from "../engine/data";

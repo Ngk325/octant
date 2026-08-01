@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router";
 import { STAGES } from "../learn/curriculum";
 import { TYPES, type MbtiType } from "../engine/data";
 import { usePublishContext } from "../chat/ChatContext";

@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { usePalette } from "./Theme";
 
 /** A titled box. The app's only container primitive. */

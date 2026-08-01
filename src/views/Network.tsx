@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { TYPES, quadra, type MbtiType } from "../engine/core";
 import { ARCHETYPE } from "../engine/data";
 import { analyse, type Member } from "../engine/network";

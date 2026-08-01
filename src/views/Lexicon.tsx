@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import {
   ENTRIES, CATEGORIES, BY_ID, search, pairTerms, type Category, type Entry,
 } from "../engine/lexicon";
