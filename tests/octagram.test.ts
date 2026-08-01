@@ -87,12 +87,15 @@ describe("the authored wheel content", () => {
   });
 
   /**
-   * The internal consistency check that gives the table its credibility:
-   * the eight Deadly Sins are exactly the classical eight of the
-   * Evagrian/Cassian tradition. A garbled transcription would not land on
-   * that set by accident.
+   * One sin per wheel, and the set is CS Joseph's published eight. This
+   * comment used to call them "the classical eight of the Evagrian/Cassian
+   * tradition" — retired 2026-08 because it is not true: Evagrius's list
+   * has sadness and acedia and no envy (envy is Gregory's addition). The
+   * set below is what the eight public wheel diagrams actually show, which
+   * is the stronger check anyway: direct, not by way of a misattributed
+   * tradition.
    */
-  it("uses the classical eight deadly sins, one per wheel", () => {
+  it("uses CS Joseph's published eight deadly sins, one per wheel", () => {
     expect(all.map((w) => w.deadlySin).sort()).toEqual(
       ["Envy", "Gluttony", "Greed", "Lust", "Pride", "Sloth", "Vainglory", "Wrath"],
     );
