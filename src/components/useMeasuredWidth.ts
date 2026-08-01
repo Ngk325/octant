@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
  * for that one frame.
  */
 export default function useMeasuredWidth<T extends HTMLElement>(): {
-  ref: React.RefObject<T>;
+  ref: React.RefObject<T | null>;
   width: number | null;
 } {
   const ref = useRef<T>(null);

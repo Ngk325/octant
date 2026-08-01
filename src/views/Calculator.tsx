@@ -49,7 +49,7 @@ const PROMPTS: [string, string][] = [
  * outward member of each family stands in for the family, since attitude is
  * not what is being asked.
  */
-function coinGlyph(i: number, side: 0 | 1): JSX.Element | null {
+function coinGlyph(i: number, side: 0 | 1): React.JSX.Element | null {
   /* i=1 · coin 2 — self-calibrated vs tribe-calibrated, the F pair standing
      in for both deciders. */
   if (i === 1) {

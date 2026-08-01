@@ -35,7 +35,7 @@ export default function FnIcon({ fn, size = 40 }: { fn: Fn; size?: number }) {
   );
 }
 
-type Mark = (c: string, soft: string) => JSX.Element;
+type Mark = (c: string, soft: string) => React.JSX.Element;
 
 const MARKS: Record<Fn, Mark> = {
   /* A node whose branches reach outward, tipped with possibilities. */

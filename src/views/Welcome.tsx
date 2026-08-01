@@ -22,7 +22,7 @@ const PARTNER: MbtiType = "INFJ";
 
 interface Screen {
   idea: string;
-  figure: JSX.Element;
+  figure: React.JSX.Element;
   unlock: string;
 }
 
