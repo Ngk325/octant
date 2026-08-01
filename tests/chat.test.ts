@@ -107,6 +107,28 @@ describe("upstreamMessage", () => {
   });
 });
 
+describe("model normalisation", () => {
+  const urlOf = (stub: ReturnType<typeof vi.fn>) => String(stub.mock.calls[0][0]);
+
+  it("an unknown model normalises to fast, never reaching Gemini as-is", async () => {
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(post({ messages: [{ role: "user", text: "hi" }], model: "gpt-5-turbo" }), ENV, {}, NOW);
+    // The billing-safety property: only an allowlisted model string is ever sent.
+    expect(urlOf(fetchStub)).toContain("gemini-3.6-flash");
+    expect(urlOf(fetchStub)).not.toContain("gpt-5-turbo");
+    vi.unstubAllGlobals();
+  });
+
+  it("the deep hint is honoured", async () => {
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(post({ messages: [{ role: "user", text: "hi" }], model: "deep" }), ENV, {}, NOW);
+    expect(urlOf(fetchStub)).toContain("gemini-3.1-pro-preview");
+    vi.unstubAllGlobals();
+  });
+});
+
 describe("a rate-limited upstream", () => {
   it("retries once and succeeds without the reader ever seeing an error", async () => {
     const fetchStub = vi.fn()

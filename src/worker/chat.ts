@@ -32,12 +32,20 @@ export interface ChatHooks {
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 
-/** Allowlisted so a caller cannot bill an arbitrary model to this key. */
+/**
+ * The two models a caller may reach. This is an allowlist in the sense that
+ * matters — no arbitrary model string is ever sent to Gemini and billed to
+ * this key — but the enforcement is NORMALISATION, not rejection: `model`
+ * is an optional hint, and anything that is not exactly `fast` or `deep`
+ * (including absent, a typo, or a stale value) coerces to `fast` below rather
+ * than 400ing. A hint is not worth failing a question over; billing safety is
+ * preserved either way.
+ */
 export const MODELS = {
   fast: "gemini-3.6-flash",
   deep: "gemini-3.1-pro-preview",
 } as const;
-/** The allowlisted models. A request naming anything else is rejected. */
+/** The two accepted hints. Anything else normalises to `fast`; see MODELS. */
 export type ModelKey = keyof typeof MODELS;
 
 const MAX_MESSAGES = 40;
