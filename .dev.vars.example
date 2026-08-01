@@ -3,7 +3,7 @@
 #   cp .dev.vars.example .dev.vars
 #
 # In production none of these is a file — each is a Worker secret. See DEPLOY.md
-# step 3, which lists the exact `wrangler secret put` command for each one.
+# step 2, which lists the exact `wrangler secret put` command for each one.
 
 
 # ── The access wall ──────────────────────────────────────────────────────────

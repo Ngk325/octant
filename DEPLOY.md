@@ -14,7 +14,7 @@ projects to Workers, and Workers leaves a path to API routes, KV and D1 without 
 ## 0 · Preconditions
 
 ```sh
-node --version     # need 18+, 20+ preferred
+node --version     # need 22+ (wrangler 4 and the toolchain both require it)
 git --version
 ```
 
@@ -26,18 +26,24 @@ Working directory is the repo root — the folder containing `package.json` and 
 
 ```sh
 npm install
-npm test          # expect: 540 passed
-npm run build     # expect: dist/ written, no TypeScript errors
+npm test          # expect: every test green, across BOTH projects (unit + workers)
+npm run lint      # expect: no errors (Biome, linter only)
+npm run typecheck
+npm run build     # expect: dist/ written
 ```
+
+The suite's exact count grows with the code and is not pinned here — the last
+reviewed number, with a date, is in `docs/QA-REVIEW.md`. What matters is zero
+failures.
 
 **Do not proceed if `npm test` fails.** The suite is not cosmetic: it asserts the engine
 reproduces its verified reference exactly, including all 256 playbooks character for character,
-and that every lexicon cross-reference and every aspect pairing resolves. It also asserts the
-four-sides derivation, the OPS animal definitions, and that every colour in the design system
-clears WCAG AA on its own canvas in both themes. It also asserts that the access wall blocks
-anonymous requests, fails closed when misconfigured, and rejects forged and expired sessions.
-A failure means the data model, the reading surface or the security boundary is wrong, not that
-a test is flaky.
+and that every lexicon cross-reference and every aspect pairing resolves. It asserts the
+four-sides derivation, the exchange-overlay definitions, and that every colour in the design
+system clears WCAG AA on its own canvas in both themes. The `workers` project runs the access
+wall **inside the real Workers runtime** — anonymous refusal, fail-closed, forged cookies,
+blocked users against real KV. A failure means the data model, the reading surface or the
+security boundary is wrong, not that a test is flaky.
 
 Smoke check — **do step 2 first**, or the dev site will (correctly) refuse to let you in:
 
@@ -53,16 +59,25 @@ Visit `/calculator`, `/type/ENTP`, `/pair/ENTP/ENFJ`, `/network`, `/matrix`, `/l
 
 ## 2 · Secrets — the access wall and the assistant
 
-**Read this before deploying.** Three secrets. The first two are required or the
-site refuses everyone; the third is required or the assistant reports itself
-unconfigured. None is ever a `var`, none is ever committed, and none reaches the
-client bundle.
+**Read this before deploying.** Two secrets are required or the site refuses
+everyone; the rest enable features that degrade cleanly when absent. None is
+ever a `var`, none is ever committed, and none reaches the client bundle.
 
 | Secret | Required | What it does |
 |---|---|---|
-| `ACCESS_CODES` | **yes** | Who may in. Without it nobody gets past the gate — including you. |
-| `AUTH_SECRET` | **yes** | Signs session cookies. Rotating it signs everybody out. |
+| `ACCESS_CODES` | **yes** | Who may in. Without it (and no Google) nobody gets past the gate — including you. |
+| `AUTH_SECRET` | **yes** | Signs session cookies, OAuth state and the approve/deny links. Rotating it signs everybody out. |
 | `GEMINI_API_KEY` | for the assistant | Powers `/api/chat`. Everything else works without it. |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | for Google sign-in | Without both, the Google button does not render and codes are the only way in. Setup: `docs/GOOGLE-SETUP.md`. |
+| `OWNER_EMAIL` | for approval + /admin | The auto-approved account and the only one `/admin` opens for. |
+| `RESEND_API_KEY` | for email | Sign-up notifications and chat transcripts. Without it, sign-ups still record; nothing mails. |
+| `NOTIFY_FROM` | in practice, yes for email | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address — see `docs/GOOGLE-SETUP.md`. |
+| `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
+
+The two KV namespaces (`USERS`, `CHAT_LOGS`), both rate-limit bindings and the
+hourly transcript-sweep cron live in `wrangler.jsonc` and deploy with the code
+— nothing to click in the dashboard, and dashboard-only bindings would be
+removed by the next push anyway.
 
 ### Locally
 
@@ -133,10 +148,11 @@ secrets are set and that the deploy that set them has actually gone out.
 ### Verifying the wall against the real runtime
 
 This is the check that matters, and it is the one that was missed the first
-time. `npm run dev` does **not** reproduce it: the Vite middleware intercepts
-every request itself, so it cannot show you whether Cloudflare would have served
-an asset without ever invoking the Worker. Use `wrangler dev`, which runs the
-real asset routing:
+time. `npm run dev` now runs the Worker's real router — but Vite still plays
+the asset store, so dev cannot show you whether *Cloudflare's edge* would have
+served an asset without invoking the Worker. `tests/workers/` proves the
+handlers inside the real runtime; only `wrangler dev` (and the deployed probe
+below) proves the asset routing:
 
 ```sh
 cp .dev.vars.example .dev.vars    # if you have not already
@@ -185,10 +201,13 @@ than serving the site to the public. Set both, redeploy, reload.
 `npx wrangler secret put GEMINI_API_KEY` and redeploy. Locally, put it in `.dev.vars`
 and restart `npm run dev`.
 
-**Rate limiting.** Both `handleChat` and the login brake throttle per IP, but only
-within a single Worker isolate, so they slow a runaway client rather than a
-determined one. Before pointing real traffic at this, add a KV namespace and move
-both counters there.
+**Rate limiting.** Two layers since 2026-08: the in-memory per-isolate brakes
+(failures-only on login), plus cross-isolate rate-limit bindings declared in
+`wrangler.jsonc` (30 login attempts/min/IP, 20 chat messages/min/IP). The
+bindings fail open on error by design — the wall's digest comparison is the
+defence, and a limiter outage must not lock the owner out. KV is deliberately
+NOT used for this: 1,000 writes/day on the free tier and one write per second
+per key make it the wrong tool.
 
 ---
 
@@ -263,7 +282,8 @@ output-directory field to set.
 
 Against the live URL:
 
-- `/` redirects to `/calculator`
+- `/` anonymous shows the marketing page (no app markup in view-source); signed in it shows
+  the app — or the eight-screen onboarding on a first visit
 - `/pair/ENTP/ENFJ` loads **directly**, not just via in-app navigation — this is the SPA
   fallback working. If it 404s, `not_found_handling` in `wrangler.jsonc` is not being applied.
 - `/lexicon/duality` scrolls to the Duality entry and shows its pairings
@@ -285,15 +305,16 @@ automatically.
 |---|---|---|
 | `wrangler deploy` says not authenticated | No OAuth session | `npm run cf:login` |
 | Deep link 404s on live site, works locally | Assets config not applied | Confirm `not_found_handling: "single-page-application"` in `wrangler.jsonc`, redeploy |
-| Build fails in CI, passes locally | Node version drift | Set `NODE_VERSION` to `20` in the Worker's build environment variables |
+| Build fails in CI, passes locally | Node version drift | Set `NODE_VERSION` to `22` in the Worker's build environment variables |
 | `git push` rejected, non-fast-forward | Repo was created with a README | `git pull --rebase origin main`, then push |
-| Tests fail after editing `src/engine/data.ts` | That file is generated | Revert it. It is verified against a fixture and is not meant to be hand-edited |
+| Tests fail after editing `src/engine/data.ts` | The structural tables are fixture-pinned; the authored copy is not | Structural edits (seed, `REL_SCORE` semantics) fail `tests/engine.test.ts` and should be reverted; authored-copy edits are legitimate and the suite is built to allow them — read the failure before assuming which kind you made |
 
 ---
 
 ## What not to change without understanding it
 
-- **`src/engine/data.ts`** — generated, and asserted against `tests/reference-fixture.json`.
+- **`src/engine/data.ts`** — part frozen (seed and score tables, asserted against
+  `tests/reference-fixture.json`), part authored copy that is edited directly.
 - **`src/engine/core.ts`** — the α/β/ω operators. Every relation, score, animal and coin in the
   application derives from them. A one-character change here silently rewrites all 256 cells;
   the test suite is what catches it.
