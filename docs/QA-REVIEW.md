@@ -10,7 +10,7 @@ Verification state at the time of writing, on the review branch
 
 | Gate | Result |
 |---|---|
-| `npm test` | **822 passing, 29 files, 0 failing** (two projects: `unit` + `workers`) |
+| `npm test` | **832 passing, 29 files, 0 failing** (two projects: `unit` + `workers`) |
 | `npm run typecheck` | clean |
 | `npm run lint` (Biome) | 0 errors (7 in-source suppressions, each with a stated reason) |
 | `npm run build` | clean · one JS chunk, **558 KB / 178 KB gzip** |
