@@ -12,6 +12,7 @@ import { handleAdmin, type AdminEnv } from "./admin";
 import { endSession, validThreadId, listThreads, getThreadFor, type ChatWho } from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
+import { withSecurityHeaders } from "./headers";
 
 /**
  * Assets-plus-API Worker, behind an access wall.
@@ -36,130 +37,137 @@ export interface Ctx { waitUntil?(promise: Promise<unknown>): void }
 export default {
   async fetch(request: Request, env: Env, ctx?: Ctx): Promise<Response> {
     const url = new URL(request.url);
-    const now = Date.now();
+    /* Everything the router returns leaves through the header layer —
+       gate pages, assets, API JSON and the SSE stream alike. Routes decide
+       content; headers.ts decides what every response must carry. */
+    return withSecurityHeaders(url, await route(request, env, url, ctx));
+  },
+};
 
-    // 1. Google's two routes, public by necessity — this is how you get a session.
-    if (url.pathname.startsWith("/api/auth/google/")) {
-      return handleGoogle(request, env, url, now, ctx);
+async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<Response> {
+  const now = Date.now();
+
+  // 1. Google's two routes, public by necessity — this is how you get a session.
+  if (url.pathname.startsWith("/api/auth/google/")) {
+    return handleGoogle(request, env, url, now, ctx);
+  }
+
+  // 2. The code login, logout and "who am I". Also public by necessity.
+  const auth = await handleAuth(request, env, now);
+  if (auth) return auth;
+
+  // 3. The signed approve/deny links from the notification email. Public on
+  //    purpose: the signature IS the authorisation, so the owner can act from
+  //    a phone without signing in. It can only ever affect the one person the
+  //    link already names.
+  if (url.pathname === "/api/admin/act") {
+    return (await handleAdmin(request, env, { owner: false }, now))!;
+  }
+
+  // 4. The sign-in page, at its own public route so the front door can link
+  //    to it. Someone already signed in is sent home instead.
+  if (url.pathname === "/signin" && request.method === "GET") {
+    const session = await readSession(request, env, now);
+    if (session) return new Response(null, { status: 302, headers: { location: "/" } });
+    return signinPage(env, safeReturn(url.searchParams.get("returnTo") ?? "/"));
+  }
+
+  // 5. The wall. Returns a response for everyone not signed in and approved —
+  //    with ONE carve-out: an anonymous GET of the front page gets the public
+  //    marketing page instead of a 401. Only the 401 (no session at all) is
+  //    softened, only for "/", and only for GET; a pending or blocked person
+  //    (403) still sees their status page, and no app markup or asset is ever
+  //    in the marketing response. The wall itself is untouched.
+  const blocked = await requireAuth(request, env, now);
+  if (blocked) {
+    if (url.pathname === "/" && request.method === "GET" && blocked.status === 401) {
+      return marketingPage(url.origin);
     }
+    return blocked;
+  }
 
-    // 2. The code login, logout and "who am I". Also public by necessity.
-    const auth = await handleAuth(request, env, now);
-    if (auth) return auth;
+  // 6. Past the wall. The rest of /api/admin needs to be the owner.
+  if (url.pathname.startsWith("/api/admin/")) {
+    const session = await readSession(request, env, now);
+    const user = session?.email ? await getUser(env, session.email) : null;
+    const owner = !!user?.owner || (!!session?.email && isOwner(env, session.email));
+    return (await handleAdmin(request, env, { email: session?.email, owner }, now))!;
+  }
 
-    // 3. The signed approve/deny links from the notification email. Public on
-    //    purpose: the signature IS the authorisation, so the owner can act from
-    //    a phone without signing in. It can only ever affect the one person the
-    //    link already names.
-    if (url.pathname === "/api/admin/act") {
-      return (await handleAdmin(request, env, { owner: false }, now))!;
-    }
-
-    // 4. The sign-in page, at its own public route so the front door can link
-    //    to it. Someone already signed in is sent home instead.
-    if (url.pathname === "/signin" && request.method === "GET") {
-      const session = await readSession(request, env, now);
-      if (session) return new Response(null, { status: 302, headers: { location: "/" } });
-      return signinPage(env, safeReturn(url.searchParams.get("returnTo") ?? "/"));
-    }
-
-    // 5. The wall. Returns a response for everyone not signed in and approved —
-    //    with ONE carve-out: an anonymous GET of the front page gets the public
-    //    marketing page instead of a 401. Only the 401 (no session at all) is
-    //    softened, only for "/", and only for GET; a pending or blocked person
-    //    (403) still sees their status page, and no app markup or asset is ever
-    //    in the marketing response. The wall itself is untouched.
-    const blocked = await requireAuth(request, env, now);
-    if (blocked) {
-      if (url.pathname === "/" && request.method === "GET" && blocked.status === 401) {
-        return marketingPage(url.origin);
-      }
-      return blocked;
-    }
-
-    // 6. Past the wall. The rest of /api/admin needs to be the owner.
-    if (url.pathname.startsWith("/api/admin/")) {
-      const session = await readSession(request, env, now);
-      const user = session?.email ? await getUser(env, session.email) : null;
-      const owner = !!user?.owner || (!!session?.email && isOwner(env, session.email));
-      return (await handleAdmin(request, env, { email: session?.email, owner }, now))!;
-    }
-
-    if (url.pathname === "/api/chat") {
-      const session = await readSession(request, env, now);
-      return handleChat(request, env, {
-        who: {
-          email: session?.email,
-          label: session?.label ?? "unknown",
-          kind: session?.kind ?? "code",
-        },
-        ua: request.headers.get("user-agent") ?? undefined,
-        waitUntil: ctx?.waitUntil?.bind(ctx),
-      }, now);
-    }
-
-    // The session-end beacon: mails the thread's transcript to the owner.
-    // Behind the wall, idempotent, and always 204 — a beacon cannot retry, so
-    // there is nothing useful to tell it.
-    if (url.pathname === "/api/chat/end" && request.method === "POST") {
-      const body = (await request.json().catch(() => ({}))) as { threadId?: unknown };
-      if (validThreadId(body.threadId)) {
-        const work = endSession(env, body.threadId, now);
-        if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
-      }
-      return new Response(null, { status: 204 });
-    }
-
-    // History: the caller's own past threads (list, and one in full). Never
-    // another user's — both are scoped to the session's identity.
-    if (url.pathname === "/api/chat/history" && request.method === "GET") {
-      const session = await readSession(request, env, now);
-      const who: ChatWho = {
+  if (url.pathname === "/api/chat") {
+    const session = await readSession(request, env, now);
+    return handleChat(request, env, {
+      who: {
         email: session?.email,
         label: session?.label ?? "unknown",
         kind: session?.kind ?? "code",
-      };
-      const threads = await listThreads(env, who);
-      return new Response(JSON.stringify({ threads }), {
-        headers: { "content-type": "application/json" },
-      });
-    }
+      },
+      ua: request.headers.get("user-agent") ?? undefined,
+      waitUntil: ctx?.waitUntil?.bind(ctx),
+    }, now);
+  }
 
-    if (url.pathname.startsWith("/api/chat/thread/") && request.method === "GET") {
-      const threadId = url.pathname.slice("/api/chat/thread/".length);
-      if (!validThreadId(threadId)) {
-        return new Response(JSON.stringify({ error: "Not found." }), {
-          status: 404,
-          headers: { "content-type": "application/json" },
-        });
-      }
-      const session = await readSession(request, env, now);
-      const who: ChatWho = {
-        email: session?.email,
-        label: session?.label ?? "unknown",
-        kind: session?.kind ?? "code",
-      };
-      const thread = await getThreadFor(env, who, threadId);
-      if (!thread) {
-        return new Response(JSON.stringify({ error: "Not found." }), {
-          status: 404,
-          headers: { "content-type": "application/json" },
-        });
-      }
-      return new Response(JSON.stringify({ thread }), {
-        headers: { "content-type": "application/json" },
-      });
+  // The session-end beacon: mails the thread's transcript to the owner.
+  // Behind the wall, idempotent, and always 204 — a beacon cannot retry, so
+  // there is nothing useful to tell it.
+  if (url.pathname === "/api/chat/end" && request.method === "POST") {
+    const body = (await request.json().catch(() => ({}))) as { threadId?: unknown };
+    if (validThreadId(body.threadId)) {
+      const work = endSession(env, body.threadId, now);
+      if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
     }
+    return new Response(null, { status: 204 });
+  }
 
-    if (url.pathname.startsWith("/api/")) {
+  // History: the caller's own past threads (list, and one in full). Never
+  // another user's — both are scoped to the session's identity.
+  if (url.pathname === "/api/chat/history" && request.method === "GET") {
+    const session = await readSession(request, env, now);
+    const who: ChatWho = {
+      email: session?.email,
+      label: session?.label ?? "unknown",
+      kind: session?.kind ?? "code",
+    };
+    const threads = await listThreads(env, who);
+    return new Response(JSON.stringify({ threads }), {
+      headers: { "content-type": "application/json" },
+    });
+  }
+
+  if (url.pathname.startsWith("/api/chat/thread/") && request.method === "GET") {
+    const threadId = url.pathname.slice("/api/chat/thread/".length);
+    if (!validThreadId(threadId)) {
       return new Response(JSON.stringify({ error: "Not found." }), {
         status: 404,
         headers: { "content-type": "application/json" },
       });
     }
-    return env.ASSETS.fetch(request);
-  },
-};
+    const session = await readSession(request, env, now);
+    const who: ChatWho = {
+      email: session?.email,
+      label: session?.label ?? "unknown",
+      kind: session?.kind ?? "code",
+    };
+    const thread = await getThreadFor(env, who, threadId);
+    if (!thread) {
+      return new Response(JSON.stringify({ error: "Not found." }), {
+        status: 404,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    return new Response(JSON.stringify({ thread }), {
+      headers: { "content-type": "application/json" },
+    });
+  }
+
+  if (url.pathname.startsWith("/api/")) {
+    return new Response(JSON.stringify({ error: "Not found." }), {
+      status: 404,
+      headers: { "content-type": "application/json" },
+    });
+  }
+  return env.ASSETS.fetch(request);
+}
 
 /**
  * `/api/auth/google/start` and `/api/auth/google/callback`.

@@ -418,7 +418,17 @@ const gatePage = (env: AuthEnv, returnTo: string) => {
   Google you will wait until they approve you; if your code has stopped working it has been
   revoked or rotated.<br><br>
   New here? <a href="/">Read what Octant is</a> first.</p>
-${codes ? `<script>
+${codes ? `<script>${GATE_SCRIPT}</script>` : ""}`);
+};
+
+/**
+ * The gate's login script, as its own constant because the CSP hashes it:
+ * src/worker/headers.ts allows exactly this text and index.html's theme
+ * script, and nothing else inline. Editing this string is safe — the hash is
+ * recomputed from it at runtime — but moving it back inline in gatePage
+ * would silently fall out of the hash's coverage.
+ */
+export const GATE_SCRIPT = `
 (function () {
   var f = document.getElementById('f'), go = document.getElementById('go'),
       msg = document.getElementById('msg'), code = document.getElementById('code');
@@ -441,8 +451,7 @@ ${codes ? `<script>
     });
   });
 })();
-</script>` : ""}`);
-};
+`;
 
 const pendingPage = (email: string) => SHELL("Octant — waiting for approval", `
   <div class="mark">◷</div>
