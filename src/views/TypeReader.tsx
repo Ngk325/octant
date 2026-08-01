@@ -60,18 +60,49 @@ const SECTIONS = [
 /** One type, read in full: slots, four sides, the exchange overlay, growth, the Octagram, and fit. */
 interface OctCoins { development?: Development; focus?: Focus }
 
-/** The stored coins for one type. Anything malformed reads as unset. */
+const isObj = (v: unknown): v is Record<string, unknown> =>
+  typeof v === "object" && v !== null && !Array.isArray(v);
+const oneOf = <T extends string>(v: unknown, allowed: readonly T[]): T | undefined =>
+  typeof v === "string" && (allowed as readonly string[]).includes(v) ? (v as T) : undefined;
+
+/**
+ * The stored coins for one type. Every field is validated against its allowed
+ * values, not just JSON-parsed — a record that is valid JSON but carries a
+ * `sensory: "ZZZ"` or a `development: "banana"` would otherwise restore into
+ * state and drive the overlay from a value the UI can never have produced.
+ * Anything malformed, at the record level or the field level, reads as unset.
+ */
 function loadCoins(t: MbtiType): { sub: Subtype; oct: OctCoins } {
   try {
     const raw = readStored(`coins.${t}`);
-    if (raw) {
-      const parsed = JSON.parse(raw) as { sub?: Subtype; oct?: OctCoins };
-      return { sub: parsed.sub ?? {}, oct: parsed.oct ?? {} };
-    }
+    if (!raw) return { sub: {}, oct: {} };
+    const parsed = JSON.parse(raw) as unknown;
+    if (!isObj(parsed)) return { sub: {}, oct: {} };
+
+    const rawSub = isObj(parsed.sub) ? parsed.sub : {};
+    const sub: Subtype = {};
+    if (rawSub.jumper === true) sub.jumper = true;
+    const secondSavior = oneOf(rawSub.secondSavior, ["Play", "Sleep", "Blast", "Consume"] as const);
+    if (secondSavior) sub.secondSavior = secondSavior;
+    const lead = oneOf(rawSub.lead, ["double-savior", "second-savior"] as const);
+    if (lead) sub.lead = lead;
+    const sensory = oneOf(rawSub.sensory, ["M", "F"] as const);
+    if (sensory) sub.sensory = sensory;
+    const decider = oneOf(rawSub.decider, ["M", "F"] as const);
+    if (decider) sub.decider = decider;
+
+    const rawOct = isObj(parsed.oct) ? parsed.oct : {};
+    const oct: OctCoins = {};
+    const development = oneOf(rawOct.development, ["SD", "UD"] as const);
+    if (development) oct.development = development;
+    const focus = oneOf(rawOct.focus, ["SF", "UF"] as const);
+    if (focus) oct.focus = focus;
+
+    return { sub, oct };
   } catch {
     /* a corrupt record is an unset one */
+    return { sub: {}, oct: {} };
   }
-  return { sub: {}, oct: {} };
 }
 
 export default function TypeReader() {

@@ -21,16 +21,25 @@
         "useImportType": "error",
         "useTemplate": "off"
       },
-      "a11y": {
-        "useSemanticElements": "off",
-        "useFocusableInteractive": "off"
-      },
       "complexity": {
         "noForEach": "off"
       }
     }
   },
   "overrides": [
+    {
+      "includes": [
+        "src/components/InvolutionTable.tsx",
+        "src/components/QuadraFunctionGrid.tsx",
+        "src/views/Matrix.tsx",
+        "src/chat/chat-figures.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": { "useSemanticElements": "off", "useFocusableInteractive": "off" }
+        }
+      }
+    },
     {
       "includes": ["tests/**"],
       "linter": { "rules": { "suspicious": { "noExplicitAny": "off" } } }

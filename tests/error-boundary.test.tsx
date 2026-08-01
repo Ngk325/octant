@@ -37,9 +37,27 @@ describe("ErrorBoundary", () => {
       );
     });
     expect(host.textContent).toContain("hit a fault");
-    expect(host.textContent).toContain("the lexicon regex returned null");
     expect(host.querySelector('[role="alert"]')).toBeTruthy();
     expect(host.querySelector('a[href="/"]')).toBeTruthy();
+  });
+
+  it("does not render the raw exception text to the reader", async () => {
+    /* The message can carry a member's name, an internal path, or a fragment
+       of input; it belongs in the console (componentDidCatch), not on screen. */
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    await act(async () => {
+      createRoot(host).render(
+        <ErrorBoundary>
+          <Bomb />
+        </ErrorBoundary>,
+      );
+    });
+    expect(host.textContent).not.toContain("the lexicon regex returned null");
+    // But the detail DID reach the log for the owner.
+    const logged = spy.mock.calls.some((args) =>
+      args.some((a) => a instanceof Error && a.message === "the lexicon regex returned null"),
+    );
+    expect(logged).toBe(true);
   });
 
   it("names the region it guards, so the rail's fault reads as the rail's", async () => {

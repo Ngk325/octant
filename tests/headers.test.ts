@@ -45,6 +45,29 @@ describe("the hash pins", () => {
     expect(policy).toContain(`'sha256-${await sha256b64(GATE_SCRIPT)}'`);
     expect(policy).toContain(`'sha256-${THEME_SCRIPT_HASH}'`);
   });
+
+  it("the rendered gate page ships GATE_SCRIPT byte-for-byte", async () => {
+    /* The CSP hash is computed from the GATE_SCRIPT constant, but the browser
+       hashes whatever <script> the page actually renders. If SHELL()/gatePage()
+       reformatted the interpolated string, the header would still claim to
+       allow it while the browser refused it — the login form would silently
+       break. So: fetch the real gate page and assert the inline script it
+       serves equals `<script>${GATE_SCRIPT}</script>` exactly. */
+    const res = await worker.fetch(new Request("https://octant.test/signin"), ENV);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    // The gate carries the theme-less login script; find the block that holds it.
+    const scripts = html.match(/<script>[\s\S]*?<\/script>/g) ?? [];
+    const gate = scripts.find((s) => s.includes("/api/auth/login"));
+    expect(gate, "the gate page must render its login script inline").toBeTruthy();
+    expect(gate).toBe(`<script>${GATE_SCRIPT}</script>`);
+    // And that exact byte string must hash to what the CSP allows.
+    expect(await sha256b64(GATE_SCRIPT)).toBe(
+      (res.headers.get("content-security-policy") ?? "").match(
+        /'sha256-([^']+)'/g,
+      )?.map((h) => h.slice(8, -1)).find((h) => h !== THEME_SCRIPT_HASH),
+    );
+  });
 });
 
 describe("what every response carries", () => {

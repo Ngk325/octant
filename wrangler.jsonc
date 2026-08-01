@@ -73,9 +73,14 @@
   // first. The ceiling is set where only brute force reaches it — a person
   // signing in on three devices spends 3 of 30; a code-guesser spends all
   // of them in seconds.
+  // namespace_id is ACCOUNT-scoped: two bindings sharing one share their
+  // counters, even across different Workers. "1001"/"1002" are the values in
+  // Cloudflare's own docs examples, so another Worker on this account using the
+  // canonical examples would silently merge counters with these. These two are
+  // arbitrary and specific to avoid that.
   "ratelimits": [
-    { "name": "LOGIN_LIMITER", "namespace_id": "1001", "simple": { "limit": 30, "period": 60 } },
-    { "name": "CHAT_LIMITER", "namespace_id": "1002", "simple": { "limit": 20, "period": 60 } }
+    { "name": "LOGIN_LIMITER", "namespace_id": "748301", "simple": { "limit": 30, "period": 60 } },
+    { "name": "CHAT_LIMITER", "namespace_id": "748302", "simple": { "limit": 20, "period": 60 } }
   ],
 
   // The transcript sweep used to piggyback on chat traffic, which had two

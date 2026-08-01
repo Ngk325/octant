@@ -37,7 +37,15 @@ export default function QuadraFunctionGrid({ highlight }: { highlight?: Quadra }
       {quadras.map((q) => {
         const on = highlight === q;
         return (
-          <div key={q} style={{ display: "contents" }} role="row">
+          <div
+            key={q}
+            role="row"
+            /* Subgrid, not display:contents: a contents box drops out of the
+               accessibility tree in several browsers and would take role="row"
+               with it. Spanning both columns as a subgrid keeps the row a real
+               box and the layout unchanged. */
+            style={{ display: "grid", gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
+          >
             <div
               role="rowheader"
               style={{

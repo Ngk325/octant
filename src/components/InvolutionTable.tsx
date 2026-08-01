@@ -36,6 +36,15 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
     borderTop: "1px solid var(--rule)",
   };
 
+  /* Each row spans all four columns and re-inherits their tracks as a subgrid,
+     so the role="row" box stays in the accessibility tree without disturbing
+     the layout the parent grid produced with display:contents. */
+  const ROW: React.CSSProperties = {
+    display: "grid",
+    gridColumn: "1 / -1",
+    gridTemplateColumns: "subgrid",
+  };
+
   return (
     <div
       role="table"
@@ -49,9 +58,13 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
       }}
     >
       {/* An ARIA row may only contain ARIA cells — role=table with bare divs
-          inside was malformed and read as an empty table. display:contents
-          keeps the grid placement untouched. */}
-      <div style={{ display: "contents" }} role="row">
+          inside was malformed and read as an empty table. The row is a SUBGRID
+          spanning all columns, not display:contents: a contents box is dropped
+          from the accessibility tree in several browsers, which would take the
+          role="row" with it and leave the cells floating rowless. Subgrid keeps
+          the row a real box AND inherits the parent's column tracks, so the
+          layout is identical. */}
+      <div style={ROW} role="row">
       <div style={{ ...cell, borderTop: 0 }} className="small muted" role="columnheader">start with</div>
       {cols.map(([name, what, eg]) => (
         <div key={name} style={{ ...cell, borderTop: 0 }} className="small muted" role="columnheader">
@@ -68,7 +81,7 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
       {FNS.map((f) => {
         const on = highlight === f;
         return (
-          <div key={f} style={{ display: "contents" }} role="row">
+          <div key={f} style={ROW} role="row">
             <div role="rowheader" style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
               <FnTag fn={f} />
             </div>

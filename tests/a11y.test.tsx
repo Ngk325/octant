@@ -68,8 +68,11 @@ describe("what only a mouse could reach, now announced", () => {
         </ThemeProvider>
       </MemoryRouter>,
     );
-    // 256 links, each with an aria-label carrying the relation sentence.
-    expect(count(html, "aria-label=")).toBeGreaterThanOrEqual(256);
+    // 256 /pair/ links, each with its own aria-label — counted precisely, so a
+    // missing link label cannot hide behind the group label or any other
+    // aria-label on the page.
+    const relationLinks = html.match(/<a\b(?=[^>]*\bhref="\/pair\/)[^>]*\baria-label="[^"]+"/g) ?? [];
+    expect(relationLinks).toHaveLength(256);
     expect(html).toMatch(/aria-label="INFJ is ENTP('|&#x27;)s [^"]* — ease \d+ for ENTP"/);
   });
 });

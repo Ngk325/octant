@@ -20,15 +20,20 @@ interface Props {
   label?: string;
 }
 
-interface State { failed: boolean; message: string }
+interface State { failed: boolean }
 
 export default class ErrorBoundary extends React.Component<Props, State> {
-  state: State = { failed: false, message: "" };
+  state: State = { failed: false };
 
-  static getDerivedStateFromError(err: unknown): State {
-    return { failed: true, message: err instanceof Error ? err.message : String(err) };
+  static getDerivedStateFromError(): State {
+    return { failed: true };
   }
 
+  /* The exception detail goes HERE, to the console, and nowhere the reader can
+     see — the same posture the chat errors take (see upstreamMessage in
+     chat.ts). A raw message can carry a network member's name, an internal
+     path, or a fragment of input, and none of that belongs on screen; the
+     reader gets a way forward, the owner gets the detail in the log. */
   componentDidCatch(err: unknown): void {
     console.error(`[octant] ${this.props.label ?? "view"} render failed:`, err);
   }
@@ -43,7 +48,8 @@ export default class ErrorBoundary extends React.Component<Props, State> {
           anything you did, and nothing you entered has been lost from the rest of the app.
         </p>
         <p className="small muted">
-          The technical note, for reporting it: <code>{this.state.message || "unknown error"}</code>
+          If it keeps happening, tell the person who runs this deployment; the technical detail is
+          in the browser console.
         </p>
         <p>
           <a className="btn primary" href="/">

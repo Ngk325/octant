@@ -125,7 +125,7 @@ const MAX_MEMBERS = 16;
 const boring = (v: unknown, cap: number): string =>
   typeof v === "string"
     // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping them is the point.
-    ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, cap)
+    ? v.replace(/[\u0000-\u001f\u007f\u2028\u2029]+/g, " ").replace(/\s+/g, " ").trim().slice(0, cap)
     : "";
 
 const isType = (v: unknown): v is MbtiType => typeof v === "string" && VALID_TYPES.has(v);
