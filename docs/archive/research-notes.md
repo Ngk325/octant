@@ -1,3 +1,8 @@
+> **ARCHIVED 2026-08-01.** This document is a historical record, kept for the
+> audit trail. It described a plan or a state that has since shipped or been
+> superseded; do not work from it. The current state of what it discusses is
+> in the README, `docs/QA-REVIEW.md`, and the code itself.
+
 # Research notes — Step 3 of the ingestion instructions
 
 Web research pass, run independently of the images (which did not arrive). Raw findings and

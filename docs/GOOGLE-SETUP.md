@@ -5,7 +5,8 @@ OAuth change — the code fails closed without them, exactly like the access wal
 
 ---
 
-> **Steps 1 and 2 are already done** — see `OCTANTSETUPSTATUS.md`. The Google Cloud
+> **Steps 1 and 2 are already done** — see `docs/COWORK-SETUP-RUNBOOK.md` (the
+> live operational record; an earlier `OCTANTSETUPSTATUS.md` no longer exists). The Google Cloud
 > project is `stratfield-partners`, the client is `Octant Worker`, and the
 > redirect URIs are registered. What is left is the client **secret**, Resend,
 > the Cloudflare secrets, and the KV namespace. Keeping the full instructions
@@ -59,8 +60,15 @@ OAuth change — the code fails closed without them, exactly like the access wal
 2. **API Keys** → **Create API Key**. Permission: **Sending access** is enough.
 3. Copy the key. It starts `re_`.
 
-You do **not** need to add a domain. Resend lets you send from its shared
-`onboarding@resend.dev` address, and the app only ever emails you.
+**You DO need a verified domain in practice.** This section used to say the
+shared `onboarding@resend.dev` sender was enough — it is not: Resend only
+delivers from that address to the email the Resend *account* is registered
+under, and if `OWNER_EMAIL` is any other inbox every send 403s silently.
+That exact failure cost a day (see `docs/COWORK-SETUP-RUNBOOK.md`). Verify a
+domain, then set `NOTIFY_FROM` to an address on it:
+`npx wrangler secret put NOTIFY_FROM` → `Octant <octant@your-domain>`.
+`NOTIFY_EMAIL` optionally redirects delivery separately from `OWNER_EMAIL`,
+which stays an authorisation knob.
 
 If you skip this entirely, everything still works — you just do not get told
 when someone is waiting, and you check the admin page yourself instead.
@@ -91,7 +99,8 @@ id is committed in `wrangler.jsonc`.
 
 ```jsonc
   "kv_namespaces": [
-    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" }
+    { "binding": "USERS", "id": "8d35bff308f84ce9b1e98b4770d21daf" },
+    { "binding": "CHAT_LOGS", "id": "2f26c80cb0e143d48c4c559f8bd44cb8" }
   ],
 ```
 

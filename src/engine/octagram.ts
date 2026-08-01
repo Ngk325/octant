@@ -29,10 +29,12 @@ import { TYPES, type MbtiType } from "./data";
  *   Living Virtue, Deadly Sin and two poles.
  *
  *   Confidence is high on the whole authored surface — since 2026-08 it
- *   is no longer inference: all eight wheel diagrams are public on the
- *   csjoseph.life article "The 8 Temple Wheels of the Octagram" (Oct
- *   2022), and every field below — origin, virtue, sin, both poles —
- *   matches those images, 40 of 40.
+ *   is no longer inference: all eight wheel diagrams are public, on the
+ *   source's own 2022 temple-wheels article, and every field below —
+ *   origin, virtue, sin, both poles — matches those images, 40 of 40.
+ *   (The article is cited by name in docs/QA-REVIEW.md; this file keeps
+ *   the shipping bundle free of source names, as the attribution test
+ *   requires.)
  *
  *   One earlier claim is RETIRED, because it failed verification: this
  *   comment used to call the eight sins "the classical eight of the

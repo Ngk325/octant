@@ -1,6 +1,18 @@
+> **ARCHIVED 2026-08-01.** This document is a historical record, kept for the
+> audit trail. It described a plan or a state that has since shipped or been
+> superseded; do not work from it. The current state of what it discusses is
+> in the README, `docs/QA-REVIEW.md`, and the code itself.
+
 # Next build — Octagram and the advanced CS Joseph layer
 
 Scoped after your note. Nothing here is built yet; this is the plan.
+
+*(Archive note, 2026-08: everything in §1–§4 shipped — `src/engine/octagram.ts`,
+validated 16/16 against the published lists and 40/40 against the public wheel
+diagrams. §5's Decay-as-refinement reading shipped in the THEMES table. §6's
+eight-vs-four question is answered: eight wheels, two per temple, public.
+§7 Q3 — should the coins persist? — was decided 2026-08: they persist per type
+in localStorage, still self-reported.)*
 
 ---
 

@@ -9,6 +9,14 @@ that matter.
 Repo: `/home/user/typology`. `main` is at `5690a98`, 715 tests passing,
 typecheck and build clean.
 
+> **Corrections, 2026-08-01** — this handoff was stale on arrival in four
+> places, all verified against the code: §2g's onboarding shipped (eight
+> screens, `src/views/Welcome.tsx`, in the same PR as this document); §2i's
+> "still pending" stack and relation renames shipped (`SLOT_NAMES`,
+> `REL_NAME` in `data.ts` — the camps and the Rose genuinely remain); §5's
+> `pairTerms` quadra landmine was fixed in the same PR too; and the test
+> count is now far past 715. Read the rest with that in mind.
+
 ---
 
 ## 1. What Octant is
