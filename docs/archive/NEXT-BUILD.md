@@ -5,7 +5,11 @@
 
 # Next build — Octagram and the advanced CS Joseph layer
 
-Scoped after your note. Nothing here is built yet; this is the plan.
+Scoped after your note. *(At the time of writing, nothing here was built; this
+was the plan. It has since been built — see the archive note below and the
+per-section markers. The present-tense "is not built / needs sourcing / proposed"
+language throughout the body is preserved as the original planning text, not a
+current claim.)*
 
 *(Archive note, 2026-08: everything in §1–§4 shipped — `src/engine/octagram.ts`,
 validated 16/16 against the published lists and 40/40 against the public wheel

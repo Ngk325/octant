@@ -1,10 +1,17 @@
 # Review findings — phases one and two
 
+> **Historical snapshot — superseded by [`docs/QA-REVIEW.md`](./QA-REVIEW.md).**
+> The counts and finding statuses below describe commit `c7ba39b`, *before* the
+> phase-three upgrade. They are the record of what was found, not the current
+> state — most of the findings here are marked fixed in QA-REVIEW, and the test
+> count has since moved from 776 to the number QA-REVIEW carries. Read this for
+> the reasoning and the research; read QA-REVIEW for what shipped.
+
 Date: 2026-08-01. Full technical and editorial review of Octant at `c7ba39b`, before any
 change is made. Everything below was verified against the working tree: the suite was run
 (776 passing), the build was run (clean, 487 KB single JS chunk), and every claim carries a
-file reference. Phase three (the upgrade) does not start until the owner has read this and
-answered the questions at the end.
+file reference. At the time this was written, phase three had not started; its completed
+results are in `docs/QA-REVIEW.md`.
 
 Verification state at review time: `npm test` → 776 passed / 22 files · `npm run typecheck`
 → clean · `npm run build` → clean.

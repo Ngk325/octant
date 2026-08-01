@@ -206,7 +206,9 @@ npm run typecheck && npm run build`, all green) is assumed done first.
 
 **Secrets sanity:**
 
-12. `npm run build && grep -rE "GEMINI|AIza|ACCESS_CODES|AUTH_SECRET" dist/` → **nothing**.
+12. Scan the built bundle for every server-only secret shape, not just the Gemini key —
+    `npm run build && grep -rE "AIza|AQ\.|GOCSPX-|re_[A-Za-z0-9]|ACCESS_CODES|AUTH_SECRET|GEMINI_API_KEY|GOOGLE_CLIENT_SECRET" dist/` → **nothing**.
+    (`GOCSPX-` is the Google client-secret prefix, `re_` the Resend key prefix.)
 
 If any of 1–3 fails, do not ship — the security boundary is compromised. 4–12 are correctness and
 feature checks; a failure there is a bug, not a breach.

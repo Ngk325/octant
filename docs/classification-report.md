@@ -2,7 +2,8 @@
 
 Source: `typology-photos-normalized 2.zip`, added in commit `0dafb68` and removed from the
 working tree in 2026-08 (it was 24 MB in every clone, referenced by nothing but this line).
-It remains in git history; to retrieve it:
+It remains in git history — audit documentation (this file and
+`docs/REVIEW-FINDINGS.md`) still references it by name — and you can retrieve it:
 
 ```sh
 git show '0dafb68:typology-photos-normalized 2.zip' > photos.zip

@@ -59,9 +59,12 @@ Visit `/calculator`, `/type/ENTP`, `/pair/ENTP/ENFJ`, `/network`, `/matrix`, `/l
 
 ## 2 · Secrets — the access wall and the assistant
 
-**Read this before deploying.** Two secrets are required or the site refuses
-everyone; the rest enable features that degrade cleanly when absent. None is
-ever a `var`, none is ever committed, and none reaches the client bundle.
+**Read this before deploying.** The wall needs `AUTH_SECRET` **plus at least
+one way in** — either an `ACCESS_CODES` entry or the Google credentials.
+`AUTH_SECRET` alone, or a way-in without the signing secret, fails closed and
+refuses everyone. The rest enable features that degrade cleanly when absent.
+None is ever a `var`, none is ever committed, and none reaches the client
+bundle.
 
 | Secret | Required | What it does |
 |---|---|---|
@@ -131,19 +134,24 @@ directly; push to the branch if you are on Git-connected builds.
 ### Verifying
 
 ```sh
-npm run build && grep -rE "GEMINI|AIza|AQ\.|ACCESS_CODES|AUTH_SECRET" dist/
+npm run build && grep -rE "AIza|AQ\.|GOCSPX-|re_[A-Za-z0-9]|ACCESS_CODES|AUTH_SECRET|GEMINI_API_KEY|GOOGLE_CLIENT_SECRET" dist/
 ```
 
 Must find **nothing** — every secret lives in the Worker, and the Worker's code is
 not the client bundle. Then, against the deployed URL:
 
 ```sh
-curl -si https://<your-worker-url>/ | head -1          # expect: HTTP/2 401
-curl -s  https://<your-worker-url>/api/chat -X POST    # expect: {"error":"Not signed in."}
+# Anonymous "/" is the ONE public route — the marketing page (200). It must not
+# contain app markup: no #root, no /assets/, no /api/chat.
+curl -s https://<your-worker-url>/ | grep -c 'id="root"\|/assets/\|/api/chat'   # expect: 0
+# Any other route with no session is refused.
+curl -s -o /dev/null -w "%{http_code}\n" https://<your-worker-url>/type/ENTP    # expect: 401
+curl -s https://<your-worker-url>/api/chat -X POST    # expect: {"error":"Not signed in."}
 ```
 
-A `200` on the first command means the wall is not doing its job — check that both
-secrets are set and that the deploy that set them has actually gone out.
+App markup in the first command, or a `200` on `/type/ENTP`, means the wall is
+not doing its job — check that `AUTH_SECRET` and a way-in are set and that the
+deploy that set them has actually gone out.
 
 ### Verifying the wall against the real runtime
 
@@ -159,7 +167,7 @@ cp .dev.vars.example .dev.vars    # if you have not already
 npm run build
 npx wrangler dev --port 8788      # in another terminal:
 
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8788/                    # 401
+# "/" is the marketing carve-out (200); everything else with no session is 401.
 curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8788/type/ENTP           # 401
 
 # The bundle's filename carries a content hash, so read it out of the build
@@ -169,6 +177,11 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8788/type/ENTP        
 JS=$(ls dist/assets/index-*.js | head -1)
 curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:8788/assets/$(basename "$JS")"   # 401
 ```
+
+The asset 401 is the one that matters: it is the check that `run_worker_first`
+is routing every request through the wall and not serving a chunk straight from
+the asset store. `tests/workers/` cannot make this check — only the platform
+can, here or on the deployed URL.
 
 All three must be **401**. A `200` on any of them means asset requests are
 reaching the asset store without passing the gate — check that

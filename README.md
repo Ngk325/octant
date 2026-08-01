@@ -247,9 +247,11 @@ npm run build      # → dist/
 ```
 
 The dev server runs the Worker's own default export and hands asset requests back to Vite, so
-every route — Google, admin, chat history — behaves locally exactly as deployed, and the wall
-fails closed without `.dev.vars`. CI (`.github/workflows/ci.yml`) runs typecheck, lint, tests
-and build on every push.
+every route *handler* — Google, admin, chat history — behaves locally exactly as deployed, and
+the wall fails closed without `.dev.vars`. One thing dev cannot reproduce: because Vite plays
+the asset store, it does not exercise Cloudflare's `run_worker_first` edge routing — only
+`wrangler dev` or the deployed URL proves that assets go through the wall (DEPLOY.md has the
+probes). CI (`.github/workflows/ci.yml`) runs typecheck, lint, tests and build on every push.
 
 ## Deploy
 
