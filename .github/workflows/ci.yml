@@ -1,0 +1,37 @@
+# The guard rail the repo never had: typecheck, lint, tests and a build on
+# every push and PR. Every failure mode here was previously "someone forgot
+# to run it" — the docs drifted for eighteen commits because nothing watched.
+#
+# Node 22, matching what Wrangler 4 requires and what Vite 8 / Vitest 4 will
+# need, so the toolchain upgrades change no CI plumbing.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# Read-only is all this job needs — it typechecks, lints, tests and builds,
+# and pushes nothing. Scoping the token here means a compromised dependency
+# in `npm ci` cannot use it to write to the repo.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        # Do not leave the GITHUB_TOKEN in .git/config for the rest of the job:
+        # a malicious install script in any dependency could otherwise read it.
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint --if-present
+      - run: npm test
+      - run: npm run build

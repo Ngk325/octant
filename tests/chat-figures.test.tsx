@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { MemoryRouter } from "react-router-dom";
-import { type ReactNode } from "react";
+import { MemoryRouter } from "react-router";
+import type { ReactNode } from "react";
 import { TYPES } from "../src/engine/core";
 import { buildSystemInstruction } from "../src/engine/context";
 import { ThemeProvider } from "../src/components/Theme";

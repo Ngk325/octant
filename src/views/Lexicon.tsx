@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import {
   ENTRIES, CATEGORIES, BY_ID, search, pairTerms, type Category, type Entry,
 } from "../engine/lexicon";
@@ -38,14 +38,14 @@ export default function Lexicon() {
      keystroke. */
   const grouped = useMemo(() => {
     const m = new Map<Category, Entry[]>();
-    results.forEach((e) => m.set(e.category, [...(m.get(e.category) ?? []), e]));
+    results.forEach((e) => { m.set(e.category, [...(m.get(e.category) ?? []), e]); });
     return CATEGORIES.map((c) => [c, m.get(c) ?? []] as const).filter(([, list]) => list.length > 0);
   }, [results]);
 
   /** Entry count per category, for the filter chips — which double as the index. */
   const counts = useMemo(() => {
     const m = new Map<Category, number>();
-    ENTRIES.forEach((e) => m.set(e.category, (m.get(e.category) ?? 0) + 1));
+    ENTRIES.forEach((e) => { m.set(e.category, (m.get(e.category) ?? 0) + 1); });
     return m;
   }, []);
 
@@ -73,9 +73,9 @@ export default function Lexicon() {
       </div>
 
       <div className="lex-nav">
-        <button className={`chip${cat === "All" ? " on" : ""}`} onClick={() => setCat("All")}>All</button>
+        <button type="button" className={`chip${cat === "All" ? " on" : ""}`} onClick={() => setCat("All")}>All</button>
         {CATEGORIES.map((c) => (
-          <button key={c} className={`chip${cat === c ? " on" : ""}`} onClick={() => setCat(c)}>
+          <button type="button" key={c} className={`chip${cat === c ? " on" : ""}`} onClick={() => setCat(c)}>
             {c} · {counts.get(c) ?? 0}
           </button>
         ))}

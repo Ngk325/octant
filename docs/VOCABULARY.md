@@ -7,8 +7,14 @@ here and the reason is given.
 This is the spec the implementation follows. If a word is not in this
 file, it is not in the product.
 
-**Status:** approved, not yet implemented. The app still ships the old
-terms; see `§9 Migration`.
+**Status (corrected 2026-08):** approved and MOSTLY shipped. The slots
+(Lead/Support/Delight/Cave/Doubt/Scold/Blind spot/Dread), the sixteen
+relation names, the current labels (Charge/Settle/Broadcast/Absorb) and the
+48 epithets are live in `src/engine/data.ts`. Still pending: the camps
+(Hearth/Forge/Market/Field — the app ships Alpha/Beta/Gamma/Delta), the
+Octagram→Rose rename, and the four-sides rename. The header above used to
+say "not yet implemented" while §2 said "Shipped"; both were partly right,
+which is why this line now itemises instead.
 
 ---
 

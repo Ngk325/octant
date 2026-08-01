@@ -1,4 +1,4 @@
-import { type Fn } from "../../engine/data";
+import type { Fn } from "../../engine/data";
 import { usePalette } from "../Theme";
 
 /**

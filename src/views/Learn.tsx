@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router";
 import { STAGES } from "../learn/curriculum";
 import { TYPES, type MbtiType } from "../engine/data";
 import { usePublishContext } from "../chat/ChatContext";
@@ -69,7 +69,7 @@ export default function Learn() {
 
   return (
     <>
-      <div className="learn-rail" aria-label="Course progress">
+      <nav className="learn-rail" aria-label="Course progress">
         {STAGES.map((s, n) => (
           <Link
             key={s.slug}
@@ -80,7 +80,7 @@ export default function Learn() {
             {s.title}
           </Link>
         ))}
-      </div>
+      </nav>
 
       <p className="small muted" style={{ margin: "0 0 var(--s2)" }}>
         Stage {i + 1} of {STAGES.length}
@@ -104,7 +104,7 @@ export default function Learn() {
           <Link to="/learn" className="btn">← All stages</Link>
         )}
         {next ? (
-          <button
+          <button type="button"
             className="btn primary"
             onClick={() => {
               markDone(current.slug);
@@ -114,7 +114,7 @@ export default function Learn() {
             {next.title} →
           </button>
         ) : (
-          <button
+          <button type="button"
             className="btn primary"
             onClick={() => {
               markDone(current.slug);

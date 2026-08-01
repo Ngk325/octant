@@ -36,6 +36,15 @@ export interface ChatWho {
   /** Invite-code label or Google display name. */
   label: string;
   kind: "code" | "google";
+  /**
+   * Digest-prefix identity of the invite code, for code sessions minted
+   * since 2026-08. The label is NOT an identity — two bare codes both parse
+   * to "guest" — and scoping history by it let those two people read each
+   * other's transcripts. Records and sessions from before the change carry
+   * no codeId and fall back to label matching until the 90-day TTL and the
+   * 30-day session expiry age them out.
+   */
+  codeId?: string;
 }
 
 export interface LoggedTurn {
@@ -103,10 +112,20 @@ export async function recordExchange(
 ): Promise<void> {
   if (!env.CHAT_LOGS) return;
   try {
-    const rec: ChatLogRecord = (await readRecord(env, threadId)) ?? {
+    const existing = await readRecord(env, threadId);
+    /* The first writer owns the record for good. This line used to read
+       `rec.who = who`, which meant whoever wrote LAST owned the whole
+       history — so knowing (or guessing) a threadId was enough to append
+       once and then read everything before. Thread ids are client-chosen;
+       ownership must not be. A mismatched append is dropped and logged, and
+       chat itself is unaffected. */
+    if (existing && !belongsTo(existing, who)) {
+      console.error(`chatlog: append to ${threadId} by a different identity dropped`);
+      return;
+    }
+    const rec: ChatLogRecord = existing ?? {
       who, ua, started: now, updated: now, contexts: [], turns: [],
     };
-    rec.who = who; // a thread that outlives a re-login keeps the latest identity
     rec.updated = now;
     if (ua) rec.ua = ua;
     if (contextLabel && rec.contexts[rec.contexts.length - 1] !== contextLabel) {
@@ -124,7 +143,19 @@ export async function recordExchange(
 /** Whether a logged thread belongs to the caller asking for it. */
 function belongsTo(rec: ChatLogRecord, who: ChatWho): boolean {
   if (who.email) return rec.who.email === who.email;
-  return rec.who.kind === "code" && rec.who.label === who.label;
+  if (rec.who.kind !== "code") return false;
+  /* A caller that carries a codeId is proven by it ALONE: the record must
+     carry the same one, and a codeId-less (pre-migration) record is NOT theirs
+     to read. The earlier version fell back to label whenever either side
+     lacked a codeId, which meant a new "guest" session could still read a
+     legacy "guest" record by label for the 90-day retention window — the exact
+     hole the codeId was added to close. Label is not identity. */
+  if (who.codeId) return rec.who.codeId === who.codeId;
+  /* The caller has NO codeId: a session minted before codeId existed, within
+     30 days of expiry. It may match only other codeId-less records, by label —
+     unchanged prior behaviour on a closed, expiring set. A legacy caller never
+     reaches a new record, because new records always carry a codeId. */
+  return !rec.who.codeId && rec.who.label === who.label;
 }
 
 export interface ThreadSummary {

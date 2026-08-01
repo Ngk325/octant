@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { TYPES, REL, ease, quadra } from "../engine/core";
 import { REL_NAME, REL_SCORE, REL_DEF, type RelCode, type MbtiType } from "../engine/data";
 import { REL_PLAIN } from "../engine/plain";
@@ -64,7 +64,8 @@ export default function Matrix() {
       </Figure>
 
       <Panel style={{ marginTop: "var(--s5)" }}>
-        <div className="matrix-wrap">
+        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: the 780px-wide table scrolls inside this div; the tabstop is how a keyboard pans it. */}
+        <div className="matrix-wrap" tabIndex={0} role="group" aria-label="The 256-cell ease matrix">
           <table className="matrix">
             <caption className="small muted" style={{ captionSide: "top", textAlign: "left", paddingBottom: "var(--s3)" }}>
               Ease for the row type, 0–100. Click any cell for the full reading.
@@ -89,6 +90,9 @@ export default function Matrix() {
                           to={`/pair/${t}/${x}`}
                           style={{ color: p.onFill }}
                           title={`${x} is ${t}'s ${REL_NAME[REL[t][x]]} — ease ${v} for ${t}`}
+                          /* The title only reaches mouse users; this is the
+                             same sentence for everyone else. */
+                          aria-label={`${x} is ${t}'s ${REL_NAME[REL[t][x]]} — ease ${v} for ${t}`}
                         >
                           {v}
                         </Link>

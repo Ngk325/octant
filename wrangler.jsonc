@@ -59,6 +59,36 @@
     { "binding": "CHAT_LOGS", "id": "2f26c80cb0e143d48c4c559f8bd44cb8" }
   ],
 
+  // Cross-isolate rate limiting (GA since 2025-09, no plan cost). The
+  // in-memory Maps in auth.ts and chat.ts survive as the dev fallback and
+  // keep their own comments; these bindings are what makes the brake hold
+  // when Cloudflare fans traffic across isolates that share nothing.
+  //
+  // Counters are per-location and eventually consistent — Cloudflare's own
+  // words are that this is not an accounting system. That is the same
+  // "brake, not a wall" posture the in-memory version already declared.
+  //
+  // LOGIN_LIMITER counts ATTEMPTS, not failures, unlike the in-memory
+  // brake: the binding consumes on call and cannot observe the outcome
+  // first. The ceiling is set where only brute force reaches it — a person
+  // signing in on three devices spends 3 of 30; a code-guesser spends all
+  // of them in seconds.
+  // namespace_id is ACCOUNT-scoped: two bindings sharing one share their
+  // counters, even across different Workers. "1001"/"1002" are the values in
+  // Cloudflare's own docs examples, so another Worker on this account using the
+  // canonical examples would silently merge counters with these. These two are
+  // arbitrary and specific to avoid that.
+  "ratelimits": [
+    { "name": "LOGIN_LIMITER", "namespace_id": "748301", "simple": { "limit": 30, "period": 60 } },
+    { "name": "CHAT_LIMITER", "namespace_id": "748302", "simple": { "limit": 20, "period": 60 } }
+  ],
+
+  // The transcript sweep used to piggyback on chat traffic, which had two
+  // costs: a full KV scan per message, and transcripts that never mailed if
+  // traffic simply stopped — the exact case a "session ended" mail is for.
+  // Hourly matches IDLE_MS: a thread is quiet for an hour before it is over.
+  "triggers": { "crons": ["17 * * * *"] },
+
   "observability": { "enabled": true }
   // GEMINI_API_KEY is a secret, never a var:  npx wrangler secret put GEMINI_API_KEY
 }

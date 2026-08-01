@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { TYPES, REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import { REL_NAME, REL_DEF, RECIPROCAL, DOM_AUX, SLOT_NAMES } from "../engine/data";
 import { REL_PLAIN, CONCEPT_PLAIN, slotAbout } from "../engine/plain";
@@ -59,7 +59,7 @@ export default function PairReader() {
         <TypePicker label="You are" value={persp} onChange={(x) => nav(`/pair/${target}/${x}`)} />
         <span className="persp-verb" aria-hidden="true">reading about</span>
         <TypePicker label="Them" value={target} onChange={(x) => nav(`/pair/${x}/${persp}`)} />
-        <button className="btn ghost" onClick={() => nav(`/pair/${persp}/${target}`)}>Swap ⇄</button>
+        <button type="button" className="btn ghost" onClick={() => nav(`/pair/${persp}/${target}`)}>Swap ⇄</button>
       </div>
 
       <h1>How {persp} should handle {target}</h1>

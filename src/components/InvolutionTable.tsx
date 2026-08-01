@@ -1,5 +1,5 @@
 import { alpha, beta, omega } from "../engine/core";
-import { type Fn } from "../engine/data";
+import type { Fn } from "../engine/data";
 import { FnTag } from "./Bits";
 
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
@@ -36,6 +36,15 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
     borderTop: "1px solid var(--rule)",
   };
 
+  /* Each row spans all four columns and re-inherits their tracks as a subgrid,
+     so the role="row" box stays in the accessibility tree without disturbing
+     the layout the parent grid produced with display:contents. */
+  const ROW: React.CSSProperties = {
+    display: "grid",
+    gridColumn: "1 / -1",
+    gridTemplateColumns: "subgrid",
+  };
+
   return (
     <div
       role="table"
@@ -48,9 +57,17 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
         fontSize: "var(--t-sm)",
       }}
     >
-      <div style={{ ...cell, borderTop: 0 }} className="small muted">start with</div>
+      {/* An ARIA row may only contain ARIA cells — role=table with bare divs
+          inside was malformed and read as an empty table. The row is a SUBGRID
+          spanning all columns, not display:contents: a contents box is dropped
+          from the accessibility tree in several browsers, which would take the
+          role="row" with it and leave the cells floating rowless. Subgrid keeps
+          the row a real box AND inherits the parent's column tracks, so the
+          layout is identical. */}
+      <div style={ROW} role="row">
+      <div style={{ ...cell, borderTop: 0 }} className="small muted" role="columnheader">start with</div>
       {cols.map(([name, what, eg]) => (
-        <div key={name} style={{ ...cell, borderTop: 0 }} className="small muted">
+        <div key={name} style={{ ...cell, borderTop: 0 }} className="small muted" role="columnheader">
           {/* The name leads, because it is the only part a reader carries away.
               The example sits under it so the column explains itself before the
               description is read at all. */}
@@ -59,16 +76,17 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
           <span style={{ display: "block" }}>{what}</span>
         </div>
       ))}
+      </div>
 
       {FNS.map((f) => {
         const on = highlight === f;
         return (
-          <div key={f} style={{ display: "contents" }} role="row">
-            <div style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
+          <div key={f} style={ROW} role="row">
+            <div role="rowheader" style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
               <FnTag fn={f} />
             </div>
             {cols.map(([name, , , op]) => (
-              <div key={name} style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
+              <div key={name} role="cell" style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
                 <FnTag fn={op(f)} />
               </div>
             ))}

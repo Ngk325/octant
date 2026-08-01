@@ -1,0 +1,48 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.6/schema.json",
+  "files": {
+    "includes": ["src/**", "tests/**", "scripts/**", "vite.config.ts"]
+  },
+  "formatter": { "enabled": false },
+  "assist": { "enabled": false },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "correctness": {
+        "useExhaustiveDependencies": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noArrayIndexKey": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "noParameterAssign": "error",
+        "useImportType": "error",
+        "useTemplate": "off"
+      },
+      "complexity": {
+        "noForEach": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/components/InvolutionTable.tsx",
+        "src/components/QuadraFunctionGrid.tsx",
+        "src/views/Matrix.tsx",
+        "src/chat/chat-figures.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": { "useSemanticElements": "off", "useFocusableInteractive": "off" }
+        }
+      }
+    },
+    {
+      "includes": ["tests/**"],
+      "linter": { "rules": { "suspicious": { "noExplicitAny": "off" } } }
+    }
+  ]
+}

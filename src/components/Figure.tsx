@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * A diagram presented as a figure inside prose, with a caption that says what
@@ -27,7 +27,16 @@ export default function Figure({
   children: ReactNode;
 }) {
   return (
-    <figure className="fig">
+    /* tabIndex when the figure can scroll sideways: a scrollable region a
+       keyboard cannot reach fails WCAG 2.1.1, and figures narrower than
+       minWidth have no focusable descendant to inherit panning from. The
+       label doubles as the region's accessible name. */
+    <figure
+      className="fig"
+      {...(minWidth
+        ? { tabIndex: 0, role: "group" as const, "aria-label": label ?? "Diagram" }
+        : {})}
+    >
       {minWidth ? <div style={{ minWidth }}>{children}</div> : children}
       {(label || caption) && (
         <figcaption>

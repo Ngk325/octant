@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router";
 import Home from "./views/Home";
 import Welcome, { ONBOARDING_DONE_KEY } from "./views/Welcome";
 import Learn from "./views/Learn";
@@ -15,6 +15,7 @@ import ChatRail from "./chat/ChatRail";
 import { useChatCtx } from "./chat/ChatContext";
 import { usePalette } from "./components/Theme";
 import { readStored } from "./storage";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const TABS: [string, string][] = [
   ["/learn", "Learn"],
@@ -54,6 +55,7 @@ export default function App() {
     return () => document.removeEventListener("keydown", onKey);
   }, [menu]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the trigger — this must re-run on every navigation, read or not.
   useEffect(() => {
     setMenu(false);
     if (hash) {
@@ -71,9 +73,15 @@ export default function App() {
      change, because the whole app is behind the wall and nothing in the bundle
      should try to render an unauthenticated state. */
   const signOut = () => {
-    void fetch("/api/auth/logout", { method: "POST" }).finally(() => {
-      window.location.assign("/");
-    });
+    /* Redirect only when the server actually cleared the cookie. The old
+       .finally() redirected regardless, which dressed a failed logout as a
+       successful one — the reload came back signed in with no explanation. */
+    void fetch("/api/auth/logout", { method: "POST" })
+      .then((res) => {
+        if (res.ok) window.location.assign("/");
+        else console.error(`[octant] logout refused (${res.status}); staying signed in`);
+      })
+      .catch((err) => console.error("[octant] logout failed:", err));
   };
 
   /* The foundation gate gets its own bare shell — no tabs, no assistant rail
@@ -85,10 +93,12 @@ export default function App() {
       <div className="app">
         <div className="main">
           <main className="main-inner">
-            <Routes>
-              <Route path="/welcome" element={<Welcome />} />
-              <Route path="/welcome/:step" element={<Welcome />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/welcome" element={<Welcome />} />
+                <Route path="/welcome/:step" element={<Welcome />} />
+              </Routes>
+            </ErrorBoundary>
           </main>
         </div>
       </div>
@@ -117,7 +127,7 @@ export default function App() {
             </nav>
 
             <div className="mast-actions">
-              <button
+              <button type="button"
                 className="icon-btn"
                 onClick={toggleChat}
                 aria-pressed={chatOpen}
@@ -126,7 +136,7 @@ export default function App() {
               >
                 ?
               </button>
-              <button
+              <button type="button"
                 className="icon-btn"
                 onClick={toggle}
                 aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
@@ -134,7 +144,7 @@ export default function App() {
               >
                 {theme === "dark" ? "☀" : "☾"}
               </button>
-              <button
+              <button type="button"
                 className="icon-btn"
                 onClick={signOut}
                 aria-label="Sign out"
@@ -142,7 +152,7 @@ export default function App() {
               >
                 ⏻
               </button>
-              <button
+              <button type="button"
                 className="icon-btn menu-toggle"
                 onClick={() => setMenu((m) => !m)}
                 aria-expanded={menu}
@@ -155,6 +165,9 @@ export default function App() {
         </header>
 
         <main className="main-inner">
+          {/* One boundary around the views and a second around the rail, so a
+              fault in either leaves the other standing. */}
+          <ErrorBoundary>
           <Routes>
             <Route
               path="/"
@@ -175,10 +188,13 @@ export default function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </ErrorBoundary>
         </main>
       </div>
 
-      <ChatRail />
+      <ErrorBoundary label="assistant">
+        <ChatRail />
+      </ErrorBoundary>
     </div>
   );
 }

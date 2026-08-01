@@ -1,5 +1,5 @@
-import { type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import type { ReactNode } from "react";
+import { Link } from "react-router";
 import { stack, quadra, TYPES, REL, ease } from "../engine/core";
 import { ops, ANIMAL_LABEL, DEMON_MARKERS } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";

@@ -94,6 +94,7 @@ function inline(src: string): ReactNode[] {
   let m: RegExpExecArray | null;
   let key = 0;
 
+  // biome-ignore lint/suspicious/noAssignInExpressions: the standard exec() loop — assignment IS the loop condition.
   while ((m = re.exec(src))) {
     if (m.index > last) parts.push(<Fragment key={key++}>{src.slice(last, m.index)}</Fragment>);
     const token = m[0];

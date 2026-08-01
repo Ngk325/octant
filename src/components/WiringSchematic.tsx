@@ -64,6 +64,7 @@ export default function WiringSchematic({ type, showCorrespondence }: {
           parallel arcs in the free lane left of the rail, one per pair, each
           in its element's colour. Drawn under the nodes. */}
       {showCorrespondence && (
+        // biome-ignore lint/a11y/noAriaHiddenOnFocusable: an SVG <g> of decorative paths is never focusable — the rule assumes HTML.
         <g aria-hidden="true">
           {[0, 1, 2, 3].map((i) => (
             <path

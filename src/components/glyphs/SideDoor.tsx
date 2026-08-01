@@ -1,5 +1,5 @@
-import { type Fn } from "../../engine/data";
-import { type SideKey } from "../../engine/sides";
+import type { Fn } from "../../engine/data";
+import type { SideKey } from "../../engine/sides";
 import { usePalette } from "../Theme";
 
 /**

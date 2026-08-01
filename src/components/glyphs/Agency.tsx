@@ -38,7 +38,7 @@ function Mark({ mode, size }: { mode: "chosen" | "automatic"; size: number }) {
   const c = "var(--ink)";
   const cx = size / 2, cy = size / 2, r = size * 0.16;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
       {mode === "chosen" ? (
         <>
           <line

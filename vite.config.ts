@@ -1,12 +1,19 @@
-import { defineConfig, type Plugin, type ViteDevServer } from "vite";
+import { defineConfig } from "vitest/config";
+import type { Plugin, ViteDevServer } from "vite";
+import { cloudflareTest } from "@cloudflare/vitest-pool-workers";
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 
 /**
- * Runs the SAME Worker handlers in `npm run dev` that run in production, so
- * there is only ever one implementation to keep correct — including the access
- * wall. The dev site is gated exactly like the deployed one, which is the only
- * way to actually test the thing that is protecting it.
+ * Runs the SAME Worker — the whole router, not selected handlers — in
+ * `npm run dev` that runs in production, so there is exactly one
+ * implementation to keep correct, including the access wall. Vite plays the
+ * part of the asset binding: whatever the Worker would fetch from the asset
+ * store is handed back to Vite's own pipeline via a marker response.
+ *
+ * Bindings that only exist deployed (KV, rate limits) are simply absent
+ * here, and every feature behind them degrades exactly as production does
+ * without them — that degradation is itself the tested behaviour.
  *
  * Secrets are read from .dev.vars (gitignored) and never reach the bundle.
  */
@@ -30,13 +37,21 @@ function devApi(): Plugin {
         );
       }
 
+      /* The marker the ASSETS shim leaves on its response. The Worker calls
+         env.ASSETS.fetch for anything past the wall that is not an API route;
+         in dev "the asset store" is Vite itself, so the shim answers with this
+         header and the middleware hands the request to next(). */
+      const PASS = "x-octant-dev-passthrough";
+
       server.middlewares.use((req, res, next) => {
         void (async () => {
           try {
-            const { handleChat } = await server.ssrLoadModule("/src/worker/chat.ts");
-            const { handleAuth, requireAuth, readSession, signinPage } =
-              await server.ssrLoadModule("/src/worker/auth.ts");
-            const { marketingPage } = await server.ssrLoadModule("/src/worker/marketing.ts");
+            /* The REAL router — the same default export wrangler deploys.
+               There is deliberately no route list here any more: an earlier
+               version of this file mirrored index.ts by hand and drifted
+               (no Google routes, no /api/admin, no chat history), which meant
+               five surfaces could not be exercised locally at all. */
+            const { default: worker } = await server.ssrLoadModule("/src/worker/index.ts");
 
             const chunks: Buffer[] = [];
             if (req.method === "POST" || req.method === "PUT") {
@@ -48,39 +63,21 @@ function devApi(): Plugin {
               body: chunks.length ? Buffer.concat(chunks) : undefined,
             });
 
-            // Same order as src/worker/index.ts: auth routes, the sign-in
-            // page, then the wall — with the same single front-door carve-out.
-            let response: Response | null = await handleAuth(request, env);
-            const url = new URL(request.url);
-            if (!response && url.pathname === "/signin" && req.method === "GET") {
-              const session = await readSession(request, env);
-              response = session
-                ? new Response(null, { status: 302, headers: { location: "/" } })
-                : signinPage(env, url.searchParams.get("returnTo") ?? "/");
-            }
-            if (!response) response = await requireAuth(request, env);
-            if (response && url.pathname === "/" && req.method === "GET" && response.status === 401) {
-              response = marketingPage(url.origin);
-            }
+            const devEnv = {
+              ...env,
+              ASSETS: {
+                fetch: async () =>
+                  new Response(null, { status: 204, headers: { [PASS]: "1" } }),
+              },
+            };
+            const out = (await worker.fetch(request, devEnv, {
+              /* No runtime to outlive the response in dev; run it inline. */
+              waitUntil: (p: Promise<unknown>) => void p.catch(() => {}),
+            })) as Response;
 
-            // Signed in. Only /api/* is ours; everything else is Vite's.
-            if (!response) {
-              if (!req.url?.startsWith("/api/")) return next();
-              response =
-                req.url === "/api/chat"
-                  ? await handleChat(request, { GEMINI_API_KEY: env.GEMINI_API_KEY })
-                  : req.url === "/api/chat/end"
-                    // No KV locally: the beacon is accepted and dropped, same
-                    // as production without the binding.
-                    ? new Response(null, { status: 204 })
-                    : new Response(JSON.stringify({ error: "Not found." }), { status: 404 });
-            }
-
-            // ssrLoadModule is untyped, so the narrowing above does not survive. Asserted
-            // rather than checked: every branch that reaches here has assigned one.
-            const out = response as Response;
+            if (out.headers.get(PASS)) return next();
             res.statusCode = out.status;
-            out.headers.forEach((v, k) => res.setHeader(k, v));
+            out.headers.forEach((v, k) => { res.setHeader(k, v); });
             if (!out.body) return res.end();
             const reader = out.body.getReader();
             for (;;) {
@@ -103,5 +100,31 @@ function devApi(): Plugin {
 export default defineConfig({
   plugins: [react(), devApi()],
   build: { outDir: "dist", sourcemap: false },
-  test: { globals: true, environment: "node" },
+  test: {
+    projects: [
+      /* The original suite: pure functions and SSR renders, plain Node. */
+      {
+        test: {
+          name: "unit",
+          globals: true,
+          environment: "node",
+          include: ["tests/**/*.test.{ts,tsx}"],
+          exclude: ["tests/workers/**"],
+        },
+      },
+      /* tests/workers/ runs INSIDE workerd via vitest-pool-workers, against
+         the real runtime the mocks in tests/auth.test.ts cannot speak for —
+         real Request/Response semantics, real crypto.subtle, real KV. The
+         wrangler config below is the deployed one, so bindings and
+         compatibility flags cannot drift between test and production. */
+      {
+        plugins: [cloudflareTest({ wrangler: { configPath: "./wrangler.jsonc" } })],
+        test: {
+          name: "workers",
+          globals: true,
+          include: ["tests/workers/**/*.test.ts"],
+        },
+      },
+    ],
+  },
 });

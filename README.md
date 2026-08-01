@@ -5,25 +5,35 @@ then compose the network.
 
 The whole model is a **pure function of sixteen `(dominant, auxiliary)` pairs** and three
 involutions on the eight information elements. 256 intertype relations, 256 compatibility
-scores, 256 playbooks, every OPS animal signature, every coin and every growth gate is
-*derived* at runtime. There is no database, no lookup table to keep in sync, and no
-possibility of the matrices drifting apart — they are computed from the same 2 KB of seed data.
+scores, 256 playbooks, every exchange-overlay signature, every coin and every growth gate is
+*derived* at runtime from about 2 KB of genuine seed data. There is no database and no stored
+matrix to keep in sync — the structural tables cannot drift apart, because they are computed.
+
+One honest asterisk on that claim, because this README used to overstate it: the *structure*
+is derived; the *numbers and words* attached to it are authored. `ease()` reads a hand-set
+16-value score ramp, one coin reads an authored 8-type set, and `data.ts` is mostly authored
+copy keyed by derived structure. The empirical survey matrix is a deliberate third thing —
+see "The empirical counterweight".
 
 ```
 src/engine/
-  core.ts       α / β / ω involutions · stacks · quadras · relations · gates
+  core.ts       the three involutions · stacks · quadras · relations · gates
   sides.ts      the four sides of the mind: stacks, gateways, development states
-  ops.ts        OPS overlay: saviors/demons, the animal stack, coins, calculator
+  ops.ts        the exchange overlay: anchors/flinches, the current stack, coins, calculator
   octagram.ts   the Octagram: eight temple wheels, cognitive origins, four themes
   playbook.ts   per-pair composition from where the reader's functions land in the target's stack
   network.ts    n-person weighted digraph analysis
+  empirical.ts  the survey matrix that deliberately DISAGREES with the model
+  functions.ts  authored per-function copy: roles, wants, satisfactions, practices
   plain.ts      the plain-language layer — one gloss for every term the system uses
+  translation.ts  cross-system name tables (the one module allowed to name sources)
   context.ts    derived grounding for the assistant
   palette.ts    per-theme palette + contrast maths, asserted in tests
-  verify.ts     the structural assertions, runnable at any time
+  verify.ts     structural assertions, run by the test suite
   lexicon.ts    103 term definitions + pairing logic for every category
-  data.ts       GENERATED copy tables (see "Provenance")
-src/worker/     Cloudflare Worker: the access wall, /api/chat proxying Gemini, assets behind both
+  data.ts       seed + frozen score tables + authored copy (see "Provenance")
+src/worker/     Cloudflare Worker: access wall, Google sign-in + approval, admin,
+                /api/chat proxying Gemini, transcript logging, security headers
 src/learn/      the thirteen-stage course
 ```
 
@@ -39,80 +49,72 @@ not smuggle back the jargon it exists to replace.
 
 | Route | What it does |
 |---|---|
-| `/learn` · `/learn/:stage` | Thirteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. Each assumes only what the ones before it taught. |
+| `/` | Marketing page for the signed-out; the app (or onboarding, first visit) for the signed-in. |
+| `/signin` | The gate as its own page: invite code, and Google when configured. |
+| `/welcome` · `/welcome/:step` | Eight onboarding screens, shown once, skippable, before the full app. |
+| `/learn` · `/learn/:stage` | Thirteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
 | `/types` | All sixteen at a glance, grouped by quadra or temperament. |
-| `/type/:type` | The eight slots, all four sides of the mind built out, the OPS overlay with its subtype coins, growth gate, the Octagram wheel and theme grid, behavioural profile, and what each function actually wants. |
+| `/type/:type` | The eight slots, all four sides, the exchange overlay with its subtype coins, growth gate, the Octagram wheel and theme grid, behavioural profile, and what each function wants. |
 | `/pair/:a/:b` | Relation, **both** directional ease scores, and the composed playbook. Shareable URL. |
 | `/network` | The reason this is software and not a spreadsheet: group as a weighted digraph. |
 | `/matrix` | All 256 cells, colour-scaled, every cell a link into the pair reader. |
-| `/lexicon` | 103 defined terms, searchable and filterable; `/lexicon/:id` shows one term paired against every other member of its category. |
+| `/lexicon` | 103 defined terms, searchable and filterable; `/lexicon/:id` pairs one term against every other member of its category. |
+| `/admin` | The owner's door: approve, block and reset Google sign-ins. Unlisted; the API refuses non-owners. |
 
 ## The lexicon
 
 Every term the system uses is defined, sourced and **pairable**. A definition alone is not much
 use — what matters is what happens when two of them meet. So each category that can pair does:
-Infantile against Caregiver, Alpha against Gamma, Play against Blast, Ne against Si, Hero against
-Trickster, and so on for all sixteen ordered combinations in each.
+Infantile against Caregiver, Alpha against Gamma, Play against Blast, and so on for all sixteen
+ordered combinations in each. Where the structure determines the answer the pairing is derived;
+where the flavour is the content (romance styles, interaction styles) all sixteen ordered pairs
+are authored, because reading someone is not the same as being read by them.
 
-Terms appear inline throughout the app as dotted underlines; clicking one shows the short
-definition and links to the full entry. The pair reader carries an **Aspect by aspect** section
-that walks all sixteen comparable dimensions of two types — quadra, temperament, interaction
-style, romance style, animal, gate, Hero and Inferior functions, and each of the eight coins —
-and prints the pairing text for that specific combination.
-
-Where the structure determines the answer (quadras, animals, functions, archetypes) the pairing
-is derived and the specifics interpolated. Where the flavour is the content (romance styles,
-interaction styles) all sixteen ordered pairs are authored, because reading someone is not the
-same as being read by them.
-
-## Complement and Catalyst
+## Counterpart and Catalyst
 
 Two derived fields that the original workbook conflated into one:
 
-- **Complement** — Dual + Activity. Supplies your **Inferior**, the function you fear. Restful.
-- **Catalyst** — the two types whose Hero is your **Nemesis**. Supplies the function you are
+- **Counterpart** — Counterpart + Spark. Supplies your **Cave**, the function you fear. Restful.
+- **Catalyst** — the two types whose Lead is your **Doubt**. Supplies the function you are
   consciously reaching for and reflexively arguing with. Stimulating, slightly abrasive.
-  Structurally this always resolves to your Extinguishment and Mirage partners.
+  Structurally this always resolves to your Damper and False-fit partners.
 
-An ENTP wants convergence, but convergence is Ni, and Ni is the Nemesis — which is why INTJ and
-INFJ feel compelling rather than comfortable, and why the old "Sidekicks" column kept reaching
-for them.
+An ENTP wants convergence, but convergence is introverted intuition, and that is the Doubt —
+which is why INTJ and INFJ feel compelling rather than comfortable, and why the old
+"Sidekicks" column kept reaching for them.
 
 ## The four sides of the mind
 
-`fourSides()` used to return four bare type codes. It now returns four complete sides, each with
-its own four-slot stack, its gateway, what blocks that gateway, what opens it, and what a
-developed versus undeveloped version of it looks like.
+`fourSides()` returns four complete sides, each with its own four-slot stack, its gateway, what
+blocks that gateway, what opens it, and what a developed versus undeveloped version looks like.
+The same three involutions that generate the relation table generate the sides:
 
-The derivation was already latent in `core.ts`: the same three involutions that generate the
-relation table generate the sides. So each side stands in a fixed relation to the ego —
+| Side | Slots | Gateway | Blocked by | Relation to ego |
+|---|---|---|---|---|
+| Ego | Lead · Support · Delight · Cave | Lead | — | Twin |
+| Subconscious | the ego stack reversed | Cave | insecurity | **Counterpart** |
+| Unconscious | Doubt · Scold · Blind spot · Dread | Doubt | worry | **Damper** |
+| Superego | the shadow reversed | Dread | fear | **Standoff** |
 
-| Side | Type | Slots | Gateway | Blocked by | Relation to ego |
-|---|---|---|---|---|---|
-| Ego | `t` | Hero · Parent · Child · Inferior | Hero | — | Identity |
-| Subconscious | `ω(d), ω(x)` | the ego stack reversed | Inferior | insecurity | **Duality** |
-| Unconscious | `α(d), α(x)` | Nemesis · Critic · Trickster · Demon | Nemesis | worry | **Extinguishment** |
-| Superego | `β(d), β(x)` | the shadow reversed | Demon | fear | **Super-Ego** |
-
-— which is why the Socionics relation named *Super-Ego* and the Jungian structure named
-*superego* land on the same type. The Demon sits in the Inferior slot of the unconscious and the
-**Hero slot of the superego**, which is exactly why that side reads as a parasite persona.
-Verified against CS Joseph's own worked INTP example in `tests/sides.test.ts`.
+The Dread sits in the Cave slot of the unconscious and the **Lead slot of the superego**, which
+is exactly why that side reads as a parasite persona. Verified against the source's own worked
+INTP example in `tests/sides.test.ts`.
 
 ## The Octagram
 
-CS Joseph's advanced layer, and the hardest material the app carries. It goes in as two
-layers with a hard line between them, because the sourcing is not uniform.
+The advanced layer, and the hardest material the app carries. It goes in as two layers with a
+hard line between them, because the sourcing is not uniform.
 
-**The wheel layer is derived, not looked up.** Sixteen types pair off into eight *dyads* — a
-type together with its subconscious, which is its Dual — and two dyads make a *temple*, which
-turns out to be exactly one orbit of the four-sides operation. So `src/engine/octagram.ts`
-contains no membership table at all: `wheelOf()` and `templeOf()` compute it from
-`fourSides()`. `tests/octagram.test.ts` then checks the result against CS Joseph's published
-lists, and it matches **16/16 dyad memberships and 16/16 temple memberships**. That makes the
-Octagram the app's fourth external validation, and the cleanest one — the published structure
-is reproduced by an operator that was in the engine before the Octagram was read about.
+**The wheel layer is structurally derived.** Sixteen types pair off into eight *dyads* — a type
+together with its subconscious, which is its Counterpart — and two dyads make a *temple*, which
+is exactly one orbit of the four-sides operation. `wheelOf()` and `templeOf()` compute
+membership from `fourSides()`; no membership table exists. The authored surface — each wheel's
+origin, Living Virtue, Deadly Sin and two poles — matches the source's eight published wheel
+diagrams on **40/40 fields**, and the derived membership matches the published lists **16/16
+dyads and 16/16 temples**. That makes the Octagram the app's strongest external validation:
+the published structure is reproduced by an operator that was in the engine before the
+Octagram was read about.
 
 | Temple | Wheels | Origins |
 |---|---|---|
@@ -121,138 +123,135 @@ is reproduced by an operator that was in the engine before the Octagram was read
 | Heart — desire and regard | ENTP·ISFJ, ESFP·INTJ | Satisfaction, Reverence |
 | Body — action and legacy | ESFJ·INTP, ENTJ·ISFP | Discovery, Purpose |
 
-Each wheel carries a Living Virtue above its origin and a Deadly Sin below it. Those eight
-sins are the classical eight of the Evagrian tradition — wrath, lust, envy, vainglory, sloth,
-pride, gluttony, greed — each paired with its traditional contrary virtue, which is a strong
-internal check that the authored table was transcribed correctly.
+The eight sins on the wheels are a recognisable descendant of the old eight-sin tradition —
+not, as this README once claimed, "the classical Evagrian eight" (that list has sadness and no
+envy; the correction is documented in `octagram.ts`). The check that matters is direct: the
+table matches the published diagrams.
 
-**The theme layer is biographical and is not derived from anything.** Subconscious
-development (SD/UD, set in childhood) crossed with focus (SF/UF, mutable) gives Joy, Decay,
-Hope and Despair. It is a self-reported control on the type page, in exactly the same posture
-as the OPS subtype coins, and the assistant is instructed never to guess it from a type.
+**The theme layer is biographical and is not derived from anything.** Subconscious development
+(SD/UD, set in childhood and rarely changing) crossed with focus (SF/UF, mutable) gives Joy,
+Decay, Hope and Despair. Decay is carried as the source states it — refinement, "burning away
+all that is unnecessary", not simple decline. The coins are self-reported controls on the type
+page, and the assistant is instructed never to guess them from a type.
 
-**What is not settled is written down.** `UNSETTLED` in `octagram.ts` records three gaps,
-the sharpest being that published summaries disagree about which of a wheel's two poles is the
-shadow and which the aspirational; the orientation used here is cross-checked on two wheels of
-eight and is presented as such rather than asserted. Three original diagrams carry the layer —
-an eight-point ring, a single wheel, and the theme grid — all built from the engine, so none
-of them can drift out of agreement with it.
+**What is not settled is written down.** `UNSETTLED` in `octagram.ts` records the real gaps:
+the per-type *meaning* of the poles (members-only material this app has not seen), the
+temple-interaction claims (single summary, uncorroborated), and how focus meets the wheel.
+Where sourcing is thin, the app says so on the page.
 
 ## Externally validated
 
-The engine derives its output rather than storing it, which makes independent published tables a
-real test. Three from the source-image batch (`docs/transcripts/`), all asserted in
-`tests/ingested.test.ts` — plus the Octagram partition above, asserted in `tests/octagram.test.ts`:
+The engine derives its output rather than storing it, which makes independent published tables
+a real test. Asserted in `tests/ingested.test.ts` and `tests/octagram.test.ts`:
 
-- **Berens' "16 Type Patterns"** agrees with `stack()` on **128/128 slots**, all sixteen types.
-- **A Socionics intertype chart** agrees with `REL` on **all 256 cells**, and each of its sixteen
-  labels maps onto exactly one engine code — a clean bijection. Two naming conventions differ and
-  are documented rather than reconciled: that chart's *Look-a-like* is this app's Business and its
-  *Comparative* is this app's Kindred.
+- **Berens' "16 Type Patterns"** agrees with `stack()` on **128/128 slots**.
+- **A Socionics intertype chart** agrees with `REL` on **all 256 cells** — a clean bijection of
+  its sixteen labels onto the engine's codes. A second, independently-keyed chart also agrees
+  on all 256.
+- **The Octagram partition** above: 16/16 + 16/16 membership, 40/40 authored fields.
 - **An OPS slide** independently confirms the Play/Consume correction below.
 
-And one that deliberately does **not** agree — see "The empirical counterweight".
+And one table that deliberately does **not** agree — see next section.
 
-## Two corrections to the OPS layer
+## The empirical counterweight
+
+`empirical.ts` carries a published survey matrix (CC BY 4.0, attribution preserved in the
+bundle) whose correlation with the model's ease scores is **negative** (r ≈ −0.15), and the
+app shows the divergence rather than smoothing it over. A model that only ever cited evidence
+agreeing with it would not deserve the reader's trust.
+
+## Two corrections to the exchange overlay
 
 The retired Python reference engine had two errors here. Both are fixed in `src/engine/ops.ts`
-and asserted from first principles against the published OPS definitions in `tests/ops.test.ts`.
-Neither touches the 4-bit head, so no relation, score or playbook changed.
+and asserted from first principles in `tests/ops.test.ts`. Neither touches the 4-bit head, so
+no relation, score or playbook changed.
 
-1. **Demons used `alpha` (attitude flip) instead of `omega` (the Model A opposite)**, which put
-   them in the shadow block. OPS's four functions are the ego's top four: savior `Ne/Ti` demons
-   to `Si/Fe`, not `Ni/Te`. This also rewrites the CSJ-versus-OPS divergence the app draws — the
-   two instruments now *overlap* at the Inferior and disagree about the Child, which CS Joseph
-   treats as a delight and OPS treats as neglected.
-2. **Play and Consume were transposed.** Play is `Oe+De` and Consume is `Oe+Di`, so the energy
-   animals are the attitude-pure pair. Every one of the sixteen had its primary animal
-   mislabelled.
+1. **Flinches used the attitude-flip instead of the axis opposite**, which put them in the
+   shadow block. The overlay's four functions are the ego's top four.
+2. **Play and Consume were transposed**, so every type's primary current was mislabelled.
 
 `tests/reference-fixture.json` is left untouched as the record of what the Python engine
-produced; `tests/engine.test.ts` documents exactly which four assertions were retired and why.
-
-The animal stack now carries position semantics — savior pair, activated/hobby animal, and the
-last/missing animal — and the coins OPS uses to get from 32 types to 512 are exposed as
-**self-reported subtype coins**, defaulted to unset rather than guessed. One structural result
-falls out for free: because a dominant and an auxiliary always run opposite attitudes, every
-non-jumper is energy-dominant and every jumper is info-dominant, which is precisely the line
-where OPS's 32 base types leave this app's 16 behind.
+produced. Six fixture comparisons were retired in the process (this README once said four —
+the count is now taken from the git history, not memory); `tests/engine.test.ts` documents the
+two errors behind them.
 
 ## Private by default
 
-Nothing here is public. The Worker gates **every** request — the app shell, every
-asset, every API route — before the static asset binding is ever reached, so an
-unauthenticated visitor never receives a byte of the app. Not the HTML, not a chunk
-of JS. They get a self-contained access page and nothing else.
+Nothing here is public except the front door. The Worker gates **every** request — the app
+shell, every asset, every API route — before the static asset binding is ever reached. An
+unauthenticated visitor gets the marketing page at `/`, the gate everywhere else, and never a
+byte of the app.
 
-Access is by invite code, issued by the owner:
+Two ways in:
 
-- `ACCESS_CODES` is a list of `label:code` pairs. Adding one grants access; removing
-  one revokes it. The label is how you tell people apart.
-- Sessions are HMAC-signed tokens in an `HttpOnly` cookie, not rows in a table, so
-  there is nothing to keep and a forged cookie needs the signing secret.
-- Rotating `AUTH_SECRET` ends every session everywhere at once. That is the panic button.
+- **Invite codes** (`ACCESS_CODES`, `label:code` pairs). Stateless; sessions are HMAC-signed
+  cookies. Since 2026-08 each session also carries a digest-prefix identity of its code, so two
+  codes sharing a label are still two people.
+- **Google sign-in with owner approval.** A first sign-in creates a `pending` record in KV and
+  emails the owner two signed one-decision links (approve/deny) that work from a phone without
+  signing in. `/admin` is the full console. Blocked means blocked on the next page load.
 
-Three decisions worth knowing about, because they are the parts that would bite:
+The decisions that would bite if you didn't know them:
 
-1. **It fails closed.** With the secrets missing the site serves a "not configured"
-   page rather than serving the app. A wall that fails open publishes the site while
-   its owner believes it is private, which is worse than having no wall at all.
-2. **Codes are compared as SHA-256 digests**, so neither the code nor its length
-   leaks through response timing.
-3. **Only failed logins count toward the brute-force brake.** Counting successes
-   would lock out someone signing in on three devices while doing nothing extra
-   against an attacker, who by definition only ever fails.
+1. **It fails closed.** Missing secrets serve a "not configured" page, never the app.
+2. **Codes are compared as SHA-256 digests**, so neither the code nor its length leaks through
+   response timing.
+3. **Only failed logins count toward the in-memory brake**; the cross-isolate rate-limit
+   binding above it counts attempts, with its ceiling set where only brute force reaches it
+   (`wrangler.jsonc` says why).
+4. **Rotating `AUTH_SECRET` ends every session everywhere at once.** That is the panic button.
+5. **Every response carries the security-header layer** (`src/worker/headers.ts`): CSP allowing
+   exactly two inline scripts by hash, HSTS, nosniff, referrer and permissions policies.
 
-`tests/auth.test.ts` asserts the boundary directly: anonymous requests get no app
-content, forged and tampered and expired cookies are refused, a revoked code cannot
-sign in again, and a misconfigured wall refuses everyone. Setup is DEPLOY.md step 2.
+`tests/auth.test.ts` asserts the boundary against the handlers; `tests/workers/` asserts it
+again **inside the real Workers runtime** — real crypto, real KV, forged cookies, blocked
+users. What only a deployed probe can prove (`run_worker_first` edge routing) is a manual
+checklist in `docs/QA-REVIEW.md`.
 
 ## The assistant
 
-A persistent, context-aware rail on every route, backed by Gemini through a Cloudflare Worker.
-The key is a Worker secret and never reaches the browser.
+A persistent, context-aware rail on every route, backed by Gemini through the Worker. The key
+is a Worker secret and never reaches the browser.
 
 What makes the answers worth having is `src/engine/context.ts`: every request carries a system
-instruction assembled from the engine's own derived output for whatever is on screen — the
-stack, all four sides, the OPS signature, the gate, the coins, the relation code, **both**
-directions of ease and the composed playbook. Ask it about ENTP and INFJ romance and it answers
-with Mirage, Nemesis Ni and Trickster Fi, not with generic type descriptions. The instruction is
-built server-side, so a caller cannot edit the grounding out of the request.
+instruction assembled server-side from the engine's own derived output for whatever is on
+screen. A caller cannot edit the grounding out of the request — and since 2026-08 cannot smuggle
+arbitrary instruction text *in* either: the client's context object is validated against what
+the views actually publish (`parseContext` in `chat.ts`), free text is bounded and stripped,
+and the primer names screen text as data, not instructions.
 
-## Two things the interface insists on
-
-**Ease is directional.** Four of the sixteen relations are asymmetric — Supervisor/Supervisee
-and Benefactor/Beneficiary. A single compatibility number hides that, so the pair reader always
-shows both directions and names the asymmetry when it exists.
-
-**CSJ and OPS are not reconciled.** They model a different number of psychic parts and give
-different growth readings for the same type. The wiring schematic marks both faults: the CSJ
-Inferior as *the cave*, and the OPS demon-animal loop as *an open circuit*. They are in
-different places. That divergence is the content, not an error to smooth over.
+Conversations are logged to KV (90-day TTL) and **mailed to the owner** when a session ends —
+beacon, reset, or the hourly cron sweep for sessions that just stopped. The rail tells readers
+this. History is served back to each person, scoped to their own identity.
 
 ## Reading the reading surface
 
-The first build was, in the owner's words, terribly hard to read: 15px body text, 12.5px
-secondary, 9.5px SVG labels, and a film-grain plus vignette overlay pinned at `z-index: 9999`
-over the entire app, subtracting contrast from every pixel.
-
-That is rebuilt. Paper canvas, a serif body face at 19px on a 68ch measure, a **14px floor on
-every piece of text including inside SVG**, and a full dark theme. The grain is gone.
-`tests/palette.test.ts` reads the tokens straight out of `tokens.css` and asserts every
-foreground/background pair — ink, muted, accent, all eight function colours, all four quadra
-colours and the whole ease ramp — clears WCAG AA on its own canvas in both themes, so legibility
-is a test rather than a matter of taste.
+Paper canvas, a serif body face at 19px on a 68ch measure, a **14px floor on every piece of
+text including inside SVG**, and a full dark theme. `tests/palette.test.ts` reads the tokens
+straight out of `tokens.css` and asserts every foreground/background pair clears WCAG AA on its
+own canvas in both themes. Structure is tested too (`tests/a11y.test.ts`): ARIA tables contain
+real cells, scrollable figures are keyboard-reachable, and facts that lived only in hover
+tooltips also exist as text a screen reader announces. A render throw shows a readable fallback
+page, not a blank document (`ErrorBoundary`, tested in jsdom).
 
 ## Develop
 
 ```sh
 npm install
 cp .dev.vars.example .dev.vars   # add a Gemini key to use the assistant locally
-npm run dev        # http://localhost:5173 — serves /api/* with the Worker's own handler
-npm test           # 540 tests
+npm run dev        # http://localhost:5173 — the REAL Worker router, wall and all
+npm test           # the full suite: unit + Workers-runtime projects
+npm run lint       # Biome, linter only — the formatter is off on purpose
+npm run typecheck
 npm run build      # → dist/
 ```
+
+The dev server runs the Worker's own default export and hands asset requests back to Vite, so
+every route *handler* — Google, admin, chat history — behaves locally exactly as deployed, and
+the wall fails closed without `.dev.vars`. One thing dev cannot reproduce: because Vite plays
+the asset store, it does not exercise Cloudflare's `run_worker_first` edge routing — only
+`wrangler dev` or the deployed URL proves that assets go through the wall (DEPLOY.md has the
+probes). CI (`.github/workflows/ci.yml`) runs typecheck, lint, tests and build on every push.
 
 ## Deploy
 
@@ -264,32 +263,30 @@ npm run cf:login     # Cloudflare OAuth, once
 npm run deploy       # build + wrangler deploy
 ```
 
-Or connect the repo in the dashboard (Workers & Pages → Create → Workers → Import a repository)
-for build-and-deploy on every push.
+Or connect the repo in the dashboard for build-and-deploy on every push to `main` (non-`main`
+branches build previews).
 
-Workers rather than Pages because Pages' Git integration cannot be added after project creation,
-Cloudflare now routes new projects to Workers, and adding an API later needs no migration.
-`not_found_handling: "single-page-application"` in `wrangler.jsonc` is what makes deep links like
-`/pair/ENTP/ENFJ` survive a hard refresh.
+`not_found_handling: "single-page-application"` in `wrangler.jsonc` is what makes deep links
+like `/pair/ENTP/ENFJ` survive a hard refresh, and `run_worker_first: true` is the entire
+security property of the wall — the comment on it in `wrangler.jsonc` is required reading
+before touching that file.
 
 ## Provenance
 
-`src/engine/data.ts` is generated once from a Python reference engine that was verified against
-the spreadsheet build. `tests/reference-fixture.json` captures that engine's complete output, and
-`tests/engine.test.ts` asserts the TypeScript port reproduces it exactly — all 256 relations, all
-256 scores, and all 256 playbooks character for character.
-
-That handover is complete: **TypeScript is now canonical.** The Python reference is retired and
-the spreadsheet is a derived artifact. Regenerating `data.ts` is not part of the build.
+`src/engine/data.ts` began as output generated from a Python reference engine verified against
+the spreadsheet build; `tests/reference-fixture.json` captures that engine's complete output,
+and `tests/engine.test.ts` asserts the TypeScript port reproduces its structural claims. That
+handover is complete: **TypeScript is canonical**, and the authored tables in `data.ts` are
+edited directly — regenerating it is not part of the build and has not been for some time.
 
 ## Deliberately deferred
 
-Nothing structural. The layer the original build deferred — middle-animal ordering, OPS modality
-and the jumper coin — is now modelled, but as **self-reported subtype coins** rather than
-derived facts, because they genuinely are not recoverable from a four-letter type. They follow
-the shape the original note prescribed: a fixed 4-bit head with an extensible tail, all relation
-lookups keyed to the head only, so the subtype layer modulates presentation without ever
-touching the 256-cell core.
+- A pluggable chat-model provider (the Gemini specifics are ~80 lines of `chat.ts`; the
+  abstraction waits until a second provider is actually wanted — owner's call, 2026-08).
+- History rewrite to shrink clones (~25 MB of removed-but-remembered binaries; see
+  `docs/classification-report.md` for retrieval and reasoning).
+- The remaining vocabulary passes (camps, the Octagram's product name) —
+  `docs/VOCABULARY.md` tracks what shipped and what did not.
 
 ## Licence
 

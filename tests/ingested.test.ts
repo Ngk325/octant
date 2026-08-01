@@ -250,8 +250,8 @@ describe("no derived mapping was smuggled in", () => {
     // explicitly out of scope.
     const asType = TYPES as readonly MbtiType[];
     for (const t of asType) {
-      expect(Object.prototype.hasOwnProperty.call(FN_ROLE, t)).toBe(false);
-      expect(Object.prototype.hasOwnProperty.call(FN_SATISFACTION, t)).toBe(false);
+      expect(Object.hasOwn(FN_ROLE, t)).toBe(false);
+      expect(Object.hasOwn(FN_SATISFACTION, t)).toBe(false);
     }
   });
 });
@@ -412,7 +412,7 @@ describe("the four-sides operation partitions the sixteen types", () => {
     for (const t of TYPES) {
       if (seen.has(t)) continue;
       const g = [...fourSides(t)].sort();
-      g.forEach((x) => seen.add(x));
+      g.forEach((x) => { seen.add(x); });
       groups.push(g);
     }
     expect(groups).toHaveLength(4);

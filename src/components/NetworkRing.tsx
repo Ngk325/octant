@@ -1,5 +1,5 @@
 import { quadra } from "../engine/core";
-import { type Member, type analyse } from "../engine/network";
+import type { Member, analyse } from "../engine/network";
 import { usePalette } from "./Theme";
 import TypeMolecule from "./glyphs/TypeMolecule";
 
@@ -35,6 +35,7 @@ export default function NetworkRing({ members, report }: {
   }
 
   return (
+    <>
     <svg
       viewBox={`0 0 ${S} ${S}`}
       width="100%"
@@ -76,5 +77,14 @@ export default function NetworkRing({ members, report }: {
         </g>
       ))}
     </svg>
+    {/* The per-edge <title> tooltips above are inside role="img", which
+        collapses the subtree for assistive tech — a screen reader got only
+        the average. The same facts, as real (hidden) text. */}
+    <ul className="sr-only">
+      {pairs.map((pr, i) => (
+        <li key={i}>{pr.label} ease out of 100</li>
+      ))}
+    </ul>
+    </>
   );
 }

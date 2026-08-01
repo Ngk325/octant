@@ -171,12 +171,12 @@ function AdminRow({
       {!user.owner && (
         <div className="cluster" style={{ gap: "var(--s2)" }}>
           {user.status !== "approved" && (
-            <button className="btn primary" disabled={busy} onClick={() => onChange(user.email, "approved")}>
+            <button type="button" className="btn primary" disabled={busy} onClick={() => onChange(user.email, "approved")}>
               Approve
             </button>
           )}
           {user.status !== "blocked" && (
-            <button className="btn" disabled={busy} onClick={() => onChange(user.email, "blocked")}>
+            <button type="button" className="btn" disabled={busy} onClick={() => onChange(user.email, "blocked")}>
               Block
             </button>
           )}

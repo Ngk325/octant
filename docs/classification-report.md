@@ -1,6 +1,18 @@
 # Classification report
 
-Source: `typology-photos-normalized 2.zip`, committed to `main` (0dafb68).
+Source: `typology-photos-normalized 2.zip`, added in commit `0dafb68` and removed from the
+working tree in 2026-08 (it was 24 MB in every clone, referenced by nothing but this line).
+It remains in git history — audit documentation (this file and
+`docs/REVIEW-FINDINGS.md`) still references it by name — and you can retrieve it:
+
+```sh
+git show '0dafb68:typology-photos-normalized 2.zip' > photos.zip
+git show '0dafb68:Four Sides of the Mind.docx' > four-sides.docx
+```
+
+History was deliberately NOT rewritten — clones still carry the weight, but existing
+clones, PR refs and this audit trail stay intact. `docs/transcripts/` is the working
+record derived from the batch; the zip is only needed to re-verify a transcription.
 
 **21 images present, not 23.** The catalog lists `IMG_8404.HEIC` and `IMG_8405.HEIC` (the
 2025-08-28 pair); neither is in the normalized set. Worth checking whether they were dropped

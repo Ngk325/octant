@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 import { stack, ease, type MbtiType } from "../engine/core";
 import { ARCHETYPE, type Fn } from "../engine/data";
 import { writeStored } from "../storage";
@@ -22,7 +22,7 @@ const PARTNER: MbtiType = "INFJ";
 
 interface Screen {
   idea: string;
-  figure: JSX.Element;
+  figure: React.JSX.Element;
   unlock: string;
 }
 
@@ -130,9 +130,10 @@ export default function Welcome() {
     <div className="onboard">
       <div className="onboard-top">
         <span className="wordmark">Octant</span>
-        <button className="btn ghost" onClick={leave}>Skip intro</button>
+        <button type="button" className="btn ghost" onClick={leave}>Skip intro</button>
       </div>
 
+      {/* biome-ignore lint/a11y/useSemanticElements: the dots are a labelled progress group; no HTML element says that without becoming a form control. */}
       <div className="onboard-progress" role="group" aria-label={`Part ${n} of ${SCREENS.length}`}>
         {SCREENS.map((_, idx) => (
           <span
@@ -152,7 +153,7 @@ export default function Welcome() {
       <div className="onboard-nav">
         {isFirst ? <span /> : <Link to={`/welcome/${i}`} className="btn">← Back</Link>}
         {isLast ? (
-          <button className="btn primary" onClick={leave}>Enter Octant →</button>
+          <button type="button" className="btn primary" onClick={leave}>Enter Octant →</button>
         ) : (
           <Link to={`/welcome/${i + 2}`} className="btn primary">Next →</Link>
         )}

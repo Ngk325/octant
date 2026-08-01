@@ -1,6 +1,7 @@
 import { buildSystemInstruction, type ChatContext } from "../engine/context";
+import { TYPES, type MbtiType } from "../engine/data";
 import {
-  recordExchange, sweepIdle, validThreadId, type ChatLogEnv, type ChatWho,
+  recordExchange, validThreadId, type ChatLogEnv, type ChatWho,
 } from "./chatlog";
 
 /* ------------------------------------------------------------------ *
@@ -15,6 +16,8 @@ import {
 
 export interface Env extends ChatLogEnv {
   GEMINI_API_KEY?: string;
+  /** Cross-isolate throttle. Absent in dev; the in-memory Map below still brakes. */
+  CHAT_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
 }
 
 /** How handleChat reports back to the runtime and the transcript log. */
@@ -29,12 +32,20 @@ export interface ChatHooks {
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 
-/** Allowlisted so a caller cannot bill an arbitrary model to this key. */
+/**
+ * The two models a caller may reach. This is an allowlist in the sense that
+ * matters — no arbitrary model string is ever sent to Gemini and billed to
+ * this key — but the enforcement is NORMALISATION, not rejection: `model`
+ * is an optional hint, and anything that is not exactly `fast` or `deep`
+ * (including absent, a typo, or a stale value) coerces to `fast` below rather
+ * than 400ing. A hint is not worth failing a question over; billing safety is
+ * preserved either way.
+ */
 export const MODELS = {
   fast: "gemini-3.6-flash",
   deep: "gemini-3.1-pro-preview",
 } as const;
-/** The allowlisted models. A request naming anything else is rejected. */
+/** The two accepted hints. Anything else normalises to `fast`; see MODELS. */
 export type ModelKey = keyof typeof MODELS;
 
 const MAX_MESSAGES = 40;
@@ -80,16 +91,97 @@ export function upstreamMessage(status: number): string {
     return "The assistant is answering too many questions at once. Wait about a minute and ask again — " +
       "this clears on its own.";
   }
+  /* These two used to name the secret and a source file. Any signed-in reader
+     can see this text, and a reader can do nothing with either detail — the
+     specifics go to the log (observability is on), the reader gets the
+     direction. The unconfigured 503 below still names the exact command,
+     because the person who hits an unconfigured deployment IS the owner. */
   if (status === 401 || status === 403) {
-    return "The assistant's API key was rejected. Check that GEMINI_API_KEY is set correctly on this " +
-      "deployment — DEPLOY.md step 2 has the detail.";
+    return "The assistant's credentials were rejected by its provider. That is the owner's to fix — " +
+      "tell them the assistant is down, and that the deployment's API key needs checking.";
   }
   if (status === 404) {
-    return "The assistant is configured with a model this key cannot reach. Check the model names in " +
-      "src/worker/chat.ts against the ones your key is enabled for.";
+    return "The assistant is configured to use a model its key cannot reach. The owner needs to " +
+      "update the deployment's model configuration.";
   }
   if (status >= 500) return "The model is having trouble at its end. Try again in a moment.";
   return "The assistant could not answer that one. Try rephrasing it.";
+}
+
+/* ------------------------- context validation ------------------------- *
+ * `body.context` decides what goes into the SYSTEM instruction, and it is
+ * client-supplied. Every other field of the request is validated (model
+ * allowlist, message count, char count, threadId shape) — this one was
+ * not, which meant three things a caller could do that a reader cannot:
+ * crash typeFacts with a type code that is not one ("XXXX" → TypeError →
+ * bare 500), inflate the instruction without bound through the members
+ * array (MAX_CHARS guards only `messages`), and smuggle arbitrary
+ * instruction text above the conversation through free-text fields.
+ *
+ * The free-text fields stay free — a member really can be called anything
+ * — but they are bounded, stripped of control characters, and the primer
+ * names them as data rather than instructions. Bounding does not make
+ * injection impossible; it makes it small, visible in the transcript log,
+ * and unable to also be a resource attack.
+ * -------------------------------------------------------------------- */
+
+const VALID_TYPES = new Set<string>(TYPES);
+/** The Network view has no member cap, but the instruction must: n(n-1)/2 pair lines. */
+const MAX_MEMBERS = 16;
+
+/** Free text, made boring: control characters out, whitespace collapsed, length capped. */
+const boring = (v: unknown, cap: number): string =>
+  typeof v === "string"
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping them is the point.
+    ? v.replace(/[\u0000-\u001f\u007f\u2028\u2029]+/g, " ").replace(/\s+/g, " ").trim().slice(0, cap)
+    : "";
+
+const isType = (v: unknown): v is MbtiType => typeof v === "string" && VALID_TYPES.has(v);
+
+/**
+ * The client's context, or null when it is not one. Null means 400, not a
+ * silent home fallback — a malformed context is a client bug, and answering
+ * as if the screen were blank would hide it.
+ */
+export function parseContext(raw: unknown): ChatContext | null {
+  if (raw === undefined || raw === null) return { kind: "home" };
+  if (typeof raw !== "object") return null;
+  const c = raw as Record<string, unknown>;
+  switch (c.kind) {
+    case "home": case "admin": case "matrix":
+      return { kind: c.kind };
+    case "catalogue":
+      return { kind: "catalogue", sortBy: boring(c.sortBy, 40) };
+    case "learn": {
+      const stage = typeof c.stage === "number" && Number.isInteger(c.stage) ? c.stage : NaN;
+      if (!(stage >= 0 && stage <= 40)) return null;
+      return { kind: "learn", stage, title: boring(c.title, 120) };
+    }
+    case "type":
+      return isType(c.type) ? { kind: "type", type: c.type } : null;
+    case "pair":
+      return isType(c.a) && isType(c.b) ? { kind: "pair", a: c.a, b: c.b } : null;
+    case "network": {
+      if (!Array.isArray(c.members) || c.members.length > MAX_MEMBERS) return null;
+      const members: { name: string; type: MbtiType }[] = [];
+      for (const m of c.members as unknown[]) {
+        const mm = m as Record<string, unknown>;
+        if (!isType(mm?.type)) return null;
+        members.push({ name: boring(mm.name, 60) || "Unnamed", type: mm.type });
+      }
+      return { kind: "network", members };
+    }
+    case "lexicon": {
+      const term = boring(c.term, 60);
+      return { kind: "lexicon", ...(term ? { term } : {}) };
+    }
+    case "calculator": {
+      if (c.best === undefined || c.best === null) return { kind: "calculator", best: null };
+      return isType(c.best) ? { kind: "calculator", best: c.best } : null;
+    }
+    default:
+      return null;
+  }
 }
 
 /** One turn of conversation as it arrives from the client. */
@@ -159,10 +251,12 @@ function rateLimited(ip: string, now: number): boolean {
 export async function handleChat(
   request: Request, env: Env, hooks: ChatHooks = {}, now = Date.now(),
 ): Promise<Response> {
-  /* Piggyback the idle-transcript sweep on chat traffic. Fire-and-forget;
-     with no CHAT_LOGS binding it is a no-op. */
+  /* The idle-transcript sweep used to piggyback here, a full KV scan per
+     message. It is cron's job now (wrangler.jsonc triggers → index.ts
+     scheduled), which also mails the LAST session of a quiet spell — the
+     one the piggyback could never reach, because it needed a next message
+     that by definition never came. */
   const defer = hooks.waitUntil ?? ((p: Promise<unknown>) => void p.catch(() => {}));
-  defer(sweepIdle(env, now));
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
   if (request.method !== "POST") return json({ error: "Use POST." }, 405);
 
@@ -180,11 +274,6 @@ export async function handleChat(
       },
       503,
     );
-  }
-
-  const ip = request.headers.get("cf-connecting-ip") ?? "local";
-  if (rateLimited(ip, now)) {
-    return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
   }
 
   let body: ChatRequest;
@@ -210,7 +299,38 @@ export async function handleChat(
   if (!contents.length) return json({ error: "No messages." }, 400);
 
   const model = MODELS[body.model as ModelKey] ?? MODELS.fast;
-  const systemInstruction = buildSystemInstruction(body.context ?? { kind: "home" });
+
+  const ctx = parseContext(body.context);
+  if (!ctx) return json({ error: "That context is not one this app produces." }, 400);
+
+  /* Post-validation this cannot throw; the catch is the difference between a
+     structured refusal and a bare 500 if the two files ever disagree. */
+  let systemInstruction: string;
+  try {
+    systemInstruction = buildSystemInstruction(ctx);
+  } catch (err) {
+    console.error("chat: buildSystemInstruction failed", String(err));
+    return json({ error: "That context is not one this app produces." }, 400);
+  }
+
+  /* Rate limiting is charged HERE, after the request is known to be a valid
+     chat request — not on arrival. The limiter guards the expensive resource
+     (Gemini quota and the shared per-IP chat budget); charging it before
+     validation would let a flood of malformed POSTs from one NAT gateway spend
+     the budget and 429 the legitimate users behind it, without a single model
+     call. Malformed requests still cost only a cheap 400/413 above. Both brakes
+     fail open: a wrongly-refused message costs a reader their question; a
+     limiter outage concedes nothing the per-isolate brake was not already. */
+  const ip = request.headers.get("cf-connecting-ip") ?? "local";
+  if (rateLimited(ip, now)) {
+    return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
+  }
+  if (env.CHAT_LIMITER) {
+    const verdict = await env.CHAT_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
+    if (!verdict.success) {
+      return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
+    }
+  }
 
   const call = () => fetch(`${ENDPOINT}/${model}:streamGenerateContent?alt=sse`, {
     method: "POST",
@@ -257,7 +377,7 @@ export async function handleChat(
       env,
       threadId,
       hooks.who ?? { label: "unknown", kind: "code" },
-      contextLabel(body.context ?? { kind: "home" }),
+      contextLabel(ctx),
       lastUser,
       fullReply,
       now,

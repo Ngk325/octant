@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { usePublishContext } from "../chat/ChatContext";
 import { Panel, Tile } from "../components/Bits";
 import { STAGES } from "../learn/curriculum";

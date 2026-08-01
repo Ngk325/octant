@@ -9,6 +9,14 @@ that matter.
 Repo: `/home/user/typology`. `main` is at `5690a98`, 715 tests passing,
 typecheck and build clean.
 
+> **Corrections, 2026-08-01** — this handoff was stale on arrival in four
+> places, all verified against the code: §2g's onboarding shipped (eight
+> screens, `src/views/Welcome.tsx`, in the same PR as this document); §2i's
+> "still pending" stack and relation renames shipped (`SLOT_NAMES`,
+> `REL_NAME` in `data.ts` — the camps and the Rose genuinely remain); §5's
+> `pairTerms` quadra landmine was fixed in the same PR too; and the test
+> count is now far past 715. Read the rest with that in mind.
+
 ---
 
 ## 1. What Octant is
@@ -118,6 +126,10 @@ etc).
 
 ### 2g. "there should be an onboarding where the user has to get through the core basic concepts... before entering the application"
 
+> **SHIPPED (2026-08 correction).** Built at eight screens — `src/views/Welcome.tsx`,
+> routed and gated in `src/App.tsx`, tested in `tests/onboarding.test.tsx`. The
+> original text below described it as unbuilt and is kept as the record.
+
 **Not built.** Only specified — six screens, in `docs/DESIGN-CATALOGUE.md`.
 No route, no component, no gate logic exists yet. This is a real, sizeable
 unbuilt feature, not a polish item.
@@ -138,6 +150,12 @@ terms did make it into the engine (stack renames partially, `ANIMAL_LABEL`,
 `REL_NAME`), but the stack (Lead/Support/Delight/Cave/Doubt/Scold/Blind
 spot/Dread), the four sides, the camps, and the Rose are all **still
 pending**, deliberately held back — see §5 prerequisite.
+
+> **PARTLY SHIPPED (2026-08 correction).** The stack names
+> (`SLOT_NAMES`) and the sixteen relation names (`REL_NAME`) are now live in
+> `src/engine/data.ts`. Genuinely still pending: the camps
+> (Alpha/Beta/Gamma/Delta → Hearth/Forge/Market/Field), the four-sides rename,
+> and the Octagram→Rose rename. `docs/VOCABULARY.md` tracks the split.
 
 ### 2j. "v4... Set D with the other established systems next to it... to
    understand the translations"
@@ -202,6 +220,12 @@ confirm with the owner before doing it.
 ---
 
 ## 5. Known landmine for the next vocabulary pass
+
+> **FIXED (2026-08 correction).** The `pairTerms` Quadra branch is now
+> id-keyed (`QUADRA_ELEMENTS[aId]`), fixed in the same PR that added this
+> handoff. The warning below stands as guidance for the *pattern* — any new
+> pairing branch keyed on a display label will break the same way when that
+> label is renamed — but the specific Quadra bug it describes is resolved.
 
 `src/engine/lexicon.ts`, function `pairTerms` — its **Quadra branch is still
 keyed by display label** (`a.term`), not by stable id. The **Animal branch**

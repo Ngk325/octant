@@ -1,6 +1,6 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TYPES, ease, type MbtiType, type Quadra } from "../engine/core";
-import { type Fn } from "../engine/data";
+import type { Fn } from "../engine/data";
 import { ops } from "../engine/ops";
 import { wheelOf } from "../engine/octagram";
 import RelationLanding from "../components/RelationLanding";
@@ -18,7 +18,7 @@ import OctagramMap from "../components/OctagramMap";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 import FnIcon from "../components/glyphs/FnIcon";
 import AnimalGlyph from "../components/glyphs/AnimalGlyph";
-import { type Animal } from "../engine/ops";
+import type { Animal } from "../engine/ops";
 
 /* ------------------------------------------------------------------ *
  * FIGURES THE ASSISTANT CAN DRAW.
@@ -50,7 +50,10 @@ const asQuadra = (s: string) => (s[0].toUpperCase() + s.slice(1).toLowerCase()) 
 
 /** SVG diagrams keep their 14px floor in the narrow rail by scrolling, not shrinking. */
 const Scroll = ({ minWidth, children }: { minWidth: number; children: ReactNode }) => (
-  <div style={{ overflowX: "auto" }}>
+  // Focusable for the same reason Figure is: a sideways-scrolling region must
+  // be reachable by keyboard, and the rail is narrow enough that it always is.
+  // biome-ignore lint/a11y/noNoninteractiveTabindex: the tabstop IS the point — it is how a keyboard pans the drawing.
+  <div style={{ overflowX: "auto" }} tabIndex={0} role="group" aria-label="Diagram">
     <div style={{ minWidth }}>{children}</div>
   </div>
 );

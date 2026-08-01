@@ -70,6 +70,6 @@ export function usePublishContext(build: () => Ctx, deps: unknown[]) {
   const { setContext } = useChatCtx();
   useEffect(() => {
     setContext(build());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // biome-ignore lint/correctness/useExhaustiveDependencies: deps is the caller's identity list by design — see the contract above.
   }, deps);
 }

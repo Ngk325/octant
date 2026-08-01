@@ -22,6 +22,15 @@ grey where it helps.
 | — `stack-map`, `last current` (the whole figure registry) | 2 |
 | **Terms with nothing** | **61** |
 
+> **Recount, 2026-08-01:** the table above is a snapshot from before the
+> figure push and is kept as the record of the gap as it stood. Current
+> ground truth, asserted in `tests/diagrams.test.tsx`: 103 lexicon entries
+> (the 71 counted literals plus 16 generated relation entries and 16 coin
+> poles), a 24-key figure registry plus rule-based coverage of the whole
+> Relation, Temperament, Romance, Interaction and Gate categories, and a
+> pinned undrawn set of exactly eight entries (two Concepts, six Coins).
+> The onboarding shipped at eight screens, not the six specified below.
+
 Roughly twenty good diagrams ship, but they live on the type, pair and
 learn pages. Open the lexicon — the place a confused reader goes — and
 almost every entry is a wall of prose.

@@ -1,5 +1,5 @@
 import { useState, useId } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { lookup, BY_ID, type Entry } from "../engine/lexicon";
 
 /**
@@ -23,6 +23,7 @@ export default function Term({
        link — it vanished on the very Tab that would have got there. Checking
        relatedTarget means the popover only closes when focus leaves the whole
        term, and Escape closes it deliberately. */
+    // biome-ignore lint/a11y/noStaticElementInteractions: onBlur here is focus BOOKKEEPING, not interaction — the button inside is the interactive element, and the comment above says why the handler must sit on the wrapper.
     <span
       className="term-wrap"
       onBlur={(e) => {
@@ -62,6 +63,7 @@ export default function Term({
       {open && (
         /* A disclosure, not a tooltip: it holds a link, and the trigger carries
            aria-expanded. role="tooltip" would contradict both. */
+        // biome-ignore lint/a11y/useSemanticElements: no semantic inline element means "labelled group"; the comment above records why this is not role=tooltip either.
         <span className={`term-pop${flip ? " flip" : ""}`} id={popId} role="group" aria-label={`About ${entry.term}`}>
           <span className="small muted" style={{ display: "block", marginBottom: 4 }}>
             {entry.category}

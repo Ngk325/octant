@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router";
 import { ThemeProvider } from "../src/components/Theme";
 import Welcome, { resolveStep, ONBOARDING_DONE_KEY } from "../src/views/Welcome";
 

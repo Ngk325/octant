@@ -28,20 +28,33 @@ import { TYPES, type MbtiType } from "./data";
  *   The names: four temples, eight cognitive origins, and each wheel's
  *   Living Virtue, Deadly Sin and two poles.
  *
- *   Confidence is high on origins, virtues and sins. Two independent CS
- *   Joseph pages agree on the full set, and there is a strong internal
- *   check: the eight Deadly Sins are exactly the classical eight of the
- *   Evagrian/Cassian tradition (wrath, lust, envy, vainglory, sloth,
- *   pride, gluttony, greed), each paired with its traditional contrary
- *   virtue. A mis-transcribed table would not land on that by accident.
+ *   Confidence is high on the whole authored surface — since 2026-08 it
+ *   is no longer inference: all eight wheel diagrams are public, on the
+ *   source's own 2022 temple-wheels article, and every field below —
+ *   origin, virtue, sin, both poles — matches those images, 40 of 40.
+ *   (The article is cited by name in docs/QA-REVIEW.md; this file keeps
+ *   the shipping bundle free of source names, as the attribution test
+ *   requires.)
  *
- *   Confidence is LOWER on which pole is the shadow and which the
- *   aspirational. One published summary transposes the two columns
- *   relative to the others. The orientation used here — shadow = where
- *   the unconscious-developed sit, aspirational = where the
- *   subconscious-developed sit — is the one the research batch states
- *   explicitly. It is cross-checked on two wheels of eight only, and
- *   that limit is recorded in UNSETTLED rather than glossed over.
+ *   One earlier claim is RETIRED, because it failed verification: this
+ *   comment used to call the eight sins "the classical eight of the
+ *   Evagrian/Cassian tradition" and treat that as a transcription check.
+ *   Evagrius's eight logismoi include sadness and acedia and do NOT
+ *   include envy; envy enters with Gregory the Great, who also folded
+ *   vainglory into pride. The set used here — wrath, lust, envy,
+ *   vainglory, sloth, pride, gluttony, greed — is Evagrius minus sadness
+ *   plus Gregorian envy with vainglory kept separate: a recognisable
+ *   lineage, not the classical list, and only two of the virtue pairings
+ *   (Chastity–Lust, Humility–Pride) are the traditional contraries. The
+ *   real check is now direct: the table matches the published diagrams.
+ *
+ *   Pole orientation — shadow = where the unconscious-developed sit,
+ *   aspirational = where the subconscious-developed sit — is stated in
+ *   the public material (left/shadow, right/aspirational on every
+ *   diagram; UD-near-shadow in the UD-vs-SD transcript). What the source
+ *   explicitly resists is a moral reading of that geometry: "your Deadly
+ *   Sin is not always 'bad', and your Living Virtue is not always
+ *   'good'." The app keeps that caution.
  *
  * Research notes for this layer are in docs/; every string below is
  * written for this app.
@@ -324,8 +337,8 @@ export const poleFor = (w: Wheel, d: Development) =>
  */
 export const UNSETTLED: { what: string; why: string }[] = [
   {
-    what: "Which pole is the shadow and which is the aspirational",
-    why: "The pole PAIR for each wheel is well sourced. Their orientation is less so: one published summary transposes the two columns relative to the temple-wheels page and the dedicated ESTP/INFJ episode. This app follows the latter two — shadow = where the unconscious-developed sit, aspirational = where the subconscious-developed sit — which is stated outright for the Intimacy wheel and consistent for Justification. The other six are taken on that pattern rather than independently confirmed.",
+    what: "What the poles MEAN, now that where they sit is settled",
+    why: "The orientation question this entry used to record is closed (2026-08): the public temple-wheels article shows all eight diagrams with the Shadow Pole on the left and the Aspirational Pole on the right, this app's table matches them on all forty fields, and the public UD-vs-SD material puts the unconscious-developed nearer the shadow pole. What remains genuinely open is the reading: the source itself warns that the deadly sin is not always bad and the living virtue not always good, and the per-type meaning of each pole lives in members-only lectures (the Deadly Sins series and the per-type Octagram seasons) that this app has not seen. The geometry is asserted; the moral weighting is not.",
   },
   {
     what: "How the temples influence one another",

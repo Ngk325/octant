@@ -38,7 +38,19 @@ import { getUser, isOwner, type UserEnv } from "./users";
  * and it is the answer to KV's eventual consistency.
  * ------------------------------------------------------------------ */
 
+/** The rate-limiting binding's whole API. Absent in dev; the wall degrades to the in-memory brake. */
+export interface RateLimit {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
+
 export interface AuthEnv extends UserEnv {
+  /**
+   * Cross-isolate attempts ceiling for /api/auth/login. Counts every attempt,
+   * not just failures — the binding consumes on call and cannot see the
+   * outcome first — so its limit sits where only brute force reaches it,
+   * and the failures-only principle lives on in the in-memory brake below.
+   */
+  LOGIN_LIMITER?: RateLimit;
   /**
    * Invite codes, comma-separated. Either bare codes or `label:code` pairs —
    * the label is how you tell people apart and revoke one without disturbing
@@ -115,12 +127,20 @@ export const googleAvailable = (env: AuthEnv): boolean =>
 export const isConfigured = (env: AuthEnv): boolean =>
   !!env.AUTH_SECRET && (parseCodes(env.ACCESS_CODES).length > 0 || googleAvailable(env));
 
-/** The label attached to a submitted code, or null. Constant-time against every code. */
-async function labelForCode(env: AuthEnv, submitted: string): Promise<string | null> {
+/**
+ * The invite a submitted code matches, or null. Constant-time against every
+ * code. `codeId` is a digest prefix, not the code: enough to tell two codes
+ * apart forever, useless for recovering either.
+ */
+async function labelForCode(
+  env: AuthEnv, submitted: string,
+): Promise<{ label: string; codeId: string } | null> {
   const given = await digest(submitted);
-  let found: string | null = null;
+  let found: { label: string; codeId: string } | null = null;
   for (const invite of parseCodes(env.ACCESS_CODES)) {
-    if (sameDigest(await digest(invite.code), given)) found = invite.label;
+    if (sameDigest(await digest(invite.code), given)) {
+      found = { label: invite.label, codeId: given.slice(0, 16) };
+    }
   }
   return found;
 }
@@ -134,15 +154,23 @@ export interface Session {
   kind: SessionKind;
   /** Present only for Google sessions. The key into the user list. */
   email?: string;
+  /**
+   * Present only for code sessions minted since 2026-08: a prefix of the
+   * code's digest. Labels are not identities — two bare codes both default
+   * to "guest", and anything scoped by label (chat history) would let those
+   * two people read each other. This is the identity the label is not.
+   */
+  codeId?: string;
   exp: number;
 }
 
 /** Mint a session token. Nothing is stored server-side; the signature is the proof. */
 export async function issueSession(
   label: string, kind: SessionKind, email: string | undefined, secret: string, now: number,
+  codeId?: string,
 ): Promise<string> {
   const exp = Math.floor(now / 1000) + SESSION_DAYS * 86_400;
-  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, e: exp }));
+  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, c: codeId, e: exp }));
   return `${payload}.${await sign(payload, secret)}`;
 }
 
@@ -152,14 +180,15 @@ async function open(token: string, secret: string, now: number): Promise<Session
   const payload = token.slice(0, dot);
   if (!(await signatureMatches(token.slice(dot + 1), await sign(payload, secret)))) return null;
   try {
-    const { l, k, m, e } = JSON.parse(unb64url(payload)) as
-      { l?: string; k?: string; m?: string; e?: number };
+    const { l, k, m, c, e } = JSON.parse(unb64url(payload)) as
+      { l?: string; k?: string; m?: string; c?: string; e?: number };
     if (typeof e !== "number" || e * 1000 <= now) return null;
     return {
       label: typeof l === "string" ? l : "guest",
       // Sessions minted before Google existed carry no kind; they are codes.
       kind: k === "google" ? "google" : "code",
       email: typeof m === "string" ? m : undefined,
+      codeId: typeof c === "string" ? c : undefined,
       exp: e,
     };
   } catch {
@@ -246,6 +275,17 @@ export async function handleAuth(
     if (tooManyFailures(ip, now)) {
       return json({ error: "Too many attempts. Wait ten minutes and try again." }, 429);
     }
+    /* The cross-isolate ceiling. The in-memory brake above is per-isolate and
+       Workers discard isolates freely; this one holds across all of them.
+       Failing open when the binding errors is deliberate — the wall's own
+       digest comparison is the real defence, and a rate-limit outage must
+       not lock the owner out. */
+    if (env.LOGIN_LIMITER) {
+      const verdict = await env.LOGIN_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
+      if (!verdict.success) {
+        return json({ error: "Too many attempts. Wait a minute and try again." }, 429);
+      }
+    }
 
     let code = "";
     try {
@@ -256,14 +296,16 @@ export async function handleAuth(
     }
     if (!code) return json({ error: "Enter your access code." }, 400);
 
-    const label = await labelForCode(env, code);
-    if (!label) {
+    const invite = await labelForCode(env, code);
+    if (!invite) {
       recordFailure(ip, now);
       return json({ error: "That code was not recognised." }, 401);
     }
 
-    const token = await issueSession(label, "code", undefined, env.AUTH_SECRET, now);
-    return json({ ok: true, label }, 200, { "set-cookie": setCookie(url, token) });
+    const token = await issueSession(
+      invite.label, "code", undefined, env.AUTH_SECRET, now, invite.codeId,
+    );
+    return json({ ok: true, label: invite.label }, 200, { "set-cookie": setCookie(url, token) });
   }
 
   return json({ error: "Not found." }, 404);
@@ -418,7 +460,17 @@ const gatePage = (env: AuthEnv, returnTo: string) => {
   Google you will wait until they approve you; if your code has stopped working it has been
   revoked or rotated.<br><br>
   New here? <a href="/">Read what Octant is</a> first.</p>
-${codes ? `<script>
+${codes ? `<script>${GATE_SCRIPT}</script>` : ""}`);
+};
+
+/**
+ * The gate's login script, as its own constant because the CSP hashes it:
+ * src/worker/headers.ts allows exactly this text and index.html's theme
+ * script, and nothing else inline. Editing this string is safe — the hash is
+ * recomputed from it at runtime — but moving it back inline in gatePage
+ * would silently fall out of the hash's coverage.
+ */
+export const GATE_SCRIPT = `
 (function () {
   var f = document.getElementById('f'), go = document.getElementById('go'),
       msg = document.getElementById('msg'), code = document.getElementById('code');
@@ -441,8 +493,7 @@ ${codes ? `<script>
     });
   });
 })();
-</script>` : ""}`);
-};
+`;
 
 const pendingPage = (email: string) => SHELL("Octant — waiting for approval", `
   <div class="mark">◷</div>

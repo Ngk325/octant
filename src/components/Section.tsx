@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * An anchored page section. The heading carries the id and the `.sec` class,

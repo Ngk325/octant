@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { quadra } from "../engine/core";
 import { calculate, COIN_OPTIONS } from "../engine/ops";
 import { COIN_LABELS, DETERMINING } from "../engine/data";
@@ -49,7 +49,7 @@ const PROMPTS: [string, string][] = [
  * outward member of each family stands in for the family, since attitude is
  * not what is being asked.
  */
-function coinGlyph(i: number, side: 0 | 1): JSX.Element | null {
+function coinGlyph(i: number, side: 0 | 1): React.JSX.Element | null {
   /* i=1 · coin 2 — self-calibrated vs tribe-calibrated, the F pair standing
      in for both deciders. */
   if (i === 1) {
@@ -174,7 +174,7 @@ export default function Calculator() {
           <Panel title="Still possible">
             <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
               {answered > 0 && (
-                <button className="btn ghost" style={{ marginLeft: "auto", order: 2 }}
+                <button type="button" className="btn ghost" style={{ marginLeft: "auto", order: 2 }}
                         onClick={() => setAnswers(Array(8).fill(null))}>
                   Clear all
                 </button>
