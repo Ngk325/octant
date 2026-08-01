@@ -1,4 +1,5 @@
 import { buildSystemInstruction, type ChatContext } from "../engine/context";
+import { TYPES, type MbtiType } from "../engine/data";
 import {
   recordExchange, sweepIdle, validThreadId, type ChatLogEnv, type ChatWho,
 } from "./chatlog";
@@ -80,16 +81,97 @@ export function upstreamMessage(status: number): string {
     return "The assistant is answering too many questions at once. Wait about a minute and ask again — " +
       "this clears on its own.";
   }
+  /* These two used to name the secret and a source file. Any signed-in reader
+     can see this text, and a reader can do nothing with either detail — the
+     specifics go to the log (observability is on), the reader gets the
+     direction. The unconfigured 503 below still names the exact command,
+     because the person who hits an unconfigured deployment IS the owner. */
   if (status === 401 || status === 403) {
-    return "The assistant's API key was rejected. Check that GEMINI_API_KEY is set correctly on this " +
-      "deployment — DEPLOY.md step 2 has the detail.";
+    return "The assistant's credentials were rejected by its provider. That is the owner's to fix — " +
+      "tell them the assistant is down, and that the deployment's API key needs checking.";
   }
   if (status === 404) {
-    return "The assistant is configured with a model this key cannot reach. Check the model names in " +
-      "src/worker/chat.ts against the ones your key is enabled for.";
+    return "The assistant is configured to use a model its key cannot reach. The owner needs to " +
+      "update the deployment's model configuration.";
   }
   if (status >= 500) return "The model is having trouble at its end. Try again in a moment.";
   return "The assistant could not answer that one. Try rephrasing it.";
+}
+
+/* ------------------------- context validation ------------------------- *
+ * `body.context` decides what goes into the SYSTEM instruction, and it is
+ * client-supplied. Every other field of the request is validated (model
+ * allowlist, message count, char count, threadId shape) — this one was
+ * not, which meant three things a caller could do that a reader cannot:
+ * crash typeFacts with a type code that is not one ("XXXX" → TypeError →
+ * bare 500), inflate the instruction without bound through the members
+ * array (MAX_CHARS guards only `messages`), and smuggle arbitrary
+ * instruction text above the conversation through free-text fields.
+ *
+ * The free-text fields stay free — a member really can be called anything
+ * — but they are bounded, stripped of control characters, and the primer
+ * names them as data rather than instructions. Bounding does not make
+ * injection impossible; it makes it small, visible in the transcript log,
+ * and unable to also be a resource attack.
+ * -------------------------------------------------------------------- */
+
+const VALID_TYPES = new Set<string>(TYPES);
+/** The Network view has no member cap, but the instruction must: n(n-1)/2 pair lines. */
+const MAX_MEMBERS = 16;
+
+/** Free text, made boring: control characters out, whitespace collapsed, length capped. */
+const boring = (v: unknown, cap: number): string =>
+  typeof v === "string"
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping them is the point.
+    ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, cap)
+    : "";
+
+const isType = (v: unknown): v is MbtiType => typeof v === "string" && VALID_TYPES.has(v);
+
+/**
+ * The client's context, or null when it is not one. Null means 400, not a
+ * silent home fallback — a malformed context is a client bug, and answering
+ * as if the screen were blank would hide it.
+ */
+export function parseContext(raw: unknown): ChatContext | null {
+  if (raw === undefined || raw === null) return { kind: "home" };
+  if (typeof raw !== "object") return null;
+  const c = raw as Record<string, unknown>;
+  switch (c.kind) {
+    case "home": case "admin": case "matrix":
+      return { kind: c.kind };
+    case "catalogue":
+      return { kind: "catalogue", sortBy: boring(c.sortBy, 40) };
+    case "learn": {
+      const stage = typeof c.stage === "number" && Number.isInteger(c.stage) ? c.stage : NaN;
+      if (!(stage >= 0 && stage <= 40)) return null;
+      return { kind: "learn", stage, title: boring(c.title, 120) };
+    }
+    case "type":
+      return isType(c.type) ? { kind: "type", type: c.type } : null;
+    case "pair":
+      return isType(c.a) && isType(c.b) ? { kind: "pair", a: c.a, b: c.b } : null;
+    case "network": {
+      if (!Array.isArray(c.members) || c.members.length > MAX_MEMBERS) return null;
+      const members: { name: string; type: MbtiType }[] = [];
+      for (const m of c.members as unknown[]) {
+        const mm = m as Record<string, unknown>;
+        if (!isType(mm?.type)) return null;
+        members.push({ name: boring(mm.name, 60) || "Unnamed", type: mm.type });
+      }
+      return { kind: "network", members };
+    }
+    case "lexicon": {
+      const term = boring(c.term, 60);
+      return { kind: "lexicon", ...(term ? { term } : {}) };
+    }
+    case "calculator": {
+      if (c.best === undefined || c.best === null) return { kind: "calculator", best: null };
+      return isType(c.best) ? { kind: "calculator", best: c.best } : null;
+    }
+    default:
+      return null;
+  }
 }
 
 /** One turn of conversation as it arrives from the client. */
@@ -210,7 +292,19 @@ export async function handleChat(
   if (!contents.length) return json({ error: "No messages." }, 400);
 
   const model = MODELS[body.model as ModelKey] ?? MODELS.fast;
-  const systemInstruction = buildSystemInstruction(body.context ?? { kind: "home" });
+
+  const ctx = parseContext(body.context);
+  if (!ctx) return json({ error: "That context is not one this app produces." }, 400);
+
+  /* Post-validation this cannot throw; the catch is the difference between a
+     structured refusal and a bare 500 if the two files ever disagree. */
+  let systemInstruction: string;
+  try {
+    systemInstruction = buildSystemInstruction(ctx);
+  } catch (err) {
+    console.error("chat: buildSystemInstruction failed", String(err));
+    return json({ error: "That context is not one this app produces." }, 400);
+  }
 
   const call = () => fetch(`${ENDPOINT}/${model}:streamGenerateContent?alt=sse`, {
     method: "POST",
@@ -257,7 +351,7 @@ export async function handleChat(
       env,
       threadId,
       hooks.who ?? { label: "unknown", kind: "code" },
-      contextLabel(body.context ?? { kind: "home" }),
+      contextLabel(ctx),
       lastUser,
       fullReply,
       now,

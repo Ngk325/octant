@@ -81,10 +81,19 @@ describe("upstreamMessage", () => {
     expect(msg).toMatch(/wait/i);
   });
 
-  it("points at the key for an auth failure and the model list for a 404", () => {
-    expect(upstreamMessage(403)).toMatch(/GEMINI_API_KEY/);
-    expect(upstreamMessage(401)).toMatch(/GEMINI_API_KEY/);
-    expect(upstreamMessage(404)).toMatch(/model/i);
+  /* RETIRED ASSERTION, 2026-08: this test used to require GEMINI_API_KEY in
+     the 401/403 message and previously the 404 named src/worker/chat.ts.
+     Those strings are served to every signed-in reader, who can act on
+     neither — the secret's name and the file path belong in the log, not the
+     response. The corrected assertion is the inverse: the reader is pointed
+     at the owner, and the internals stay out. The unconfigured-503 test
+     below still requires the exact wrangler command, because the person who
+     hits an unconfigured deployment IS the owner. */
+  it("sends auth and model failures to the owner without naming internals", () => {
+    for (const s of [401, 403, 404]) {
+      expect(upstreamMessage(s)).toMatch(/owner/i);
+      expect(upstreamMessage(s)).not.toMatch(/GEMINI_API_KEY|src\/worker|DEPLOY\.md/);
+    }
   });
 
   it("tells the reader to wait on a server-side fault", () => {
@@ -138,7 +147,9 @@ describe("other upstream failures", () => {
 
     expect(fetchStub).toHaveBeenCalledTimes(1);
     expect(res.status).toBe(502);
-    expect(body.error).toMatch(/GEMINI_API_KEY/);
+    /* Was /GEMINI_API_KEY/ — retired with the message change; see the
+       upstreamMessage tests above for the reasoning. */
+    expect(body.error).toMatch(/owner/i);
   });
 
   it("retries a 503 and reports it plainly when it persists", async () => {
