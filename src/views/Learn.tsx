@@ -69,7 +69,7 @@ export default function Learn() {
 
   return (
     <>
-      <div className="learn-rail" aria-label="Course progress">
+      <nav className="learn-rail" aria-label="Course progress">
         {STAGES.map((s, n) => (
           <Link
             key={s.slug}
@@ -80,7 +80,7 @@ export default function Learn() {
             {s.title}
           </Link>
         ))}
-      </div>
+      </nav>
 
       <p className="small muted" style={{ margin: "0 0 var(--s2)" }}>
         Stage {i + 1} of {STAGES.length}

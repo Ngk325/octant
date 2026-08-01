@@ -48,9 +48,13 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
         fontSize: "var(--t-sm)",
       }}
     >
-      <div style={{ ...cell, borderTop: 0 }} className="small muted">start with</div>
+      {/* An ARIA row may only contain ARIA cells — role=table with bare divs
+          inside was malformed and read as an empty table. display:contents
+          keeps the grid placement untouched. */}
+      <div style={{ display: "contents" }} role="row">
+      <div style={{ ...cell, borderTop: 0 }} className="small muted" role="columnheader">start with</div>
       {cols.map(([name, what, eg]) => (
-        <div key={name} style={{ ...cell, borderTop: 0 }} className="small muted">
+        <div key={name} style={{ ...cell, borderTop: 0 }} className="small muted" role="columnheader">
           {/* The name leads, because it is the only part a reader carries away.
               The example sits under it so the column explains itself before the
               description is read at all. */}
@@ -59,16 +63,17 @@ export default function InvolutionTable({ highlight }: { highlight?: Fn }) {
           <span style={{ display: "block" }}>{what}</span>
         </div>
       ))}
+      </div>
 
       {FNS.map((f) => {
         const on = highlight === f;
         return (
           <div key={f} style={{ display: "contents" }} role="row">
-            <div style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
+            <div role="rowheader" style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
               <FnTag fn={f} />
             </div>
             {cols.map(([name, , , op]) => (
-              <div key={name} style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
+              <div key={name} role="cell" style={{ ...cell, background: on ? "var(--accent-soft)" : undefined }}>
                 <FnTag fn={op(f)} />
               </div>
             ))}

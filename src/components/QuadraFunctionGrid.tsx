@@ -39,6 +39,7 @@ export default function QuadraFunctionGrid({ highlight }: { highlight?: Quadra }
         return (
           <div key={q} style={{ display: "contents" }} role="row">
             <div
+              role="rowheader"
               style={{
                 display: "flex", alignItems: "center", gap: "var(--s2)",
                 fontFamily: "var(--sans)", fontSize: "var(--t-sm)", fontWeight: 600,
@@ -49,6 +50,7 @@ export default function QuadraFunctionGrid({ highlight }: { highlight?: Quadra }
               {q}
             </div>
             <div
+              role="cell"
               style={{
                 border: `1px solid ${on ? "var(--accent)" : "var(--rule)"}`,
                 background: on ? "var(--accent-soft)" : "var(--surface)",

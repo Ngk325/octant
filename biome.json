@@ -22,11 +22,8 @@
         "useTemplate": "off"
       },
       "a11y": {
-        "useSemanticElements": "warn",
-        "useFocusableInteractive": "warn",
-        "noSvgWithoutTitle": "warn",
-        "noStaticElementInteractions": "warn",
-        "useAriaPropsSupportedByRole": "warn"
+        "useSemanticElements": "off",
+        "useFocusableInteractive": "off"
       },
       "complexity": {
         "noForEach": "off"

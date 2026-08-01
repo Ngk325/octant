@@ -133,6 +133,7 @@ export default function Welcome() {
         <button type="button" className="btn ghost" onClick={leave}>Skip intro</button>
       </div>
 
+      {/* biome-ignore lint/a11y/useSemanticElements: the dots are a labelled progress group; no HTML element says that without becoming a form control. */}
       <div className="onboard-progress" role="group" aria-label={`Part ${n} of ${SCREENS.length}`}>
         {SCREENS.map((_, idx) => (
           <span
