@@ -807,6 +807,7 @@ table.matrix td a:hover { outline: 2px solid var(--ink); outline-offset: -2px; }
      reason: you could read answers but never reach the box to type one. vh
      first as the fallback for anything without dvh support. */
   height: 100vh;
+  /* biome-ignore lint/suspicious/noDuplicateProperties: the duplicate IS the fallback — dvh where supported, vh where not. */
   height: 100dvh;
   border-left: 1px solid var(--rule);
   background: var(--surface);

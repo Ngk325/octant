@@ -38,7 +38,7 @@ export default function Types() {
         <span className="small muted">Group by</span>
         {([["quadra", "Quadra"], ["temperament", "Temperament"], ["alpha", "Nothing"]] as const).map(
           ([v, label]) => (
-            <button
+            <button type="button"
               key={v}
               className={`chip${sortBy === v ? " on" : ""}`}
               onClick={() => setSortBy(v)}

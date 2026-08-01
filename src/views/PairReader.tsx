@@ -59,7 +59,7 @@ export default function PairReader() {
         <TypePicker label="You are" value={persp} onChange={(x) => nav(`/pair/${target}/${x}`)} />
         <span className="persp-verb" aria-hidden="true">reading about</span>
         <TypePicker label="Them" value={target} onChange={(x) => nav(`/pair/${x}/${persp}`)} />
-        <button className="btn ghost" onClick={() => nav(`/pair/${persp}/${target}`)}>Swap ⇄</button>
+        <button type="button" className="btn ghost" onClick={() => nav(`/pair/${persp}/${target}`)}>Swap ⇄</button>
       </div>
 
       <h1>How {persp} should handle {target}</h1>

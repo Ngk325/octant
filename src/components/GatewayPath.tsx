@@ -1,5 +1,5 @@
 import { gateways } from "../engine/sides";
-import { type MbtiType } from "../engine/core";
+import type { MbtiType } from "../engine/core";
 import { usePalette } from "./Theme";
 import { FnTag } from "./Bits";
 

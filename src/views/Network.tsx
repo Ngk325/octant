@@ -75,7 +75,7 @@ export default function Network() {
                 {/* Named the same way as every other type picker. */}
                 {TYPES.map((t) => <option key={t} value={t}>{t} · {ARCHETYPE[t][0]}</option>)}
               </select>
-              <button
+              <button type="button"
                 className="icon-btn"
                 aria-label={`Remove ${m.name}`}
                 onClick={() => setMembers((ms) => ms.filter((x) => x.id !== m.id))}
@@ -85,7 +85,7 @@ export default function Network() {
             </div>
           ))}
         </div>
-        <button
+        <button type="button"
           className="btn"
           style={{ marginTop: "var(--s4)" }}
           onClick={() => {

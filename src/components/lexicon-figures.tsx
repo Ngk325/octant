@@ -1,5 +1,5 @@
-import { type ReactNode } from "react";
-import { type Entry, type Category } from "../engine/lexicon";
+import type { ReactNode } from "react";
+import type { Entry, Category } from "../engine/lexicon";
 import {
   type Fn, type SlotName, type RelCode, REL_NAME,
   ROMANCE, INTERACTION_STYLE, GROUP,

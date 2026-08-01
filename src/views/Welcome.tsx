@@ -130,7 +130,7 @@ export default function Welcome() {
     <div className="onboard">
       <div className="onboard-top">
         <span className="wordmark">Octant</span>
-        <button className="btn ghost" onClick={leave}>Skip intro</button>
+        <button type="button" className="btn ghost" onClick={leave}>Skip intro</button>
       </div>
 
       <div className="onboard-progress" role="group" aria-label={`Part ${n} of ${SCREENS.length}`}>
@@ -152,7 +152,7 @@ export default function Welcome() {
       <div className="onboard-nav">
         {isFirst ? <span /> : <Link to={`/welcome/${i}`} className="btn">← Back</Link>}
         {isLast ? (
-          <button className="btn primary" onClick={leave}>Enter Octant →</button>
+          <button type="button" className="btn primary" onClick={leave}>Enter Octant →</button>
         ) : (
           <Link to={`/welcome/${i + 2}`} className="btn primary">Next →</Link>
         )}

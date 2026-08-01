@@ -1,6 +1,6 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TYPES, ease, type MbtiType, type Quadra } from "../engine/core";
-import { type Fn } from "../engine/data";
+import type { Fn } from "../engine/data";
 import { ops } from "../engine/ops";
 import { wheelOf } from "../engine/octagram";
 import RelationLanding from "../components/RelationLanding";
@@ -18,7 +18,7 @@ import OctagramMap from "../components/OctagramMap";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 import FnIcon from "../components/glyphs/FnIcon";
 import AnimalGlyph from "../components/glyphs/AnimalGlyph";
-import { type Animal } from "../engine/ops";
+import type { Animal } from "../engine/ops";
 
 /* ------------------------------------------------------------------ *
  * FIGURES THE ASSISTANT CAN DRAW.

@@ -45,7 +45,7 @@ export function analyse(members: Member[]): NetworkReport {
 
   const sorted = [...edges].sort((a, b) => a.ease - b.ease);
   const counts = new Map<string, number>();
-  members.forEach((m) => counts.set(quadra(m.type), (counts.get(quadra(m.type)) ?? 0) + 1));
+  members.forEach((m) => { counts.set(quadra(m.type), (counts.get(quadra(m.type)) ?? 0) + 1); });
 
   const supervisionChains = edges
     .filter((e) => e.code === "SV")

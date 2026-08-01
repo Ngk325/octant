@@ -12,13 +12,15 @@
     "typecheck": "tsc -b --noEmit",
     "deploy": "npm run build && wrangler deploy",
     "cf:login": "wrangler login",
-    "cf:whoami": "wrangler whoami"
+    "cf:whoami": "wrangler whoami",
+    "lint": "biome lint ."
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.6",
     "@types/node": "^26.1.1",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",

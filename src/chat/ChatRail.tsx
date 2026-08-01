@@ -49,6 +49,7 @@ export default function ChatRail() {
       });
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: messages/streaming are triggers — scroll to the newest line whenever either moves.
   useEffect(() => {
     const el = logRef.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -72,6 +73,7 @@ export default function ChatRail() {
     };
   }, [open, overlay, setOpen]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: draft is the trigger — the box re-measures on every keystroke.
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return;
@@ -81,7 +83,7 @@ export default function ChatRail() {
 
   if (!open) {
     return (
-      <button className="btn primary rail-launch" onClick={() => setOpen(true)}>
+      <button type="button" className="btn primary rail-launch" onClick={() => setOpen(true)}>
         Ask about this
       </button>
     );
@@ -103,7 +105,7 @@ export default function ChatRail() {
   return (
     <>
       {overlay && (
-        <button
+        <button type="button"
           className="rail-scrim"
           aria-label="Close assistant"
           onClick={() => setOpen(false)}
@@ -112,7 +114,7 @@ export default function ChatRail() {
       <aside className="rail" aria-label="Assistant">
       <div className="rail-head">
         <h2>Ask</h2>
-        <button
+        <button type="button"
           className="btn ghost"
           onClick={historyOpen ? () => setHistoryOpen(false) : openHistory}
           title="Past conversations"
@@ -120,7 +122,7 @@ export default function ChatRail() {
           {historyOpen ? "Back" : "History"}
         </button>
         {messages.length > 0 && (
-          <button
+          <button type="button"
             className="btn ghost"
             onClick={() => { reset(); setHistoryOpen(false); }}
             title="Start a new conversation"
@@ -128,7 +130,7 @@ export default function ChatRail() {
             New
           </button>
         )}
-        <button className="icon-btn" onClick={() => setOpen(false)} aria-label="Close assistant">
+        <button type="button" className="icon-btn" onClick={() => setOpen(false)} aria-label="Close assistant">
           ×
         </button>
       </div>
@@ -139,7 +141,7 @@ export default function ChatRail() {
         <div className="rail-log" ref={logRef}>
           {viewing ? (
             <>
-              <button className="btn ghost" onClick={() => setViewing(null)} style={{ marginBottom: "var(--s2)" }}>
+              <button type="button" className="btn ghost" onClick={() => setViewing(null)} style={{ marginBottom: "var(--s2)" }}>
                 ← All conversations
               </button>
               {viewing.turns.length === 0 && !historyError && <p className="small muted">Loading…</p>}
@@ -160,7 +162,7 @@ export default function ChatRail() {
                 <p className="small muted">No past conversations yet.</p>
               )}
               {history?.map((t) => (
-                <button
+                <button type="button"
                   key={t.threadId}
                   className="rail-history-item"
                   onClick={() => viewThread(t.threadId)}
@@ -191,7 +193,7 @@ export default function ChatRail() {
             </p>
             <div className="rail-suggest">
               {suggestedPrompts(context).map((q) => (
-                <button key={q} disabled={streaming} onClick={() => void send(q)}>{q}</button>
+                <button type="button" key={q} disabled={streaming} onClick={() => void send(q)}>{q}</button>
               ))}
             </div>
           </>
@@ -239,9 +241,9 @@ export default function ChatRail() {
         />
         <div style={{ display: "flex", gap: "var(--s2)" }}>
           {streaming ? (
-            <button className="btn" onClick={stop}>Stop</button>
+            <button type="button" className="btn" onClick={stop}>Stop</button>
           ) : (
-            <button className="btn primary" onClick={submit} disabled={!draft.trim()}>
+            <button type="button" className="btn primary" onClick={submit} disabled={!draft.trim()}>
               Send
             </button>
           )}

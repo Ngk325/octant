@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TYPES, stack } from "../src/engine/core";
 import { SLOT_NAMES, type Fn } from "../src/engine/data";
 import { SIDE_ORDER, sides } from "../src/engine/sides";

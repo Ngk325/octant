@@ -33,7 +33,7 @@ const positions = () => {
     const o = ops(t);
     primary.add(o.doubleSavior);
     last.add(o.doubleDemon);
-    o.middles.forEach((m) => middle.add(m));
+    o.middles.forEach((m) => { middle.add(m); });
   }
   return { primary, last, middle };
 };

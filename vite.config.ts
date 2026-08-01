@@ -80,7 +80,7 @@ function devApi(): Plugin {
             // rather than checked: every branch that reaches here has assigned one.
             const out = response as Response;
             res.statusCode = out.status;
-            out.headers.forEach((v, k) => res.setHeader(k, v));
+            out.headers.forEach((v, k) => { res.setHeader(k, v); });
             if (!out.body) return res.end();
             const reader = out.body.getReader();
             for (;;) {

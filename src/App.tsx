@@ -54,6 +54,7 @@ export default function App() {
     return () => document.removeEventListener("keydown", onKey);
   }, [menu]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the trigger — this must re-run on every navigation, read or not.
   useEffect(() => {
     setMenu(false);
     if (hash) {
@@ -117,7 +118,7 @@ export default function App() {
             </nav>
 
             <div className="mast-actions">
-              <button
+              <button type="button"
                 className="icon-btn"
                 onClick={toggleChat}
                 aria-pressed={chatOpen}
@@ -126,7 +127,7 @@ export default function App() {
               >
                 ?
               </button>
-              <button
+              <button type="button"
                 className="icon-btn"
                 onClick={toggle}
                 aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
@@ -134,7 +135,7 @@ export default function App() {
               >
                 {theme === "dark" ? "☀" : "☾"}
               </button>
-              <button
+              <button type="button"
                 className="icon-btn"
                 onClick={signOut}
                 aria-label="Sign out"
@@ -142,7 +143,7 @@ export default function App() {
               >
                 ⏻
               </button>
-              <button
+              <button type="button"
                 className="icon-btn menu-toggle"
                 onClick={() => setMenu((m) => !m)}
                 aria-expanded={menu}

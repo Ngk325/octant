@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * A diagram presented as a figure inside prose, with a caption that says what

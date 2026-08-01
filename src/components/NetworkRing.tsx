@@ -1,5 +1,5 @@
 import { quadra } from "../engine/core";
-import { type Member, type analyse } from "../engine/network";
+import type { Member, analyse } from "../engine/network";
 import { usePalette } from "./Theme";
 import TypeMolecule from "./glyphs/TypeMolecule";
 

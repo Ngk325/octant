@@ -1,4 +1,4 @@
-import { type Wheel, type Development } from "../engine/octagram";
+import type { Wheel, Development } from "../engine/octagram";
 import useMeasuredWidth from "./useMeasuredWidth";
 
 /**

@@ -1,5 +1,5 @@
 import { TYPES, quadra, stack, type MbtiType, type Quadra } from "../engine/core";
-import { type Fn } from "../engine/data";
+import type { Fn } from "../engine/data";
 import { usePalette } from "./Theme";
 import { FnTag } from "./Bits";
 

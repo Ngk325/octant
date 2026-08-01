@@ -1,5 +1,5 @@
 import { alpha, beta, omega } from "../engine/core";
-import { type Fn } from "../engine/data";
+import type { Fn } from "../engine/data";
 import { FnTag } from "./Bits";
 
 const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];

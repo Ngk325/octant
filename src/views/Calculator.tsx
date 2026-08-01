@@ -174,7 +174,7 @@ export default function Calculator() {
           <Panel title="Still possible">
             <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
               {answered > 0 && (
-                <button className="btn ghost" style={{ marginLeft: "auto", order: 2 }}
+                <button type="button" className="btn ghost" style={{ marginLeft: "auto", order: 2 }}
                         onClick={() => setAnswers(Array(8).fill(null))}>
                   Clear all
                 </button>

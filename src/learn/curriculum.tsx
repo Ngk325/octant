@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { stack, quadra, TYPES, REL, ease } from "../engine/core";
 import { ops, ANIMAL_LABEL, DEMON_MARKERS } from "../engine/ops";

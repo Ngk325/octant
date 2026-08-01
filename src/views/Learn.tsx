@@ -104,7 +104,7 @@ export default function Learn() {
           <Link to="/learn" className="btn">← All stages</Link>
         )}
         {next ? (
-          <button
+          <button type="button"
             className="btn primary"
             onClick={() => {
               markDone(current.slug);
@@ -114,7 +114,7 @@ export default function Learn() {
             {next.title} →
           </button>
         ) : (
-          <button
+          <button type="button"
             className="btn primary"
             onClick={() => {
               markDone(current.slug);
