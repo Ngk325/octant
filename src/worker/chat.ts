@@ -1,7 +1,7 @@
 import { buildSystemInstruction, type ChatContext } from "../engine/context";
 import { TYPES, type MbtiType } from "../engine/data";
 import {
-  recordExchange, sweepIdle, validThreadId, type ChatLogEnv, type ChatWho,
+  recordExchange, validThreadId, type ChatLogEnv, type ChatWho,
 } from "./chatlog";
 
 /* ------------------------------------------------------------------ *
@@ -16,6 +16,8 @@ import {
 
 export interface Env extends ChatLogEnv {
   GEMINI_API_KEY?: string;
+  /** Cross-isolate throttle. Absent in dev; the in-memory Map below still brakes. */
+  CHAT_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
 }
 
 /** How handleChat reports back to the runtime and the transcript log. */
@@ -241,10 +243,12 @@ function rateLimited(ip: string, now: number): boolean {
 export async function handleChat(
   request: Request, env: Env, hooks: ChatHooks = {}, now = Date.now(),
 ): Promise<Response> {
-  /* Piggyback the idle-transcript sweep on chat traffic. Fire-and-forget;
-     with no CHAT_LOGS binding it is a no-op. */
+  /* The idle-transcript sweep used to piggyback here, a full KV scan per
+     message. It is cron's job now (wrangler.jsonc triggers → index.ts
+     scheduled), which also mails the LAST session of a quiet spell — the
+     one the piggyback could never reach, because it needed a next message
+     that by definition never came. */
   const defer = hooks.waitUntil ?? ((p: Promise<unknown>) => void p.catch(() => {}));
-  defer(sweepIdle(env, now));
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
   if (request.method !== "POST") return json({ error: "Use POST." }, 405);
 
@@ -267,6 +271,16 @@ export async function handleChat(
   const ip = request.headers.get("cf-connecting-ip") ?? "local";
   if (rateLimited(ip, now)) {
     return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
+  }
+  /* Same limit, held across isolates. Fails open on a binding error: a chat
+     message wrongly refused costs a reader their question; a limiter outage
+     wrongly honoured costs nothing the in-memory brake was not already
+     conceding per-isolate. */
+  if (env.CHAT_LIMITER) {
+    const verdict = await env.CHAT_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
+    if (!verdict.success) {
+      return json({ error: "Too many messages in a short window. Give it a minute." }, 429);
+    }
   }
 
   let body: ChatRequest;

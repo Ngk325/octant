@@ -9,7 +9,7 @@ import {
   type GoogleEnv,
 } from "./google";
 import { handleAdmin, type AdminEnv } from "./admin";
-import { endSession, validThreadId, listThreads, getThreadFor, type ChatWho } from "./chatlog";
+import { endSession, sweepIdle, validThreadId, listThreads, getThreadFor, type ChatWho } from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
@@ -41,6 +41,17 @@ export default {
        gate pages, assets, API JSON and the SSE stream alike. Routes decide
        content; headers.ts decides what every response must carry. */
     return withSecurityHeaders(url, await route(request, env, url, ctx));
+  },
+
+  /* The hourly transcript sweep (wrangler.jsonc triggers). This is what
+     guarantees the owner's "every conversation reaches my inbox": the
+     beacon covers a clean tab-close, and this covers everything else —
+     crashes, lost networks, and the last session before a quiet week,
+     which the old piggyback-on-traffic sweep could never mail because it
+     needed a next message that never came. */
+  async scheduled(_event: unknown, env: Env, ctx?: Ctx): Promise<void> {
+    const work = sweepIdle(env, Date.now());
+    if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
   },
 };
 

@@ -38,7 +38,19 @@ import { getUser, isOwner, type UserEnv } from "./users";
  * and it is the answer to KV's eventual consistency.
  * ------------------------------------------------------------------ */
 
+/** The rate-limiting binding's whole API. Absent in dev; the wall degrades to the in-memory brake. */
+export interface RateLimit {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
+
 export interface AuthEnv extends UserEnv {
+  /**
+   * Cross-isolate attempts ceiling for /api/auth/login. Counts every attempt,
+   * not just failures — the binding consumes on call and cannot see the
+   * outcome first — so its limit sits where only brute force reaches it,
+   * and the failures-only principle lives on in the in-memory brake below.
+   */
+  LOGIN_LIMITER?: RateLimit;
   /**
    * Invite codes, comma-separated. Either bare codes or `label:code` pairs —
    * the label is how you tell people apart and revoke one without disturbing
@@ -262,6 +274,17 @@ export async function handleAuth(
     const ip = request.headers.get("cf-connecting-ip") ?? "local";
     if (tooManyFailures(ip, now)) {
       return json({ error: "Too many attempts. Wait ten minutes and try again." }, 429);
+    }
+    /* The cross-isolate ceiling. The in-memory brake above is per-isolate and
+       Workers discard isolates freely; this one holds across all of them.
+       Failing open when the binding errors is deliberate — the wall's own
+       digest comparison is the real defence, and a rate-limit outage must
+       not lock the owner out. */
+    if (env.LOGIN_LIMITER) {
+      const verdict = await env.LOGIN_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
+      if (!verdict.success) {
+        return json({ error: "Too many attempts. Wait a minute and try again." }, 429);
+      }
     }
 
     let code = "";
