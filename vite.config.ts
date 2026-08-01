@@ -1,5 +1,6 @@
 import { defineConfig } from "vitest/config";
 import type { Plugin, ViteDevServer } from "vite";
+import { cloudflareTest } from "@cloudflare/vitest-pool-workers";
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 
@@ -104,5 +105,31 @@ function devApi(): Plugin {
 export default defineConfig({
   plugins: [react(), devApi()],
   build: { outDir: "dist", sourcemap: false },
-  test: { globals: true, environment: "node" },
+  test: {
+    projects: [
+      /* The original suite: pure functions and SSR renders, plain Node. */
+      {
+        test: {
+          name: "unit",
+          globals: true,
+          environment: "node",
+          include: ["tests/**/*.test.{ts,tsx}"],
+          exclude: ["tests/workers/**"],
+        },
+      },
+      /* tests/workers/ runs INSIDE workerd via vitest-pool-workers, against
+         the real runtime the mocks in tests/auth.test.ts cannot speak for —
+         real Request/Response semantics, real crypto.subtle, real KV. The
+         wrangler config below is the deployed one, so bindings and
+         compatibility flags cannot drift between test and production. */
+      {
+        plugins: [cloudflareTest({ wrangler: { configPath: "./wrangler.jsonc" } })],
+        test: {
+          name: "workers",
+          globals: true,
+          include: ["tests/workers/**/*.test.ts"],
+        },
+      },
+    ],
+  },
 });
