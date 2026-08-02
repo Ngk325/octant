@@ -36,7 +36,8 @@ export type ChatContext =
   | { kind: "network"; members: { name: string; type: MbtiType }[] }
   | { kind: "matrix" }
   | { kind: "lexicon"; term?: string }
-  | { kind: "calculator"; best?: MbtiType | null };
+  | { kind: "calculator"; best?: MbtiType | null }
+  | { kind: "read"; best?: MbtiType | null };
 
 /** One `Key: value` line of the grounding block. */
 const line = (k: string, v: string) => `${k}: ${v}`;
@@ -251,6 +252,10 @@ export function contextBlock(ctx: ChatContext): string {
       return ctx.best
         ? `The reader is on the type calculator; it currently resolves to ${ctx.best}.\n\n${typeFacts(ctx.best).join("\n")}`
         : "The reader is on the type calculator and has not resolved a type yet.";
+    case "read":
+      return ctx.best
+        ? `The reader is on "Read someone" — the same calculator, answered from indirect, everyday cues about a third party instead of that party's own direct self-report. It currently resolves to ${ctx.best}. Treat this as weaker evidence than a direct self-report and say so if the reader leans on it too hard.\n\n${typeFacts(ctx.best).join("\n")}`
+        : "The reader is on \"Read someone\" — the same calculator, answered from indirect, everyday cues about a third party — and has not resolved a type yet.";
     case "matrix":
       return "The reader is looking at the full 16x16 relation matrix.";
     case "catalogue":
@@ -307,6 +312,12 @@ export function suggestedPrompts(ctx: ChatContext): string[] {
         "Which two types are hardest to tell apart, and how do I tell them apart?",
         "I only know one thing about someone — where do I start narrowing?",
         "What actually makes a quadra a quadra?",
+      ];
+    case "read":
+      return [
+        "What's another nonobvious, everyday way to tell these two coins apart?",
+        "How reliable is a read like this compared to someone's own answers?",
+        "What should I watch for that would make me doubt this result?",
       ];
     default:
       return [

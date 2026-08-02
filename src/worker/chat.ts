@@ -179,6 +179,10 @@ export function parseContext(raw: unknown): ChatContext | null {
       if (c.best === undefined || c.best === null) return { kind: "calculator", best: null };
       return isType(c.best) ? { kind: "calculator", best: c.best } : null;
     }
+    case "read": {
+      if (c.best === undefined || c.best === null) return { kind: "read", best: null };
+      return isType(c.best) ? { kind: "read", best: c.best } : null;
+    }
     default:
       return null;
   }
@@ -207,6 +211,7 @@ function contextLabel(ctx: ChatContext): string {
     case "network": return `group of ${ctx.members.length}`;
     case "lexicon": return ctx.term ? `lexicon: ${ctx.term}` : "lexicon";
     case "calculator": return `calculator${ctx.best ? ` → ${ctx.best}` : ""}`;
+    case "read": return `read someone${ctx.best ? ` → ${ctx.best}` : ""}`;
     default: return ctx.kind;
   }
 }
