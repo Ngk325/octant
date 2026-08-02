@@ -38,7 +38,7 @@ async function mount(): Promise<HTMLElement> {
   await act(async () => {
     root = createRoot(host);
     root.render(
-      <MemoryRouter initialEntries={["/read"]}>
+      <MemoryRouter initialEntries={["/read-someone"]}>
         <ThemeProvider>
           <ChatProvider>
             <Read />

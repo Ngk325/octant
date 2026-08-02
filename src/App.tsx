@@ -21,7 +21,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 const TABS: [string, string][] = [
   ["/learn", "Learn"],
   ["/calculator", "Find your type"],
-  ["/read", "Read someone"],
+  ["/read-someone", "Read someone"],
   ["/types", "All sixteen"],
   ["/type/ENTP", "A type"],
   ["/pair/ENTP/INFJ", "A pair"],
@@ -178,7 +178,7 @@ export default function App() {
             <Route path="/learn" element={<Learn />} />
             <Route path="/learn/:stage" element={<Learn />} />
             <Route path="/calculator" element={<Calculator />} />
-            <Route path="/read" element={<Read />} />
+            <Route path="/read-someone" element={<Read />} />
             <Route path="/types" element={<Types />} />
             <Route path="/type/:type" element={<TypeReader />} />
             <Route path="/pair/:a/:b" element={<PairReader />} />

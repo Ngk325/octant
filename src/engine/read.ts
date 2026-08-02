@@ -38,8 +38,8 @@ export interface ReadPrompt {
 
 /**
  * Six prompts: four determining (coins 0, 2, 3, 4), two confirming (coins 1, 5).
- * tests/read.test.ts pins that set against DETERMINING/CONFIRMING in data.ts so
- * a coin can't quietly drop out from under it.
+ * tests/read-someone.test.ts pins that set against DETERMINING/CONFIRMING in
+ * data.ts so a coin can't quietly drop out from under it.
  */
 export const READ_PROMPTS: ReadPrompt[] = [
   {

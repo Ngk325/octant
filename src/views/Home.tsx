@@ -52,7 +52,7 @@ export default function Home() {
           </p>
         </Tile>
 
-        <Tile to="/read">
+        <Tile to="/read-someone">
           <h3 style={{ margin: "0 0 var(--s2)" }}>Read someone →</h3>
           <p className="small" style={{ margin: 0 }}>
             The same four coins, asked a different way — six ordinary things to notice about
