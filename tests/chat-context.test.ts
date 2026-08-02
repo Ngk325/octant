@@ -23,6 +23,7 @@ describe("what the UI sends, accepted verbatim", () => {
       { kind: "network", members: [{ name: "Ana", type: "ISTJ" }] },
       { kind: "lexicon", term: "gateway" }, { kind: "lexicon" },
       { kind: "calculator", best: "ENFP" }, { kind: "calculator", best: null },
+      { kind: "read", best: "ENFP" }, { kind: "read", best: null },
     ]) {
       expect(parseContext(ctx), JSON.stringify(ctx)).not.toBeNull();
     }
@@ -46,6 +47,7 @@ describe("what a crafted caller sends, refused or defused", () => {
     expect(parseContext({ kind: "type", type: "XXXX" })).toBeNull();
     expect(parseContext({ kind: "pair", a: "ENTP", b: "GOD" })).toBeNull();
     expect(parseContext({ kind: "calculator", best: "ABCD" })).toBeNull();
+    expect(parseContext({ kind: "read", best: "ABCD" })).toBeNull();
     expect(parseContext({ kind: "network", members: [{ name: "x", type: "NOPE" }] })).toBeNull();
   });
 

@@ -7,6 +7,7 @@ import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
 import PairReader from "./views/PairReader";
 import Calculator from "./views/Calculator";
+import Read from "./views/Read";
 import Network from "./views/Network";
 import Matrix from "./views/Matrix";
 import Lexicon from "./views/Lexicon";
@@ -20,6 +21,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 const TABS: [string, string][] = [
   ["/learn", "Learn"],
   ["/calculator", "Find your type"],
+  ["/read-someone", "Read someone"],
   ["/types", "All sixteen"],
   ["/type/ENTP", "A type"],
   ["/pair/ENTP/INFJ", "A pair"],
@@ -176,6 +178,7 @@ export default function App() {
             <Route path="/learn" element={<Learn />} />
             <Route path="/learn/:stage" element={<Learn />} />
             <Route path="/calculator" element={<Calculator />} />
+            <Route path="/read-someone" element={<Read />} />
             <Route path="/types" element={<Types />} />
             <Route path="/type/:type" element={<TypeReader />} />
             <Route path="/pair/:a/:b" element={<PairReader />} />

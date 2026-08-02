@@ -52,6 +52,14 @@ export default function Home() {
           </p>
         </Tile>
 
+        <Tile to="/read-someone">
+          <h3 style={{ margin: "0 0 var(--s2)" }}>Read someone →</h3>
+          <p className="small" style={{ margin: 0 }}>
+            The same four coins, asked a different way — six ordinary things to notice about
+            someone else instead of eight statements they'd have to answer about themselves.
+          </p>
+        </Tile>
+
         <Tile to="/type/ENTP">
           <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
             <TypeMolecule type="ENTP" size={40} />

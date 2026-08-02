@@ -20,6 +20,7 @@ src/engine/
   core.ts       the three involutions · stacks · quadras · relations · gates
   sides.ts      the four sides of the mind: stacks, gateways, development states
   ops.ts        the exchange overlay: anchors/flinches, the current stack, coins, calculator
+  read.ts       the same coins, asked indirectly — for typing someone else in conversation
   octagram.ts   the Octagram: eight temple wheels, cognitive origins, four themes
   playbook.ts   per-pair composition from where the reader's functions land in the target's stack
   network.ts    n-person weighted digraph analysis
@@ -54,6 +55,7 @@ not smuggle back the jargon it exists to replace.
 | `/welcome` · `/welcome/:step` | Eight onboarding screens, shown once, skippable, before the full app. |
 | `/learn` · `/learn/:stage` | Thirteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
+| `/read-someone` | The same instrument for typing someone else: six ordinary things to ask or notice in conversation, none of them naming the axis they test. Scores through the same `calculate()` as the calculator. |
 | `/types` | All sixteen at a glance, grouped by quadra or temperament. |
 | `/type/:type` | The eight slots, all four sides, the exchange overlay with its subtype coins, growth gate, the Octagram wheel and theme grid, behavioural profile, and what each function wants. |
 | `/pair/:a/:b` | Relation, **both** directional ease scores, and the composed playbook. Shareable URL. |

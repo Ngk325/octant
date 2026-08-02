@@ -301,6 +301,7 @@ function describe(c: ReturnType<typeof useChatCtx>["context"]): { kind: string; 
     case "network": return { kind: "group", detail: `${c.members.length} people` };
     case "lexicon": return { kind: "lexicon", detail: c.term ?? "" };
     case "calculator": return { kind: "calculator", detail: c.best ?? "unresolved" };
+    case "read": return { kind: "read someone", detail: c.best ?? "unresolved" };
     case "matrix": return { kind: "matrix", detail: "" };
     default: return { kind: "overview", detail: "" };
   }
