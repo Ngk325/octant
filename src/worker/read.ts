@@ -295,7 +295,12 @@ ${cta(
   ${TYPES.filter((x) => x !== t)
     .sort((x, y) => ease(t, y) - ease(t, x))
     .slice(0, 4)
-    .map((x) => `<a href="/read/${pairSlug(...([t, x].sort() as [MbtiType, MbtiType]))}">${t} & ${x}</a>`)
+    .map((x) => {
+      // Both the visible text and the href use the canonical alphabetical order,
+      // so a link never reads "ISTJ & ENFP" while pointing at "ENFP and ISTJ".
+      const [p, q] = [t, x].sort() as [MbtiType, MbtiType];
+      return `<a href="/read/${pairSlug(p, q)}">${p} & ${q}</a>`;
+    })
     .join("\n  ")}
   <br><a href="/read" style="margin-top:8px">All readings →</a>
 </div>

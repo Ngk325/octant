@@ -129,4 +129,16 @@ describe("it is a slice, not the instrument", () => {
     expect(html).toContain("<h1>The ENTP</h1>");
     expect(html).toContain('href="/type/ENTP"');
   });
+
+  it("every related link's visible text matches the canonical order of its href", async () => {
+    // ISTJ is late in the alphabet, so its related links pair it with earlier
+    // types — the case where an unsorted label would read "ISTJ & ENFP" while
+    // pointing at /read/enfp-and-istj ("ENFP and ISTJ").
+    const { html } = await text("/read/istj");
+    const links = [...html.matchAll(/href="\/read\/([a-z]{4})-and-([a-z]{4})">([A-Z]{4}) & ([A-Z]{4})</g)];
+    expect(links.length).toBeGreaterThan(0);
+    for (const [, hrefA, hrefB, textA, textB] of links) {
+      expect(`${textA} & ${textB}`).toBe(`${hrefA.toUpperCase()} & ${hrefB.toUpperCase()}`);
+    }
+  });
 });
