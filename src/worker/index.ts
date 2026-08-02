@@ -13,6 +13,7 @@ import { endSession, sweepIdle, validThreadId, listThreads, getThreadFor, type C
 import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
+import { handleRead } from "./read";
 
 /**
  * Assets-plus-API Worker, behind an access wall.
@@ -82,6 +83,13 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
     if (session) return new Response(null, { status: 302, headers: { location: "/" } });
     return signinPage(env, safeReturn(url.searchParams.get("returnTo") ?? "/"));
   }
+
+  // 4b. The public readings, the sitemap and robots.txt. Public by design —
+  //     the SEO surface — so they sit alongside the marketing door, ahead of
+  //     the wall. Everything they show is a derived slice; the full instrument
+  //     stays gated, reached only by their CTAs.
+  const read = handleRead(url, url.origin);
+  if (read) return read;
 
   // 5. The wall. Returns a response for everyone not signed in and approved —
   //    with ONE carve-out: an anonymous GET of the front page gets the public

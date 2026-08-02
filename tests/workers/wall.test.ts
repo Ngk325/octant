@@ -57,6 +57,26 @@ describe("fail-closed, in workerd", () => {
   });
 });
 
+describe("the public readings are ahead of the wall, in workerd", () => {
+  it("serve to an anonymous visitor while the app itself does not", async () => {
+    // A reading page: public, 200, real content, no app shell.
+    const read = await worker.fetch(new Request("https://octant.test/read/entp-and-infj"), CONFIGURED, ctx());
+    expect(read.status).toBe(200);
+    const html = await read.text();
+    expect(html).toContain("ENTP and INFJ");
+    expect(html).not.toContain("APP-SHELL");
+
+    // The index, sitemap and robots are public too.
+    expect((await worker.fetch(new Request("https://octant.test/read"), CONFIGURED, ctx())).status).toBe(200);
+    expect((await worker.fetch(new Request("https://octant.test/sitemap.xml"), CONFIGURED, ctx())).status).toBe(200);
+    expect((await worker.fetch(new Request("https://octant.test/robots.txt"), CONFIGURED, ctx())).status).toBe(200);
+
+    // But the gated reading it links to still refuses the same anonymous visitor.
+    const gated = await worker.fetch(new Request("https://octant.test/pair/ENTP/INFJ"), CONFIGURED, ctx());
+    expect(gated.status).toBe(401);
+  });
+});
+
 describe("the wall, configured, in workerd", () => {
   it("refuses an anonymous deep link and never consults the asset store", async () => {
     let assetTouched = false;
