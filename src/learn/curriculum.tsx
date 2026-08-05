@@ -3,9 +3,12 @@ import { Link } from "react-router";
 import { stack, quadra, TYPES, REL, ease } from "../engine/core";
 import { ops, ANIMAL_LABEL, DEMON_MARKERS } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
+import { powersOf } from "../engine/powers";
 import { wheelOf, templeOf } from "../engine/octagram";
 import { playbook } from "../engine/playbook";
-import { FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN } from "../engine/plain";
+import {
+  FN_PLAIN, SLOT_PLAIN, CONCEPT_PLAIN, REL_PLAIN, QUADRA_PLAIN, powersPlain,
+} from "../engine/plain";
 import { FN_ROLE, FN_KEYWORD, FN_SAYS } from "../engine/functions";
 import { SLOT_NAMES, FN_FULL, BEHAVIOURAL, SLOT_COST, type Fn, type MbtiType } from "../engine/data";
 import Explain from "../components/Explain";
@@ -320,6 +323,59 @@ export const STAGES: Stage[] = [
       );
     },
     check: "Can you think of a time you confidently agreed to something you did not actually understand?",
+  },
+
+  {
+    slug: "powers",
+    title: "Superpower and kryptonite",
+    blurb: "The same two slots from the last two stages — Lead and Dread — asked one question each.",
+    body: (t) => {
+      const { superpower, kryptonite } = powersOf(t);
+      return (
+        <>
+          <Explain big plain={powersPlain(t, superpower.fn, kryptonite.fn)}>
+            <p>
+              No new data — this is the Lead from &ldquo;Your top four&rdquo; and the Dread from
+              &ldquo;Your bottom four&rdquo;, read through one question each: what runs so strong
+              it looks involuntary, and what one setting undoes it. If you can find someone&rsquo;s
+              Lead and Dread, you already know both.
+            </p>
+          </Explain>
+
+          <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
+            <Panel title="Superpower">
+              <div style={{ display: "flex", gap: "var(--s3)", alignItems: "center", marginBottom: "var(--s2)" }}>
+                <FnIcon fn={superpower.fn} size={44} />
+                <div>
+                  <b className="mono" style={{ fontSize: "var(--t-lg)" }}>{superpower.fn}</b>
+                  <p className="small muted" style={{ margin: 0 }}>{superpower.role} · wants {superpower.wants.toLowerCase()}</p>
+                </div>
+              </div>
+              <p style={{ marginBottom: 0 }}>{superpower.what}</p>
+            </Panel>
+
+            <Panel title="Kryptonite">
+              <div style={{ display: "flex", gap: "var(--s3)", alignItems: "center", marginBottom: "var(--s2)" }}>
+                <FnIcon fn={kryptonite.fn} size={44} />
+                <div>
+                  <b className="mono" style={{ fontSize: "var(--t-lg)" }}>{kryptonite.fn}</b>
+                  <p className="small muted" style={{ margin: 0 }}>{t}&rsquo;s Dread — rarely on</p>
+                </div>
+              </div>
+              <p style={{ marginBottom: 0 }}>{kryptonite.shadow}</p>
+            </Panel>
+          </div>
+
+          <p className="note warn" style={{ marginTop: "var(--s5)" }}>
+            Same asymmetry either way you look: the Lead is overused because it works, so it
+            crowds out the other seven. The Dread is underused because it is undeveloped, so on
+            the rare occasion life forces it open, nothing has been practised there — it comes out
+            as the worst version of that function rather than a usable one.
+          </p>
+        </>
+      );
+    },
+    check: "Without looking: what is your worked example's superpower, and what is its kryptonite?",
   },
 
   {

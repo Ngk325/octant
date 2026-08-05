@@ -1,8 +1,9 @@
 import { REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import {
-  TYPES, REL_NAME, REL_DEF, ARCHETYPE, GROUP, ROMANCE, INTERACTION_STYLE, FN_LONG,
+  TYPES, REL_NAME, REL_DEF, ARCHETYPE, GROUP, ROMANCE, INTERACTION_STYLE, FN_LONG, VIRTUE_VICE,
 } from "../engine/data";
 import { FN_ROLE } from "../engine/functions";
+import { powersOf } from "../engine/powers";
 import { escapeHtml } from "./html";
 
 /* ------------------------------------------------------------------ *
@@ -102,9 +103,11 @@ function shell(opts: {
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{color-scheme:light dark;--paper:#FDFCFA;--ink:#1A1714;--ink2:#4C463D;--rule:#E3DED4;
-        --accent:#6B3BC4;--accent-ink:#4B2A8F;--surface:#fff;--soft:#F4F1EA}
+        --accent:#6B3BC4;--accent-ink:#4B2A8F;--surface:#fff;--soft:#F4F1EA;
+        --warn:#8A5410;--warn-soft:#FBF1E0}
   @media(prefers-color-scheme:dark){:root{--paper:#141310;--ink:#EDE9E1;--ink2:#B6AFA3;--rule:#2E2A24;
-        --accent:#C9A0FF;--accent-ink:#C9A0FF;--surface:#1D1B17;--soft:#211E19}}
+        --accent:#C9A0FF;--accent-ink:#C9A0FF;--surface:#1D1B17;--soft:#211E19;
+        --warn:#E0A455;--warn-soft:#2A2015}}
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
        font:400 19px/1.65 Newsreader,Georgia,serif;-webkit-text-size-adjust:100%}
@@ -125,6 +128,15 @@ function shell(opts: {
   .score .w{font:400 16px/1.4 Inter,system-ui,sans-serif;color:var(--ink2);margin-top:4px}
   blockquote{margin:0 0 18px;padding:2px 0 2px 18px;border-left:3px solid var(--accent);
              color:var(--ink);font-style:italic}
+  .powers{display:flex;gap:14px;flex-wrap:wrap;margin:24px 0}
+  .power{flex:1 1 220px;background:var(--soft);border:1px solid var(--rule);border-radius:12px;
+         padding:16px 18px}
+  .power.kryp{background:var(--warn-soft);border-color:var(--warn)}
+  .power .k{font:500 14px/1.4 Inter,system-ui,sans-serif;color:var(--ink2);margin-bottom:6px;
+            text-transform:uppercase;letter-spacing:.04em}
+  .power .fn{font:600 20px/1 Inter,system-ui,sans-serif;color:var(--accent-ink);margin-bottom:8px}
+  .power.kryp .fn{color:var(--warn)}
+  .power p{margin:0;font-size:16px}
   .cta{display:block;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;
        padding:18px 22px;margin:32px 0;font:500 18px/1.4 Inter,system-ui,sans-serif}
   .cta b{font-weight:600}
@@ -265,6 +277,8 @@ function typePage(origin: string, t: MbtiType): Response {
   // set on its own line below, never spliced mid-sentence.
   const leadLabel = `${st[0]} (${FN_ROLE[st[0]]})`;
   const supportLabel = `${st[1]} (${FN_ROLE[st[1]]})`;
+  const { superpower, kryptonite } = powersOf(t);
+  const [virtue] = VIRTUE_VICE[t];
 
   const body = `
 ${crumbs([["Octant", origin + "/"], ["Readings", "/read"], [t, null]])}
@@ -283,6 +297,23 @@ under pressure, and where they reliably misjudge themselves.</p>
 <p>The same ordering fixes two things the model likes to name: how the ${t} moves in a group
 (<b>${escapeHtml(INTERACTION_STYLE[t])}</b>) and how they tend to show up in courtship
 (<b>${escapeHtml(ROMANCE[t])}</b>).</p>
+
+<h2>Superpower and kryptonite</h2>
+<p>The Lead above is what makes ${article(t)} ${t} extraordinary. The flip side is what undoes
+them — never the same function, and rarely on.</p>
+<div class="powers">
+  <div class="power">
+    <div class="k">Superpower</div>
+    <div class="fn">${st[0]} · ${escapeHtml(FN_ROLE[st[0]])}</div>
+    <p>${escapeHtml(superpower.what)}</p>
+  </div>
+  <div class="power kryp">
+    <div class="k">Kryptonite</div>
+    <div class="fn">${escapeHtml(kryptonite.dealBreaker)}</div>
+    <p>Under real pressure ${article(t)} ${t} tends toward <b>${escapeHtml(kryptonite.stressResponse.toLowerCase())}</b>.
+    Appeal to their <b>${escapeHtml(virtue)}</b> rather than triggering their <b>${escapeHtml(kryptonite.vice.toLowerCase())}</b>.</p>
+  </div>
+</div>
 
 ${cta(
   `/type/${t}`,
