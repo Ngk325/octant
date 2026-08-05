@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { handleRead } from "../src/worker/read";
 import { playbook } from "../src/engine/playbook";
-import { REL, ease } from "../src/engine/core";
-import { TYPES, REL_NAME } from "../src/engine/data";
+import { REL, ease, stack } from "../src/engine/core";
+import { TYPES, REL_NAME, FN_SHADOW } from "../src/engine/data";
+import { powersOf } from "../src/engine/powers";
 
 /* ------------------------------------------------------------------ *
  * The public readings. Two things matter most and both are asserted:
@@ -128,6 +129,25 @@ describe("it is a slice, not the instrument", () => {
     const { html } = await text("/read/entp");
     expect(html).toContain("<h1>The ENTP</h1>");
     expect(html).toContain('href="/type/ENTP"');
+  });
+
+  it("a type page shows a superpower and kryptonite, without publishing the Dread's shadow text", async () => {
+    // The shadow behaviour text (FN_SHADOW) is quoted verbatim inside playbook.ts's
+    // own Dread clause — it is a building block of the gated instrument, not a
+    // standalone public fact the way FN_LONG (already shown above) is. The public
+    // kryptonite instead draws only on tables playbook.ts never touches: the
+    // virtue/vice pair and the behavioural profile.
+    for (const t of TYPES) {
+      const { html } = await text(`/read/${t.toLowerCase()}`);
+      expect(html, t).toContain("Superpower and kryptonite");
+      const dread = stack(t)[7];
+      expect(html.includes(FN_SHADOW[dread]), `${t}: FN_SHADOW[${dread}] must stay gated`).toBe(false);
+
+      const { kryptonite } = powersOf(t);
+      expect(html, t).toContain(kryptonite.dealBreaker);
+      expect(html.toLowerCase(), t).toContain(kryptonite.stressResponse.toLowerCase());
+      expect(html.toLowerCase(), t).toContain(kryptonite.vice.toLowerCase());
+    }
   });
 
   it("every related link's visible text matches the canonical order of its href", async () => {

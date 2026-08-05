@@ -326,6 +326,14 @@ export const PLAIN_BY_ID: Record<string, string> = {
   "rel-sr": REL_PLAIN.SR, "rel-ex": REL_PLAIN.EX, "rel-se": REL_PLAIN.SE, "rel-cf": REL_PLAIN.CF,
 };
 
+/** The Lead and the Dread, said in one line each — no jargon, same two slots as typePlain. */
+export function powersPlain(t: MbtiType, hero: Fn, dread: Fn): string {
+  return (
+    `${t}'s superpower is ${FN_HANDLE[hero]} — the move that runs so automatically it looks involuntary. ` +
+    `Their kryptonite is ${FN_HANDLE[dread]}: the one setting that is almost never on, and does real damage when it is.`
+  );
+}
+
 /** How to read a type in one sentence, for the top of a type page. */
 export function typePlain(t: MbtiType, hero: Fn, parent: Fn, inferior: Fn): string {
   return (

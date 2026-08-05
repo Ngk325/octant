@@ -11,6 +11,7 @@ import {
   FN_SATISFACTION, FN_STARVATION, FN_PRACTICE,
 } from "../engine/functions";
 import { sides, SIDE_ORDER } from "../engine/sides";
+import { powersOf } from "../engine/powers";
 import {
   wheelOf, templeOf, themeFor, poleFor, UNSETTLED,
   type Development, type Focus,
@@ -20,7 +21,9 @@ import {
   BEHAVIOURAL, COIN_LABELS, DETERMINING, FN_LONG, FN_SHADOW, SLOT_NAMES,
   type MbtiType,
 } from "../engine/data";
-import { FN_PLAIN, SLOT_PLAIN, GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, typePlain } from "../engine/plain";
+import {
+  FN_PLAIN, SLOT_PLAIN, GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, typePlain, powersPlain,
+} from "../engine/plain";
 import { typeElsewhere, archetypeAliases } from "../engine/translation";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
@@ -47,6 +50,7 @@ import FnIcon from "../components/glyphs/FnIcon";
    forms; they were previously buried at 60% and 85% depth with no way to
    reach them but scrolling. */
 const SECTIONS = [
+  ["powers", "Superpowers & kryptonite"],
   ["slots", "The eight slots"],
   ["sides", "Four sides"],
   ["exchange", "The exchange overlay"],
@@ -152,6 +156,7 @@ export default function TypeReader() {
   const c = coins(t);
   const [virtue, vice] = VIRTUE_VICE[t];
   const b = BEHAVIOURAL[t];
+  const powers = powersOf(t);
 
   usePublishContext(() => ({ kind: "type", type: t }), [t]);
 
@@ -192,6 +197,43 @@ export default function TypeReader() {
       </p>
 
       <SectionNav items={SECTIONS} />
+
+      {/* ------------------------------------------------ powers */}
+      <h2 id="powers" className="sec">Superpowers & kryptonite</h2>
+
+      <Explain
+        big
+        plain={powersPlain(t, powers.superpower.fn, powers.kryptonite.fn)}
+      >
+        <p>
+          Not new facts about {t} — the same Lead and Dread slots the eight-slot stack below
+          already carries, read through one question each: what runs so strong it looks
+          involuntary, and what one setting undoes it.
+        </p>
+      </Explain>
+
+      <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
+        <Panel title={<span className="cluster"><FnTag fn={powers.superpower.fn} size="var(--t-lg)" /> Superpower</span>}>
+          <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
+            <span className="chip">{powers.superpower.role}</span>
+            <span className="chip">wants {powers.superpower.wants.toLowerCase()}</span>
+          </div>
+          <p style={{ marginTop: 0 }}>{powers.superpower.what}</p>
+          <p className="small muted" style={{ margin: 0 }}>
+            Backed up by <FnTag fn={powers.superpower.ally} /> — the Support that keeps the Lead from
+            running alone.
+          </p>
+        </Panel>
+
+        <Panel title={<span className="cluster"><FnTag fn={powers.kryptonite.fn} size="var(--t-lg)" /> Kryptonite</span>}>
+          <div className="note warn" style={{ marginBottom: "var(--s3)" }}>
+            <span className="small">{powers.kryptonite.shadow}</span>
+          </div>
+          <Row stacked k="Avoid triggering" v={<span className="small">{powers.kryptonite.vice}</span>} />
+          <Row stacked k="Under stress" v={<span className="small">{powers.kryptonite.stressResponse}</span>} />
+          <Row stacked k="Deal breaker" v={<span className="small">{powers.kryptonite.dealBreaker}</span>} />
+        </Panel>
+      </div>
 
       {/* ------------------------------------------------ slots */}
       <h2 id="slots" className="sec">The eight slots</h2>
