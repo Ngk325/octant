@@ -30,6 +30,18 @@ grey where it helps.
 > Relation, Temperament, Romance, Interaction and Gate categories, and a
 > pinned undrawn set of exactly eight entries (two Concepts, six Coins).
 > The onboarding shipped at eight screens, not the six specified below.
+>
+> **Recount, 2026-08-06:** the 103 above was itself already off by four —
+> the true count at that point was 99, asserted in `tests/plain.test.ts`.
+> A lexicon review pass since then fixed a severe placement bug in
+> `ArchetypeGrid` (Support and Delight were silently swapped across two
+> axes for 8 entries), fixed 8 Coin/Concept figures that drew only one
+> branch of an either/or definition, fixed a quadra-colour/function-hue
+> collision, wired the already-built `AttitudeMark` into `initiating` and
+> `responding`, and added the one entry (`three-quarter-life-crisis`) that
+> was referenced in prose but never defined. Current ground truth: 100
+> lexicon entries, a pinned undrawn set of seven (three Concepts, four
+> Coins).
 
 Roughly twenty good diagrams ship, but they live on the type, pair and
 learn pages. Open the lexicon — the place a confused reader goes — and

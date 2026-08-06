@@ -23,8 +23,8 @@ import SaviorDemonGrid from "../src/components/SaviorDemonGrid";
 import QuadraFunctionGrid from "../src/components/QuadraFunctionGrid";
 import CoinSet from "../src/components/CoinSet";
 import TwoReadings from "../src/components/TwoReadings";
-import { COIN_LABELS, DETERMINING, CONFIRMING, REL_NAME, DOM_AUX, type RelCode } from "../src/engine/data";
-import { ops } from "../src/engine/ops";
+import { COIN_LABELS, DETERMINING, CONFIRMING, REL_NAME, DOM_AUX, type RelCode, type Fn } from "../src/engine/data";
+import { ops, ANIMAL_LABEL } from "../src/engine/ops";
 import { LEX_FIGURES, lexiconFigure } from "../src/components/lexicon-figures";
 import { BY_ID } from "../src/engine/lexicon";
 
@@ -277,11 +277,70 @@ describe("the lexicon figure registry", () => {
     }
   });
 
+  /* CELLS used to read [Lead, Delight, Support, Cave], and the row slice
+     (row*2, row*2+2) put Delight in the "aware" row and Support in the
+     "unaware" row — the opposite of both the component's own docstring
+     and every archetype entry's own prose (e.g. `critic`/Scold: "Shadow,
+     aware, pessimistic"). Locked here by DOM order: the grid is CSS grid
+     with implicit rows, so cells render in row-major order — axis label,
+     then its two cells — and that order is the only thing a reader's eye
+     tracks too. */
+  it("places each archetype in the aware/optimistic cell its own entry claims", () => {
+    const html = draw(<ArchetypeGrid />);
+    const at = (needle: string) => {
+      const i = html.indexOf(needle);
+      expect(i, `"${needle}" appears in the rendered grid`).toBeGreaterThanOrEqual(0);
+      return i;
+    };
+    const awareRow = at("Aware of using it");
+    const lead = at("1. Lead");
+    const support = at("2. Support");
+    const unawareRow = at("Runs without you noticing");
+    const delight = at("3. Delight");
+    const cave = at("4. Cave");
+
+    expect(awareRow, "the aware row precedes its two cells").toBeLessThan(lead);
+    expect(lead, "Lead (optimistic) precedes Support (pessimistic) within the aware row").toBeLessThan(support);
+    expect(support, "Support stays inside the aware row, before the unaware row starts").toBeLessThan(unawareRow);
+    expect(unawareRow, "the unaware row precedes its two cells").toBeLessThan(delight);
+    expect(delight, "Delight (optimistic) precedes Cave (pessimistic) within the unaware row").toBeLessThan(cave);
+  });
+
+  /* Thinking (Te or Ti), Organize (Ni or Si) and six more used to draw a
+     single FnIcon or SelfTribeCone, silently picking one branch of the
+     entry's own "or". Matched against each glyph's own aria-label, which
+     both components format as "${fn} — ...", so this fails loud if a
+     future edit goes back to drawing only one function. */
+  it("draws both functions of an either/or coin pole, never just one", () => {
+    const pairs: Record<string, [Fn, Fn]> = {
+      thinking: ["Te", "Ti"], feeling: ["Fe", "Fi"],
+      sensing: ["Se", "Si"], intuition: ["Ne", "Ni"],
+      organize: ["Ni", "Si"], gather: ["Ne", "Se"],
+      identity: ["Ti", "Fi"], tribe: ["Te", "Fe"],
+    };
+    for (const [id, [a, b]] of Object.entries(pairs)) {
+      const html = draw(lexiconFigure(BY_ID.get(id)!));
+      expect(html, `${id} draws ${a}`).toContain(`aria-label="${a} —`);
+      expect(html, `${id} draws ${b}`).toContain(`aria-label="${b} —`);
+    }
+  });
+
+  /* `demon-animal` used to reuse `savior`'s figure verbatim, leaving its
+     own claim — that the two Flinches resolve to one named current — as
+     two disconnected cells. Locked against the live computation so a
+     caption that stops matching the engine fails loud. */
+  it("names the demon-animal figure's resultant current, live-computed", () => {
+    const html = draw(lexiconFigure(BY_ID.get("demon-animal")!));
+    const label = ANIMAL_LABEL[ops("ENTP").doubleDemon];
+    expect(html, `names ${label}`).toContain(label);
+  });
+
   it("leaves undrawn only the concepts that refuse a picture", () => {
     /* `fine-coins` says of itself that this build holds that material
        unsettled, so a diagram would assert what the entry declines to.
-       `midlife-crisis` is about timing and pressure, which no mark in the
-       language means. Listed so drawing one is a decision.
+       `midlife-crisis` and its sibling `three-quarter-life-crisis` are
+       about timing and pressure, which no mark in the language means.
+       Listed so drawing one is a decision.
 
        `coin` and `dual-lighting` were on this list and are not any more.
        The reasoning that put them here confused "must not RESOLVE this" with
@@ -293,19 +352,21 @@ describe("the lexicon figure registry", () => {
       .filter((e) => e.category === "Concept" && !lexiconFigure(e))
       .map((e) => e.id)
       .sort();
-    expect(bare).toEqual(["fine-coins", "midlife-crisis"]);
+    expect(bare).toEqual(["fine-coins", "midlife-crisis", "three-quarter-life-crisis"]);
   });
 
   it("draws the coin poles the glyph language can state, and no others", () => {
-    /* The six left bare ask about sequencing and delivery, which no mark in
-       the language means — the same restraint Calculator takes. Listed, so
-       adding a stand-in for one is a deliberate edit rather than a drift. */
+    /* Initiating/Responding used to sit in this bare set too, even though
+       they are literally "maps to extraversion"/"...introversion" — exactly
+       what AttitudeMark already draws, and already shipped elsewhere in the
+       app. The four left bare ask about sequencing and delivery, which no
+       mark in the language means — the same restraint Calculator takes.
+       Listed, so adding a stand-in for one is a deliberate edit rather than
+       a drift. */
     const bare = ENTRIES
       .filter((e) => e.category === "Coin" && !lexiconFigure(e))
       .map((e) => e.id)
       .sort();
-    expect(bare).toEqual(
-      ["control", "direct", "informative", "initiating", "movement", "responding"],
-    );
+    expect(bare).toEqual(["control", "direct", "informative", "movement"]);
   });
 });

@@ -299,6 +299,9 @@ export const PLAIN_BY_ID: Record<string, string> = {
   "midlife-crisis":
     "Somewhere around forty, the version of you that you never became stops waiting politely. " +
     "It is not a breakdown. It is a bill arriving.",
+  "three-quarter-life-crisis":
+    "The same bill, later — this time from your shadow side, not just your stress reactions. " +
+    "It doesn't have a well-known name, so it's easy to go through without recognising it for what it is.",
 
   /* octagram */
   octagram: CONCEPT_PLAIN.octagram,

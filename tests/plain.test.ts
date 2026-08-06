@@ -17,8 +17,12 @@ describe("plain language coverage", () => {
     expect(missing.map((e) => e.id)).toEqual([]);
   });
 
-  it("covers all 99 entries", () => {
-    expect(ENTRIES).toHaveLength(99);
+  it("covers all 100 entries", () => {
+    /* 99 -> 100 with `three-quarter-life-crisis`: `unconscious` and
+       `midlife-crisis` both referenced it in prose without it having an
+       entry of its own — the one dangling cross-reference in an otherwise
+       closed reference graph. */
+    expect(ENTRIES).toHaveLength(100);
     for (const e of ENTRIES) expect(PLAIN_BY_ID[e.id], e.id).toBeTruthy();
   });
 
