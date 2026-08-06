@@ -32,6 +32,7 @@ export type ChatContext =
   | { kind: "catalogue"; sortBy: string }
   | { kind: "learn"; stage: number; title: string }
   | { kind: "type"; type: MbtiType }
+  | { kind: "sides"; type: MbtiType }
   | { kind: "pair"; a: MbtiType; b: MbtiType }
   | { kind: "network"; members: { name: string; type: MbtiType }[] }
   | { kind: "matrix" }
@@ -223,6 +224,15 @@ export function contextBlock(ctx: ChatContext): string {
   switch (ctx.kind) {
     case "type":
       return [`The reader is looking at the type page for ${ctx.type}.`, "", ...typeFacts(ctx.type)].join("\n");
+    case "sides":
+      return [
+        `The reader is on the four-sides field guide for ${ctx.type} — the deep page on how to ` +
+        "assess, enter, operate, avoid getting stuck in, and interact with someone in each of the " +
+        "four sides, with the heaviest detail on the superego. Answer at that depth: assume they " +
+        "already know what the four sides are.",
+        "",
+        ...typeFacts(ctx.type),
+      ].join("\n");
     case "pair":
       return [
         `The reader is looking at the pair page for ${ctx.a} and ${ctx.b}.`, "",
@@ -287,6 +297,13 @@ export function suggestedPrompts(ctx: ChatContext): string[] {
         `How do I actually develop ${ctx.type}'s subconscious?`,
         `I noticed an ${ctx.type} doing something odd — help me read it`,
         `What is the fastest way to lose an ${ctx.type}'s trust?`,
+      ];
+    case "sides":
+      return [
+        "How do I tell whether I'm in my subconscious or forcing it?",
+        "Someone I know is superego-dominant right now — what do I actually do?",
+        `What does developing ${ctx.type}'s superego on purpose look like, safely?`,
+        `How does ${ctx.type}'s Dread show up differently from someone else's?`,
       ];
     case "pair":
       return [

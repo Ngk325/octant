@@ -354,6 +354,11 @@ export default function TypeReader() {
         <GatewayPath type={t} />
       </Figure>
 
+      <p className="small">
+        <Link to={`/sides/${t}`}>The full field guide →</Link> — how to assess, enter, operate,
+        avoid and interact with each side, worked in this much more depth for {t} specifically.
+      </p>
+
       {SIDE_ORDER.map((k) => {
         const side = s[k];
         return (
@@ -367,10 +372,12 @@ export default function TypeReader() {
             </Explain>
 
             <Row k="Way in" v={<span><FnTag fn={side.gateway.fn} />{k !== "ego" && <span className="small"> — your {side.gateway.egoSlot}</span>}</span>} />
+            <Row k="How to tell you're here" v={<span className="small">{side.assess}</span>} stacked />
             <Row k="What holds it shut" v={<span className="small">{side.blockedBy}</span>} stacked />
             <Row k="What opens it" v={<span className="small">{side.opensWith}</span>} stacked />
             <Row k="Deliberately" v={<span className="small">{side.atWill}</span>} stacked />
             <Row k="If you never do" v={<span className="small">{side.forced}</span>} stacked />
+            <Row k="Dealing with it in someone else" v={<span className="small">{side.interact}</span>} stacked />
             <Row k="What it pays out" v={<span className="small">{side.produces}</span>} stacked />
 
             {/* Two notes, stacked — not a grid inside a card inside a grid.

@@ -5,6 +5,7 @@ import Welcome, { ONBOARDING_DONE_KEY } from "./views/Welcome";
 import Learn from "./views/Learn";
 import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
+import Sides from "./views/Sides";
 import PairReader from "./views/PairReader";
 import Calculator from "./views/Calculator";
 import Read from "./views/Read";
@@ -24,6 +25,7 @@ const TABS: [string, string][] = [
   ["/read-someone", "Read someone"],
   ["/types", "All sixteen"],
   ["/type/ENTP", "A type"],
+  ["/sides/ENTP", "Four sides"],
   ["/pair/ENTP/INFJ", "A pair"],
   ["/network", "A group"],
   ["/matrix", "Matrix"],
@@ -181,6 +183,8 @@ export default function App() {
             <Route path="/read-someone" element={<Read />} />
             <Route path="/types" element={<Types />} />
             <Route path="/type/:type" element={<TypeReader />} />
+            <Route path="/sides" element={<Sides />} />
+            <Route path="/sides/:type" element={<Sides />} />
             <Route path="/pair/:a/:b" element={<PairReader />} />
             <Route path="/network" element={<Network />} />
             <Route path="/matrix" element={<Matrix />} />
