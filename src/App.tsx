@@ -11,6 +11,7 @@ import Read from "./views/Read";
 import Network from "./views/Network";
 import Matrix from "./views/Matrix";
 import Lexicon from "./views/Lexicon";
+import Guide from "./views/Guide";
 import Admin from "./views/Admin";
 import ChatRail from "./chat/ChatRail";
 import { useChatCtx } from "./chat/ChatContext";
@@ -28,6 +29,7 @@ const TABS: [string, string][] = [
   ["/network", "A group"],
   ["/matrix", "Matrix"],
   ["/lexicon", "Lexicon"],
+  ["/guide", "Emoji guide"],
 ];
 
 /** Highlight "A type" for any /type/* route, not just the one in the tab href. */
@@ -186,6 +188,8 @@ export default function App() {
             <Route path="/matrix" element={<Matrix />} />
             <Route path="/lexicon" element={<Lexicon />} />
             <Route path="/lexicon/:id" element={<Lexicon />} />
+            <Route path="/guide" element={<Guide />} />
+            <Route path="/guide/:type" element={<Guide />} />
             {/* Unlisted in the nav on purpose — the API refuses non-owners, so this
                 is the owner's door, not a page anyone else needs to see exists. */}
             <Route path="/admin" element={<Admin />} />

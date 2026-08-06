@@ -36,6 +36,7 @@ export type ChatContext =
   | { kind: "network"; members: { name: string; type: MbtiType }[] }
   | { kind: "matrix" }
   | { kind: "lexicon"; term?: string }
+  | { kind: "guide"; type?: MbtiType }
   | { kind: "calculator"; best?: MbtiType | null }
   | { kind: "read"; best?: MbtiType | null };
 
@@ -248,6 +249,10 @@ export function contextBlock(ctx: ChatContext): string {
       return ctx.term
         ? `The reader is looking at the lexicon entry for "${ctx.term}".`
         : "The reader is browsing the lexicon.";
+    case "guide":
+      return ctx.type
+        ? `The reader is on the emoji guide, drilled into ${ctx.type}'s eight-slot stack and four sides (each function has one emoji, consistent across the app).\n\n${typeFacts(ctx.type).join("\n")}`
+        : "The reader is on the emoji guide: the eight cognitive functions each paired with one emoji, grouped by attitude, plus a matrix of all sixteen types' stacks. They have not drilled into one type yet.";
     case "calculator":
       return ctx.best
         ? `The reader is on the type calculator; it currently resolves to ${ctx.best}.\n\n${typeFacts(ctx.best).join("\n")}`
@@ -319,6 +324,18 @@ export function suggestedPrompts(ctx: ChatContext): string[] {
         "How reliable is a read like this compared to someone's own answers?",
         "What should I watch for that would make me doubt this result?",
       ];
+    case "guide":
+      return ctx.type
+        ? [
+            `Walk me through ${ctx.type}'s four sides`,
+            `Which of ${ctx.type}'s eight functions is easiest to mistake for another?`,
+            `What does ${ctx.type} look like when its Cave is undeveloped?`,
+          ]
+        : [
+            "Which function is genuinely hardest to spot in someone?",
+            "What's the actual difference between a type's Doubt and its Dread?",
+            "How do the four sides fit together?",
+          ];
     default:
       return [
         "How is ENTP and INFJ romance interaction?",

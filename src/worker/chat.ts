@@ -175,6 +175,10 @@ export function parseContext(raw: unknown): ChatContext | null {
       const term = boring(c.term, 60);
       return { kind: "lexicon", ...(term ? { term } : {}) };
     }
+    case "guide": {
+      if (c.type === undefined || c.type === null) return { kind: "guide" };
+      return isType(c.type) ? { kind: "guide", type: c.type } : null;
+    }
     case "calculator": {
       if (c.best === undefined || c.best === null) return { kind: "calculator", best: null };
       return isType(c.best) ? { kind: "calculator", best: c.best } : null;
@@ -210,6 +214,7 @@ function contextLabel(ctx: ChatContext): string {
     case "learn": return `course ${ctx.stage}: ${ctx.title}`;
     case "network": return `group of ${ctx.members.length}`;
     case "lexicon": return ctx.term ? `lexicon: ${ctx.term}` : "lexicon";
+    case "guide": return `guide${ctx.type ? ` → ${ctx.type}` : ""}`;
     case "calculator": return `calculator${ctx.best ? ` → ${ctx.best}` : ""}`;
     case "read": return `read someone${ctx.best ? ` → ${ctx.best}` : ""}`;
     default: return ctx.kind;

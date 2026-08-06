@@ -32,6 +32,7 @@
         "src/components/InvolutionTable.tsx",
         "src/components/QuadraFunctionGrid.tsx",
         "src/views/Matrix.tsx",
+        "src/views/Guide.tsx",
         "src/chat/chat-figures.tsx"
       ],
       "linter": {

@@ -192,6 +192,9 @@ function FunctionExtras({ fn }: { fn: Fn }) {
         <b style={{ fontFamily: "var(--sans)" }}>Sounds like: </b>
         &ldquo;{FN_SAYS[fn][0]}&rdquo; &middot; &ldquo;{FN_SAYS[fn][1]}&rdquo;
       </p>
+      <p className="small" style={{ marginTop: 4, marginBottom: 0 }}>
+        <Link to="/guide#fns">See it in the emoji guide →</Link>
+      </p>
     </div>
   );
 }
