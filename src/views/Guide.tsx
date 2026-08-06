@@ -123,14 +123,8 @@ export default function Guide() {
           <AttitudeMark />
         </div>
         <div className="grid g2">
-          <div>
-            <h3>Extraverted — facing out</h3>
-            <AttitudeColumn fns={visibleFns.filter(isExtraverted)} />
-          </div>
-          <div>
-            <h3>Introverted — facing in</h3>
-            <AttitudeColumn fns={visibleFns.filter((f) => !isExtraverted(f))} />
-          </div>
+          <AttitudeColumn title="Extraverted — facing out" fns={visibleFns.filter(isExtraverted)} />
+          <AttitudeColumn title="Introverted — facing in" fns={visibleFns.filter((f) => !isExtraverted(f))} />
         </div>
       </Section>
 
@@ -148,18 +142,37 @@ export default function Guide() {
   );
 }
 
-function AttitudeColumn({ fns }: { fns: Fn[] }) {
-  if (fns.length === 0) return <p className="small muted">No match.</p>;
+function AttitudeColumn({ title, fns }: { title: string; fns: Fn[] }) {
   return (
-    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-      {fns.map((fn) => (
-        <li key={fn} style={{ display: "flex", alignItems: "center", gap: "var(--s3)", padding: "var(--s2) 0" }}>
-          <span style={{ fontSize: "1.4em" }} aria-hidden="true">{FN_EMOJI[fn]}</span>
-          <FnTag fn={fn} />
-          <span className="small muted">{FN_ROLE[fn]}</span>
-        </li>
-      ))}
-    </ul>
+    <Panel title={title}>
+      {fns.length === 0 ? (
+        <p className="small muted" style={{ margin: 0 }}>No match.</p>
+      ) : (
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {fns.map((fn, i) => (
+            <li
+              key={fn}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "var(--s3)",
+                padding: "var(--s3) 0",
+                borderTop: i > 0 ? "1px solid var(--rule)" : undefined,
+              }}
+            >
+              {/* fontSize alone is not enough here: colour-emoji fonts (Apple Color
+                  Emoji chief among them) carry outsized internal line metrics, so an
+                  enlarged bare-emoji span with no explicit line-height can inflate its
+                  own row far past the text next to it — line-height pins the row to
+                  the size actually declared. */}
+              <span style={{ fontSize: "1.4em", lineHeight: 1 }} aria-hidden="true">{FN_EMOJI[fn]}</span>
+              <FnTag fn={fn} />
+              <span className="small muted">{FN_ROLE[fn]} · {FN_KEYWORD[fn]}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Panel>
   );
 }
 
@@ -194,6 +207,7 @@ function StackMatrix({ types, highlight }: { types: MbtiType[]; highlight?: Mbti
                       to={`/guide/${t}`}
                       title={`${t}'s ${SLOT_NAMES[i]} is ${fn}`}
                       aria-label={`${t}'s ${SLOT_NAMES[i]} is ${fn}`}
+                      style={{ lineHeight: 1 }}
                     >
                       {FN_EMOJI[fn]}
                     </Link>
@@ -249,7 +263,7 @@ function TypeDrilldown({
         <TypePicker label="Switch type (or ← →)" value={type} onChange={onNavigate} />
       </div>
 
-      <p className="mono" style={{ fontSize: "var(--t-lg)", margin: "var(--s4) 0" }} aria-hidden="true">
+      <p className="mono" style={{ fontSize: "var(--t-lg)", lineHeight: 1.3, margin: "var(--s4) 0" }} aria-hidden="true">
         {emojiStack(type)}
       </p>
       <p className="small muted" style={{ margin: "0 0 var(--s4)" }}>
@@ -284,7 +298,7 @@ function TypeDrilldown({
                 opacity: i >= 4 ? 0.75 : 1,
               }}
             >
-              <span style={{ fontSize: "1.5em", width: "1.3em", textAlign: "center" }} aria-hidden="true">
+              <span style={{ fontSize: "1.5em", lineHeight: 1, width: "1.3em", textAlign: "center" }} aria-hidden="true">
                 {FN_EMOJI[fn]}
               </span>
               <FnIcon fn={fn} size={28} />
@@ -304,7 +318,7 @@ function TypeDrilldown({
                   <SideDoor side={key} fn={side.gateway.fn} />
                   <div>
                     <h4 style={{ margin: 0, display: "flex", alignItems: "center", gap: 6 }}>
-                      <span aria-hidden="true">{DOOR_EMOJI[key]}</span> {side.name}
+                      <span style={{ lineHeight: 1 }} aria-hidden="true">{DOOR_EMOJI[key]}</span> {side.name}
                     </h4>
                     <p className="small muted" style={{ margin: 0 }}>{DOOR_STATE[key]}</p>
                   </div>
@@ -313,7 +327,7 @@ function TypeDrilldown({
                 <ol style={{ listStyle: "none", padding: 0, margin: "var(--s3) 0" }}>
                   {side.slots.map((slot) => (
                     <li key={slot.fn} style={{ display: "flex", alignItems: "center", gap: 8, padding: "2px 0" }}>
-                      <span aria-hidden="true">{FN_EMOJI[slot.fn]}</span>
+                      <span style={{ lineHeight: 1 }} aria-hidden="true">{FN_EMOJI[slot.fn]}</span>
                       <FnTag fn={slot.fn} size="var(--t-sm)" />
                       <span className="small muted">{slot.role}</span>
                     </li>
