@@ -82,7 +82,7 @@ describe("four sides", () => {
     const s = sides(t);
     for (const k of SIDE_ORDER) {
       const side = s[k];
-      for (const field of ["plain", "what", "blockedBy", "opensWith", "atWill", "forced", "produces", "developed", "undeveloped"] as const) {
+      for (const field of ["plain", "what", "blockedBy", "opensWith", "assess", "atWill", "forced", "interact", "produces", "developed", "undeveloped"] as const) {
         expect(side[field].length, `${t}/${k}.${field}`).toBeGreaterThan(20);
       }
     }

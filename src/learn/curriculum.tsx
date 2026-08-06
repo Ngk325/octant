@@ -445,6 +445,12 @@ export const STAGES: Stage[] = [
               </Panel>
             ))}
           </div>
+
+          <p className="small">
+            This is the concept. <Link to={`/sides/${t}`}>The full field guide</Link> works
+            through how to assess, enter, operate, avoid and interact with each of these four —
+            in far more depth than fits here, especially for the superego.
+          </p>
         </>
       );
     },

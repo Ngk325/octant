@@ -2,7 +2,7 @@ import {
   REL, ease, relation, stack, quadra, gate, complements, catalysts, frictions,
 } from "./core";
 import { ops, coins } from "./ops";
-import { sides, SIDE_ORDER } from "./sides";
+import { sides, SIDE_ORDER, DREAD_TELLS, DREAD_DEESCALATE } from "./sides";
 import { wheelOf, templeOf } from "./octagram";
 import { playbook } from "./playbook";
 import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./functions";
@@ -32,6 +32,7 @@ export type ChatContext =
   | { kind: "catalogue"; sortBy: string }
   | { kind: "learn"; stage: number; title: string }
   | { kind: "type"; type: MbtiType }
+  | { kind: "sides"; type: MbtiType }
   | { kind: "pair"; a: MbtiType; b: MbtiType }
   | { kind: "network"; members: { name: string; type: MbtiType }[] }
   | { kind: "matrix" }
@@ -95,6 +96,24 @@ export function typeFacts(t: MbtiType): string[] {
     line(`Doubt ${st[4]} — what it wants`, `${FN_WANTS[st[4]]}. ${FN_SATISFACTION[st[4]]}`),
     line("Function roles", st.slice(0, 4).map((fn) => `${fn}=${FN_ROLE[fn]}`).join(" · ")),
     line("How the ego functions sound", st.slice(0, 4).map((fn) => `${fn}: "${FN_SAYS[fn][0]}"`).join(" · ")),
+  ];
+}
+
+/** The five field-guide facets for each of the four sides, plus the superego's per-function tell and de-escalation — the content the /sides page actually shows, compact enough to sit alongside typeFacts(). */
+function sideGuideFacts(t: MbtiType): string[] {
+  const s = sides(t);
+  const dread = stack(t)[7];
+  return [
+    ...SIDE_ORDER.map((k) => {
+      const side = s[k];
+      return line(
+        `${side.name} field guide`,
+        `assess: ${side.assess} | enter: ${side.opensWith} | operate: ${side.atWill} | ` +
+        `avoid: ${side.forced} | interact: ${side.interact}`,
+      );
+    }),
+    line(`Superego tell (Dread ${dread})`, DREAD_TELLS[dread]),
+    line(`Superego de-escalation (Dread ${dread})`, DREAD_DEESCALATE[dread]),
   ];
 }
 
@@ -224,6 +243,17 @@ export function contextBlock(ctx: ChatContext): string {
   switch (ctx.kind) {
     case "type":
       return [`The reader is looking at the type page for ${ctx.type}.`, "", ...typeFacts(ctx.type)].join("\n");
+    case "sides":
+      return [
+        `The reader is on the four-sides field guide for ${ctx.type} — the deep page on how to ` +
+        "assess, enter, operate, avoid getting stuck in, and interact with someone in each of the " +
+        "four sides, with the heaviest detail on the superego. Answer at that depth: assume they " +
+        "already know what the four sides are.",
+        "",
+        ...typeFacts(ctx.type),
+        "",
+        ...sideGuideFacts(ctx.type),
+      ].join("\n");
     case "pair":
       return [
         `The reader is looking at the pair page for ${ctx.a} and ${ctx.b}.`, "",
@@ -292,6 +322,13 @@ export function suggestedPrompts(ctx: ChatContext): string[] {
         `How do I actually develop ${ctx.type}'s subconscious?`,
         `I noticed an ${ctx.type} doing something odd — help me read it`,
         `What is the fastest way to lose an ${ctx.type}'s trust?`,
+      ];
+    case "sides":
+      return [
+        "How do I tell whether I'm in my subconscious or forcing it?",
+        "Someone I know is superego-dominant right now — what do I actually do?",
+        `What does developing ${ctx.type}'s superego on purpose look like, safely?`,
+        `How does ${ctx.type}'s Dread show up differently from someone else's?`,
       ];
     case "pair":
       return [

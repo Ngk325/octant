@@ -81,10 +81,14 @@ export interface Side extends SideStructure {
   blockedBy: string;
   /** What opens it. */
   opensWith: string;
+  /** How to tell you are in it right now — the self-assessment. */
+  assess: string;
   /** Reaching it deliberately. */
   atWill: string;
   /** Reaching it involuntarily, because you did not do it deliberately. */
   forced: string;
+  /** How to recognise this side running in someone else, and what actually helps. */
+  interact: string;
   /** What you get out of it. */
   produces: string;
   developed: string;
@@ -143,6 +147,39 @@ const DREAD_FEAR: Record<Fn, string> = {
   Ti: "logic sharpened into a scalpel and used to dismantle a person rather than a problem",
   Fe: "the room's mood becomes a weapon, and you play it deliberately",
   Fi: "moral outrage with no off-switch and no proportion",
+};
+
+/**
+ * The superego, caught from outside while it is running. Not the fear that opens the door —
+ * the observable tell once it is through it, the thing a friend would notice before the
+ * person running it would say it out loud. Used both to assess it in yourself and to
+ * recognise it in someone else.
+ */
+export const DREAD_TELLS: Record<Fn, string> = {
+  Ne: "they start narrating every branch as a trap, and the options multiply instead of narrow — nothing you say lands as reassurance, it only feeds the next branch",
+  Ni: "they deliver a verdict, not a worry — flat, total, already decided, and stated as fact rather than offered as fear",
+  Se: "the room gets physically smaller: voice, posture and movement all sharpen toward whoever or whatever is in front of them, a body that has decided to act before the mind has caught up",
+  Si: "they start reciting your record back to you, in order, with dates — a ledger being read aloud, not a complaint",
+  Te: "people stop being colleagues and start being line items; warmth reads as static and gets edited out along with everything else that is not throughput",
+  Ti: "the argument gets very precise and very personal at the same time — it has stopped trying to be right and started trying to leave a mark",
+  Fe: "the room's mood is being played like an instrument, deliberately, and they are watching for the reaction rather than feeling anything themselves",
+  Fi: "\"I'm just being honest\" arrives escorted by contempt, and the moral high ground is being used as a weapon rather than held as a position",
+};
+
+/**
+ * What actually de-escalates the superego, function by function. Aimed at whoever is
+ * dealing with it — including the person running it, addressing themselves. Reasoning with
+ * it on its own terms is what every wrong answer here has in common.
+ */
+export const DREAD_DEESCALATE: Record<Fn, string> = {
+  Ne: "Do not offer a counter-branch — that is fuel. Narrow the field to one concrete next step, nothing hypothetical.",
+  Ni: "Do not argue with the verdict directly. Ask what one specific thing would have to be true for it to be wrong — reintroducing a single variable breaks the totality.",
+  Se: "Give the body somewhere to go. A genuine physical outlet, or a real physical exit, does more than any sentence will.",
+  Si: "Do not defend the whole record — contest one date. A single factual correction breaks the ledger's authority faster than an apology does.",
+  Te: "Hand them one measurable task with a clear finish line. The persona wants throughput; give it something legitimate to produce.",
+  Ti: "Do not meet precision with precision — that is the game it wants. Name the move out loud: 'that was aimed at me, not at the problem.'",
+  Fe: "Refuse to supply the reaction it is fishing for. Flat, low affect starves it faster than matching the mood or visibly withdrawing.",
+  Fi: "Do not argue the ethics. Ask what it would cost the other person if this judgment turned out to be wrong — proportion is what is missing, not sincerity.",
 };
 
 const NAMES: Record<SideKey, string> = {
@@ -205,12 +242,20 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
       "This is the side that has a reputation, holds down a job and answers to your name.",
     blockedBy: "Nothing — this door is already open. That is the problem with it.",
     opensWith: "Default operation. You are here unless something has pushed you out.",
+    assess:
+      "Nothing to detect — this is where every day starts and where you land the moment " +
+      `nothing else is holding you. The one thing worth checking is whether you have overstayed: ` +
+      `${st[0]} running on problems it was never built for, ${st[3]} never touched.`,
     atWill:
       `Leading with ${st[0]} and backing it with ${st[1]} is effortless, which is exactly why ` +
       "it gets overused: the Lead is reached for even on problems it is wrong for.",
     forced:
       "You are returned here automatically. When any other side tires the mind out, it drops " +
       "you back into the ego whether or not you were finished.",
+    interact:
+      "The version of someone most people already know, so there is nothing special to look " +
+      `for. The one useful read: notice when their ${st[0]} is running on habit rather than fit, ` +
+      `and ask for their ${st[1]} instead of more ${st[0]}.`,
     produces: "Responsibility, competence, and order imposed on chaos.",
     developed:
       `${st[1]} is actually used rather than skipped, so ${st[0]} is aimed instead of merely ` +
@@ -233,12 +278,21 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
     opensWith:
       `Humility, and then practice. The Cave ${cave} has to be converted from something you ` +
       `defend into something you aspire to: ${CAVE_ASPIRATION[cave]}.`,
+    assess:
+      "It feels like relief rather than effort: the function you usually defend goes quiet and " +
+      "something closer to play runs it instead. If it arrives all at once, late and uninvited " +
+      "rather than as a door you walked through on purpose, that is the forced version below, not " +
+      "the developed one.",
     atWill:
       `When ${cave} is aspirational rather than defensive you can step into this side deliberately, ` +
       "and it is genuinely restorative — this is where play, wonder and contentment live.",
     forced:
       "If you do not do it on purpose, the mind does it for you. That involuntary version is the " +
       "midlife crisis, and it typically arrives somewhere between 38 and 48.",
+    interact:
+      "Someone in their subconscious is unusually easy to be around — soft, curious, undefended. " +
+      "Treat the openness as rare rather than as an invitation to test it: it is not the same as " +
+      "having no boundaries, it is a boundary lowered on purpose, or from exhaustion.",
     produces: "Humility, happiness, and the capacity to be delighted by something again.",
     developed:
       `${cave} is used without flinching. There is a childlike quality that is not childishness, ` +
@@ -262,12 +316,20 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
     opensWith:
       "Failure, taken on the chin rather than explained away. The Doubt is the villain in your " +
       "own story — its job is to hand you obstacles, and the obstacles are the curriculum.",
+    assess:
+      "You are here when a problem your ego could not solve suddenly has a different set of moves " +
+      "available — usually right after a failure you actually absorbed instead of explaining away. " +
+      "It feels like being someone slightly more capable for a while, and it does not last.",
     atWill:
       `Deliberately engaging ${doubt} instead of routing around it opens a genuinely different set ` +
       "of moves. People report it as becoming someone else briefly, and usually someone more capable.",
     forced:
       "If it is not developed on purpose it gets forced later — the three-quarter-life crisis, " +
       "which is the same mechanism as the midlife one, arriving for the other side.",
+    interact:
+      "Someone in their unconscious is more resourceful and less predictable than their everyday " +
+      "self, and worse company for reassurance. Hand them the actual problem rather than comfort — " +
+      "this side wants to be used, not soothed.",
     produces: "Wisdom and maturity — the compound interest on pain you actually processed.",
     developed:
       "You can run the shadow deliberately and come back. Problems the ego cannot solve become " +
@@ -280,8 +342,9 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
   const superego: Side = {
     ...build("superego"),
     plain:
-      "The worst version of you, and it is competent. It runs on the one function you like least, " +
-      "and it only takes the wheel when the other three have failed.",
+      "Usually the worst version of you, and it is competent — but it is the one side actually " +
+      "built for real power, earned last rather than taken first. It runs on the function you " +
+      "trust least, and it only takes the wheel when the other three have failed.",
     what:
       `The shadow four reversed: your Dread ${dread} is this side's LEAD. Structurally it is your ` +
       "Super-Ego partner — the relation the system already rates as fascinating at distance and " +
@@ -290,12 +353,20 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
     opensWith:
       "The failure of the other three. It activates when the ego cannot cope, the subconscious is " +
       "undeveloped and the unconscious was never opened.",
+    assess:
+      `Ask whether a friend would recognise this in you: ${DREAD_TELLS[dread]}. If the honest ` +
+      "answer is yes, you are not overreacting to yourself — that is an accurate read of what is " +
+      "currently driving.",
     atWill:
       "Going here directly, before the other three are developed, is the expedient route and it is " +
       "a bad trade — power now against the ego it intends to replace later.",
     forced:
       "Sustained stress, exhaustion, or anything that keeps you out of the ego long enough. It is " +
       "the side that shows up in the version of an argument you cannot afterwards account for.",
+    interact:
+      `What actually helps: ${DREAD_DEESCALATE[dread]} Reasoning with it, matching its intensity, ` +
+      "or waiting it out in the same room all cost more than they fix — this is the one side where " +
+      "leaving the room is a legitimate strategy, not a defeat.",
     produces:
       "Raw power. Destructive by default — roughly ninety-five percent of it — and convertible " +
       "only after the other three sides are genuinely developed.",

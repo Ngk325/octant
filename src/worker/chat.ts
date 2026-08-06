@@ -159,6 +159,8 @@ export function parseContext(raw: unknown): ChatContext | null {
     }
     case "type":
       return isType(c.type) ? { kind: "type", type: c.type } : null;
+    case "sides":
+      return isType(c.type) ? { kind: "sides", type: c.type } : null;
     case "pair":
       return isType(c.a) && isType(c.b) ? { kind: "pair", a: c.a, b: c.b } : null;
     case "network": {
@@ -210,6 +212,7 @@ interface ChatRequest {
 function contextLabel(ctx: ChatContext): string {
   switch (ctx.kind) {
     case "type": return `type ${ctx.type}`;
+    case "sides": return `sides ${ctx.type}`;
     case "pair": return `pair ${ctx.a}·${ctx.b}`;
     case "learn": return `course ${ctx.stage}: ${ctx.title}`;
     case "network": return `group of ${ctx.members.length}`;
