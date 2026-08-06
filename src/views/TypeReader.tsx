@@ -25,7 +25,7 @@ import {
 import {
   FN_PLAIN, SLOT_PLAIN, GATE_PLAIN, COIN_PLAIN, CONCEPT_PLAIN, typePlain, powersPlain,
 } from "../engine/plain";
-import { typeElsewhere, archetypeAliases } from "../engine/translation";
+import { typeElsewhere, archetypeAliases, romanceElsewhere } from "../engine/translation";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
@@ -852,9 +852,9 @@ export default function TypeReader() {
             not interchangeable with ours. They are here so that if you arrived carrying somebody
             else&rsquo;s vocabulary, you can find your footing.
           </p>
-          {typeElsewhere(t).map((e) => (
+          {[...typeElsewhere(t), ...romanceElsewhere(t)].map((e) => (
             <Row
-              key={e.system}
+              key={`${e.system}-${e.term}`}
               stacked
               k={<span>{e.system}</span>}
               v={

@@ -9,7 +9,9 @@ import {
   type GoogleEnv,
 } from "./google";
 import { handleAdmin, type AdminEnv } from "./admin";
-import { endSession, sweepIdle, validThreadId, listThreads, getThreadFor, type ChatWho } from "./chatlog";
+import {
+  endSession, sweepIdle, refreshTrendingTags, validThreadId, listThreads, getThreadFor, type ChatWho,
+} from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
@@ -49,9 +51,14 @@ export default {
      beacon covers a clean tab-close, and this covers everything else —
      crashes, lost networks, and the last session before a quiet week,
      which the old piggyback-on-traffic sweep could never mail because it
-     needed a next message that never came. */
+     needed a next message that never came.
+
+     The trending-tags refresh rides the same hourly tick — it is its own
+     full KV scan and has no business running inline on the request path,
+     same reasoning as the sweep itself. */
   async scheduled(_event: unknown, env: Env, ctx?: Ctx): Promise<void> {
-    const work = sweepIdle(env, Date.now());
+    const now = Date.now();
+    const work = Promise.all([sweepIdle(env, now), refreshTrendingTags(env, now)]);
     if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
   },
 };

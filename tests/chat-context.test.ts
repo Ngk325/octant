@@ -193,6 +193,25 @@ describe("the calculator/read result grounding", () => {
     expect(instruction).toContain(result.best!);
   });
 
+  it("a genuine tie survives in full — every tied type is named, not just the first few", () => {
+    // Only the first determining coin answered: heavily under-determined,
+    // so several types tie for the top score.
+    const oneCoin = coins("ENTP").map((v, i) => (i === 0 ? v : null));
+    const result = calculate(oneCoin);
+    const topScore = result.ranked[0].score;
+    const tied = result.ranked.filter((r) => r.score === topScore);
+    expect(tied.length, "fixture needs a real tie to test the fix").toBeGreaterThan(1);
+
+    const summary = calcSummary(result);
+    expect(summary.contenders!.length).toBeGreaterThanOrEqual(tied.length);
+    for (const t of tied) {
+      expect(summary.contenders!.some((c) => c.type === t.type), t.type).toBe(true);
+    }
+
+    const instruction = buildSystemInstruction({ kind: "calculator" as const, ...summary });
+    for (const t of tied) expect(instruction, t.type).toContain(t.type);
+  });
+
   it("names a conflict when the reader's confirming answers disagree with the winner", () => {
     // ENFP's coins, but with coin 1 (Identity vs Tribe — a confirming coin,
     // not one of the four determining ones) flipped away from what ENFP

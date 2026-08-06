@@ -1,5 +1,5 @@
 import { TYPES, type MbtiType, type RelCode } from "./core";
-import { SLOT_NAMES } from "./data";
+import { SLOT_NAMES, EROTIC_ATTITUDE } from "./data";
 
 /* ------------------------------------------------------------------ *
  * THE TRANSLATION SURFACE
@@ -78,6 +78,21 @@ export function typeElsewhere(t: MbtiType): Elsewhere[] {
     { system: TEMPERAMENTS, term: keirsey },
     { system: FOUR_SIDES, term: grid },
   ];
+}
+
+/**
+ * What another system calls this type's romantic style. Octant's own
+ * romantic-dynamics reading is derived (Complement/Catalyst/Cave/Animal —
+ * see engine/romance.ts) and is what the app answers from; this exists
+ * only so a reader carrying the other vocabulary can find their footing,
+ * the same posture as `typeElsewhere` above.
+ */
+export function romanceElsewhere(t: MbtiType): Elsewhere[] {
+  return [{
+    system: SOCIONICS,
+    term: EROTIC_ATTITUDE[t],
+    note: "An erotic-attitude label, not a romantic-dynamics reading — Octant derives that instead.",
+  }];
 }
 
 /**
