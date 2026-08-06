@@ -10,6 +10,7 @@ import { empirical, divergence, EMPIRICAL_SOURCE } from "./empirical";
 import { compareAspects, lookup } from "./lexicon";
 import { learnGrounding } from "./learnGrounding";
 import { soloRomance, pairRomance } from "./romance";
+import { romanceElsewhere } from "./translation";
 import {
   SLOT_NAMES, REL_NAME, REL_DEF, RECIPROCAL, COIN_LABELS, DETERMINING,
   ARCHETYPE, GROUP, INTERACTION_STYLE, VIRTUE_VICE, BEHAVIOURAL,
@@ -133,6 +134,11 @@ export function typeFacts(t: MbtiType): string[] {
     line("Temperament", GROUP[t]),
     line("Interaction style", INTERACTION_STYLE[t]),
     line("Romantic dynamics (own, no partner)", soloRomance(t).text),
+    line(
+      "Known elsewhere as (romance)",
+      romanceElsewhere(t).map((e) => `${e.term} (${e.system}${e.note ? ` — ${e.note}` : ""})`).join(", ") +
+      ". Answer from the derived reading above; mention this only if asked how it maps to other systems.",
+    ),
     line("Stack", st.map((fn, i) => `${SLOT_NAMES[i]} ${fn} (${FN_FULL[fn]})`).join(" · ")),
     line("Four sides", SIDE_ORDER.map((k) => {
       const side = s[k];

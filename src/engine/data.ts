@@ -345,6 +345,35 @@ export const INTERACTION_STYLE: Record<MbtiType, string> = {
   "ESFJ": "Rallies",
   "ISFJ": "Steadies"
 };
+/**
+ * One of four borrowed erotic-attitude labels per type — Playful/Pursued/
+ * Pursuing/Caring. This is NOT part of Octant's own model: Octant's own
+ * romantic-dynamics reading is derived from Complement/Catalyst/Cave/Animal
+ * — see engine/romance.ts, used for typeFacts()/pairFacts() and everywhere
+ * the app answers about romance on its own authority. This table exists
+ * only as raw data for engine/translation.ts (the one module allowed to
+ * name and attribute a borrowed system) to attach a "known elsewhere as"
+ * row to — never import this directly for display; import
+ * romanceElsewhere() from translation.ts instead.
+ */
+export const EROTIC_ATTITUDE: Record<MbtiType, string> = {
+  "ENTP": "Playful",
+  "INTP": "Playful",
+  "ENTJ": "Pursued",
+  "INTJ": "Pursued",
+  "ENFP": "Playful",
+  "INFP": "Playful",
+  "ENFJ": "Pursued",
+  "INFJ": "Pursued",
+  "ESTP": "Pursuing",
+  "ISTP": "Pursuing",
+  "ESTJ": "Caring",
+  "ISTJ": "Caring",
+  "ESFP": "Pursuing",
+  "ISFP": "Pursuing",
+  "ESFJ": "Caring",
+  "ISFJ": "Caring"
+};
 export const VIRTUE_VICE: Record<MbtiType, [string, string]> = {
   "ENTP": [
     "Earnestness",

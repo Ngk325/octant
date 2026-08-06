@@ -5,8 +5,9 @@ import { ENTRIES } from "../src/engine/lexicon";
 import { ARCHETYPE } from "../src/engine/data";
 import {
   typeElsewhere, relationElsewhere, slotElsewhere, conceptElsewhere, archetypeAliases,
-  TRANSLATED_IDS, MODEL_A_POSITION, DIVERGENCES, SYSTEMS,
+  romanceElsewhere, TRANSLATED_IDS, MODEL_A_POSITION, DIVERGENCES, SYSTEMS,
 } from "../src/engine/translation";
+import { EROTIC_ATTITUDE } from "../src/engine/data";
 
 /* ------------------------------------------------------------------ *
  * The translation surface.
@@ -66,6 +67,20 @@ describe("coverage", () => {
         expect(r.system, t).toBeTruthy();
         expect(r.term, t).toBeTruthy();
       }
+    }
+  });
+
+  /* Octant's own romantic-dynamics reading (engine/romance.ts) is derived
+     and lives outside this file entirely. This surface exists only so the
+     borrowed erotic-attitude label can be shown, attributed, to a reader
+     who arrived carrying it — never as if it were Octant's own model. */
+  it("translates every type's borrowed romance label, attributed", () => {
+    for (const t of TYPES) {
+      const rows = romanceElsewhere(t);
+      expect(rows.length, t).toBe(1);
+      expect(rows[0].system, t).toBeTruthy();
+      expect(rows[0].term, t).toBe(EROTIC_ATTITUDE[t]);
+      expect(rows[0].note, t).toBeTruthy();
     }
   });
 
