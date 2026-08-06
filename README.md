@@ -52,6 +52,7 @@ not smuggle back the jargon it exists to replace.
 |---|---|
 | `/` | Marketing page for the signed-out; the app (or onboarding, first visit) for the signed-in. |
 | `/signin` | The gate as its own page: invite code, and Google when configured. |
+| `/apply` | The free scholarship: a four-step, JS-free wizard (name/email, situation, reason, then a review that reflects every answer back) that emails the owner — nothing is granted by the form itself. |
 | `/welcome` · `/welcome/:step` | Eight onboarding screens, shown once, skippable, before the full app. |
 | `/learn` · `/learn/:stage` | Thirteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
@@ -63,7 +64,7 @@ not smuggle back the jargon it exists to replace.
 | `/network` | The reason this is software and not a spreadsheet: group as a weighted digraph. |
 | `/matrix` | All 256 cells, colour-scaled, every cell a link into the pair reader. |
 | `/lexicon` | 103 defined terms, searchable and filterable; `/lexicon/:id` pairs one term against every other member of its category. |
-| `/admin` | The owner's door: approve, block and reset Google sign-ins. Unlisted; the API refuses non-owners. |
+| `/admin` | The owner's door: approve, block and reset Google sign-ins, and decide pending scholarship requests. Unlisted; the API refuses non-owners. |
 
 ## The lexicon
 
@@ -193,6 +194,12 @@ Two ways in:
 - **Google sign-in with owner approval.** A first sign-in creates a `pending` record in KV and
   emails the owner two signed one-decision links (approve/deny) that work from a phone without
   signing in. `/admin` is the full console. Blocked means blocked on the next page load.
+
+Two more surfaces feed that same Google path rather than adding a third kind of session:
+`/apply`'s free scholarship and a paid Stripe subscription both *pre-approve* an email — via the
+same signed-link/`/admin` decision as an ordinary sign-in, or via a verified Stripe webhook — so
+the first Google sign-in with that address just works, with nothing granted before a person or a
+verified event says so.
 
 The decisions that would bite if you didn't know them:
 

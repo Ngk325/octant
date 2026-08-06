@@ -134,6 +134,32 @@ export async function setStatus(
 }
 
 /**
+ * Grant approved access to an email before it has ever signed in — a
+ * scholarship or a paid subscription, decided somewhere other than Google's
+ * callback. `recordSignIn` cannot do this: it only ever fires from the
+ * callback itself, and by then the decision already needs to exist.
+ *
+ * Idempotent and non-destructive: an existing record's history (firstSeen,
+ * lastSeen, owner) is kept, and only `status` moves. Approving twice is a
+ * no-op past the first time; the eventual Google sign-in still runs
+ * `recordSignIn`, which keeps "approved" exactly as `existing.status` does
+ * today for a returning user.
+ */
+export async function preApprove(
+  env: UserEnv, email: string, name: string, now: number,
+): Promise<User> {
+  const existing = await getUser(env, email);
+  const user: User = existing
+    ? { ...existing, status: existing.owner ? existing.status : "approved" }
+    : {
+        email: normalise(email), name: name || normalise(email), status: "approved",
+        firstSeen: now, lastSeen: now, decidedAt: now,
+      };
+  await put(env, user);
+  return user;
+}
+
+/**
  * Everyone on the list, newest arrival first.
  *
  * KV's `list` returns at most 1000 keys per call and hands back a cursor for
