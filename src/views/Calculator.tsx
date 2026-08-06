@@ -6,6 +6,7 @@ import { COIN_LABELS, DETERMINING } from "../engine/data";
 import { COIN_PLAIN } from "../engine/plain";
 import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
+import { calcSummary } from "../engine/context";
 import Explain from "../components/Explain";
 import { ChoiceCard, Panel } from "../components/Bits";
 import FnIcon from "../components/glyphs/FnIcon";
@@ -79,7 +80,7 @@ export default function Calculator() {
   /** Is this one of the four coins that actually fixes the type? */
   const isDetermining = (i: number) => (DETERMINING as readonly number[]).includes(i);
 
-  usePublishContext(() => ({ kind: "calculator", best: result.best }), [result.best]);
+  usePublishContext(() => ({ kind: "calculator", ...calcSummary(result) }), [result]);
 
   /** Toggle an answer. Choosing the same pole again clears it, so nothing is unanswerable. */
   const set = (i: number, v: string) =>

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { parseContext } from "../src/worker/chat";
-import { buildSystemInstruction } from "../src/engine/context";
+import { buildSystemInstruction, calcSummary } from "../src/engine/context";
+import { learnGrounding } from "../src/engine/learnGrounding";
+import { calculate, coins } from "../src/engine/ops";
+import { STAGES } from "../src/learn/curriculum";
 import { TYPES } from "../src/engine/data";
 
 /* ------------------------------------------------------------------ *
@@ -18,6 +21,7 @@ describe("what the UI sends, accepted verbatim", () => {
       { kind: "home" }, { kind: "admin" }, { kind: "matrix" },
       { kind: "catalogue", sortBy: "quadra" },
       { kind: "learn", stage: 3, title: "The eight functions" },
+      { kind: "learn", stage: 3, title: "The eight functions", slug: "functions", exampleType: "ENTP" },
       { kind: "type", type: "ENTP" },
       { kind: "sides", type: "ENTP" },
       { kind: "pair", a: "ENTP", b: "INFJ" },
@@ -25,6 +29,7 @@ describe("what the UI sends, accepted verbatim", () => {
       { kind: "lexicon", term: "gateway" }, { kind: "lexicon" },
       { kind: "guide", type: "ENTP" }, { kind: "guide" },
       { kind: "calculator", best: "ENFP" }, { kind: "calculator", best: null },
+      { kind: "calculator", ...calcSummary(calculate(coins("ENFP"))) },
       { kind: "read", best: "ENFP" }, { kind: "read", best: null },
     ]) {
       expect(parseContext(ctx), JSON.stringify(ctx)).not.toBeNull();
@@ -93,5 +98,124 @@ describe("what a crafted caller sends, refused or defused", () => {
 
   it("the primer tells the model that screen text is data, not instructions", () => {
     expect(buildSystemInstruction({ kind: "home" })).toMatch(/never\s+instructions to you/i);
+  });
+
+  it("a calculator status outside the known four is refused", () => {
+    expect(parseContext({ kind: "calculator", status: "resolved" })).not.toBeNull();
+    expect(parseContext({ kind: "calculator", status: "made up" })).toBeNull();
+  });
+
+  it("coin counts outside 0..4 are refused, not silently clamped", () => {
+    expect(parseContext({ kind: "calculator", determiningAnswered: 4 })).not.toBeNull();
+    expect(parseContext({ kind: "calculator", determiningAnswered: 5 })).toBeNull();
+    expect(parseContext({ kind: "calculator", determiningAnswered: -1 })).toBeNull();
+    expect(parseContext({ kind: "calculator", determiningAnswered: 1.5 })).toBeNull();
+  });
+
+  it("a contender with an invalid type or a non-finite score is refused", () => {
+    const good = { type: "ENFP", score: 12, determining: 4, confirming: 2 };
+    expect(parseContext({ kind: "calculator", contenders: [good] })).not.toBeNull();
+    expect(parseContext({ kind: "calculator", contenders: [{ ...good, type: "NOPE" }] })).toBeNull();
+    expect(parseContext({ kind: "calculator", contenders: [{ ...good, score: Infinity }] })).toBeNull();
+    expect(parseContext({ kind: "calculator", contenders: [{ ...good, determining: 9 }] })).toBeNull();
+  });
+
+  it("contenders cannot inflate past the sixteen real types", () => {
+    const contenders = TYPES.map((type) => ({ type, score: 0, determining: 0, confirming: 0 }));
+    expect(parseContext({ kind: "calculator", contenders })).not.toBeNull();
+    expect(parseContext({ kind: "calculator", contenders: [...contenders, contenders[0]] })).toBeNull();
+  });
+
+  it("conflict free text is bounded the same way member names are", () => {
+    const ctx = parseContext({
+      kind: "calculator",
+      conflicts: [{ label: "x".repeat(200), said: "y".repeat(200), predicted: "z".repeat(200) }],
+    });
+    expect(ctx).not.toBeNull();
+    if (ctx?.kind !== "calculator") throw new Error("unreachable");
+    expect(ctx.conflicts?.[0].label.length).toBeLessThanOrEqual(60);
+    expect(ctx.conflicts?.[0].said.length).toBeLessThanOrEqual(40);
+  });
+});
+
+describe("the course stage grounding", () => {
+  it("covers every real stage, and nothing else", () => {
+    const slugs = STAGES.map((s) => s.slug);
+    for (const slug of slugs) {
+      expect(learnGrounding(slug), slug).not.toBe("");
+    }
+  });
+
+  it("an unrecognised slug degrades to no extra grounding rather than throwing", () => {
+    expect(learnGrounding("not-a-real-stage")).toBe("");
+  });
+
+  it("reaches the system instruction, and folds in the reader's own worked example", () => {
+    const generic = buildSystemInstruction({ kind: "learn", stage: 2, title: "Your top four", slug: "ego" });
+    expect(generic).toContain("Your top four are the ones you experience as 'me'");
+    expect(generic).not.toContain("Worked example");
+
+    const worked = buildSystemInstruction({
+      kind: "learn", stage: 2, title: "Your top four", slug: "ego", exampleType: "ENTP",
+    });
+    expect(worked).toContain("Worked example — ENTP");
+  });
+
+  it("a stage with no slug (legacy clients) still builds, just without the extra grounding", () => {
+    expect(() => buildSystemInstruction({ kind: "learn", stage: 2, title: "Your top four" })).not.toThrow();
+  });
+});
+
+describe("the lexicon entry grounding", () => {
+  it("passes the entry's own definition, not just its name", () => {
+    const instruction = buildSystemInstruction({ kind: "lexicon", term: "Counterpart" });
+    expect(instruction).toContain("this app's own definition");
+    // Whatever the entry's plain-language gloss says, it is in the prompt —
+    // not reconstructed from the term alone.
+    expect(instruction.length).toBeGreaterThan(buildSystemInstruction({ kind: "lexicon", term: "zzz-not-a-term" }).length);
+  });
+
+  it("an unknown term falls back to naming it, rather than inventing an entry", () => {
+    const instruction = buildSystemInstruction({ kind: "lexicon", term: "not a real term" });
+    expect(instruction).toContain('lexicon entry for "not a real term"');
+    expect(instruction).not.toContain("this app's own definition");
+  });
+});
+
+describe("the calculator/read result grounding", () => {
+  it("names the status and the runners-up, not just the winner", () => {
+    const result = calculate(coins("ENFP"));
+    const ctx = { kind: "calculator" as const, ...calcSummary(result) };
+    const instruction = buildSystemInstruction(ctx);
+    expect(instruction).toContain("Result status");
+    expect(instruction).toContain("resolved");
+    expect(instruction).toContain("Ranked contenders");
+    expect(instruction).toContain(result.best!);
+  });
+
+  it("names a conflict when the reader's confirming answers disagree with the winner", () => {
+    // ENFP's coins, but with coin 1 (Identity vs Tribe — a confirming coin,
+    // not one of the four determining ones) flipped away from what ENFP
+    // predicts, to force a friction result without changing the winner.
+    const answers = coins("ENFP");
+    const flipped = answers[1] === "Identity" ? "Tribe" : "Identity";
+    const forced = [answers[0], flipped, ...answers.slice(2)];
+    const result = calculate(forced);
+    expect(result.status).toBe("friction");
+
+    const instruction = buildSystemInstruction({ kind: "calculator", ...calcSummary(result) });
+    expect(instruction).toContain("disagree with the winning type");
+  });
+});
+
+describe("the network group's per-member grounding", () => {
+  it("gives one reference block per distinct type, not one per member", () => {
+    const members = [
+      { name: "Ana", type: "ISTJ" as const }, { name: "Bo", type: "ISTJ" as const },
+      { name: "Cy", type: "ENFP" as const },
+    ];
+    const instruction = buildSystemInstruction({ kind: "network", members });
+    expect(instruction.match(/Reference — ISTJ:/g)).toHaveLength(1);
+    expect(instruction.match(/Reference — ENFP:/g)).toHaveLength(1);
   });
 });

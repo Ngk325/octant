@@ -53,9 +53,9 @@ export default function Learn() {
   usePublishContext(
     () =>
       current
-        ? { kind: "learn", stage: i + 1, title: current.title }
+        ? { kind: "learn", stage: i + 1, title: current.title, slug: current.slug, exampleType: example }
         : { kind: "learn", stage: 0, title: "Course index" },
-    [current?.slug, i],
+    [current?.slug, i, example],
   );
 
   /** Mark a stage complete. Persistence happens in an effect, not here. */
