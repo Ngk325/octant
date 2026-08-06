@@ -1,4 +1,4 @@
-import { buildSystemInstruction, type ChatContext } from "../engine/context";
+import { buildSystemInstruction, type ChatContext, type CalcSummary } from "../engine/context";
 import { TYPES, type MbtiType } from "../engine/data";
 import {
   recordExchange, validThreadId, type ChatLogEnv, type ChatWho,
@@ -138,6 +138,70 @@ const boring = (v: unknown, cap: number): string =>
 
 const isType = (v: unknown): v is MbtiType => typeof v === "string" && VALID_TYPES.has(v);
 
+/** There are exactly 4 determining and 4 confirming coins, out of 8 total. */
+const MAX_COIN_COUNT = 4;
+const VALID_CALC_STATUS = new Set(["incomplete", "tie", "friction", "resolved"]);
+
+/** A non-negative integer no larger than `max`, else undefined — never a wild or negative count. */
+const boundedCount = (v: unknown, max: number): number | undefined =>
+  typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= max ? v : undefined;
+
+/**
+ * The calculator/read result the client claims to be showing. Same posture as the
+ * rest of this file: bounded rather than trusted, so a forged payload cannot
+ * inflate the instruction or crash a lookup on a nonsense value.
+ */
+function parseCalcSummary(c: Record<string, unknown>): CalcSummary | null {
+  const out: CalcSummary = {};
+
+  if (c.best !== undefined && c.best !== null) {
+    if (!isType(c.best)) return null;
+    out.best = c.best;
+  } else {
+    out.best = null;
+  }
+
+  if (c.status !== undefined) {
+    if (typeof c.status !== "string" || !VALID_CALC_STATUS.has(c.status)) return null;
+    out.status = c.status as CalcSummary["status"];
+  }
+
+  const determining = boundedCount(c.determiningAnswered, MAX_COIN_COUNT);
+  if (c.determiningAnswered !== undefined) {
+    if (determining === undefined) return null;
+    out.determiningAnswered = determining;
+  }
+  const confirming = boundedCount(c.confirmingAnswered, MAX_COIN_COUNT);
+  if (c.confirmingAnswered !== undefined) {
+    if (confirming === undefined) return null;
+    out.confirmingAnswered = confirming;
+  }
+
+  if (c.contenders !== undefined) {
+    if (!Array.isArray(c.contenders) || c.contenders.length > TYPES.length) return null;
+    const contenders: NonNullable<CalcSummary["contenders"]> = [];
+    for (const raw of c.contenders as unknown[]) {
+      const r = raw as Record<string, unknown>;
+      const det = boundedCount(r?.determining, MAX_COIN_COUNT);
+      const conf = boundedCount(r?.confirming, MAX_COIN_COUNT);
+      if (!isType(r?.type) || det === undefined || conf === undefined) return null;
+      if (typeof r?.score !== "number" || !Number.isFinite(r.score)) return null;
+      contenders.push({ type: r.type, score: r.score, determining: det, confirming: conf });
+    }
+    out.contenders = contenders;
+  }
+
+  if (c.conflicts !== undefined) {
+    if (!Array.isArray(c.conflicts) || c.conflicts.length > MAX_COIN_COUNT * 2) return null;
+    out.conflicts = (c.conflicts as unknown[]).map((raw) => {
+      const r = raw as Record<string, unknown>;
+      return { label: boring(r?.label, 60), said: boring(r?.said, 40), predicted: boring(r?.predicted, 40) };
+    });
+  }
+
+  return out;
+}
+
 /**
  * The client's context, or null when it is not one. Null means 400, not a
  * silent home fallback — a malformed context is a client bug, and answering
@@ -155,7 +219,13 @@ export function parseContext(raw: unknown): ChatContext | null {
     case "learn": {
       const stage = typeof c.stage === "number" && Number.isInteger(c.stage) ? c.stage : NaN;
       if (!(stage >= 0 && stage <= 40)) return null;
-      return { kind: "learn", stage, title: boring(c.title, 120) };
+      return {
+        kind: "learn",
+        stage,
+        title: boring(c.title, 120),
+        ...(c.slug !== undefined ? { slug: boring(c.slug, 40) } : {}),
+        ...(isType(c.exampleType) ? { exampleType: c.exampleType } : {}),
+      };
     }
     case "type":
       return isType(c.type) ? { kind: "type", type: c.type } : null;
@@ -182,12 +252,12 @@ export function parseContext(raw: unknown): ChatContext | null {
       return isType(c.type) ? { kind: "guide", type: c.type } : null;
     }
     case "calculator": {
-      if (c.best === undefined || c.best === null) return { kind: "calculator", best: null };
-      return isType(c.best) ? { kind: "calculator", best: c.best } : null;
+      const summary = parseCalcSummary(c);
+      return summary && { kind: "calculator", ...summary };
     }
     case "read": {
-      if (c.best === undefined || c.best === null) return { kind: "read", best: null };
-      return isType(c.best) ? { kind: "read", best: c.best } : null;
+      const summary = parseCalcSummary(c);
+      return summary && { kind: "read", ...summary };
     }
     default:
       return null;

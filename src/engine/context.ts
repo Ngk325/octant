@@ -1,13 +1,14 @@
 import {
   REL, ease, relation, stack, quadra, gate, complements, catalysts, frictions,
 } from "./core";
-import { ops, coins } from "./ops";
+import { ops, coins, type CalcResult } from "./ops";
 import { sides, SIDE_ORDER, DREAD_TELLS, DREAD_DEESCALATE } from "./sides";
 import { wheelOf, templeOf } from "./octagram";
 import { playbook } from "./playbook";
 import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./functions";
 import { empirical, divergence, EMPIRICAL_SOURCE } from "./empirical";
-import { compareAspects } from "./lexicon";
+import { compareAspects, lookup } from "./lexicon";
+import { learnGrounding } from "./learnGrounding";
 import {
   SLOT_NAMES, REL_NAME, REL_DEF, RECIPROCAL, COIN_LABELS, DETERMINING,
   ARCHETYPE, GROUP, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE, BEHAVIOURAL,
@@ -26,11 +27,45 @@ import {
  * it cannot drift away from what the screen is showing.
  * ------------------------------------------------------------------ */
 
+/**
+ * A `calculate()` result, trimmed to what is worth telling the assistant: the
+ * winner (if any), why the run landed there, and the runners-up — so a close
+ * call or a tie can be discussed honestly instead of presenting `best` as a
+ * clean verdict every time.
+ */
+export interface CalcSummary {
+  best?: MbtiType | null;
+  status?: "incomplete" | "tie" | "friction" | "resolved";
+  determiningAnswered?: number;
+  confirmingAnswered?: number;
+  /** Top few contenders by score, winner first. */
+  contenders?: { type: MbtiType; score: number; determining: number; confirming: number }[];
+  /** Confirming coins where the reader's answer disagreed with what `best` predicts. */
+  conflicts?: { label: string; said: string; predicted: string }[];
+}
+
+/** The top contenders worth naming to the assistant — the winner and its closest rivals. */
+const MAX_CONTENDERS = 3;
+
+/** A `calculate()` result, trimmed down to a `CalcSummary` for publishing as chat context. */
+export function calcSummary(result: CalcResult): CalcSummary {
+  return {
+    best: result.best,
+    status: result.status,
+    determiningAnswered: result.determiningAnswered,
+    confirmingAnswered: result.confirmingAnswered,
+    contenders: result.ranked.slice(0, MAX_CONTENDERS).map((r) => ({
+      type: r.type, score: r.score, determining: r.determining, confirming: r.confirming,
+    })),
+    conflicts: result.conflicts.map((c) => ({ label: c.label, said: c.said, predicted: c.predicted })),
+  };
+}
+
 export type ChatContext =
   | { kind: "home" }
   | { kind: "admin" }
   | { kind: "catalogue"; sortBy: string }
-  | { kind: "learn"; stage: number; title: string }
+  | { kind: "learn"; stage: number; title: string; slug?: string; exampleType?: MbtiType }
   | { kind: "type"; type: MbtiType }
   | { kind: "sides"; type: MbtiType }
   | { kind: "pair"; a: MbtiType; b: MbtiType }
@@ -38,11 +73,46 @@ export type ChatContext =
   | { kind: "matrix" }
   | { kind: "lexicon"; term?: string }
   | { kind: "guide"; type?: MbtiType }
-  | { kind: "calculator"; best?: MbtiType | null }
-  | { kind: "read"; best?: MbtiType | null };
+  | ({ kind: "calculator" } & CalcSummary)
+  | ({ kind: "read" } & CalcSummary);
 
 /** One `Key: value` line of the grounding block. */
 const line = (k: string, v: string) => `${k}: ${v}`;
+
+const CALC_STATUS_PLAIN: Record<NonNullable<CalcSummary["status"]>, string> = {
+  incomplete: "Not every determining coin has been answered yet, so no type has resolved.",
+  tie: "Two or more types are tied on score — the reader has not narrowed it to one yet. " +
+    "Say so rather than picking a favourite for them.",
+  friction: "A type resolved, but at least one confirming coin disagrees with what that type " +
+    "predicts. Worth naming as friction rather than glossing over it.",
+  resolved: "A type resolved cleanly, with no disagreement between the determining and " +
+    "confirming coins.",
+};
+
+/** The calculator/read result, as lines for the grounding block — status, margin, conflicts. */
+function calcStatusLine(ctx: CalcSummary): string {
+  const parts: string[] = [];
+  if (ctx.status) parts.push(line("Result status", `${ctx.status} — ${CALC_STATUS_PLAIN[ctx.status]}`));
+  if (ctx.determiningAnswered !== undefined) {
+    parts.push(line("Determining coins answered", String(ctx.determiningAnswered)));
+  }
+  if (ctx.confirmingAnswered !== undefined) {
+    parts.push(line("Confirming coins answered", String(ctx.confirmingAnswered)));
+  }
+  if (ctx.contenders?.length) {
+    parts.push(line(
+      "Ranked contenders",
+      ctx.contenders.map((c) => `${c.type} (score ${c.score}, ${c.determining} determining + ${c.confirming} confirming)`).join(" · "),
+    ));
+  }
+  if (ctx.conflicts?.length) {
+    parts.push(line(
+      "Where the reader's answers disagree with the winning type",
+      ctx.conflicts.map((c) => `${c.label}: answered "${c.said}", ${ctx.best} predicts "${c.predicted}"`).join(" · "),
+    ));
+  }
+  return parts.join("\n");
+}
 
 /** Everything the engine knows about one type, as flat lines. */
 export function typeFacts(t: MbtiType): string[] {
@@ -267,30 +337,56 @@ export function contextBlock(ctx: ChatContext): string {
         ctx.members.slice(i + 1).map((n) =>
           `  ${m.name} (${m.type}) ↔ ${n.name} (${n.type}): ${REL_NAME[relation(m.type, n.type)]}; ` +
           `ease ${ease(m.type, n.type)} one way, ${ease(n.type, m.type)} the other`));
+      /* One typeFacts block per DISTINCT type in the group, not per member — a
+         group of six ENTPs would otherwise repeat the same ~28 lines six times.
+         Members reference their type by code in the roster above, so this is
+         still exactly as much detail per person, just not duplicated. */
+      const distinctTypes = [...new Set(ctx.members.map((m) => m.type))];
+      const reference = distinctTypes.flatMap((t) => [``, `Reference — ${t}:`, ...typeFacts(t)]);
       return [
         "The reader is composing a group on the network page.",
         `Members: ${ctx.members.map((m) => `${m.name} (${m.type})`).join(", ")}`,
         "Pairwise:", ...rows,
+        ...reference,
       ].join("\n");
     }
-    case "learn":
-      return `The reader is on stage ${ctx.stage} of the guided course: "${ctx.title}". Pitch answers at that stage — assume nothing later in the course has been read yet.`;
-    case "lexicon":
-      return ctx.term
-        ? `The reader is looking at the lexicon entry for "${ctx.term}".`
-        : "The reader is browsing the lexicon.";
+    case "learn": {
+      const header = `The reader is on stage ${ctx.stage} of the guided course: "${ctx.title}". ` +
+        "Pitch answers at that stage — assume nothing later in the course has been read yet.";
+      const grounding = ctx.slug ? learnGrounding(ctx.slug, ctx.exampleType) : "";
+      return grounding ? `${header}\n\nWhat this stage actually teaches:\n${grounding}` : header;
+    }
+    case "lexicon": {
+      if (!ctx.term) return "The reader is browsing the lexicon.";
+      const entry = lookup(ctx.term);
+      if (!entry) return `The reader is looking at the lexicon entry for "${ctx.term}".`;
+      return [
+        `The reader is looking at the lexicon entry for "${entry.term}" (${entry.category}). ` +
+        "Answer from this app's own definition below, not a generic dictionary one.",
+        "",
+        line("Plain", entry.plain),
+        line("Short", entry.short),
+        line("Full definition", entry.definition),
+        ...(entry.inSystem ? [line("In this app's model", entry.inSystem)] : []),
+        ...(entry.seeAlso?.length ? [line("See also", entry.seeAlso.join(", "))] : []),
+      ].join("\n");
+    }
     case "guide":
       return ctx.type
         ? `The reader is on the emoji guide, drilled into ${ctx.type}'s eight-slot stack and four sides (each function has one emoji, consistent across the app).\n\n${typeFacts(ctx.type).join("\n")}`
         : "The reader is on the emoji guide: the eight cognitive functions each paired with one emoji, grouped by attitude, plus a matrix of all sixteen types' stacks. They have not drilled into one type yet.";
-    case "calculator":
+    case "calculator": {
+      const status = calcStatusLine(ctx);
       return ctx.best
-        ? `The reader is on the type calculator; it currently resolves to ${ctx.best}.\n\n${typeFacts(ctx.best).join("\n")}`
-        : "The reader is on the type calculator and has not resolved a type yet.";
-    case "read":
+        ? `The reader is on the type calculator; it currently resolves to ${ctx.best}.\n\n${status}\n\n${typeFacts(ctx.best).join("\n")}`
+        : `The reader is on the type calculator and has not resolved a type yet.\n\n${status}`;
+    }
+    case "read": {
+      const status = calcStatusLine(ctx);
       return ctx.best
-        ? `The reader is on "Read someone" — the same calculator, answered from indirect, everyday cues about a third party instead of that party's own direct self-report. It currently resolves to ${ctx.best}. Treat this as weaker evidence than a direct self-report and say so if the reader leans on it too hard.\n\n${typeFacts(ctx.best).join("\n")}`
-        : "The reader is on \"Read someone\" — the same calculator, answered from indirect, everyday cues about a third party — and has not resolved a type yet.";
+        ? `The reader is on "Read someone" — the same calculator, answered from indirect, everyday cues about a third party instead of that party's own direct self-report. It currently resolves to ${ctx.best}. Treat this as weaker evidence than a direct self-report and say so if the reader leans on it too hard.\n\n${status}\n\n${typeFacts(ctx.best).join("\n")}`
+        : `The reader is on "Read someone" — the same calculator, answered from indirect, everyday cues about a third party — and has not resolved a type yet.\n\n${status}`;
+    }
     case "matrix":
       return "The reader is looking at the full 16x16 relation matrix.";
     case "catalogue":
