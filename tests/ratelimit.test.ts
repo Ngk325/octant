@@ -154,4 +154,18 @@ describe("the cron entry point", () => {
       worker.scheduled(undefined, {} as Env, undefined),
     ).resolves.toBeUndefined();
   });
+
+  it("also refreshes the trending-tags cache on the same tick", async () => {
+    const store = new Map<string, string>();
+    const CHAT_LOGS = {
+      async get(k: string) { return store.get(k) ?? null; },
+      async put(k: string, v: string) { store.set(k, v); },
+      async delete(k: string) { store.delete(k); },
+      async list() { return { keys: [], list_complete: true }; },
+    };
+    await worker.scheduled(undefined, { CHAT_LOGS } as unknown as Env, undefined);
+    // An empty scan still writes the cache — proof refreshTrendingTags ran,
+    // not just that it was importable.
+    expect(store.has("meta:trending")).toBe(true);
+  });
 });

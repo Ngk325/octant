@@ -60,8 +60,11 @@ export interface LoggedTurn {
  * email — never for the reader. `title` is the one exception: it is short
  * and content-free enough to show in the history list, so the client sees
  * it. `summary` and `tags` are for the owner's own understanding of what
- * people are asking, over time — they never leave the server towards the
- * client that produced them.
+ * people are asking, over time — a single thread's own `summary` and `tags`
+ * never leave the server towards the client that produced them (see
+ * getThreadFor). The one narrow exception is `tags` in AGGREGATE: tallied
+ * anonymously across every thread by refreshTrendingTags, with no thread,
+ * turn or user attached to a count — see getTrendingTags.
  */
 export interface ChatMeta {
   /** A short (3-6 word) name for the thread, fit to show in a history list. */
@@ -115,6 +118,22 @@ async function readRecord(env: ChatLogEnv, threadId: string): Promise<ChatLogRec
 
 const writeRecord = (env: ChatLogEnv, threadId: string, rec: ChatLogRecord) =>
   env.CHAT_LOGS!.put(KEY(threadId), JSON.stringify(rec), { expirationTtl: TTL_SECONDS });
+
+/**
+ * The screens this thread has already been asked from, earlier in the SAME
+ * session — so a mid-session context switch ("was on ENTP, now asking about
+ * INFJ") reads as continuity instead of a cold start. Best-effort: a read
+ * failure or an unknown thread is indistinguishable from "nothing prior" —
+ * a lost continuity hint costs a reader nothing, so this never throws.
+ */
+export async function priorContexts(env: ChatLogEnv, threadId: string): Promise<string[]> {
+  try {
+    const rec = await readRecord(env, threadId);
+    return rec?.contexts ?? [];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Append one exchange — the user's message and the model's full reply — to
@@ -290,6 +309,81 @@ export async function sweepIdle(env: ChatLogEnv, now: number): Promise<void> {
     } while (cursor);
   } catch (err) {
     console.error("chatlog: sweep failed", String(err));
+  }
+}
+
+/* --------------------------- trending tags --------------------------- *
+ * What people are commonly asking about, fed back into the assistant's own
+ * grounding — the one narrow, intentional crack in "a thread's tags never
+ * reach a client": no thread, turn or person is attached to a count, only
+ * an anonymous tally across everyone's tags. Computed on the hourly cron
+ * (see worker/index.ts scheduled()), not on the request path — a full KV
+ * scan has no business running inline on every chat message.
+ * ------------------------------------------------------------------------- */
+
+export interface TrendingTag {
+  tag: string;
+  count: number;
+}
+
+interface TrendingCache {
+  tags: TrendingTag[];
+  updatedAt: number;
+}
+
+const TRENDING_KEY = "meta:trending";
+/** Kept a while past the hourly refresh, so a missed cron cycle degrades to stale, not empty. */
+const TRENDING_TTL_SECONDS = 7 * 24 * 60 * 60;
+/** Enough to be worth a mention; not so many that the primer turns into a tag cloud. */
+const MAX_TRENDING_TAGS = 12;
+
+/**
+ * Recomputes the trending-tags cache from every thread's own `meta.tags`.
+ * Best-effort and never throws — a failed refresh just leaves the previous
+ * cache in place until the next hourly attempt.
+ */
+export async function refreshTrendingTags(env: ChatLogEnv, now: number): Promise<void> {
+  if (!env.CHAT_LOGS) return;
+  try {
+    const counts = new Map<string, number>();
+    let cursor: string | undefined;
+    do {
+      const page = await env.CHAT_LOGS.list({ prefix: "chat:", cursor });
+      for (const { name } of page.keys) {
+        const threadId = name.slice("chat:".length);
+        const rec = await readRecord(env, threadId);
+        for (const tag of rec?.meta?.tags ?? []) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      }
+      cursor = page.list_complete === false ? page.cursor : undefined;
+    } while (cursor);
+
+    const tags = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, MAX_TRENDING_TAGS)
+      .map(([tag, count]) => ({ tag, count }));
+
+    const cache: TrendingCache = { tags, updatedAt: now };
+    await env.CHAT_LOGS.put(TRENDING_KEY, JSON.stringify(cache), { expirationTtl: TRENDING_TTL_SECONDS });
+  } catch (err) {
+    console.error("chatlog: refreshTrendingTags failed", String(err));
+  }
+}
+
+/**
+ * The cached trending tags, for the assistant's own grounding. Cheap — one
+ * KV get, never a scan — so it is safe to call on every chat request.
+ * Empty without a binding, without Gemini-generated meta, or before the
+ * first hourly refresh has ever run.
+ */
+export async function getTrendingTags(env: ChatLogEnv): Promise<TrendingTag[]> {
+  if (!env.CHAT_LOGS) return [];
+  try {
+    const raw = await env.CHAT_LOGS.get(TRENDING_KEY);
+    if (!raw) return [];
+    const cache = JSON.parse(raw) as TrendingCache;
+    return cache.tags ?? [];
+  } catch {
+    return [];
   }
 }
 

@@ -202,3 +202,114 @@ describe("other upstream failures", () => {
     expect(body.error).toMatch(/wrangler secret put GEMINI_API_KEY/);
   });
 });
+
+describe("within-session continuity", () => {
+  /** In-memory KV, just enough to seed a thread's prior `contexts`. */
+  function memoryKV(store = new Map<string, string>()) {
+    return {
+      async get(k: string) { return store.get(k) ?? null; },
+      async put(k: string, v: string) { store.set(k, v); },
+      async delete(k: string) { store.delete(k); },
+      async list() { return { keys: [], list_complete: true }; },
+    };
+  }
+
+  const systemTextOf = (stub: ReturnType<typeof vi.fn>) =>
+    JSON.parse(String(stub.mock.calls[0][1].body)).systemInstruction.parts[0].text as string;
+
+  it("tells the assistant which other screens this thread already visited", async () => {
+    const CHAT_LOGS = memoryKV();
+    await CHAT_LOGS.put("chat:thread-continuity-0001", JSON.stringify({
+      who: { label: "guest", kind: "code" }, started: NOW, updated: NOW,
+      contexts: ["type ENTP"], turns: [{ role: "user", text: "hi", at: NOW }],
+    }));
+    const env = { ...ENV, CHAT_LOGS } as unknown as Env;
+
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(
+      post({
+        messages: [{ role: "user", text: "how do we fit?" }],
+        context: { kind: "type", type: "INFJ" },
+        threadId: "thread-continuity-0001",
+      }),
+      env, {}, NOW,
+    );
+
+    expect(systemTextOf(fetchStub)).toContain("Earlier in this session, the reader also looked at: type ENTP");
+  });
+
+  it("says nothing extra for a brand-new thread", async () => {
+    const env = { ...ENV, CHAT_LOGS: memoryKV() } as unknown as Env;
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(
+      post({ messages: [{ role: "user", text: "hi" }], context: { kind: "type", type: "INFJ" } }),
+      env, {}, NOW,
+    );
+    expect(systemTextOf(fetchStub)).not.toContain("Earlier in this session");
+  });
+
+  it("does not repeat the current screen as if it were an earlier one", async () => {
+    const CHAT_LOGS = memoryKV();
+    await CHAT_LOGS.put("chat:thread-continuity-0002", JSON.stringify({
+      who: { label: "guest", kind: "code" }, started: NOW, updated: NOW,
+      contexts: ["type INFJ"], turns: [{ role: "user", text: "hi", at: NOW }],
+    }));
+    const env = { ...ENV, CHAT_LOGS } as unknown as Env;
+
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(
+      post({
+        messages: [{ role: "user", text: "more" }],
+        context: { kind: "type", type: "INFJ" },
+        threadId: "thread-continuity-0002",
+      }),
+      env, {}, NOW,
+    );
+
+    expect(systemTextOf(fetchStub)).not.toContain("Earlier in this session");
+  });
+});
+
+describe("trending tags in the primer", () => {
+  function memoryKV(store = new Map<string, string>()) {
+    return {
+      async get(k: string) { return store.get(k) ?? null; },
+      async put(k: string, v: string) { store.set(k, v); },
+      async delete(k: string) { store.delete(k); },
+      async list() { return { keys: [], list_complete: true }; },
+    };
+  }
+
+  const systemTextOf = (stub: ReturnType<typeof vi.fn>) =>
+    JSON.parse(String(stub.mock.calls[0][1].body)).systemInstruction.parts[0].text as string;
+
+  it("mentions the cached trending tags, marked informational", async () => {
+    const CHAT_LOGS = memoryKV();
+    await CHAT_LOGS.put("meta:trending", JSON.stringify({
+      tags: [{ tag: "entp", count: 9 }, { tag: "pair", count: 4 }],
+      updatedAt: NOW,
+    }));
+    const env = { ...ENV, CHAT_LOGS } as unknown as Env;
+
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(post({ messages: [{ role: "user", text: "hi" }] }), env, {}, NOW);
+
+    const text = systemTextOf(fetchStub);
+    expect(text).toContain("commonly asked about");
+    expect(text).toContain("entp");
+    expect(text).toContain("pair");
+    expect(text).toMatch(/informational only/i);
+  });
+
+  it("says nothing when the cache is empty", async () => {
+    const env = { ...ENV, CHAT_LOGS: memoryKV() } as unknown as Env;
+    const fetchStub = vi.fn().mockResolvedValue(ok("ok"));
+    vi.stubGlobal("fetch", fetchStub);
+    await handleChat(post({ messages: [{ role: "user", text: "hi" }] }), env, {}, NOW);
+    expect(systemTextOf(fetchStub)).not.toContain("commonly asked about");
+  });
+});

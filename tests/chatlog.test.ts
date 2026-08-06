@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   recordExchange, endSession, sweepIdle, validThreadId, IDLE_MS,
-  listThreads, getThreadFor,
+  listThreads, getThreadFor, refreshTrendingTags, getTrendingTags,
   type ChatLogEnv, type ChatLogRecord, type ChatWho,
 } from "../src/worker/chatlog";
 import type { KVNamespace } from "../src/worker/users";
@@ -363,5 +363,59 @@ describe("meta — title, summary, tags", () => {
     respond = () => new Response("{}", { status: 200 });
     await endSession(env, "thread-meta-0005", NOW + 1000);
     expect(calls).toBe(1); // meta was already there — not regenerated
+  });
+});
+
+describe("trending tags — aggregated, never attributed", () => {
+  const withTags = (tags: string[]): ChatLogRecord => ({
+    who: WHO, started: NOW, updated: NOW, contexts: [], turns: [{ role: "user", text: "x", at: NOW }],
+    meta: { title: "t", summary: "s", tags },
+  });
+
+  it("tallies tags across every thread, most common first, capped", async () => {
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-0001", JSON.stringify(withTags(["entp", "pair"])));
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-0002", JSON.stringify(withTags(["entp", "growth"])));
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-0003", JSON.stringify(withTags(["entp"])));
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-0004", JSON.stringify(withTags(["pair"])));
+
+    await refreshTrendingTags(ENV, NOW);
+    const tags = await getTrendingTags(ENV);
+
+    expect(tags[0]).toEqual({ tag: "entp", count: 3 });
+    expect(tags[1]).toEqual({ tag: "pair", count: 2 });
+    expect(tags.find((t) => t.tag === "growth")).toEqual({ tag: "growth", count: 1 });
+  });
+
+  it("ignores threads with no meta, and is a no-op without the binding", async () => {
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-notag", JSON.stringify({
+      who: WHO, started: NOW, updated: NOW, contexts: [], turns: [{ role: "user", text: "x", at: NOW }],
+    }));
+    await refreshTrendingTags(ENV, NOW);
+    expect(await getTrendingTags(ENV)).toEqual([]);
+
+    await expect(refreshTrendingTags({}, NOW)).resolves.toBeUndefined();
+    expect(await getTrendingTags({})).toEqual([]);
+  });
+
+  it("returns nothing before the first refresh has ever run", async () => {
+    expect(await getTrendingTags(ENV)).toEqual([]);
+  });
+
+  it("does not attach any thread id, turn text, or identity to the cached tally", async () => {
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-private", JSON.stringify(withTags(["secret-topic"])));
+    await refreshTrendingTags(ENV, NOW);
+
+    const raw = await ENV.CHAT_LOGS!.get("meta:trending");
+    expect(raw).not.toContain("thread-trend-private");
+    expect(raw).not.toContain(WHO.email);
+    expect(raw).not.toContain(WHO.label);
+    expect(JSON.parse(raw!).tags).toEqual([{ tag: "secret-topic", count: 1 }]);
+  });
+
+  it("survives a corrupt record in the scan rather than losing the whole tally", async () => {
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-good", JSON.stringify(withTags(["fine"])));
+    await ENV.CHAT_LOGS!.put("chat:thread-trend-bad", "not json");
+    await expect(refreshTrendingTags(ENV, NOW)).resolves.toBeUndefined();
+    expect(await getTrendingTags(ENV)).toEqual([{ tag: "fine", count: 1 }]);
   });
 });

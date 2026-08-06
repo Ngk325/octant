@@ -46,8 +46,22 @@ export interface CalcSummary {
   conflicts?: { label: string; said: string; predicted: string }[];
 }
 
-/** The top contenders worth naming to the assistant — the winner and its closest rivals. */
-const MAX_CONTENDERS = 3;
+/** Beyond the tied leaders, how many further runners-up are worth naming. */
+const MAX_RUNNERS_UP = 5;
+
+/**
+ * The contenders worth naming to the assistant: every type tied with the
+ * top score — however many that is, a genuine four-way tie is never
+ * silently cut down to three — plus a handful of further runners-up so a
+ * close-but-not-tied result still reads as close.
+ */
+function topContenders(ranked: CalcResult["ranked"]): CalcResult["ranked"] {
+  if (!ranked.length) return [];
+  const topScore = ranked[0].score;
+  const tied = ranked.filter((r) => r.score === topScore);
+  const rest = ranked.filter((r) => r.score !== topScore).slice(0, MAX_RUNNERS_UP);
+  return [...tied, ...rest];
+}
 
 /** A `calculate()` result, trimmed down to a `CalcSummary` for publishing as chat context. */
 export function calcSummary(result: CalcResult): CalcSummary {
@@ -56,7 +70,7 @@ export function calcSummary(result: CalcResult): CalcSummary {
     status: result.status,
     determiningAnswered: result.determiningAnswered,
     confirmingAnswered: result.confirmingAnswered,
-    contenders: result.ranked.slice(0, MAX_CONTENDERS).map((r) => ({
+    contenders: topContenders(result.ranked).map((r) => ({
       type: r.type, score: r.score, determining: r.determining, confirming: r.confirming,
     })),
     conflicts: result.conflicts.map((c) => ({ label: c.label, said: c.said, predicted: c.predicted })),

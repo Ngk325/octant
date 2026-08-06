@@ -1,7 +1,7 @@
 import { buildSystemInstruction, type ChatContext, type CalcSummary } from "../engine/context";
 import { TYPES, type MbtiType } from "../engine/data";
 import {
-  recordExchange, validThreadId, type ChatLogEnv, type ChatWho,
+  recordExchange, validThreadId, priorContexts, getTrendingTags, type ChatLogEnv, type ChatWho,
 } from "./chatlog";
 
 /* ------------------------------------------------------------------ *
@@ -396,6 +396,31 @@ export async function handleChat(
     return json({ error: "That context is not one this app produces." }, 400);
   }
 
+  /* Continuity within the session: the thread's own KV record already
+     tracks which screens it has been asked from (for the transcript log).
+     Read it back here, once, before answering — so a mid-session switch
+     ("was on ENTP, now asking about INFJ") reads as continuity rather than
+     a cold start. Best-effort and cheap: a single KV get, and a miss or a
+     brand-new thread just means nothing to add. */
+  const threadId = validThreadId(body.threadId) ? body.threadId : crypto.randomUUID();
+  const label = contextLabel(ctx);
+  const earlier = (await priorContexts(env, threadId)).filter((c) => c !== label);
+  if (earlier.length) {
+    systemInstruction += `\n\nEarlier in this session, the reader also looked at: ${earlier.join(" → ")}.`;
+  }
+
+  /* What people commonly ask about, in aggregate — see chatlog.ts's trending-
+     tags cache. Explicitly informational: this reader's own question almost
+     always has nothing to do with what is popular, so the primer is told to
+     lead with the screen in front of them and only reach for this if it is
+     actually relevant (e.g. "what else do people usually ask about this"). */
+  const trending = await getTrendingTags(env);
+  if (trending.length) {
+    systemInstruction += `\n\nOther things readers have commonly asked about recently (informational ` +
+      `only — this reader's question is very likely unrelated; do not lead with this or bring it up ` +
+      `unprompted): ${trending.map((t) => t.tag).join(", ")}.`;
+  }
+
   /* Rate limiting is charged HERE, after the request is known to be a valid
      chat request — not on arrival. The limiter guards the expensive resource
      (Gemini quota and the shared per-IP chat budget); charging it before
@@ -454,13 +479,12 @@ export async function handleChat(
      last message plus the model's whole reply — is appended to the thread's
      KV record. waitUntil keeps that write alive past the response. */
   const lastUser = [...messages].reverse().find((m) => m.role === "user")?.text ?? "";
-  const threadId = validThreadId(body.threadId) ? body.threadId : crypto.randomUUID();
   const onComplete = (fullReply: string) => {
     defer(recordExchange(
       env,
       threadId,
       hooks.who ?? { label: "unknown", kind: "code" },
-      contextLabel(ctx),
+      label,
       lastUser,
       fullReply,
       now,
