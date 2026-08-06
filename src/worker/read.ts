@@ -1,9 +1,10 @@
 import { REL, ease, stack, quadra, type MbtiType } from "../engine/core";
 import {
-  TYPES, REL_NAME, REL_DEF, ARCHETYPE, GROUP, ROMANCE, INTERACTION_STYLE, FN_LONG, VIRTUE_VICE,
+  TYPES, REL_NAME, REL_DEF, ARCHETYPE, GROUP, INTERACTION_STYLE, FN_LONG, VIRTUE_VICE,
 } from "../engine/data";
 import { FN_ROLE } from "../engine/functions";
 import { powersOf } from "../engine/powers";
+import { soloRomance } from "../engine/romance";
 import { escapeHtml } from "./html";
 
 /* ------------------------------------------------------------------ *
@@ -270,6 +271,7 @@ function relatedPairs(a: MbtiType, b: MbtiType): string {
 
 function typePage(origin: string, t: MbtiType): Response {
   const [epithet] = ARCHETYPE[t];
+  const romance = soloRomance(t);
   const st = stack(t);
   const path = `/read/${typeSlug(t)}`;
   const q = quadra(t);
@@ -294,9 +296,10 @@ under pressure, and where they reliably misjudge themselves.</p>
 <p><b>${st[0]}, leading.</b> ${escapeHtml(FN_LONG[st[0]])}<br>
 <b>${st[1]}, in support.</b> ${escapeHtml(FN_LONG[st[1]])}</p>
 
-<p>The same ordering fixes two things the model likes to name: how the ${t} moves in a group
-(<b>${escapeHtml(INTERACTION_STYLE[t])}</b>) and how they tend to show up in courtship
-(<b>${escapeHtml(ROMANCE[t])}</b>).</p>
+<p>The same ordering fixes how the ${t} moves in a group
+(<b>${escapeHtml(INTERACTION_STYLE[t])}</b>). It also carries into romance: ${t} moves with
+<b>${escapeHtml(romance.animal)}</b> energy, and the partner whose own Lead lands exactly on
+${t}'s Cave (${escapeHtml(romance.cave)}) is <b>${escapeHtml(romance.dual)}</b>, its Dual.</p>
 
 <h2>Superpower and kryptonite</h2>
 <p>The Lead above is what makes ${article(t)} ${t} extraordinary. The flip side is what undoes

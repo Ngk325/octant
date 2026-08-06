@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { Entry, Category } from "../engine/lexicon";
 import {
   type Fn, type SlotName, type RelCode, REL_NAME,
-  ROMANCE, INTERACTION_STYLE, GROUP,
+  INTERACTION_STYLE, GROUP,
 } from "../engine/data";
 import { TYPES, REL, ease, gate, type MbtiType, type Quadra } from "../engine/core";
 import TypeMolecule from "./glyphs/TypeMolecule";
@@ -278,11 +278,11 @@ function RelationFigure({ code, alsoSee }: {
 /**
  * Which four types carry a label, drawn as their molecules.
  *
- * Temperament, romance style and interaction style are all the same shape of
- * fact — a name given to a set of four — and all three were defined in prose
- * that never said which four. The entry's `term` IS the table's value, so the
- * membership is looked up rather than restated, and a label that stopped
- * matching would render an empty row instead of a confident wrong one.
+ * Temperament and interaction style are the same shape of fact — a name
+ * given to a set of four — and both were defined in prose that never said
+ * which four. The entry's `term` IS the table's value, so the membership is
+ * looked up rather than restated, and a label that stopped matching would
+ * render an empty row instead of a confident wrong one.
  */
 function sharedBy(label: (t: MbtiType) => string, term: string): ReactNode {
   const members = TYPES.filter((t) => label(t) === term);
@@ -320,7 +320,6 @@ const COIN_FAMILIES: Record<string, Fn[]> = {
 /** Category-level fallbacks, when no id-specific figure exists. */
 export const CATEGORY_FIGURES: Partial<Record<Category, (e: Entry) => ReactNode>> = {
   Temperament: (e) => sharedBy((t) => GROUP[t], e.term),
-  "Romance Style": (e) => sharedBy((t) => ROMANCE[t], e.term),
   "Interaction Style": (e) => sharedBy((t) => INTERACTION_STYLE[t], e.term),
 
   /* A gate is the door onto the subconscious, so it gets both halves: who

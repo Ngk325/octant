@@ -17,8 +17,8 @@ describe("plain language coverage", () => {
     expect(missing.map((e) => e.id)).toEqual([]);
   });
 
-  it("covers all 103 entries", () => {
-    expect(ENTRIES).toHaveLength(103);
+  it("covers all 99 entries", () => {
+    expect(ENTRIES).toHaveLength(99);
     for (const e of ENTRIES) expect(PLAIN_BY_ID[e.id], e.id).toBeTruthy();
   });
 
@@ -136,7 +136,7 @@ describe("assistant grounding", () => {
  * pairing comes back null and the view filters nulls out. It now resolves
  * through the entry alias to the canonical id instead. */
 describe("pairings survive a display rename", () => {
-  const NEVER_NULL = ["Quadra", "Temperament", "Interaction style", "Romance style"];
+  const NEVER_NULL = ["Quadra", "Temperament", "Interaction style"];
 
   it.each(NEVER_NULL)("%s resolves a pairing for every ordered pair", (aspect) => {
     const misses: string[] = [];
@@ -150,7 +150,7 @@ describe("pairings survive a display rename", () => {
   });
 
   it("resolves ids that are real entries, not slugified labels", () => {
-    const row = compareAspects("ENTP", "ESTJ").find((r) => r.aspect === "Romance style")!;
+    const row = compareAspects("ENTP", "ESTJ").find((r) => r.aspect === "Interaction style")!;
     const ids = new Set(ENTRIES.map((e) => e.id));
     expect(ids.has(row.aId)).toBe(true);
     expect(ids.has(row.bId)).toBe(true);

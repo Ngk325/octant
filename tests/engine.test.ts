@@ -153,7 +153,7 @@ describe("lexicon", () => {
   });
 
   it("pairs every ordered combination within a pairable category", () => {
-    const pairable = ["Romance Style", "Interaction Style", "Quadra", "Animal",
+    const pairable = ["Interaction Style", "Quadra", "Animal",
                       "Function", "Archetype", "Gate", "Temperament"];
     for (const cat of pairable) {
       const members = ENTRIES.filter((e) => e.category === cat);
@@ -168,7 +168,7 @@ describe("lexicon", () => {
   it("covers every aspect for all 256 type pairs with no gaps", () => {
     for (const a of TYPES) for (const b of TYPES) {
       const rows = compareAspects(a, b);
-      expect(rows.length).toBe(16);
+      expect(rows.length).toBe(15);
       for (const r of rows) {
         expect(BY_ID.has(r.aId), `${a}/${b} ${r.aspect} → ${r.aId}`).toBe(true);
         expect(BY_ID.has(r.bId), `${a}/${b} ${r.aspect} → ${r.bId}`).toBe(true);

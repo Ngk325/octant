@@ -54,8 +54,8 @@ export default function Lexicon() {
       <h1>Every term, defined</h1>
       <p className="lede">
         Each entry says it plainly first, then precisely. And where two members of a category can
-        meet — two romance styles, two quadras, two functions — the entry says what happens when
-        they do.
+        meet — two quadras, two functions, two interaction styles — the entry says what happens
+        when they do.
       </p>
 
       {/* The controls come before the focused entry: landing on a deep link

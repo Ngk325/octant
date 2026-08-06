@@ -213,7 +213,7 @@ export const CONCEPT_PLAIN: Record<string, string> = {
  * Every lexicon entry gets one of these. Where a table above already
  * says it plainly, reuse it rather than writing it twice — the entries
  * and the app then cannot drift apart. tests/plain.test.ts asserts that
- * all 88 ids are covered.
+ * every entry's id is covered.
  * ------------------------------------------------------------------ */
 export const PLAIN_BY_ID: Record<string, string> = {
   /* functions */
@@ -234,12 +234,6 @@ export const PLAIN_BY_ID: Record<string, string> = {
   sleep: "Being alone with your own thoughts to recharge. Energy staying in.",
   blast: "Telling people things. Teaching, directing, getting something started.",
   consume: "Taking things in. Reading, researching, watching, learning before you move.",
-
-  /* romance styles */
-  infantile: "Wants to be delighted in. Flirts by playing, and would rather not be the one organising things.",
-  caregiver: "Shows love by looking after you. Finds it much easier to give than to be given to.",
-  aggressor: "Goes after what it wants and says so. Direct, and can read as pressure without meaning to.",
-  victim: "Wants to be pursued and won. Enjoys a bit of tension, and can manufacture some if there is none.",
 
   /* interaction styles */
   "in-charge": "Takes the wheel. Says what happens next and expects it to happen.",

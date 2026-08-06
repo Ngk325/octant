@@ -205,11 +205,6 @@ const CONCEPT_ROWS: Record<string, Elsewhere[]> = {
   "stack-map": [{ system: SOCIONICS, term: "Model A" }],
   relation: [{ system: SOCIONICS, term: "Intertype relations" }],
 
-  infantile: [{ system: SOCIONICS, term: "Infantile", note: "Erotic attitudes." }],
-  caregiver: [{ system: SOCIONICS, term: "Caregiver", note: "Erotic attitudes." }],
-  aggressor: [{ system: SOCIONICS, term: "Aggressor", note: "Erotic attitudes." }],
-  victim: [{ system: SOCIONICS, term: "Victim", note: "Erotic attitudes." }],
-
   nt: [{ system: TEMPERAMENTS, term: "Rational" }],
   nf: [{ system: TEMPERAMENTS, term: "Idealist" }],
   sj: [{ system: TEMPERAMENTS, term: "Guardian" }],

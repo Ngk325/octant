@@ -345,24 +345,6 @@ export const INTERACTION_STYLE: Record<MbtiType, string> = {
   "ESFJ": "Rallies",
   "ISFJ": "Steadies"
 };
-export const ROMANCE: Record<MbtiType, string> = {
-  "ENTP": "Playful",
-  "INTP": "Playful",
-  "ENTJ": "Pursued",
-  "INTJ": "Pursued",
-  "ENFP": "Playful",
-  "INFP": "Playful",
-  "ENFJ": "Pursued",
-  "INFJ": "Pursued",
-  "ESTP": "Pursuing",
-  "ISTP": "Pursuing",
-  "ESTJ": "Caring",
-  "ISTJ": "Caring",
-  "ESFP": "Pursuing",
-  "ISFP": "Pursuing",
-  "ESFJ": "Caring",
-  "ISFJ": "Caring"
-};
 export const VIRTUE_VICE: Record<MbtiType, [string, string]> = {
   "ENTP": [
     "Earnestness",

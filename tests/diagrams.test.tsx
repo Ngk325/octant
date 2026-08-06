@@ -218,7 +218,6 @@ describe("the lexicon figure registry", () => {
   it.each([
     ["Relation", 16],
     ["Temperament", 4],
-    ["Romance Style", 4],
     ["Interaction Style", 4],
     ["Gate", 4],
   ] as const)("draws every %s entry", (category, expected) => {
