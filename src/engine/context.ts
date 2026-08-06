@@ -2,7 +2,7 @@ import {
   REL, ease, relation, stack, quadra, gate, complements, catalysts, frictions,
 } from "./core";
 import { ops, coins } from "./ops";
-import { sides, SIDE_ORDER } from "./sides";
+import { sides, SIDE_ORDER, DREAD_TELLS, DREAD_DEESCALATE } from "./sides";
 import { wheelOf, templeOf } from "./octagram";
 import { playbook } from "./playbook";
 import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./functions";
@@ -95,6 +95,24 @@ export function typeFacts(t: MbtiType): string[] {
     line(`Doubt ${st[4]} — what it wants`, `${FN_WANTS[st[4]]}. ${FN_SATISFACTION[st[4]]}`),
     line("Function roles", st.slice(0, 4).map((fn) => `${fn}=${FN_ROLE[fn]}`).join(" · ")),
     line("How the ego functions sound", st.slice(0, 4).map((fn) => `${fn}: "${FN_SAYS[fn][0]}"`).join(" · ")),
+  ];
+}
+
+/** The five field-guide facets for each of the four sides, plus the superego's per-function tell and de-escalation — the content the /sides page actually shows, compact enough to sit alongside typeFacts(). */
+function sideGuideFacts(t: MbtiType): string[] {
+  const s = sides(t);
+  const dread = stack(t)[7];
+  return [
+    ...SIDE_ORDER.map((k) => {
+      const side = s[k];
+      return line(
+        `${side.name} field guide`,
+        `assess: ${side.assess} | enter: ${side.opensWith} | operate: ${side.atWill} | ` +
+        `avoid: ${side.forced} | interact: ${side.interact}`,
+      );
+    }),
+    line(`Superego tell (Dread ${dread})`, DREAD_TELLS[dread]),
+    line(`Superego de-escalation (Dread ${dread})`, DREAD_DEESCALATE[dread]),
   ];
 }
 
@@ -232,6 +250,8 @@ export function contextBlock(ctx: ChatContext): string {
         "already know what the four sides are.",
         "",
         ...typeFacts(ctx.type),
+        "",
+        ...sideGuideFacts(ctx.type),
       ].join("\n");
     case "pair":
       return [

@@ -25,7 +25,7 @@ const TABS: [string, string][] = [
   ["/read-someone", "Read someone"],
   ["/types", "All sixteen"],
   ["/type/ENTP", "A type"],
-  ["/sides/ENTP", "Four sides"],
+  ["/sides", "Four sides"],
   ["/pair/ENTP/INFJ", "A pair"],
   ["/network", "A group"],
   ["/matrix", "Matrix"],
