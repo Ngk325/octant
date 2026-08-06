@@ -76,11 +76,37 @@ bundle.
 | `RESEND_API_KEY` | for email | Sign-up notifications and chat transcripts. Without it, sign-ups still record; nothing mails. |
 | `NOTIFY_FROM` | in practice, yes for email | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address — see `docs/GOOGLE-SETUP.md`. |
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
+| `STRIPE_WEBHOOK_SECRET` | for automatic paid access | Verifies `/api/stripe/webhook`. Without it, that route 503s and paid sign-ups still need a manual approval from `/admin`, same as before this existed. |
 
 The two KV namespaces (`USERS`, `CHAT_LOGS`), both rate-limit bindings and the
 hourly transcript-sweep cron live in `wrangler.jsonc` and deploy with the code
 — nothing to click in the dashboard, and dashboard-only bindings would be
 removed by the next push anyway.
+
+### The free scholarship and the paid webhook
+
+`/apply` is public, needs no secret, and is on by default: it collects a
+name, a situation and a reason, reflects them back for one last look, and —
+on submit — only ever emails whoever `OWNER_EMAIL`/`NOTIFY_EMAIL` points at.
+Nothing is granted until that email's approve link is tapped, or `/admin`
+decides. Approving pre-provisions the applicant's account, so their first
+Google sign-in with that address just works.
+
+The Stripe side automates the other half of the same idea. The marketing
+page already links to a Stripe **Payment Link** (`STRIPE_LINK` in
+`src/worker/marketing.ts`) — that part needs no code, just a link from the
+Stripe dashboard. What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
+
+1. In the Stripe dashboard, add a webhook endpoint at
+   `https://<your-domain>/api/stripe/webhook` listening for
+   `checkout.session.completed` and `customer.subscription.deleted`.
+2. Copy its signing secret (`whsec_...`) and run
+   `npx wrangler secret put STRIPE_WEBHOOK_SECRET`.
+
+That's the whole setup — this Worker never calls the Stripe API and holds no
+secret key, only the webhook's signing secret. Without it, the route fails
+closed at 503 and a paid sign-up still needs the owner to flip their status
+in `/admin` by hand, exactly as before this existed.
 
 ### Locally
 

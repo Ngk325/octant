@@ -296,6 +296,7 @@ export function marketingPage(origin: string): Response {
       <a href="#uses" class="hide-sm">Who it&rsquo;s for</a>
       <a href="#pricing">Pricing</a>
       <a href="#about" class="hide-sm">About</a>
+      <a href="/apply" class="hide-sm">Scholarship</a>
       <a href="/signin">Sign in</a>
       <a class="btn primary" href="#pricing">Get started</a>
     </nav>
@@ -314,7 +315,10 @@ export function marketingPage(origin: string): Response {
       <div class="cta-row">
         <a class="btn primary" href="#pricing">Start now — $25/user·mo</a>
         <a class="btn" href="#product">See how it works</a>
-        <span class="cta-note">Cancel anytime. Every account is enabled by a person, not a script.</span>
+        <span class="cta-note">
+          Cancel anytime. Paid access unlocks automatically; can&rsquo;t pay right now?
+          <a href="/apply">Apply for a free scholarship</a> — every one of those is decided by a person.
+        </span>
       </div>
     </div>
     <div class="art">${HERO_ART}</div>
@@ -510,8 +514,21 @@ export function marketingPage(origin: string): Response {
           </ul>
           <a class="btn primary" href="${STRIPE_LINK}">Start now</a>
           <p class="small muted" style="margin:12px 0 0">
-            Checkout via Stripe. After payment you&rsquo;ll sign in with Google and your account
-            is enabled — every account is switched on by a person.
+            Checkout via Stripe. After payment, sign in with Google using the same email —
+            access unlocks automatically, usually within a minute.
+          </p>
+        </div>
+        <div class="price">
+          <h3 class="sans" style="font-size:17px;font-weight:600">Scholarship</h3>
+          <div class="amount">Free</div>
+          <ul>
+            <li>The complete instrument, no reduced version</li>
+            <li>Read personally by the owner, not auto-approved</li>
+            <li>Ask again later if now isn&rsquo;t a yes</li>
+          </ul>
+          <a class="btn" href="/apply">Apply</a>
+          <p class="small muted" style="margin:12px 0 0">
+            Can&rsquo;t pay right now? Say so. Nobody is turned away from Octant for lack of funds.
           </p>
         </div>
         <div class="price">
@@ -559,6 +576,7 @@ export function marketingPage(origin: string): Response {
         <a href="#uses">Who it&rsquo;s for</a>
         <a href="#pricing">Pricing</a>
         <a href="#about">About</a>
+        <a href="/apply">Scholarship</a>
         <a href="/signin">Sign in</a>
       </nav>
     </div>

@@ -16,6 +16,8 @@ import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
 import { handleRead } from "./read";
+import { handleScholarship, type ScholarshipEnv } from "./scholarship";
+import { handleStripeWebhook, type StripeEnv } from "./stripe";
 
 /**
  * Assets-plus-API Worker, behind an access wall.
@@ -30,7 +32,7 @@ import { handleRead } from "./read";
  * ever invoking this file, and none of the below runs. tests/auth.test.ts
  * asserts that value for exactly this reason.
  */
-export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv {
+export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, ScholarshipEnv, StripeEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
@@ -82,6 +84,17 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   if (url.pathname === "/api/admin/act") {
     return (await handleAdmin(request, env, { owner: false }, now))!;
   }
+
+  // 3b. Stripe calling itself, not a browser. Verified by signature inside
+  //     the handler, not by anything the wall could check.
+  if (url.pathname === "/api/stripe/webhook" && request.method === "POST") {
+    return handleStripeWebhook(request, env, now);
+  }
+
+  // 3c. The free scholarship: public, pre-wall, for the same reason /signin
+  //     is — someone asking for access cannot already have it.
+  const applied = await handleScholarship(request, env, url, now, ctx);
+  if (applied) return applied;
 
   // 4. The sign-in page, at its own public route so the front door can link
   //    to it. Someone already signed in is sent home instead.
