@@ -9,9 +9,10 @@ import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./func
 import { empirical, divergence, EMPIRICAL_SOURCE } from "./empirical";
 import { compareAspects, lookup } from "./lexicon";
 import { learnGrounding } from "./learnGrounding";
+import { soloRomance, pairRomance } from "./romance";
 import {
   SLOT_NAMES, REL_NAME, REL_DEF, RECIPROCAL, COIN_LABELS, DETERMINING,
-  ARCHETYPE, GROUP, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE, BEHAVIOURAL,
+  ARCHETYPE, GROUP, INTERACTION_STYLE, VIRTUE_VICE, BEHAVIOURAL,
   FN_FULL, type MbtiType,
 } from "./data";
 
@@ -131,7 +132,7 @@ export function typeFacts(t: MbtiType): string[] {
     line("Quadra", quadra(t)),
     line("Temperament", GROUP[t]),
     line("Interaction style", INTERACTION_STYLE[t]),
-    line("Romance style", ROMANCE[t]),
+    line("Romantic dynamics (own, no partner)", soloRomance(t).text),
     line("Stack", st.map((fn, i) => `${SLOT_NAMES[i]} ${fn} (${FN_FULL[fn]})`).join(" · ")),
     line("Four sides", SIDE_ORDER.map((k) => {
       const side = s[k];
@@ -209,6 +210,8 @@ export function pairFacts(a: MbtiType, b: MbtiType): string[] {
     line(`Ease for ${b} of being around ${a}`, `${ease(b, a)}/100`),
     line(`Where ${b}'s instruments land in ${a}`, `their Lead ${bLead} → ${a}'s ${slotOf(bLead)}; their Support ${bSupport} → ${a}'s ${slotOf(bSupport)}`),
     line(`Playbook written to ${b} about ${a}`, playbook(b, a)),
+    line(`Romantic dynamic — how ${b} lands on ${a}`, pairRomance(a, b).text),
+    line(`Romantic dynamic — how ${a} lands on ${b}`, pairRomance(b, a).text),
     line(
       "Empirical cross-check",
       `A ${EMPIRICAL_SOURCE.what} (${EMPIRICAL_SOURCE.name}) rates this pairing ${empirical(a, b)}%, ` +

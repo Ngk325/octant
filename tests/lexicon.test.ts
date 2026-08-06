@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TYPES, quadra, gate, stack, type MbtiType } from "../src/engine/core";
 import { ops, coins, ANIMAL_LABEL, type Animal } from "../src/engine/ops";
-import { GROUP, INTERACTION_STYLE, ROMANCE, DOM_AUX } from "../src/engine/data";
+import { GROUP, INTERACTION_STYLE, DOM_AUX } from "../src/engine/data";
 import { ENTRIES, BY_ID, type Entry } from "../src/engine/lexicon";
 
 /* ------------------------------------------------------------------ *
@@ -111,12 +111,6 @@ describe("membership claims name the right types", () => {
   it("interaction styles", () => {
     for (const id of ["in-charge", "chart-the-course", "get-things-going", "behind-the-scenes"]) {
       check(id, TYPES.filter((t) => INTERACTION_STYLE[t] === entry(id).term));
-    }
-  });
-
-  it("romance styles", () => {
-    for (const id of ["infantile", "caregiver", "aggressor", "victim"]) {
-      check(id, TYPES.filter((t) => ROMANCE[t] === entry(id).term));
     }
   });
 

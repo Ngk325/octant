@@ -3,13 +3,13 @@ import { ops, coins, ANIMAL_LABEL } from "./ops";
 import { PLAIN_BY_ID } from "./plain";
 import {
   REL_NAME, REL_DEF, REL_SCORE, FN_FULL, COIN_LABELS,
-  INTERACTION_STYLE, ROMANCE, GROUP, type Fn, type RelCode,
+  INTERACTION_STYLE, GROUP, type Fn, type RelCode,
 } from "./data";
 
 /** The kind of thing an entry is. Drives filtering and the pairing logic. */
 export type Category =
   | "Function" | "Archetype" | "Relation" | "Quadra" | "Animal"
-  | "Romance Style" | "Interaction Style" | "Gate" | "Coin"
+  | "Interaction Style" | "Gate" | "Coin"
   | "Temperament" | "Concept";
 
 /**
@@ -194,34 +194,6 @@ const ANIMALS: Draft[] = [
       "Everything pointed inward: observing internally and deciding internally, with no external limb. Settle is where a person integrates, recovers and works things out unobserved. Starved of it, the other currents degrade.",
     inSystem: "Always a middle current in this build. Its ordering against Charge is deferred.",
     seeAlso: ["play", "animal", "fine-coins"] }),
-];
-
-/* ══════════════════════════════ ROMANCE STYLES ══════════════════════════════ */
-const ROMANCE_STYLES: Draft[] = [
-  E({ id: "infantile", term: "Playful", category: "Romance Style",
-    short: "Relates through play. Wants delight and lightness, and resists being managed.",
-    definition:
-      "The Playful style approaches intimacy as shared play: teasing, novelty, silliness, and an ongoing refusal to make the relationship heavy. Care is expressed by being fun to be around and by keeping the other person entertained rather than by anticipating their needs. It wants to be enjoyed rather than looked after, and reads too much practical fussing as a loss of charge. Its blind side is logistics: a Playful partner can be genuinely devoted and still leave the shared life unadministered.",
-    inSystem: "Held by the Alpha and Delta intuitives (ENTP, INTP, ENFP, INFP). Structurally complementary to Caring.",
-    seeAlso: ["caregiver", "aggressor", "victim"] }),
-  E({ id: "caregiver", term: "Caring", category: "Romance Style",
-    short: "Relates through provision. Expresses love by noticing and supplying what is needed.",
-    definition:
-      "The Caring style approaches intimacy as tending: feeding, arranging, remembering, smoothing the practical world so the other person can be at ease in it. Affection is demonstrated rather than declared, and the relationship is made secure by being reliably maintained. It wants to be needed and trusted with the running of things. Its blind side is that provision can shade into control, and that a partner who never asks to be looked after can leave a Caring partner without a role.",
-    inSystem: "Held by the Alpha and Delta sensors (ESTJ, ISTJ, ESFJ, ISFJ). Structurally complementary to Playful.",
-    seeAlso: ["infantile", "aggressor", "victim"] }),
-  E({ id: "aggressor", term: "Pursuing", category: "Romance Style",
-    short: "Relates through pursuit. Direct, physical, and comfortable initiating.",
-    definition:
-      "The Pursuing style approaches intimacy by closing distance: claiming attention, initiating contact, making desire explicit rather than implied. It is confident about wanting and unembarrassed about showing it, and it reads hesitation as an invitation to be clearer rather than to retreat. Its blind side is calibration — the same directness that reads as thrilling to one partner reads as pressure to another, and a Pursuing partner often cannot tell the difference from the inside.",
-    inSystem: "Held by the Beta and Gamma sensors (ESTP, ISTP, ESFP, ISFP). Structurally complementary to Pursued.",
-    seeAlso: ["victim", "infantile", "caregiver"] }),
-  E({ id: "victim", term: "Pursued", category: "Romance Style",
-    short: "Relates through surrender. Drawn to strength, ambivalence and being pursued.",
-    definition:
-      "The Pursued style approaches intimacy by yielding to someone whose force it respects: it wants to be sought, convinced and somewhat overwhelmed, and it charges the relationship with a productive tension rather than resolving it. Complexity, ambivalence and a degree of unattainability are part of the appeal. Its blind side is that the same tension can be manufactured where it is not warranted, turning a settled relationship into a drama it did not need.",
-    inSystem: "Held by the Beta and Gamma intuitives (ENTJ, INTJ, ENFJ, INFJ). Structurally complementary to Pursuing.",
-    seeAlso: ["aggressor", "infantile", "caregiver"] }),
 ];
 
 /* ══════════════════════════════ INTERACTION STYLES ══════════════════════════════ */
@@ -570,7 +542,7 @@ const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
      seeAlso: ["relation", "ease", "stack-map"] }));
 
 const DRAFTS: Draft[] = [
-  ...FUNCTIONS, ...ARCHETYPES, ...QUADRAS, ...ANIMALS, ...ROMANCE_STYLES,
+  ...FUNCTIONS, ...ARCHETYPES, ...QUADRAS, ...ANIMALS,
   ...INTERACTION_STYLES, ...GATES, ...TEMPERAMENTS, ...COINS_E, ...CONCEPTS, ...RELATIONS,
 ];
 
@@ -590,7 +562,7 @@ export const BY_ID = (() => {
 })();
 /** Every category present in ENTRIES, for the lexicon's filter row. */
 export const CATEGORIES: Category[] = [
-  "Function", "Archetype", "Relation", "Quadra", "Animal", "Romance Style",
+  "Function", "Archetype", "Relation", "Quadra", "Animal",
   "Interaction Style", "Gate", "Coin", "Temperament", "Concept",
 ];
 const slug = slugify;
@@ -621,41 +593,6 @@ export function search(q: string): Entry[] {
 }
 
 /* ══════════════════════ PAIRINGS: term × term ══════════════════════ */
-
-const ROMANCE_PAIRS: Record<string, Pairing> = {
-  "infantile|infantile": { headline: "Two players, no host",
-    body: "Effortless lightness and a great deal of laughing. Neither wants to be the one who books the thing, remembers the appointment or notices that the fridge is empty, so the shared practical life quietly degrades while both insist they are fine. Works beautifully if the logistics are outsourced or genuinely simple." },
-  "infantile|caregiver": { headline: "Being enjoyed, being tended",
-    body: "The structural complement. You bring lightness and refuse to let the relationship get heavy; they bring provision and want to be trusted with the running of things. Each supplies what the other is not built for. The failure mode is drift into parent-and-child: keep asking them what they want rather than only accepting what they give." },
-  "infantile|aggressor": { headline: "Play meets pursuit",
-    body: "Their directness is exciting and can tip into pressure faster than they realise, because they read your teasing as encouragement rather than as its own complete language. You will deflect with humour exactly when they want you to be plain. Say the direct thing occasionally; they cannot decode play as reliably as you assume." },
-  "infantile|victim": { headline: "Lightness meets charged ambivalence",
-    body: "They want tension, complexity and a degree of being pursued; you want the whole thing to stay buoyant. Your refusal to take it seriously reads to them as not wanting it enough. Neither is wrong — but you will have to let some weight into the room, and they will have to stop manufacturing storms to test whether you are still there." },
-  "caregiver|infantile": { headline: "Tending someone who wants to be enjoyed",
-    body: "The structural complement, from the other side. Your provision is genuinely wanted, but be careful what you are providing: they want to be delighted in, not managed. Anticipating every need can read as being handled. Let some things go unarranged and play instead." },
-  "caregiver|caregiver": { headline: "Two providers, nobody receiving",
-    body: "Deeply reliable and quietly exhausting. Both express love by tending, and neither is comfortable being the one tended, so care gets offered in both directions and accepted in neither. Practise receiving — accepting what they do for you is the thing they most want and least often gets." },
-  "caregiver|aggressor": { headline: "Provision meets pursuit",
-    body: "They initiate and claim; you supply and secure. This works well because the roles do not compete. The strain is pace: their directness can feel like a demand landing on a person who was already giving, and your steady provision can read to them as insufficiently alive. Name the wanting out loud sometimes rather than only demonstrating it." },
-  "caregiver|victim": { headline: "Tending someone who wants to be won",
-    body: "You want to make things safe; they are partly charged by things not being settled. Every time you resolve the tension, you remove something they were enjoying. This is workable but requires you to tolerate an unresolved edge you would instinctively smooth away." },
-  "aggressor|infantile": { headline: "Pursuit meets play",
-    body: "They keep it light and deflect with humour, which you can misread as either invitation or evasion. Your directness is often exactly right for them and occasionally lands as pressure — and you will not be able to tell which from the inside. Ask plainly; they will answer plainly if plainly asked." },
-  "aggressor|caregiver": { headline: "Pursuit meets provision",
-    body: "Complementary roles with no contest over who initiates. They will keep supplying without asking for anything, which suits you and can leave them unattended. Notice the provision explicitly. Being thanked for it is close to the whole point for them." },
-  "aggressor|aggressor": { headline: "Two initiators",
-    body: "Immediate, physical and completely unambiguous about wanting. Nothing goes unsaid, which is a real advantage. The risk is escalation: two people who close distance by claiming attention can turn ordinary friction into contest very quickly, because neither instinct is to yield." },
-  "aggressor|victim": { headline: "The structural complement",
-    body: "The pairing this axis exists to describe. You pursue; they want to be pursued and to yield to something they respect. It is charged and it works. The failure mode is that their ambivalence is real, not a game — pushing through a genuine no because it once was a yes is where this pairing does actual damage." },
-  "victim|infantile": { headline: "Charge meets buoyancy",
-    body: "You want tension and complexity; they will keep lifting the mood every time it deepens. Their lightness is not indifference — it is how they express care — but it can leave you feeling the relationship is unserious. Ask for the depth explicitly; they can meet it when told it is wanted." },
-  "victim|caregiver": { headline: "Being won versus being kept safe",
-    body: "They resolve; you charge. Their instinct is to remove every obstacle, and obstacles are part of what you are responding to. This can settle into something very stable if you stop generating tension to test them, and they accept that not everything wants smoothing." },
-  "victim|aggressor": { headline: "The structural complement, from the yielding side",
-    body: "The pairing this axis exists for. Their directness supplies exactly the force you respond to, and the ambivalence you bring is legible to them as invitation rather than rejection. It has the most natural charge of any romance pairing. Be aware that your ambivalence reads as a yes even when it is a no — say the no plainly." },
-  "victim|victim": { headline: "Two people waiting to be won",
-    body: "Both want to be sought, so nobody closes the distance and the tension never resolves into contact. Highly charged, frequently unconsummated, and prone to long ambiguous stretches that both parties find meaningful and neither finds satisfying. Someone has to move first." },
-};
 
 const INTERACTION_PAIRS: Record<string, Pairing> = {
   "in-charge|in-charge": { headline: "Two people taking the lead",
@@ -788,8 +725,6 @@ export function pairTerms(aId: string, bId: string): Pairing | null {
   if (!a || !b || a.category !== b.category) return null;
 
   switch (a.category) {
-    case "Romance Style":
-      return ROMANCE_PAIRS[`${aId}|${bId}`] ?? null;
     case "Interaction Style":
       return INTERACTION_PAIRS[`${aId}|${bId}`] ?? null;
     case "Gate":
@@ -867,9 +802,8 @@ export function compareAspects(a: MbtiType, b: MbtiType): AspectRow[] {
   push("Temperament", canonicalId(GROUP[a].match(/\((\w+)\)/)![1]), canonicalId(GROUP[b].match(/\((\w+)\)/)![1]), GROUP[a], GROUP[b]);
   push("Interaction style", canonicalId(INTERACTION_STYLE[a].split(" (")[0]), canonicalId(INTERACTION_STYLE[b].split(" (")[0]),
        INTERACTION_STYLE[a], INTERACTION_STYLE[b]);
-  push("Romance style", canonicalId(ROMANCE[a]), canonicalId(ROMANCE[b]), ROMANCE[a], ROMANCE[b]);
-  push("Primary current", canonicalId(ops(a).primary), canonicalId(ops(b).primary),
-       ANIMAL_LABEL[ops(a).primary], ANIMAL_LABEL[ops(b).primary]);
+  push("Primary current", canonicalId(ops(a).doubleSavior), canonicalId(ops(b).doubleSavior),
+       ANIMAL_LABEL[ops(a).doubleSavior], ANIMAL_LABEL[ops(b).doubleSavior]);
   push("Growth gate", canonicalId(gate(a).gate), canonicalId(gate(b).gate), gate(a).gate, gate(b).gate);
   push("Lead function", canonicalId(stack(a)[0]), canonicalId(stack(b)[0]), stack(a)[0], stack(b)[0]);
   push("Cave function", canonicalId(stack(a)[3]), canonicalId(stack(b)[3]), stack(a)[3], stack(b)[3]);

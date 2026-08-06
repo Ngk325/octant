@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { readStored, writeStored } from "../storage";
 import { quadra, stack, gate, complements, catalysts, frictions } from "../engine/core";
+import { soloRomance, pairRomance } from "../engine/romance";
 import {
   ops, coins, SAVIOR_STATE, DEMON_STATE, SAVIOR_MARKERS, DEMON_MARKERS, ANIMAL_LABEL,
   type Subtype, type Animal,
@@ -17,7 +18,7 @@ import {
   type Development, type Focus,
 } from "../engine/octagram";
 import {
-  TYPES, ARCHETYPE, GROUP, INTERACTION_STYLE, ROMANCE, VIRTUE_VICE,
+  TYPES, ARCHETYPE, GROUP, INTERACTION_STYLE, VIRTUE_VICE,
   BEHAVIOURAL, COIN_LABELS, DETERMINING, FN_LONG, FN_SHADOW, SLOT_NAMES,
   type MbtiType,
 } from "../engine/data";
@@ -193,7 +194,7 @@ export default function TypeReader() {
 
       <p className="small muted">
         <Term>{GROUP[t]}</Term> · <Term>{INTERACTION_STYLE[t].split(" (")[0]}</Term> ·{" "}
-        <Term>{ROMANCE[t]}</Term> romance style
+        <Term>{soloRomance(t).animal}</Term> in romance
       </p>
 
       <SectionNav items={SECTIONS} />
@@ -783,6 +784,17 @@ export default function TypeReader() {
           <Links list={frictions(t)} from={t} />
         </Panel>
       </div>
+
+      {/* Romance is not a fourth static archetype bolted onto the type —
+          it runs through the same Complement/Catalyst/Cave mechanics as the
+          rest of this section, just asked with the partner's Lead and Animal
+          in the frame. See engine/romance.ts. */}
+      <Panel title="In romance" style={{ marginTop: "var(--s4)" }}>
+        <p className="small" style={{ marginTop: 0 }}>{soloRomance(t).text}</p>
+        <p className="small muted" style={{ marginBottom: 0 }}>
+          {pairRomance(t, complements(t)[0]).text}
+        </p>
+      </Panel>
 
       {/* Fit-with-others content, so it lives in the fit section — it used to
           sit under Growth, which is about the self. */}
