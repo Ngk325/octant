@@ -27,6 +27,8 @@ export interface ChatLogEnv {
   OWNER_EMAIL?: string;
   NOTIFY_FROM?: string;
   NOTIFY_EMAIL?: string;
+  /** Reused to name/summarize/tag a thread at session end. Same key as /api/chat. */
+  GEMINI_API_KEY?: string;
 }
 
 /** Who was talking, as established by the session layer. */
@@ -53,6 +55,23 @@ export interface LoggedTurn {
   at: number;
 }
 
+/**
+ * Generated once, at session end, for internal tracking and the transcript
+ * email — never for the reader. `title` is the one exception: it is short
+ * and content-free enough to show in the history list, so the client sees
+ * it. `summary` and `tags` are for the owner's own understanding of what
+ * people are asking, over time — they never leave the server towards the
+ * client that produced them.
+ */
+export interface ChatMeta {
+  /** A short (3-6 word) name for the thread, fit to show in a history list. */
+  title: string;
+  /** A 1-3 sentence summary of what was asked and covered. Email/internal only. */
+  summary: string;
+  /** Short lowercase topic tags. Email/internal only. */
+  tags: string[];
+}
+
 export interface ChatLogRecord {
   who: ChatWho;
   ua?: string;
@@ -61,6 +80,8 @@ export interface ChatLogRecord {
   /** Human labels of the screens this thread was asked from, deduped, in order. */
   contexts: string[];
   turns: LoggedTurn[];
+  /** Set once, at session end. Best-effort — absent if generation failed or is unconfigured. */
+  meta?: ChatMeta;
   /** Set when the transcript email has gone out; makes endSession idempotent. */
   mailed?: number;
 }
@@ -164,6 +185,7 @@ export interface ThreadSummary {
   updated: number;
   contexts: string[];
   turns: number;
+  /** The generated title if the thread has one yet, else a plain preview of the first message. */
   preview: string;
 }
 
@@ -186,7 +208,7 @@ export async function listThreads(env: ChatLogEnv, who: ChatWho): Promise<Thread
             updated: rec.updated,
             contexts: rec.contexts,
             turns: rec.turns.length,
-            preview: (firstUser?.text ?? "").slice(0, 140),
+            preview: rec.meta?.title || (firstUser?.text ?? "").slice(0, 140),
           });
         }
       }
@@ -198,25 +220,42 @@ export async function listThreads(env: ChatLogEnv, who: ChatWho): Promise<Thread
   return out.sort((a, b) => b.updated - a.updated).slice(0, 50);
 }
 
-/** One of the caller's own past threads, in full — or null if it is not theirs. */
+/**
+ * One of the caller's own past threads, sanitized for the client — or null
+ * if it is not theirs. `meta.summary`/`meta.tags` are for the owner only
+ * (the email, and whoever reads KV directly), so they are stripped here;
+ * `meta.title` is short and content-free enough to show in a history list.
+ */
 export async function getThreadFor(
   env: ChatLogEnv, who: ChatWho, threadId: string,
 ): Promise<ChatLogRecord | null> {
   const rec = await readRecord(env, threadId);
   if (!rec || !belongsTo(rec, who)) return null;
-  return rec;
+  if (!rec.meta) return rec;
+  return { ...rec, meta: { title: rec.meta.title, summary: "", tags: [] } };
 }
 
 /**
- * The session is over — mail the transcript to the owner, once.
- * Idempotent via the `mailed` stamp, so the beacon, the reset button and the
- * idle sweep can all call it without producing duplicate email.
+ * The session is over — name and summarize the thread, then mail the
+ * transcript to the owner, once. Idempotent via the `mailed` stamp, so the
+ * beacon, the reset button and the idle sweep can all call it without
+ * producing duplicate email. Meta generation is separately idempotent
+ * (`rec.meta`), so a mail failure that leaves the thread un-mailed does not
+ * regenerate it on the next attempt.
  */
 export async function endSession(env: ChatLogEnv, threadId: string, now: number): Promise<void> {
   if (!env.CHAT_LOGS) return;
   try {
     const rec = await readRecord(env, threadId);
     if (!rec || rec.mailed || rec.turns.length === 0) return;
+
+    if (!rec.meta) {
+      const meta = await generateMeta(env, rec);
+      if (meta) {
+        rec.meta = meta;
+        await writeRecord(env, threadId, rec);
+      }
+    }
 
     const sent = await mailTranscript(env, threadId, rec);
     if (sent) {
@@ -254,6 +293,97 @@ export async function sweepIdle(env: ChatLogEnv, now: number): Promise<void> {
   }
 }
 
+/* --------------------------- meta generation --------------------------- *
+ * A short title, a summary and a handful of topic tags, produced once per
+ * thread from its transcript. Title rides along in the history list;
+ * summary and tags exist purely so the owner can later see, in aggregate,
+ * what people are actually asking about — they are never returned to a
+ * client (see getThreadFor) and only ever appear in the transcript email
+ * and the KV record itself.
+ * ------------------------------------------------------------------------- */
+
+const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
+/** The fast model is plenty for a title/summary/tags extraction. */
+const META_MODEL = "gemini-3.6-flash";
+/** Plenty of transcript to work from without paying for the whole 200-turn cap. */
+const META_TRANSCRIPT_CHARS = 8_000;
+
+const META_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    title: { type: "STRING", description: "A short, specific name for this conversation, 3-6 words." },
+    summary: {
+      type: "STRING",
+      description: "A 1-3 sentence summary, in the third person, of what the user asked and what they learned.",
+    },
+    tags: {
+      type: "ARRAY",
+      items: { type: "STRING" },
+      description: "3-6 short, lowercase topic tags (e.g. a type code, a theme, a feature area).",
+    },
+  },
+  required: ["title", "summary", "tags"],
+};
+
+/** Best-effort — returns null on any failure, never throws. */
+async function generateMeta(env: ChatLogEnv, rec: ChatLogRecord): Promise<ChatMeta | null> {
+  if (!env.GEMINI_API_KEY) return null;
+  const transcript = rec.turns
+    .map((t) => `${t.role === "user" ? "User" : "Assistant"}: ${t.text}`)
+    .join("\n")
+    .slice(0, META_TRANSCRIPT_CHARS);
+  if (!transcript.trim()) return null;
+
+  try {
+    const res = await fetch(`${GEMINI_ENDPOINT}/${META_MODEL}:generateContent`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+      body: JSON.stringify({
+        contents: [{
+          role: "user",
+          parts: [{ text: `Transcript of a chat session:\n\n${transcript}` }],
+        }],
+        systemInstruction: {
+          parts: [{
+            text: "You label chat transcripts for internal analytics. Respond only with the requested JSON.",
+          }],
+        },
+        generationConfig: {
+          temperature: 0.2,
+          responseMimeType: "application/json",
+          responseSchema: META_SCHEMA,
+        },
+      }),
+    });
+    if (!res.ok) {
+      console.error(`chatlog: meta ${res.status}`, await res.text().catch(() => ""));
+      return null;
+    }
+    const body = (await res.json()) as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+    };
+    const raw = body.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+    const parsed = JSON.parse(raw) as Partial<ChatMeta>;
+    if (
+      typeof parsed.title !== "string" || !parsed.title.trim() ||
+      typeof parsed.summary !== "string" || !parsed.summary.trim() ||
+      !Array.isArray(parsed.tags)
+    ) {
+      return null;
+    }
+    return {
+      title: parsed.title.trim().slice(0, 80),
+      summary: parsed.summary.trim().slice(0, 600),
+      tags: parsed.tags.filter((t): t is string => typeof t === "string" && t.trim().length > 0)
+        .map((t) => t.trim().toLowerCase().slice(0, 40))
+        .slice(0, 8),
+    };
+  } catch {
+    console.error("chatlog: network failure generating meta");
+    return null;
+  }
+}
+
 /* ------------------------------- email ------------------------------- */
 
 const when = (ms: number) => new Date(ms).toISOString().replace("T", " ").slice(0, 16) + " UTC";
@@ -264,9 +394,10 @@ async function mailTranscript(env: ChatLogEnv, threadId: string, rec: ChatLogRec
   if (!to) return false;
 
   const who = rec.who.email ? `${rec.who.email} (${rec.who.kind})` : `${rec.who.label} (invite code)`;
+  const title = rec.meta?.title || `${rec.turns.length}-turn conversation`;
 
   const text = [
-    `Octant chat transcript`,
+    `Octant chat transcript — ${title}`,
     ``,
     `Who:      ${who}`,
     `Started:  ${when(rec.started)}`,
@@ -274,18 +405,22 @@ async function mailTranscript(env: ChatLogEnv, threadId: string, rec: ChatLogRec
     `Screens:  ${rec.contexts.join(" → ") || "—"}`,
     `Agent:    ${rec.ua ?? "—"}`,
     `Thread:   ${threadId}`,
+    ...(rec.meta ? [``, `Summary:  ${rec.meta.summary}`, `Tags:     ${rec.meta.tags.join(", ")}`] : []),
     ``,
     ...rec.turns.map((t) => `[${t.role === "user" ? "USER" : "OCTANT"}] ${t.text}\n`),
   ].join("\n");
 
   const html = `
 <div style="font:400 15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1714;max-width:640px">
-  <p style="font:600 19px/1.3 Georgia,serif;margin:0 0 12px">Chat transcript — ${escapeHtml(rec.who.email ?? rec.who.label)}</p>
+  <p style="font:600 19px/1.3 Georgia,serif;margin:0 0 12px">${escapeHtml(title)}</p>
   <div style="border:1px solid #E3DED4;border-radius:8px;padding:12px 16px;margin-bottom:20px;color:#4C463D;font-size:14px">
     <b>Who:</b> ${escapeHtml(who)} &middot; <b>Started:</b> ${when(rec.started)} &middot;
     <b>Ended:</b> ${when(rec.updated)}<br>
     <b>Screens:</b> ${escapeHtml(rec.contexts.join(" → ") || "—")}<br>
     <b>Agent:</b> ${escapeHtml(rec.ua ?? "—")} &middot; <b>Thread:</b> ${escapeHtml(threadId)}
+    ${rec.meta ? `
+    <br><b>Summary:</b> ${escapeHtml(rec.meta.summary)}
+    <br><b>Tags:</b> ${rec.meta.tags.map((t) => escapeHtml(t)).join(", ")}` : ""}
   </div>
   ${rec.turns.map((t) => `
   <div style="margin-bottom:14px">
@@ -306,7 +441,7 @@ async function mailTranscript(env: ChatLogEnv, threadId: string, rec: ChatLogRec
       body: JSON.stringify({
         from: env.NOTIFY_FROM || DEFAULT_FROM,
         to: [to],
-        subject: `Octant chat — ${rec.who.email ?? rec.who.label} · ${rec.turns.length} turns`,
+        subject: `Octant chat — ${title} · ${rec.who.email ?? rec.who.label}`,
         html,
         text,
       }),

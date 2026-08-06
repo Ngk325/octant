@@ -273,3 +273,95 @@ describe("history", () => {
     expect(await getThreadFor(ENV, intruder, "thread-hist-0007")).toBeNull();
   });
 });
+
+describe("meta — title, summary, tags", () => {
+  const geminiOk = (meta: { title: string; summary: string; tags: string[] }) => () =>
+    new Response(JSON.stringify({
+      candidates: [{ content: { parts: [{ text: JSON.stringify(meta) }] } }],
+    }), { status: 200 });
+
+  /** Routes to Resend or Gemini by URL, so both can be exercised in one test. */
+  function stubBoth(gemini: () => Response) {
+    vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
+      if (url.includes("generativelanguage.googleapis.com")) return gemini();
+      sent.push({ body: JSON.parse(String(init?.body)) });
+      return respond();
+    });
+  }
+
+  it("generates title/summary/tags once and includes them in the email only", async () => {
+    stubBoth(geminiOk({ title: "ENTP vs INFJ fit", summary: "Asked how the pair holds up under stress.", tags: ["ENTP", "INFJ", "pair"] }));
+    const env = { ...ENV, GEMINI_API_KEY: "g_test" };
+
+    await recordExchange(env, "thread-meta-0001", WHO, "pair ENTP·INFJ", "how do we fit?", "here is how", NOW);
+    await endSession(env, "thread-meta-0001", NOW + 1000);
+
+    const rec = record("thread-meta-0001");
+    expect(rec.meta).toEqual({
+      title: "ENTP vs INFJ fit",
+      summary: "Asked how the pair holds up under stress.",
+      tags: ["entp", "infj", "pair"],
+    });
+
+    const mail = sent[0].body;
+    expect(String(mail.subject)).toContain("ENTP vs INFJ fit");
+    expect(String(mail.text)).toContain("Summary:  Asked how the pair holds up under stress.");
+    expect(String(mail.text)).toContain("Tags:     entp, infj, pair");
+    expect(String(mail.html)).toContain("Asked how the pair holds up under stress.");
+  });
+
+  it("never sends summary or tags back to a client asking for its own thread", async () => {
+    stubBoth(geminiOk({ title: "A short title", summary: "Private internal summary.", tags: ["secret-tag"] }));
+    const env = { ...ENV, GEMINI_API_KEY: "g_test" };
+
+    await recordExchange(env, "thread-meta-0002", WHO, "x", "q", "a", NOW);
+    await endSession(env, "thread-meta-0002", NOW);
+
+    const forClient = await getThreadFor(env, WHO, "thread-meta-0002");
+    expect(forClient?.meta?.title).toBe("A short title");
+    expect(forClient?.meta?.summary).toBe("");
+    expect(forClient?.meta?.tags).toEqual([]);
+
+    // The title alone is fine to surface in the history list.
+    const history = await listThreads(env, WHO);
+    expect(history[0].preview).toBe("A short title");
+  });
+
+  it("is a no-op without a Gemini key, and never blocks mailing", async () => {
+    await recordExchange(ENV, "thread-meta-0003", WHO, "x", "q", "a", NOW);
+    await endSession(ENV, "thread-meta-0003", NOW);
+    expect(record("thread-meta-0003").meta).toBeUndefined();
+    expect(sent).toHaveLength(1);
+  });
+
+  it("degrades to no meta on a bad Gemini response, without failing the session", async () => {
+    stubBoth(() => new Response("nope", { status: 500 }));
+    const env = { ...ENV, GEMINI_API_KEY: "g_test" };
+
+    await recordExchange(env, "thread-meta-0004", WHO, "x", "q", "a", NOW);
+    await endSession(env, "thread-meta-0004", NOW);
+
+    expect(record("thread-meta-0004").meta).toBeUndefined();
+    expect(record("thread-meta-0004").mailed).toBe(NOW);
+    expect(sent).toHaveLength(1);
+  });
+
+  it("does not regenerate meta on a later, idempotent call", async () => {
+    let calls = 0;
+    stubBoth(() => {
+      calls++;
+      return geminiOk({ title: "Once", summary: "s", tags: ["t"] })();
+    });
+    const env = { ...ENV, GEMINI_API_KEY: "g_test" };
+
+    await recordExchange(env, "thread-meta-0005", WHO, "x", "q", "a", NOW);
+    respond = () => new Response("nope", { status: 403 }); // mail fails, meta should still stick
+    await endSession(env, "thread-meta-0005", NOW);
+    expect(calls).toBe(1);
+    expect(record("thread-meta-0005").meta?.title).toBe("Once");
+
+    respond = () => new Response("{}", { status: 200 });
+    await endSession(env, "thread-meta-0005", NOW + 1000);
+    expect(calls).toBe(1); // meta was already there — not regenerated
+  });
+});
