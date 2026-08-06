@@ -78,7 +78,7 @@ export const SIDE_PLAIN: Record<string, string> = {
   ego: "Who you are on an ordinary day.",
   subconscious: "Who you wish you were. Behind your biggest insecurity.",
   unconscious: "Who you become in a crisis. Behind your worry.",
-  superego: "Who you are at your worst. Behind your fear — best left shut.",
+  superego: "Usually who you are at your worst. Behind your fear — but it's also the one side built for real power, once it's earned last instead of taken first.",
 };
 
 /** The sixteen relations, in one sentence each, no jargon. */

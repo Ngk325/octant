@@ -58,6 +58,7 @@ not smuggle back the jargon it exists to replace.
 | `/read-someone` | The same instrument for typing someone else: six ordinary things to ask or notice in conversation, none of them naming the axis they test. Scores through the same `calculate()` as the calculator. |
 | `/types` | All sixteen at a glance, grouped by quadra or temperament. |
 | `/type/:type` | The eight slots, all four sides, the exchange overlay with its subtype coins, growth gate, the Octagram wheel and theme grid, behavioural profile, and what each function wants. |
+| `/sides` · `/sides/:type` | The field guide the type reader only summarises: how to assess, enter, operate, avoid and interact with each of the four sides, worked per-function where it matters — heaviest on the superego, where the developed pole is easiest to lose sight of. |
 | `/pair/:a/:b` | Relation, **both** directional ease scores, and the composed playbook. Shareable URL. |
 | `/network` | The reason this is software and not a spreadsheet: group as a weighted digraph. |
 | `/matrix` | All 256 cells, colour-scaled, every cell a link into the pair reader. |

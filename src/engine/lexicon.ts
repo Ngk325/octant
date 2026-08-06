@@ -443,9 +443,9 @@ const CONCEPTS: Draft[] = [
     seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego"] }),
 
   E({ id: "superego", term: "Superego", category: "Concept",
-    short: "Your shadow reversed. Who you are at your worst, and where the sins live.",
+    short: "Your shadow reversed. Usually who you are at your worst — but not only that.",
     definition:
-      "Its Lead is your Dread — the single function you trust least, running the show. That is exactly why the superego reads as a parasite persona rather than as you: it is competent, it is confident, and none of it is yours. The gateway is fear. It produces power, and the material is blunt that the power is destructive until the other three sides have been developed first. The Octagram's Deadly Sins are described as this side overriding the ego's stated values.",
+      "Its Lead is your Dread — the single function you trust least, running the show. That is exactly why the superego reads as a parasite persona rather than as you: it is competent, it is confident, and none of it is yours. The gateway is fear. It produces power, and the material is blunt that the power is destructive until the other three sides have been developed first — roughly ninety-five percent of it, by the material's own accounting. Developed last, deliberately, and only after the other three sides are, the same power becomes usable on purpose rather than a tripwire; left undeveloped it stays the parasite persona, with an ambition of its own to replace the ego rather than serve it. The Octagram's Deadly Sins are described as this side overriding the ego's stated values.",
     inSystem: "fourSides(t)[3]. Derived by beta — swap element only. relation(t, superego) is always SE.",
     seeAlso: ["four-sides", "demon", "rel-se", "deadly-sin", "unconscious"] }),
 

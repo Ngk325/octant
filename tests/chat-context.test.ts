@@ -19,9 +19,11 @@ describe("what the UI sends, accepted verbatim", () => {
       { kind: "catalogue", sortBy: "quadra" },
       { kind: "learn", stage: 3, title: "The eight functions" },
       { kind: "type", type: "ENTP" },
+      { kind: "sides", type: "ENTP" },
       { kind: "pair", a: "ENTP", b: "INFJ" },
       { kind: "network", members: [{ name: "Ana", type: "ISTJ" }] },
       { kind: "lexicon", term: "gateway" }, { kind: "lexicon" },
+      { kind: "guide", type: "ENTP" }, { kind: "guide" },
       { kind: "calculator", best: "ENFP" }, { kind: "calculator", best: null },
       { kind: "read", best: "ENFP" }, { kind: "read", best: null },
     ]) {
@@ -45,9 +47,11 @@ describe("what a crafted caller sends, refused or defused", () => {
     // parseContext(null→400) is what stands between "XXXX" and the TypeError
     // that used to escape typeFacts as a bare 500.
     expect(parseContext({ kind: "type", type: "XXXX" })).toBeNull();
+    expect(parseContext({ kind: "sides", type: "XXXX" })).toBeNull();
     expect(parseContext({ kind: "pair", a: "ENTP", b: "GOD" })).toBeNull();
     expect(parseContext({ kind: "calculator", best: "ABCD" })).toBeNull();
     expect(parseContext({ kind: "read", best: "ABCD" })).toBeNull();
+    expect(parseContext({ kind: "guide", type: "XXXX" })).toBeNull();
     expect(parseContext({ kind: "network", members: [{ name: "x", type: "NOPE" }] })).toBeNull();
   });
 
