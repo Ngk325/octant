@@ -362,13 +362,19 @@ const CONCEPTS: Draft[] = [
     short: "The two functions a type actually uses well — one observer, one decider.",
     definition:
       "The anchor pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary current. The attitude-flipped counterparts are the flinches. Named from the other side of a relation, the same two pairs get two more names: someone whose leading function lands on your anchor is your mobilising function, and someone whose leading function lands on your flinch is your vulnerable function.",
-    seeAlso: ["demon-animal", "animal", "dual-lighting", "rel-ac", "rel-sr", "rel-sv"] }),
+    seeAlso: ["flinch", "demon-animal", "animal", "dual-lighting", "rel-ac", "rel-sr", "rel-sv"] }),
+  E({ id: "flinch", term: "Flinch", category: "Concept",
+    short: "The two functions a type distrusts and defends — one observer, one decider, opposite the Anchors.",
+    definition:
+      "The flinch pair is the anchor pair with both attitudes flipped — the same two positions, one perceiving and one judging, always landing on Delight and Cave. Nervous and performative where the anchors are obvious and easy: criticism of a flinch lands hard, criticism of an anchor shrugs off. Together the two flinches form the last current. Named from the other side of a relation, someone whose leading function lands on your flinch is your vulnerable function.",
+    inSystem: "Shown as the right-hand column of the exchange overlay's grid, opposite the Anchors.",
+    seeAlso: ["savior", "demon-animal", "child", "inferior", "rel-sr", "rel-sv"] }),
   E({ id: "demon-animal", term: "Last current", category: "Concept",
     short: "The double-demon loop: the energy pattern a type is worst at sustaining.",
     definition:
       "Formed from the attitude-flips of both anchors. Because the anchors always run opposite attitudes, the last current is always Absorb or Broadcast — never a middle one — which is why every xxxP type ends on Broadcast and every xxxJ type ends on Absorb.",
     inSystem: "Rendered as the open circuit in the wiring schematic.",
-    seeAlso: ["savior", "animal", "dual-lighting"] }),
+    seeAlso: ["savior", "flinch", "animal", "dual-lighting"] }),
   E({ id: "four-sides", term: "Four Sides of the Mind", category: "Concept",
     short: "Ego, Subconscious, Unconscious and Superego — four whole types inside one person.",
     definition:

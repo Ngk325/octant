@@ -9,7 +9,7 @@ export interface Edge {
 }
 /**
  * What a group looks like as a weighted digraph: mean ease, the extreme edges,
- * supervision chains, and the best single addition.
+ * Examiner chains, and the best single addition.
  */
 export interface NetworkReport {
   edges: Edge[];
@@ -49,7 +49,7 @@ export function analyse(members: Member[]): NetworkReport {
 
   const supervisionChains = edges
     .filter((e) => e.code === "SV")
-    .map((e) => `${e.to.name} (${e.to.type}) supervises ${e.from.name} (${e.from.type})`);
+    .map((e) => `${e.to.name} (${e.to.type}) examines ${e.from.name} (${e.from.type})`);
 
   const suggestions = members.length
     ? TYPES.map((t) => {

@@ -280,6 +280,7 @@ export const PLAIN_BY_ID: Record<string, string> = {
      concept entirely from the entry it was attached to. */
   "dual-lighting": "This app carries two accounts of where you grow, and they disagree about one slot. Rather than split the difference and print a number neither account would recognise, it shows you both and says which is which.",
   savior: CONCEPT_PLAIN.savior,
+  flinch: CONCEPT_PLAIN.demon,
   "demon-animal": "The current you use least. You can do it — it just costs you, so you avoid it and then resent needing it.",
   "four-sides": "You are four types, not one: the everyday you, the one you wish you were, the one who shows up in a crisis, and the one at your worst.",
   ego: CONCEPT_PLAIN.ego,

@@ -17,7 +17,7 @@ const REL_TERM: Record<SideKey, { id: string; label: string } | null> = {
   ego: null,
   subconscious: { id: "rel-du", label: "Counterpart" },
   unconscious: { id: "rel-ex", label: "Damper" },
-  superego: { id: "rel-se", label: "Super-Ego" },
+  superego: { id: "rel-se", label: "Standoff" },
 };
 
 /**

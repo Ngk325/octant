@@ -30,9 +30,9 @@ export interface SoloRomance {
   animalDoes: string;
   cave: Fn;
   fear: string;
-  /** This type's Dual — the type whose Lead lands exactly on its Cave. */
+  /** This type's Counterpart — the type whose Lead lands exactly on its Cave. */
   dual: MbtiType;
-  /** This type's Activity partner — one move off the Cave, a lighter version. */
+  /** This type's Spark partner — one move off the Cave, a lighter version. */
   activity: MbtiType;
   text: string;
 }
@@ -52,7 +52,7 @@ export function soloRomance(t: MbtiType): SoloRomance {
     `${t} leads with ${lead}. In romance this moves as ${animalLabel} energy: ${animalDoes} ` +
     `The real vulnerability sits at the Cave (${cave}) — the structural fear behind it is ` +
     `${fear.toLowerCase()}. A partner whose own Lead is ${cave} meets that most directly: ` +
-    `that is ${dual}, this type's Dual. ${activity} (its Activity partner) supplies a lighter, ` +
+    `that is ${dual}, this type's Counterpart. ${activity} (its Spark partner) supplies a lighter, ` +
     `less exact version of the same relief.`;
 
   return { lead, animal: animalLabel, animalDoes, cave, fear, dual, activity, text };

@@ -170,7 +170,7 @@ export default function PairReader() {
           It is not a defect in either.
           They answer different questions: the survey measures who people say they get on with,
           and this app measures how the wiring meshes. People report liking people like
-          themselves, so Identity pairs top the survey while the model rates them mid-table; and
+          themselves, so Twin pairs top the survey while the model rates them mid-table; and
           Counterpart pairs, which the model rates highest, sit near the bottom of the survey.
         </p>
         <p className="small muted" style={{ marginBottom: 0 }}>

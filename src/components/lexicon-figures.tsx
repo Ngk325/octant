@@ -121,6 +121,10 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
 
   savior: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
 
+  /* Same grid as `savior` — the Flinches are its right-hand column, not a
+     separate structure, so there is nothing to draw differently. */
+  flinch: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
+
   /* Reuses the same grid as `savior`, but the two Demon cells are the
      entry's whole point ONLY once they resolve to the single current named
      in its definition — the grid alone leaves them as two separate facts.

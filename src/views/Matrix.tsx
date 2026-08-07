@@ -10,7 +10,7 @@ import DivergingEase from "../components/DivergingEase";
 import { Panel, Row } from "../components/Bits";
 
 /**
- * The worked asymmetry, drawn above the grid. A supervision pair, which is
+ * The worked asymmetry, drawn above the grid. An Examiner/Examined pair, which is
  * where the two directions diverge most widely — every number and both
  * relation names are read from the engine, so the example cannot drift away
  * from the grid it is introducing.
@@ -34,7 +34,7 @@ export default function Matrix() {
       >
         <p>
           Row is the target, column the perspective, value is ease for the row type. The grid is
-          deliberately not symmetric: supervision and benefit run one way, so cell (a, b) and
+          deliberately not symmetric: Examiner/Examined and Upstream/Downstream run one way, so cell (a, b) and
           cell (b, a) genuinely differ for four of the sixteen relations.
         </p>
       </Explain>
