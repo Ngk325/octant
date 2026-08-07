@@ -120,7 +120,7 @@ becoming wallpaper.
 
 ## The catalogue
 
-Status: ✅ shipped · ◐ exists but needs work · ○ nothing
+Status: ✅ shipped · ◐ exists but needs work · ○ nothing · ✗ retired, will not be built
 
 ### Functions — the eight elements
 
@@ -192,7 +192,7 @@ Status: ✅ shipped · ◐ exists but needs work · ○ nothing
 | Hearth · Forge · Market · Field | ◐ | `QuadraFunctionGrid` is a table. **Needed:** four places, each instantly a different kind of room — and their adjacency, which is real and currently invisible |
 | Systems · Meaning · Order · Contact | ○ | **Needed.** Four organising principles |
 | Directs · Navigates · Rallies · Steadies | ○ | **Needed.** Four ways of moving a group — postures, not icons |
-| Playful · Caring · Pursuing · Pursued | ○ | **Needed.** Two complementary pairs. Warm, never clinical, never a verdict |
+| ~~Playful · Caring · Pursuing · Pursued~~ | ✗ | **Retired.** This was the rename table for a borrowed four-box romance-archetype system (Infantile/Caregiver/Aggressor/Victim). PR #31 removed that system outright rather than relabel it — it was another system's vocabulary wired in as this app's own. Romance is now a derived reading (`src/engine/romance.ts`, Anchor · Flinch row above already covers what it draws from); nothing to draw here |
 
 ### The Rose
 

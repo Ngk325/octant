@@ -193,6 +193,16 @@ Collective: **camp**.
 
 ### Romance styles
 
+> **Superseded — not built.** This table proposed renaming the four labels
+> below in place. Instead, PR #31 ("Replace the borrowed Romance Style
+> archetypes with a derived reading") removed the whole static system: a
+> fixed per-type field is exactly the kind of borrowed vocabulary §10 exists
+> to keep out, relabelled or not. Romance is now `src/engine/romance.ts` —
+> a reading derived from the Cave, the Complement/Catalyst mechanics and the
+> Animal, the same way everything else in this model is derived rather than
+> assigned. The table stays as the record of what was proposed and not
+> built.
+
 | New | Was |
 |---|---|
 | **Playful** | Infantile |
