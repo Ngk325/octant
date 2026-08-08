@@ -36,8 +36,17 @@ const FAVICON =
     `<circle cx="32" cy="32" r="7" fill="#6B3BC4"/></svg>`,
   );
 
-/** Stripe payment link — Octant Individual, $25 per user / month, quantity adjustable. */
-const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
+/**
+ * Stripe payment link — Octant Individual, $25/month, on the "Octant —
+ * choose your price" product alongside the two flex prices below.
+ *
+ * The original link here (`6oU7sM4Tnd4PdyU1nocfK00`, added 2026-07-27) had
+ * gone dead — confirmed by hand, not just absent from the account: Stripe
+ * serves the identical generic checkout shell whether a link is live,
+ * deactivated, or gone, so there is no way to tell from a static fetch.
+ * This one is freshly created and verified via the Stripe API to be active.
+ */
+const STRIPE_LINK = "https://buy.stripe.com/bJe8wRebodIc9fRd0G3Je0f";
 /**
  * Self-serve "choose what works" checkout — two fixed-price Payment Links,
  * not a slider. Stripe's customer-adjustable pricing (`custom_unit_amount`)
