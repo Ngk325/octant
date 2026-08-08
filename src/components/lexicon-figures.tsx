@@ -14,8 +14,9 @@ import OctagramWheel from "./OctagramWheel";
 import ThemeSeasons from "./ThemeSeasons";
 import { wheelOf } from "../engine/octagram";
 import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
-import { type Animal, ANIMAL_LABEL } from "../engine/ops";
+import { ops, type Animal, ANIMAL_LABEL } from "../engine/ops";
 import FnIcon from "./glyphs/FnIcon";
+import AttitudeMark from "./glyphs/AttitudeMark";
 import SelfTribeCone from "./glyphs/SelfTribeCone";
 import AnimalGlyph from "./glyphs/AnimalGlyph";
 import SideDoor from "./glyphs/SideDoor";
@@ -119,7 +120,28 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   },
 
   savior: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
-  "demon-animal": () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
+
+  /* Same grid as `savior` — the Flinches are its right-hand column, not a
+     separate structure, so there is nothing to draw differently. */
+  flinch: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
+
+  /* Reuses the same grid as `savior`, but the two Demon cells are the
+     entry's whole point ONLY once they resolve to the single current named
+     in its definition — the grid alone leaves them as two separate facts.
+     The name is looked up (ops().doubleDemon), never hand-picked, so it
+     cannot disagree with the grid it captions. */
+  "demon-animal": () => {
+    const t: MbtiType = "ENTP";
+    const current = ANIMAL_LABEL[ops(t).doubleDemon];
+    return (
+      <Worked>
+        <SaviorDemonGrid type={t} />
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          Together, the two Flinches ARE the last current: {current}.
+        </p>
+      </Worked>
+    );
+  },
 
   /* Each side of the mind is its door, then the whole path in order. */
   ...Object.fromEntries(
@@ -198,6 +220,31 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
           </div>
         ))}
       </div>
+    </Plain>
+  ),
+
+  /* Initiating/Responding are the switch language's name for extraversion
+     and introversion themselves ("Maps to extraversion" / "...introversion"
+     in the entries' own text) — exactly what AttitudeMark already draws
+     bare, with no function attached. It was built and shipped elsewhere
+     (Guide, Learn, Home, Welcome) but never wired into the lexicon that
+     defines the two poles it depicts. Both entries share the one mark —
+     the concept IS the shared picture — with a caption naming which half
+     is "you" for that entry. */
+  initiating: () => (
+    <Plain>
+      <AttitudeMark size={64} />
+      <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+        You — facing out.
+      </p>
+    </Plain>
+  ),
+  responding: () => (
+    <Plain>
+      <AttitudeMark size={64} />
+      <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+        You — facing in.
+      </p>
     </Plain>
   ),
 
@@ -304,11 +351,19 @@ function sharedBy(label: (t: MbtiType) => string, term: string): ReactNode {
   );
 }
 
-/** The coin poles the glyph language can draw, matching Calculator's set. */
-const COIN_MARKS: Record<string, Fn> = {
-  organize: "Si", gather: "Se",      // the observer's attitude
-  thinking: "Te", feeling: "Fe",     // the decider's element
-  sensing: "Se", intuition: "Ne",    // the observer's element
+/**
+ * The coin poles the glyph language can draw, matching Calculator's set.
+ *
+ * Each pole is an either/or over two functions ("the anchor decider is Te
+ * or Ti") — both are drawn, never one. A single icon here used to pick a
+ * branch the entry's own definition leaves open: Thinking (Te or Ti) drew
+ * only Te, Organize (Ni or Si) drew only Si, and so on for all six. Showing
+ * both is the same move `COIN_FAMILIES` already makes for Observer/Decider.
+ */
+const COIN_MARKS: Record<string, [Fn, Fn]> = {
+  organize: ["Ni", "Si"], gather: ["Ne", "Se"],      // the observer's attitude
+  thinking: ["Te", "Ti"], feeling: ["Fe", "Fi"],     // the decider's element
+  sensing: ["Se", "Si"], intuition: ["Ne", "Ni"],    // the observer's element
 };
 
 /** The two coin poles that are a whole family group rather than one function. */
@@ -367,17 +422,40 @@ export const CATEGORY_FIGURES: Partial<Record<Category, (e: Entry) => ReactNode>
         </Plain>
       );
     }
+    /* Identity (the anchor decider is Ti or Fi) and Tribe (Te or Fe) have
+       the same either/or shape as COIN_MARKS below, but drawn through
+       SelfTribeCone rather than FnIcon — and it mattered more here, since
+       hue carries the entire claim in that glyph. Forcing Fi/Fe alone used
+       to show a rose (F) picture to a reader whose anchor is Ti or Te. */
     if (e.id === "identity" || e.id === "tribe") {
+      const [a, b] = e.id === "identity" ? (["Ti", "Fi"] as const) : (["Te", "Fe"] as const);
       return (
         <Plain>
-          <div style={{ width: 170 }}>
-            <SelfTribeCone fn={e.id === "identity" ? "Fi" : "Fe"} />
+          <div className="cluster" style={{ gap: "var(--s4)" }}>
+            <div style={{ width: 150 }}><SelfTribeCone fn={a} /></div>
+            <div style={{ width: 150 }}><SelfTribeCone fn={b} /></div>
           </div>
+          <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+            {a} or {b} — this pole doesn't determine which.
+          </p>
         </Plain>
       );
     }
-    const fn = COIN_MARKS[e.id];
-    return fn ? <Plain><FnIcon fn={fn} size={56} /></Plain> : null;
+    const fns = COIN_MARKS[e.id];
+    if (!fns) return null;
+    const [a, b] = fns;
+    return (
+      <Plain>
+        <div className="cluster" style={{ gap: "var(--s4)", alignItems: "center" }}>
+          <FnIcon fn={a} size={56} />
+          <span className="small muted">or</span>
+          <FnIcon fn={b} size={56} />
+        </div>
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          {a} or {b} — this pole doesn't determine which.
+        </p>
+      </Plain>
+    );
   },
 
   /* A Function entry leads with its own icon and its self/tribe reading,

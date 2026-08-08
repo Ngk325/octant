@@ -43,7 +43,7 @@ src/learn/      the thirteen-stage course
 Every surface leads with plain English and puts the precise version one click below it, in a
 disclosure labelled *The exact mechanics*. Nothing is hidden from either reader: a newcomer gets
 a sentence they can act on, and can see exactly which vocabulary they are growing into.
-`tests/plain.test.ts` asserts all 103 lexicon entries carry a gloss and that the plain layer does
+`tests/plain.test.ts` asserts all 100 lexicon entries carry a gloss and that the plain layer does
 not smuggle back the jargon it exists to replace.
 
 ## Surfaces

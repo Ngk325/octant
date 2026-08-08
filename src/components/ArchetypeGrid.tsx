@@ -22,8 +22,8 @@ export default function ArchetypeGrid({ type, highlight }: {
 
   const CELLS: { slot: SlotName; idx: number; blurb: string }[] = [
     { slot: "Lead", idx: 0, blurb: "Best at it, sure of it, overruns with it." },
-    { slot: "Delight", idx: 2, blurb: "Delights in it, undefended about it." },
     { slot: "Support", idx: 1, blurb: "Careful with it, responsible for the Lead." },
+    { slot: "Delight", idx: 2, blurb: "Delights in it, undefended about it." },
     { slot: "Cave", idx: 3, blurb: "Afraid of it — and the way through." },
   ];
 

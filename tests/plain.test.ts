@@ -17,8 +17,16 @@ describe("plain language coverage", () => {
     expect(missing.map((e) => e.id)).toEqual([]);
   });
 
-  it("covers all 99 entries", () => {
-    expect(ENTRIES).toHaveLength(99);
+  it("covers all 101 entries", () => {
+    /* 99 -> 100 with `three-quarter-life-crisis`: `unconscious` and
+       `midlife-crisis` both referenced it in prose without it having an
+       entry of its own — the one dangling cross-reference in an otherwise
+       closed reference graph. 100 -> 101 with `flinch`: the overlay's own
+       "Flinches" were used constantly across the app and even quoted inside
+       `savior`'s own definition, but never had an entry of their own — the
+       curriculum's link to them (`demon-fn`) pointed at an id that did not
+       exist. */
+    expect(ENTRIES).toHaveLength(101);
     for (const e of ENTRIES) expect(PLAIN_BY_ID[e.id], e.id).toBeTruthy();
   });
 

@@ -397,7 +397,7 @@ export const STAGES: Stage[] = [
               sides, each side stands in a fixed relation to the ego — your subconscious is
               literally your <Term id="rel-du">Counterpart</Term>, your unconscious your{" "}
               <Term id="rel-ex">Damper</Term> partner, and your superego your{" "}
-              <Term id="rel-se">Super-Ego</Term> partner.
+              <Term id="rel-se">Standoff</Term> partner.
             </p>
           </Explain>
 
@@ -513,17 +513,17 @@ export const STAGES: Stage[] = [
           >
             <p>
               It splits the ego block into two <Term id="savior">anchors</Term> and two{" "}
-              <Term id="demon-fn">demons</Term>. The demons are the axis opposites of the
+              <Term id="flinch">flinches</Term>. The flinches are the axis opposites of the
               anchors, which places them at Delight and Cave — the overlay does not reach
               into the shadow block at all.
             </p>
           </Explain>
 
           <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
-            <Panel title={`Anchors —  and `}>
+            <Panel title={`Anchors — ${o.saviorObs} and ${o.saviorDec}`}>
               <p style={{ fontSize: "var(--t-base)", margin: 0 }}>{CONCEPT_PLAIN.savior}</p>
             </Panel>
-            <Panel title={`Demons — ${o.demonObs} and ${o.demonDec}`}>
+            <Panel title={`Flinches — ${o.demonObs} and ${o.demonDec}`}>
               <p style={{ fontSize: "var(--t-base)", margin: 0 }}>{CONCEPT_PLAIN.demon}</p>
             </Panel>
           </div>
@@ -697,13 +697,13 @@ export const STAGES: Stage[] = [
         >
           <p>
             An n-person group is a weighted directed graph over the ease matrix. The network view
-            reports mean ease, the weakest and strongest directed edges, supervision chains, and
+            reports mean ease, the weakest and strongest directed edges, Examiner chains, and
             which single addition would most raise the mean.
           </p>
         </Explain>
 
         <p>
-          The one to watch for is a <b>supervision chain</b>: an asymmetric edge where one person
+          The one to watch for is an <b>Examiner chain</b>: an asymmetric edge where one person
           keeps landing corrections they do not know they are issuing. It is the most common
           cause of a team where one person is quietly always slightly wrong.
         </p>
@@ -715,7 +715,7 @@ export const STAGES: Stage[] = [
               label="One asymmetric edge, drawn."
               caption={
                 <>
-                  {sup} supervises {t}: the same relationship costs the two of them different
+                  {sup} examines {t}: the same relationship costs the two of them different
                   amounts, and the diverging bars are that fact. In a group view every line
                   carries two of these numbers — the graph is made of edges like this one.
                 </>
@@ -742,7 +742,7 @@ export const STAGES: Stage[] = [
         </p>
       </>
     ),
-    check: "Who in a group you are part of might be on the receiving end of a supervision edge?",
+    check: "Who in a group you are part of might be on the receiving end of an Examiner edge?",
   },
 
   {

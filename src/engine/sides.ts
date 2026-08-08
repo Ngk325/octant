@@ -12,14 +12,14 @@ import { DOM_AUX, SLOT_NAMES, type Fn, type RelCode, type SlotName } from "./dat
  * The derivation is already latent in core.ts: the three involutions
  * that generate the relation table also generate the sides.
  *
- *   Subconscious = omega(d), omega(x)   -> your DUAL
- *   Unconscious  = alpha(d), alpha(x)   -> your EXTINGUISHMENT partner
- *   Superego     = beta(d),  beta(x)    -> your SUPER-EGO partner
+ *   Subconscious = omega(d), omega(x)   -> your COUNTERPART (relation code DU)
+ *   Unconscious  = alpha(d), alpha(x)   -> your DAMPER partner (relation code EX)
+ *   Superego     = beta(d),  beta(x)    -> your STANDOFF partner (relation code SE)
  *
  * That is not a coincidence and it is not decoration. REL_OPS.DU, .EX
  * and .SE in core.ts are literally the same three operators. The four
  * sides are four relations you hold with yourself, which is why the
- * relation named "Super-Ego" and the structural side named "superego"
+ * relation carried by code SE and the structural side named "superego"
  * land on the same type. Asserted in tests/sides.test.ts.
  *
  * Each side's own Lead is the gateway into it:
@@ -272,7 +272,7 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
       "insecure about — and on the other side of that insecurity is happiness.",
     what:
       `Your ego stack turned upside down: ${cave} leads and ${st[0]} sits last. Structurally it is ` +
-      "your Dual — the type whose wiring completes yours — which is why it is both the most " +
+      "your Counterpart — the type whose wiring completes yours — which is why it is both the most " +
       "restful side and the hardest to get to.",
     blockedBy: `Insecurity. Specifically the fear ${CAVE_INSECURITY[cave]}.`,
     opensWith:
@@ -310,7 +310,7 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
       "you worry about instead of around it, and what it pays out is wisdom.",
     what:
       `The shadow four in their own order: ${doubt} Lead, ${st[5]} Support, ${st[6]} Delight, ` +
-      `${dread} Cave. Structurally it is your Extinguishment partner — same functions as the ` +
+      `${dread} Cave. Structurally it is your Damper partner — same functions as the ` +
       "ego, every attitude flipped.",
     blockedBy: `Worry. The Doubt ${doubt} runs the loop: "${DOUBT_WORRY[doubt]}".`,
     opensWith:
@@ -347,7 +347,7 @@ export function sides(t: MbtiType): Record<SideKey, Side> {
       "trust least, and it only takes the wheel when the other three have failed.",
     what:
       `The shadow four reversed: your Dread ${dread} is this side's LEAD. Structurally it is your ` +
-      "Super-Ego partner — the relation the system already rates as fascinating at distance and " +
+      "Standoff partner — the relation the system already rates as fascinating at distance and " +
       "abrasive up close. Here it is not another person. It is you.",
     blockedBy: `Fear and anxiety, which is appropriate. The Dread ${dread}, ungoverned: ${DREAD_FEAR[dread]}.`,
     opensWith:

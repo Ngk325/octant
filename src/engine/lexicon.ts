@@ -2,7 +2,7 @@ import { alpha, beta, omega, quadra, gate, stack, type MbtiType } from "./core";
 import { ops, coins, ANIMAL_LABEL } from "./ops";
 import { PLAIN_BY_ID } from "./plain";
 import {
-  REL_NAME, REL_DEF, REL_SCORE, FN_FULL, COIN_LABELS,
+  REL_NAME, REL_DEF, REL_SCORE, RECIPROCAL, FN_FULL, COIN_LABELS,
   INTERACTION_STYLE, GROUP, type Fn, type RelCode,
 } from "./data";
 
@@ -97,16 +97,19 @@ const ARCHETYPES: Draft[] = [
     short: "Slot 1. The function you are best at and most identified with.",
     definition:
       "The apex of the conscious stack: fastest, most confident, least effortful, and the one you would name if asked what you are good at. It operates optimistically and with awareness, which is exactly what makes it dangerous — it will keep going long after it should have stopped, because from the inside its competence feels total. The Support exists to brake it.",
+    inSystem: "Its shadow mirror, the Doubt, is the same function attitude-flipped — the same operation every front/back pair in the stack shares.",
     seeAlso: ["parent", "ego", "inferior"] }),
   E({ id: "parent", term: "Support", category: "Archetype",
     short: "Slot 2. The responsible, pessimistic filter that keeps the Lead from doing damage.",
     definition:
       "Conscious and aware like the Lead, but cautious where the Lead is expansive. The Support takes responsibility for consequences — it prunes, verifies and protects, including protecting other people from the Lead's momentum. It is the function you use when you are being careful on someone else's behalf, and it is tiring in a way the Lead is not.",
+    inSystem: "Its shadow mirror, the Scold, is the same function attitude-flipped.",
     seeAlso: ["hero", "child", "ego"] }),
   E({ id: "child", term: "Delight", category: "Archetype",
     short: "Slot 3. Playful, sincere, and easily wounded. The most direct way in.",
     definition:
       "Conscious but unaware — used with genuine delight and no maturity requirement. The Delight is where a person is most charming and least defended, which makes it the best point of contact and the cruellest place to attack. Engage someone here and they open; mock them here and the shutter comes down for good.",
+    inSystem: "Its shadow mirror, the Blind spot, is the same function attitude-flipped.",
     seeAlso: ["parent", "inferior", "ego"] }),
   E({ id: "inferior", term: "Cave", category: "Archetype",
     short: "Slot 4. The fear. Also the doorway to everything the type is not yet.",
@@ -124,6 +127,7 @@ const ARCHETYPES: Draft[] = [
     short: "Slot 6. The senile elder. Analytical, harsh, demands proof of everything.",
     definition:
       "Shadow, aware, pessimistic. The Scold is where a person is most cuttingly evaluative of both themselves and others, and where they demand a standard of verification they would never apply to their Lead. It carries real discernment and terrible delivery.",
+    inSystem: "Its shadow mirror is the Support — the same function attitude-flipped.",
     seeAlso: ["parent", "shadow"] }),
   E({ id: "trickster", term: "Blind spot", category: "Archetype",
     short: "Slot 7. The blind spot you are confident you do not have.",
@@ -135,6 +139,7 @@ const ARCHETYPES: Draft[] = [
     short: "Slot 8. The lowest position. Emerges as destruction when the ego is genuinely threatened.",
     definition:
       "Shadow, unaware, pessimistic. Almost never visible, and when it appears the person is not being difficult — they are past the point of strategy. The Dread disregards every norm of its own function and operates from resentment. Cornering someone into it does not win the exchange; it ends the relationship.",
+    inSystem: "Its shadow mirror is the Cave — the same function attitude-flipped.",
     seeAlso: ["trickster", "shadow", "inferior"] }),
 ];
 
@@ -149,22 +154,25 @@ const QUADRAS: Draft[] = [
     short: "Ne · Si · Ti · Fe. Open enquiry inside a comfortable, unhierarchical group.",
     definition:
       "ENTP, INTP, ESFJ, ISFJ. Ideas are floated for their own sake and nothing is off the table for discussion, but the emotional temperature of the group must stay warm — Fe holds the room while Ti takes the argument apart. Comfort, continuity and possibility are values; power, urgency and confrontation are not. Alpha groups generate a great deal and finish comparatively little.",
-    inSystem: "Quadra membership is derived from the four functions in the ego block.",
+    inSystem: "Quadra membership is derived from the four functions in the ego block. Shares Ne/Si with Delta and Ti/Fe with Beta; shares nothing with Gamma, its opposite.",
     seeAlso: ["quadra", "gamma", "ne", "ti"] }),
   E({ id: "beta", term: "Beta", category: "Quadra",
     short: "Se · Ni · Ti · Fe. Conviction, hierarchy and intensity in the service of a vision.",
     definition:
       "ESTP, ISTP, ENFJ, INFJ. Beta reads the world as a place where force and belief decide outcomes: Ni supplies a single compelling reading of the future, Se acts on it now, Fe mobilises people around it. Loyalty, decisiveness and dramatic commitment are valued; detachment and hedging read as weakness. Beta groups cohere hard and can close to outsiders.",
+    inSystem: "Quadra membership is derived from the four functions in the ego block. Shares Ti/Fe with Alpha and Se/Ni with Gamma; shares nothing with Delta, its opposite.",
     seeAlso: ["quadra", "delta", "se", "ni"] }),
   E({ id: "gamma", term: "Gamma", category: "Quadra",
     short: "Se · Ni · Te · Fi. Results, self-reliance, and loyalty earned rather than assumed.",
     definition:
       "ENTJ, INTJ, ESFP, ISFP. Gamma trusts what performs and what a person actually values, not what a group declares: Te measures, Fi judges privately, and neither defers to consensus. Long-horizon ambition sits beside blunt present-tense realism. Gamma groups are small, candid and unsentimental about people who do not deliver.",
+    inSystem: "Quadra membership is derived from the four functions in the ego block. Shares Se/Ni with Beta and Te/Fi with Delta; shares nothing with Alpha, its opposite.",
     seeAlso: ["quadra", "alpha", "te", "fi"] }),
   E({ id: "delta", term: "Delta", category: "Quadra",
     short: "Ne · Si · Te · Fi. Competence, craft and quiet improvement of something that already works.",
     definition:
       "ENFP, INFP, ESTJ, ISTJ. Delta wants the work done properly by people who care about it: Si supplies standards, Te supplies method, Fi supplies the reason it matters, Ne keeps it from ossifying. Drama and hierarchy are unwelcome; sustained practical care is the highest value. Delta groups are durable and can be slow to admit when the thing they maintain has stopped being worth maintaining.",
+    inSystem: "Quadra membership is derived from the four functions in the ego block. Shares Te/Fi with Gamma and Ne/Si with Alpha; shares nothing with Beta, its opposite.",
     seeAlso: ["quadra", "beta", "si", "te"] }),
 ];
 
@@ -173,25 +181,25 @@ const ANIMALS: Draft[] = [
   E({ id: "play", term: "Charge", category: "Animal",
     short: "Both functions extraverted. Intake and output at once — the social, high-throughput current.",
     definition:
-      "Everything pointed outward: gathering from the world and acting on it in the same motion. Charge is the current of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain.",
+      "Everything pointed outward: gathering from the world and acting on it in the same motion. Charge is the current of engagement, appetite and visible activity. It is energising in bursts and depleting to sustain. Its characteristic failure is mistaking motion for progress: everything is engaged at once and nothing is finished, because stopping to consolidate feels like losing the current.",
     inSystem: "Always a middle current in this build. Its ordering against Settle is the deferred fine-switch layer.",
     seeAlso: ["sleep", "animal", "fine-coins"] }),
   E({ id: "blast", term: "Broadcast", category: "Animal",
     short: "Introverted observing + extraverted deciding. Directive, convergent, outcome-driven.",
     definition:
-      "Energy that goes inward to read and outward to act. Broadcast forms a private conclusion and then moves the world to match it — the current of decisions announced and executed. It is the fastest route from perception to result and the least tolerant of open questions.",
+      "Energy that goes inward to read and outward to act. Broadcast forms a private conclusion and then moves the world to match it — the current of decisions announced and executed. It is the fastest route from perception to result and the least tolerant of open questions. Its characteristic failure is announcing before the read has actually settled — moving the world to match a private conclusion that arrived faster than the evidence did.",
     inSystem: "Every xxxJ type is Broadcast-primary; every xxxP type has Broadcast as its last current.",
     seeAlso: ["play", "animal", "demon-animal"] }),
   E({ id: "consume", term: "Absorb", category: "Animal",
     short: "Extraverted observing + introverted deciding. Interactive, exploratory, low-stakes.",
     definition:
-      "Energy that goes outward to gather and inward to judge. Absorb engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the current most comfortable with an unfinished situation.",
+      "Energy that goes outward to gather and inward to judge. Absorb engages the world for interest rather than outcome — trying things, seeing what happens, working out privately what it means. It is sociable without being directive, and it is the current most comfortable with an unfinished situation. Its characteristic failure is staying interactive past the point where a decision was actually available, mistaking continued exploration for continued options.",
     inSystem: "Every xxxP type is Absorb-primary; every xxxJ type has Absorb as its last current.",
     seeAlso: ["blast", "animal", "savior"] }),
   E({ id: "sleep", term: "Settle", category: "Animal",
     short: "Both functions introverted. Withdrawal into private processing.",
     definition:
-      "Everything pointed inward: observing internally and deciding internally, with no external limb. Settle is where a person integrates, recovers and works things out unobserved. Starved of it, the other currents degrade.",
+      "Everything pointed inward: observing internally and deciding internally, with no external limb. Settle is where a person integrates, recovers and works things out unobserved. Starved of it, the other currents degrade. Its characteristic failure is withdrawal mistaken for resolution — time alone that never actually closes the loop it opened.",
     inSystem: "Always a middle current in this build. Its ordering against Charge is deferred.",
     seeAlso: ["play", "animal", "fine-coins"] }),
 ];
@@ -230,21 +238,25 @@ const GATES: Draft[] = [
     short: "IxxJ. Fear of the unplanned. Opens onto freedom.",
     definition:
       "Held by INTJ, INFJ, ISTJ and ISFJ, whose Cave is Se or Ne. The type organises life so that nothing arrives unprepared for, and experiences the unforeseen as a threat to competence rather than as ordinary weather. Surrendering some control — acting without the plan finished, letting an unproven possibility stand — is what converts the fear into adaptability.",
+    inSystem: "gate(t) keys on the first and last letters only: every IxxJ type, regardless of the middle two. Its axis opposite, flipping both letters, is the Gate of Obligation.",
     seeAlso: ["inferior", "gate-of-obligation", "se", "ne"] }),
   E({ id: "gate-of-obligation", term: "Gate of Obligation", category: "Gate",
     short: "ExxP. Fear of being tied down. Opens onto legacy.",
     definition:
       "Held by ENTP, ENFP, ESTP and ESFP, whose Cave is Si or Ni. The type keeps options open and exits available, and experiences commitment as a narrowing rather than a deepening. Deliberately binding yourself to one line and staying past the point where it stops being interesting is what converts the fear into something that compounds.",
+    inSystem: "gate(t) keys on the first and last letters only: every ExxP type. Its axis opposite, flipping both letters, is the Gate of Chaos.",
     seeAlso: ["inferior", "gate-of-chaos", "si", "ni"] }),
   E({ id: "gate-of-the-tribe", term: "Gate of the Tribe", category: "Gate",
     short: "IxxP. Fear of the group's verdict. Opens onto leadership.",
     definition:
       "Held by INTP, INFP, ISTP and ISFP, whose Cave is Fe or Te. The type keeps its work private rather than risk it being judged inadequate in public, and mistakes the avoidance for preference. Stepping onto the stage — letting the model land with people, being measured externally — is what converts the fear into influence.",
+    inSystem: "gate(t) keys on the first and last letters only: every IxxP type. Its axis opposite, flipping both letters, is the Gate of the Self.",
     seeAlso: ["inferior", "gate-of-the-self", "fe", "te"] }),
   E({ id: "gate-of-the-self", term: "Gate of the Self", category: "Gate",
     short: "ExxJ. Fear of the empty interior. Opens onto authenticity.",
     definition:
       "Held by ENTJ, ENFJ, ESTJ and ESFJ, whose Cave is Fi or Ti. The type stays in motion partly to avoid finding out whether there is anything underneath the achievement, and reads unstructured solitude as waste. Sitting alone in the dark long enough to locate what is actually valued is what converts the fear into a self worth being.",
+    inSystem: "gate(t) keys on the first and last letters only: every ExxJ type. Its axis opposite, flipping both letters, is the Gate of the Tribe.",
     seeAlso: ["inferior", "gate-of-the-tribe", "fi", "ti"] }),
 ];
 
@@ -253,18 +265,22 @@ const TEMPERAMENTS: Draft[] = [
   E({ id: "nt", term: "Systems (NT)", category: "Temperament",
     short: "Competence. Wants to understand the system well enough to command it.",
     definition: "ENTP, INTP, ENTJ, INTJ. Organised around mastery and models: the point of a thing is to understand its mechanism well enough to predict or command it. Status is conferred by being right and by knowing why, and competence is assumed until disproved. Impatient with claims that cannot be defended, and with process observed for its own sake.",
+    inSystem: "Derived from the N and T letters alone — independent of E/I and J/P, the axes the other three temperaments split on instead.",
     seeAlso: ["nf", "sj", "sp"] }),
   E({ id: "nf", term: "Meaning (NF)", category: "Temperament",
     short: "Meaning. Wants people and work to be authentic to something.",
     definition: "ENFP, INFP, ENFJ, INFJ. Organised around significance and human potential: work is worth doing if it means something and if it leaves people better than it found them. Status is conferred by integrity rather than output. Impatient with the merely procedural, and with competence deployed toward nothing in particular.",
+    inSystem: "Derived from the N and F letters alone — independent of E/I and J/P.",
     seeAlso: ["nt", "sj", "sp"] }),
   E({ id: "sj", term: "Order (SJ)", category: "Temperament",
     short: "Stewardship. Wants the thing to keep working after everyone goes home.",
     definition: "ESTJ, ISTJ, ESFJ, ISFJ. Organised around duty and continuity: someone has to keep the thing running, and that someone is reasonably assumed to be you. Status is conferred by reliability over time rather than by brilliance. Impatient with novelty that has not proven itself and with people who leave the clearing-up to others.",
+    inSystem: "Derived from the S and J letters alone — sensing temperaments split on J/P rather than T/F, unlike the two above.",
     seeAlso: ["sp", "nt", "nf"] }),
   E({ id: "sp", term: "Contact (SP)", category: "Temperament",
     short: "Effect. Wants contact with the real thing, now.",
     definition: "ESTP, ISTP, ESFP, ISFP. Organised around action and skill: contact with the real material, now, done well. Status is conferred by visible capability under live conditions rather than by credential or plan. Impatient with abstraction that never touches ground, and with meetings held about work instead of work.",
+    inSystem: "Derived from the S and P letters alone — sensing temperaments split on J/P rather than T/F, unlike the two above.",
     seeAlso: ["sj", "nt", "nf"] }),
 ];
 
@@ -303,11 +319,18 @@ const COIN_POLES: [string, string, string, string][] = [
   ["movement", "Movement", "Optimises for continued progress.",
    "Keeps things moving and repairs later. A derived coin: true when Initiating and Direct disagree."],
 ];
-const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) =>
-  E({ id, term, category: "Coin", short, definition,
+const COINS_E: Draft[] = COIN_POLES.map(([id, term, short, definition], i) => {
+  /* Every generated coin pole used to carry the identical seeAlso, so no
+     pole linked to the other pole of its own switch (Observer never
+     pointed at Decider) despite the pairing already existing — COIN_POLES
+     is laid out in consecutive pairs, the same structure pairTerms()'s own
+     Coin case already reads. */
+  const opposite = COIN_POLES[i % 2 === 0 ? i + 1 : i - 1][0];
+  return E({ id, term, category: "Coin", short, definition,
       inSystem: `Coin ${Math.floor(i / 2) + 1} — ${COIN_LABELS[Math.floor(i / 2)]}. ` +
         ([0, 2, 3, 4].includes(Math.floor(i / 2)) ? "Determining." : "Confirming: derivable from the determining switches."),
-      seeAlso: ["coin", "savior"] }));
+      seeAlso: ["coin", "savior", opposite] });
+});
 
 /* ══════════════════════════════ CONCEPTS ══════════════════════════════ */
 const CONCEPTS: Draft[] = [
@@ -322,13 +345,13 @@ const CONCEPTS: Draft[] = [
     definition:
       "Your Doubt is your Lead's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Doubt.",
     inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Damper and False fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
-    seeAlso: ["complement", "nemesis", "rel-ex", "rel-mi"] }),
+    seeAlso: ["complement", "nemesis", "rel-ex", "rel-mg"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
     short: "A 0–100 modelling score for how one type experiences another. Directional.",
     definition:
       "A ladder over the sixteen relations, monotone in structural comfort. It is a modelling choice rather than a measurement, and it is deliberately directional: four relations are asymmetric, so the score one person gives is not the score they receive. Any single 'compatibility number' for a pair is concealing that.",
     inSystem: "Derived from the relation code, never stored separately, so the two cannot disagree.",
-    seeAlso: ["rel-sr", "rel-be", "relation"] }),
+    seeAlso: ["rel-sr", "rel-sv", "rel-br", "rel-be", "relation"] }),
   E({ id: "dual-lighting", term: "The two readings", category: "Concept",
     short: "Holding the two growth readings unreconciled, because they disagree.",
     definition:
@@ -338,14 +361,20 @@ const CONCEPTS: Draft[] = [
   E({ id: "savior", term: "Anchor", category: "Concept",
     short: "The two functions a type actually uses well — one observer, one decider.",
     definition:
-      "The anchor pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary current. The attitude-flipped counterparts are the flinches.",
-    seeAlso: ["demon-animal", "animal", "dual-lighting"] }),
+      "The anchor pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary current. The attitude-flipped counterparts are the flinches. Named from the other side of a relation, the same two pairs get two more names: someone whose leading function lands on your anchor is your mobilising function, and someone whose leading function lands on your flinch is your vulnerable function.",
+    seeAlso: ["flinch", "demon-animal", "animal", "dual-lighting", "rel-ac", "rel-sr", "rel-sv"] }),
+  E({ id: "flinch", term: "Flinch", category: "Concept",
+    short: "The two functions a type distrusts and defends — one observer, one decider, opposite the Anchors.",
+    definition:
+      "The flinch pair is the anchor pair with both attitudes flipped — the same two positions, one perceiving and one judging, always landing on Delight and Cave. Nervous and performative where the anchors are obvious and easy: criticism of a flinch lands hard, criticism of an anchor shrugs off. Together the two flinches form the last current. Named from the other side of a relation, someone whose leading function lands on your flinch is your vulnerable function.",
+    inSystem: "Shown as the right-hand column of the exchange overlay's grid, opposite the Anchors.",
+    seeAlso: ["savior", "demon-animal", "child", "inferior", "rel-sr", "rel-sv"] }),
   E({ id: "demon-animal", term: "Last current", category: "Concept",
     short: "The double-demon loop: the energy pattern a type is worst at sustaining.",
     definition:
       "Formed from the attitude-flips of both anchors. Because the anchors always run opposite attitudes, the last current is always Absorb or Broadcast — never a middle one — which is why every xxxP type ends on Broadcast and every xxxJ type ends on Absorb.",
     inSystem: "Rendered as the open circuit in the wiring schematic.",
-    seeAlso: ["savior", "animal", "dual-lighting"] }),
+    seeAlso: ["savior", "flinch", "animal", "dual-lighting"] }),
   E({ id: "four-sides", term: "Four Sides of the Mind", category: "Concept",
     short: "Ego, Subconscious, Unconscious and Superego — four whole types inside one person.",
     definition:
@@ -383,7 +412,7 @@ const CONCEPTS: Draft[] = [
     short: "One of sixteen structural relationships between two types.",
     definition:
       "Derived from how two stack maps overlay. Twelve are symmetric and four — Examiner/Examined and Upstream/Downstream — are asymmetric, meaning the relationship is genuinely different from each side.",
-    seeAlso: ["ease", "stack-map", "rel-du", "rel-cf"] }),
+    seeAlso: ["ease", "stack-map", "rel-sr", "rel-sv", "rel-br", "rel-be"] }),
   E({ id: "gate", term: "Growth gate", category: "Concept",
     short: "The structural fear a type is built around, and what integrating it unlocks.",
     definition:
@@ -412,7 +441,7 @@ const CONCEPTS: Draft[] = [
     definition:
       "Its Lead is your Doubt, and its stack runs Doubt, Scold, Blind spot, Dread. Access is through worry rather than choice, which is why it shows up under pressure without being invited. Developed deliberately it produces wisdom and a kind of maturity available no other way; left alone it gets forced later — the three-quarter-life crisis is this side arriving whether or not you went looking for it.",
     inSystem: "fourSides(t)[2]. Derived by alpha — flip attitude only. relation(t, unconscious) is always EX.",
-    seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego"] }),
+    seeAlso: ["four-sides", "nemesis", "rel-ex", "subconscious", "superego", "three-quarter-life-crisis"] }),
 
   E({ id: "superego", term: "Superego", category: "Concept",
     short: "Your shadow reversed. Usually who you are at your worst — but not only that.",
@@ -426,7 +455,14 @@ const CONCEPTS: Draft[] = [
     definition:
       "Described as arriving roughly between 38 and 48: the ego's usual moves keep working externally and stop landing internally, and the pressure is the subconscious demanding to be lived rather than admired. Read structurally it is not a breakdown but a deadline. The same mechanism arrives later for the unconscious, as the three-quarter-life crisis. The whole point of doing gateway work early is that both can be walked through instead of waited for.",
     inSystem: "Not computed — it is the narrative consequence of leaving the subconscious undeveloped.",
-    seeAlso: ["subconscious", "inferior", "gate", "octagram-theme"] }),
+    seeAlso: ["subconscious", "unconscious", "three-quarter-life-crisis", "inferior", "gate", "octagram-theme"] }),
+
+  E({ id: "three-quarter-life-crisis", term: "Three-quarter-life crisis", category: "Concept",
+    short: "The same forcing as the midlife crisis, arriving later, for the unconscious.",
+    definition:
+      "The mechanism that names the midlife crisis, one side further out: where that one forces the subconscious into the open, this one forces the unconscious — the shadow four in their own order, not just the worst-case flashes they produce under stress. It runs on no fixed schedule and carries no equivalent cultural name, which does not make it lighter, only less recognised while it is happening.",
+    inSystem: "Not computed — the narrative consequence of leaving the unconscious undeveloped, the same way midlife-crisis is the consequence for the subconscious.",
+    seeAlso: ["unconscious", "midlife-crisis", "gate"] }),
 
   /* ── the Octagram. The most advanced material the app carries. Each entry
      says which parts this engine derives and which are authored, because the
@@ -454,7 +490,7 @@ const CONCEPTS: Draft[] = [
       "Eight wheels, two per temple. At the centre is the Cognitive Origin — the thing this dyad wants. Directly above is the Living Virtue, the honest route to it, which characteristically involves giving somebody else some of what you want. Directly below is the Deadly Sin, the counterfeit: easier to reach, resembles the origin, and leaves you hungrier. To either side are the two poles, which are not good and bad but two different distortions — the drift of a childhood that fed you and the drift of one that did not.",
     inSystem:
       "A wheel is a Counterpart pair, so wheelOf(t).pair is always [t, subconscious(t)]. Both members share one origin. The four contents are authored from source; the membership is computed.",
-    seeAlso: ["cognitive-origin", "living-virtue", "deadly-sin", "shadow-pole", "rel-du"] }),
+    seeAlso: ["cognitive-origin", "living-virtue", "deadly-sin", "aspirational-pole", "shadow-pole", "rel-du"] }),
 
   E({ id: "cognitive-origin", term: "Cognitive origin", category: "Concept",
     short: "The one thing a dyad has been after its whole life. Eight of them.",
@@ -515,10 +551,10 @@ const CONCEPTS: Draft[] = [
 
 /* ══════════════════════════════ RELATIONS ══════════════════════════════ */
 const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
-  DU: "The lowest-friction pairing available. Your Cave is their Lead and their Cave is yours, so each covers the other's fear without effort or resentment. Duals often report that nothing in particular is happening and that it is restful anyway.",
+  DU: "The lowest-friction pairing available. Your Cave is their Lead and their Cave is yours, so each covers the other's fear without effort or resentment. Counterpart pairs often report that nothing in particular is happening and that it is restful anyway.",
   AC: "Fast to warm and genuinely energising, because each feeds the other's mobilising function. Sustained without breaks it becomes tiring in a way neither party can quite name.",
-  HD: "Shares the dual's base channel but not its creative one. Comfortable and slightly incomplete: fine until the half you do not share is the half the situation needs.",
-  MG: "Shares the dual's creative channel only. Relaxing, playful and slightly unserious — good company, poor co-execution.",
+  HD: "Shares the Counterpart's base channel but not its creative one. Comfortable and slightly incomplete: fine until the half you do not share is the half the situation needs.",
+  MG: "Shares the Counterpart's creative channel only. Relaxing, playful and slightly unserious — good company, poor co-execution.",
   ID: "Instant mutual legibility and perfectly shared blind spots. Nobody covers the gap, and neither party can see that there is one.",
   MI: "The same two functions in opposite order. Complete agreement about what matters, permanent argument about sequence and emphasis.",
   KD: "The same leading function, different second. You perceive the world identically and then do incompatible things with it, which is more disorienting than outright disagreement.",
@@ -532,14 +568,57 @@ const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
   SE: "Your ego block lands on their super-ego block — the positions they are conscious of being bad at. You are effortlessly demonstrating the exact competence they feel judged for lacking, and they are doing the same to you. At distance this reads as impressive and intriguing; in sustained contact it reads as a standing rebuke neither of you intended.",
   CF: "Their leading function lands on your most defended weakness and yours on theirs. Maximum friction, and usually mutual bafflement about why.",
 };
-const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) =>
-  E({ id: `rel-${c.toLowerCase()}`, term: REL_NAME[c], category: "Relation",
-     short: REL_DEF[c].split(".")[0] + ".",
+/**
+ * One real sentence per relation, matching the density of every other
+ * `short` field in the file. The derivation this replaced —
+ * `REL_DEF[c].split(".")[0] + "."` — sliced wherever the first period in
+ * `REL_DEF`'s prose happened to land, producing wildly uneven results
+ * ("Partial completion." / "Same wiring." next to a real fourteen-word
+ * sentence for DU) purely as an artifact of sentence length, not editorial
+ * judgment.
+ */
+const RELATION_SHORT: Record<RelCode, string> = {
+  DU: "Your weak functions are their strong ones, and the reverse — the lowest-friction pairing there is.",
+  AC: "Each of you feeds the other's mobilising function — fast to warm, tiring without breaks.",
+  HD: "Shares your Counterpart's base channel but not the creative one — comfortable, and slightly incomplete.",
+  MG: "Shares your Counterpart's creative channel only — relaxing and playful, poor for joint execution.",
+  ID: "The same wiring. Instant mutual understanding, and blind spots neither of you can see.",
+  MI: "The same two functions, opposite order — agreement on what matters, friction over sequence.",
+  KD: "The same leading function, a different second — you see alike and then diverge.",
+  BU: "The same second function, different leads — easy to work alongside, harder to get close to.",
+  BR: "Their leading function lands on your mobilising function — you find them compelling, and it is not quite returned.",
+  BE: "Your leading function lands on their mobilising function — they orbit you more than you orbit them.",
+  SR: "Their leading function lands on your vulnerable function — casual remarks land as verdicts.",
+  SV: "Your leading function lands on their vulnerable function — you can flatten them without noticing.",
+  QI: "The same elements, every position rearranged — you look alike and arrive by different routes.",
+  EX: "The same functions, every attitude flipped — a constant near-miss between what's said and meant.",
+  SE: "Your ego lands on their superego, and the reverse — impressive at a distance, a rebuke up close.",
+  CF: "Their leading function lands on your most defended weakness, and the reverse — maximum friction.",
+};
+
+const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) => {
+  /* Every generated relation used to carry the identical seeAlso — no
+     relation linked to its own reciprocal (rel-sr <-> rel-sv) despite
+     RECIPROCAL existing for exactly this, and none linked back to the
+     Concepts that are explicitly built from specific codes (Complement
+     from DU/AC, Catalyst from EX/MG, the Anchor's mobilising/vulnerable
+     language from AC/BR/BE/SR/SV). Computed here, not hand-authored, so it
+     cannot go asymmetric the way the C1-C5 fixes in this file had to
+     correct by hand. */
+  const seeAlso = ["relation", "ease", "stack-map"];
+  if (RECIPROCAL[c] !== c) seeAlso.push(`rel-${RECIPROCAL[c].toLowerCase()}`);
+  if (c === "DU" || c === "AC") seeAlso.push("complement");
+  if (c === "EX" || c === "MG") seeAlso.push("catalyst");
+  if (c === "AC" || c === "BR" || c === "BE" || c === "SR" || c === "SV") seeAlso.push("savior");
+
+  return E({ id: `rel-${c.toLowerCase()}`, term: REL_NAME[c], category: "Relation",
+     short: RELATION_SHORT[c],
      definition: RELATION_EXTRA[c] ?? REL_DEF[c],
      inSystem: `Code ${c}. Ease ${REL_SCORE[c]}/100. ${
        c === "SR" || c === "SV" || c === "BR" || c === "BE"
          ? "Asymmetric — the reciprocal relation is different." : "Symmetric."}`,
-     seeAlso: ["relation", "ease", "stack-map"] }));
+     seeAlso });
+});
 
 const DRAFTS: Draft[] = [
   ...FUNCTIONS, ...ARCHETYPES, ...QUADRAS, ...ANIMALS,

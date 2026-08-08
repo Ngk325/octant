@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { TYPES, quadra, gate, stack, type MbtiType } from "../src/engine/core";
 import { ops, coins, ANIMAL_LABEL, type Animal } from "../src/engine/ops";
-import { GROUP, INTERACTION_STYLE, DOM_AUX } from "../src/engine/data";
-import { ENTRIES, BY_ID, type Entry } from "../src/engine/lexicon";
+import { GROUP, INTERACTION_STYLE, DOM_AUX, REL_NAME, RECIPROCAL, type RelCode } from "../src/engine/data";
+import { ENTRIES, BY_ID, pairTerms, type Entry } from "../src/engine/lexicon";
 
 /* ------------------------------------------------------------------ *
  * THE LEXICON, HELD TO THE ENGINE.
@@ -196,6 +196,34 @@ describe("the lexicon is internally sound", () => {
     for (const t of TYPES) {
       const du = TYPES.find((x) => quadra(x) !== undefined && stack(t)[3] === DOM_AUX[x][0]);
       expect(du, `${t}'s cave ${stack(t)[3]} is somebody's lead`).toBeDefined();
+    }
+  });
+
+  /* Every generated Relation/Coin entry used to carry an identical,
+     category-wide seeAlso, so none of the 16 relations linked to its own
+     reciprocal (rel-sr <-> rel-sv) and none of the 16 coin poles linked to
+     its own opposite pole, despite both pairings already being computable.
+     Locked here so the computed seeAlso in lexicon.ts's RELATIONS/COINS_E
+     builders can't quietly go back to being identical lists. */
+  it("every relation names its reciprocal in seeAlso", () => {
+    for (const c of Object.keys(REL_NAME) as RelCode[]) {
+      if (RECIPROCAL[c] === c) continue; // symmetric — no distinct reciprocal to name
+      const id = `rel-${c.toLowerCase()}`;
+      const reciprocalId = `rel-${RECIPROCAL[c].toLowerCase()}`;
+      expect(entry(id).seeAlso, `${id} names its reciprocal ${reciprocalId}`).toContain(reciprocalId);
+    }
+  });
+
+  it("every coin pole names its opposite pole in seeAlso", () => {
+    const coinEntries = ENTRIES.filter((e) => e.category === "Coin");
+    for (const e of coinEntries) {
+      const opposite = coinEntries.find((o) => {
+        if (o.id === e.id) return false;
+        const p = pairTerms(e.id, o.id);
+        return p?.headline.includes("against") ?? false;
+      });
+      expect(opposite, `${e.id} has a discoverable opposite pole`).toBeDefined();
+      expect(e.seeAlso, `${e.id} names its opposite pole ${opposite!.id}`).toContain(opposite!.id);
     }
   });
 });

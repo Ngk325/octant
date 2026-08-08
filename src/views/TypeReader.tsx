@@ -323,7 +323,7 @@ export default function TypeReader() {
           relation table. Which is why each side stands in a fixed relation to the ego: the
           subconscious is your <Term id="rel-du">Counterpart</Term>, the unconscious your{" "}
           <Term id="rel-ex">Damper</Term> partner, and the superego your{" "}
-          <Term id="rel-se">Super-Ego</Term> partner. The relation and the structural side land on
+          <Term id="rel-se">Standoff</Term> partner. The relation and the structural side land on
           the same type because they are the same operator.
         </p>
       </Explain>
@@ -778,7 +778,7 @@ export default function TypeReader() {
         </Panel>
         <Panel title="Frictions — hard work">
           <p className="small">
-            Conflict and Super-Ego. Their strongest move lands on your most defended spot. Not
+            Headwind and Standoff. Their strongest move lands on your most defended spot. Not
             enemies — just expensive.
           </p>
           <Links list={frictions(t)} from={t} />

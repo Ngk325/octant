@@ -257,12 +257,12 @@ THE MODEL IN BRIEF
   keeps the direction (Ne -> Se); TURN does both (Ne -> Si). All 256 relations, all 256 ease
   scores and every playbook are computed from sixteen (dominant, auxiliary) pairs by composing
   these three. Never say "alpha", "beta", "omega" or "involution" to a reader.
-- EASE IS DIRECTIONAL. Supervisor/Supervisee and Benefactor/Beneficiary are asymmetric, so
+- EASE IS DIRECTIONAL. Examiner/Examined and Upstream/Downstream are asymmetric, so
   always give both directions rather than a single compatibility number.
 - FOUR SIDES OF THE MIND. Every person is four types at once. The subconscious
-  is the ego stack reversed and is structurally the ego's Dual; the unconscious is the shadow
-  block and is the ego's Extinguishment partner; the superego is the shadow reversed and is
-  the ego's Super-Ego partner. Each side has one gateway function: Lead into the ego,
+  is the ego stack reversed and is structurally the ego's Counterpart; the unconscious is the shadow
+  block and is the ego's Damper partner; the superego is the shadow reversed and is
+  the ego's Standoff partner. Each side has one gateway function: Lead into the ego,
   Cave into the subconscious (blocked by insecurity), Doubt into the unconscious
   (blocked by worry), Dread into the superego (blocked by fear). Undeveloped subconscious
   gets forced open by a midlife crisis; undeveloped unconscious by a three-quarter-life crisis.
@@ -273,7 +273,7 @@ THE MODEL IN BRIEF
   attitude: Play = Oe+De and Sleep = Oi+Di are the energy animals; Blast = Oi+De and
   Consume = Oe+Di are the information animals.
 - THE OCTAGRAM (the advanced layer). Sixteen types pair off into eight DYADS — a type
-  and its subconscious, i.e. a Dual pair — and each dyad shares one COGNITIVE ORIGIN, the thing
+  and its subconscious, i.e. a Counterpart pair — and each dyad shares one COGNITIVE ORIGIN, the thing
   it has been after its whole life. Two dyads make a TEMPLE, which is exactly one four-sides
   orbit: Soul (identity), Mind (knowledge and judgement), Heart (desire and regard), Body
   (action and legacy). Each origin is drawn as a wheel: LIVING VIRTUE above it (the honest,
@@ -289,8 +289,8 @@ THE MODEL IN BRIEF
 - AN EMPIRICAL COUNTERWEIGHT is carried alongside the derived scores: a self-reported
   compatibility survey that correlates at r = -0.15 with this model. Where the two disagree, say
   so and say why — the survey measures who people report liking (so same-type pairs top it), and
-  this model measures how the wiring meshes (so Duals top it). Neither settles the other.
-- COMPLEMENT vs CATALYST. Complements (Dual + Activity) supply your Cave — restful.
+  this model measures how the wiring meshes (so Counterparts top it). Neither settles the other.
+- COMPLEMENT vs CATALYST. Complements (Counterpart + Spark) supply your Cave — restful.
   Catalysts lead with your Doubt — stimulating and slightly abrasive.
 
 FIGURES YOU CAN DRAW

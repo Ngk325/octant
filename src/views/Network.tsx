@@ -47,7 +47,7 @@ export default function Network() {
       >
         <p>
           An n-person group is a weighted directed graph over the ease matrix. This view reports
-          mean ease, the weakest and strongest directed edges, any supervision chains, and which
+          mean ease, the weakest and strongest directed edges, any Examiner chains, and which
           single addition would most raise the mean across all sixteen candidates.
         </p>
       </Explain>
@@ -182,10 +182,10 @@ export default function Network() {
 
       <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
         <Panel title="Who is quietly always slightly wrong">
-          <Explain plain="A supervision link is one-way: one person keeps landing corrections they have no idea they are issuing, and the other keeps absorbing verdicts that were never meant as verdicts. It is the single most common cause of one person in a group feeling permanently in the doghouse.">
+          <Explain plain="An Examiner-Examined link is one-way: one person keeps landing corrections they have no idea they are issuing, and the other keeps absorbing verdicts that were never meant as verdicts. It is the single most common cause of one person in a group feeling permanently in the doghouse.">
             <p style={{ margin: 0 }}>
               Examination is asymmetric and invisible from the Examiner&rsquo;s side: their Lead
-              lands on the supervisee&rsquo;s vulnerable function.
+              lands on the Examined&rsquo;s vulnerable function.
             </p>
           </Explain>
 

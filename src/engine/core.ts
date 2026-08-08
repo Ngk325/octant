@@ -102,7 +102,7 @@ export const ease = (target: MbtiType, perspective: MbtiType): number =>
   REL_SCORE[REL[target][perspective]];
 
 /**
- * The two types that supply this one's Cave — its Dual and its Activity
+ * The two types that supply this one's Cave — its Counterpart and its Spark
  * partner. Restful company: effortlessly good at the thing you are afraid of.
  */
 export const complements = (t: MbtiType): MbtiType[] =>
@@ -114,7 +114,7 @@ export const frictions = (t: MbtiType): MbtiType[] =>
 
 /**
  * The two types whose Lead is your Doubt function.
- * Always resolves to your Extinguishment and Mirage partners, because both are
+ * Always resolves to your Damper and False fit partners, because both are
  * built from alpha(dominant) -- which is exactly slot 5. Where Complements supply
  * the function you FEAR, Catalysts supply the one you are consciously reaching
  * for and reflexively arguing with: stimulating rather than restful.

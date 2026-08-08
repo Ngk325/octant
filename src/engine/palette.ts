@@ -54,10 +54,22 @@ export const FN_GLOW: Record<Theme, Record<Fn, string>> = {
   },
 };
 
-/** Per-theme quadra colours, also contrast-checked as text. */
+/**
+ * Per-theme quadra colours, also contrast-checked as text.
+ *
+ * A quadra is not one of the four elements, so it gets no element hue — the
+ * first version of this table quietly disagreed with its own grammar,
+ * assigning each quadra the exact hex of one function (Alpha=Ne's violet,
+ * Beta=Fe's rose, Gamma=Te's teal, Delta=Se's amber). A reader taught "hue
+ * means element" would read Alpha's violet dot as an N claim; it isn't one.
+ * These are four steps of the same warm-neutral ink family used for text
+ * chrome elsewhere (--ink/--ink-2/--muted), not a fifth semantic hue —
+ * identity here, deliberately, rides on the label and the row's own
+ * function-coloured FnTags, not on colour alone.
+ */
 export const QUADRA_COLOR: Record<Theme, Record<string, string>> = {
-  light: { Alpha: "#6B3BC4", Beta: "#AE3355", Gamma: "#0D6560", Delta: "#8A5410" },
-  dark: { Alpha: "#C9A0FF", Beta: "#FF8FB0", Gamma: "#5FE0D6", Delta: "#FFC15E" },
+  light: { Alpha: "#241F19", Beta: "#3D362C", Gamma: "#564D3F", Delta: "#6F6353" },
+  dark: { Alpha: "#E4DFD5", Beta: "#CBC3B4", Gamma: "#B2A890", Delta: "#998D74" },
 };
 
 /* ------------------------------- ease ------------------------------- */

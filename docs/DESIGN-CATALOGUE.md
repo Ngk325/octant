@@ -30,6 +30,18 @@ grey where it helps.
 > Relation, Temperament, Romance, Interaction and Gate categories, and a
 > pinned undrawn set of exactly eight entries (two Concepts, six Coins).
 > The onboarding shipped at eight screens, not the six specified below.
+>
+> **Recount, 2026-08-06:** the 103 above was itself already off by four —
+> the true count at that point was 99, asserted in `tests/plain.test.ts`.
+> A lexicon review pass since then fixed a severe placement bug in
+> `ArchetypeGrid` (Support and Delight were silently swapped across two
+> axes for 8 entries), fixed 8 Coin/Concept figures that drew only one
+> branch of an either/or definition, fixed a quadra-colour/function-hue
+> collision, wired the already-built `AttitudeMark` into `initiating` and
+> `responding`, and added the one entry (`three-quarter-life-crisis`) that
+> was referenced in prose but never defined. Current ground truth: 100
+> lexicon entries, a pinned undrawn set of seven (three Concepts, four
+> Coins).
 
 Roughly twenty good diagrams ship, but they live on the type, pair and
 learn pages. Open the lexicon — the place a confused reader goes — and
@@ -108,7 +120,7 @@ becoming wallpaper.
 
 ## The catalogue
 
-Status: ✅ shipped · ◐ exists but needs work · ○ nothing
+Status: ✅ shipped · ◐ exists but needs work · ○ nothing · ✗ retired, will not be built
 
 ### Functions — the eight elements
 
@@ -180,7 +192,7 @@ Status: ✅ shipped · ◐ exists but needs work · ○ nothing
 | Hearth · Forge · Market · Field | ◐ | `QuadraFunctionGrid` is a table. **Needed:** four places, each instantly a different kind of room — and their adjacency, which is real and currently invisible |
 | Systems · Meaning · Order · Contact | ○ | **Needed.** Four organising principles |
 | Directs · Navigates · Rallies · Steadies | ○ | **Needed.** Four ways of moving a group — postures, not icons |
-| Playful · Caring · Pursuing · Pursued | ○ | **Needed.** Two complementary pairs. Warm, never clinical, never a verdict |
+| ~~Playful · Caring · Pursuing · Pursued~~ | ✗ | **Retired.** This was the rename table for a borrowed four-box romance-archetype system (Infantile/Caregiver/Aggressor/Victim). PR #31 removed that system outright rather than relabel it — it was another system's vocabulary wired in as this app's own. Romance is now a derived reading (`src/engine/romance.ts`, Anchor · Flinch row above already covers what it draws from); nothing to draw here |
 
 ### The Rose
 
