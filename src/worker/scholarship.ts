@@ -1,7 +1,6 @@
 import { escapeHtml } from "./html";
 import { normalise, type UserEnv } from "./users";
 import { notifyOwnerOfScholarship, type NotifyEnv } from "./notify";
-import { FLEX_STRIPE_LINK_15, FLEX_STRIPE_LINK_20 } from "./marketing";
 
 /* ------------------------------------------------------------------ *
  * THE FREE SCHOLARSHIP — "nobody is turned away for lack of funds."
@@ -102,13 +101,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 interface Values { name: string; email: string; country: string; reason: string }
 const EMPTY: Values = { name: "", email: "", country: "", reason: "" };
 
-/**
- * Step 0 is the deal, not the application: most people who click through
- * from the pricing page just need a lower number, not a conversation. Only
- * declining it — "still not workable" — advances into the four-step
- * application (1–4) that actually reaches the owner.
- */
-type Step = 0 | 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3 | 4;
 
 const clip = (s: string, n: number) => s.slice(0, n);
 
@@ -121,7 +114,7 @@ function readValues(form: FormData): Values {
   };
 }
 
-/** The one field (or set of fields) each step actually owns. Step 0 owns nothing to validate. */
+/** The one field (or set of fields) each step actually owns. */
 function validateStep(step: Step, v: Values): string | null {
   if (step === 1) {
     if (!v.name) return "Enter your name.";
@@ -132,7 +125,7 @@ function validateStep(step: Step, v: Values): string | null {
   return null;
 }
 
-const clampStep = (n: number): Step => (n === 1 || n === 2 || n === 3 || n === 4 ? n : 0);
+const clampStep = (n: number): Step => (n === 2 || n === 3 || n === 4 ? n : 1);
 
 /* Best-effort, per-isolate brake — see auth.ts's `failures` map for the same
    posture. This form has no session and nothing else stopping a script from
@@ -156,49 +149,7 @@ function recordSubmission(ip: string, now: number): void {
 const hidden = (name: string, value: string) =>
   `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`;
 
-/**
- * The deal, before anything else. `intent=next` here just advances to step
- * 1 — there is nothing on this screen to validate — so it reuses the same
- * POST handler as every other step rather than a separate route.
- */
-function renderGate(origin: string, error?: string): string {
-  return SHELL(
-    "Octant — options if $25/month isn't workable",
-    "Choose your own price starting at $15/month, instantly, or apply for a free scholarship " +
-      "reviewed personally by the owner.",
-    origin,
-    `
-    <h1>If $25 isn&rsquo;t workable</h1>
-    <p>You don&rsquo;t need to ask first. Pick a lower price and it&rsquo;s instant — no
-    application, no waiting.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <a class="btn primary" href="${escapeHtml(FLEX_STRIPE_LINK_15)}" style="flex:1 1 0;text-align:center;min-width:11rem">
-        $15/mo →
-      </a>
-      <a class="btn primary" href="${escapeHtml(FLEX_STRIPE_LINK_20)}" style="flex:1 1 0;text-align:center;min-width:11rem">
-        $20/mo →
-      </a>
-    </div>
-    <p class="small" style="font:400 15px/1.6 system-ui,sans-serif;color:var(--ink2);margin:14px 0 0">
-      After checkout, sign in with Google using the same email — access unlocks automatically.
-    </p>
-    <form method="POST" action="/apply" style="margin-top:32px;padding-top:28px;border-top:1px solid var(--rule)">
-      <input type="hidden" name="step" value="0">
-      <p style="margin:0 0 14px">Still not workable? Nobody is turned away from Octant for lack of
-      funds — apply and it&rsquo;s read personally, no script involved.</p>
-      ${error ? `<p class="msg">${escapeHtml(error)}</p>` : ""}
-      <div class="nav">
-        <span></span>
-        <button type="submit" name="intent" value="next" class="btn">Apply for a free scholarship →</button>
-      </div>
-    </form>
-    <p class="fine">Have a code or an approved account? <a href="/signin">Sign in</a>.</p>`,
-  );
-}
-
 function renderStep(step: Step, v: Values, origin: string, error?: string): string {
-  if (step === 0) return renderGate(origin, error);
-
   const dots = ([1, 2, 3, 4] as const)
     .map((n) => `<span class="dot${n <= step ? " on" : ""}"></span>`).join("");
 
@@ -233,9 +184,7 @@ function renderStep(step: Step, v: Values, origin: string, error?: string): stri
         <div><span class="k">Situation</span><span class="v">${escapeHtml(v.country)}</span></div>
         <div><span class="k">Why</span><span class="v">${escapeHtml(v.reason)}</span></div>
       </div>
-      <p class="fine" style="margin-top:0">This is exactly what the owner will read. Go back to fix anything.
-      Changed your mind? <a href="${escapeHtml(FLEX_STRIPE_LINK_15)}">$15/mo</a> or
-      <a href="${escapeHtml(FLEX_STRIPE_LINK_20)}">$20/mo</a> works instantly — no waiting for a reply.</p>`;
+      <p class="fine" style="margin-top:0">This is exactly what the owner will read. Go back to fix anything.</p>`;
   }
 
   const nextValue = step === 4 ? "submit" : "next";
@@ -256,7 +205,7 @@ function renderStep(step: Step, v: Values, origin: string, error?: string): stri
       ${body}
       ${error ? `<p class="msg">${escapeHtml(error)}</p>` : `<p class="msg"></p>`}
       <div class="nav">
-        <button type="submit" name="intent" value="back" class="btn">← Back</button>
+        ${step > 1 ? `<button type="submit" name="intent" value="back" class="btn">← Back</button>` : "<span></span>"}
         <button type="submit" name="intent" value="${nextValue}" class="btn primary">${nextLabel}</button>
       </div>
     </form>
@@ -289,11 +238,11 @@ export async function handleScholarship(
   if (url.pathname !== "/apply") return null;
   const origin = url.origin;
 
-  if (request.method === "GET") return htmlPage(renderStep(0, EMPTY, origin), 200);
-  if (request.method !== "POST") return htmlPage(renderStep(0, EMPTY, origin), 405);
+  if (request.method === "GET") return htmlPage(renderStep(1, EMPTY, origin), 200);
+  if (request.method !== "POST") return htmlPage(renderStep(1, EMPTY, origin), 405);
 
   const form = await request.formData().catch(() => null);
-  if (!form) return htmlPage(renderStep(0, EMPTY, origin, "That didn't come through. Try again."), 400);
+  if (!form) return htmlPage(renderStep(1, EMPTY, origin, "That didn't come through. Try again."), 400);
 
   const currentStep = clampStep(Number(form.get("step")));
   const intent = form.get("intent") === "back" ? "back"
@@ -301,7 +250,7 @@ export async function handleScholarship(
   const v = readValues(form);
 
   if (intent === "back") {
-    return htmlPage(renderStep(Math.max(0, currentStep - 1) as Step, v, origin), 200);
+    return htmlPage(renderStep(Math.max(1, currentStep - 1) as Step, v, origin), 200);
   }
 
   const error = validateStep(currentStep, v);
