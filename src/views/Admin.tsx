@@ -23,18 +23,6 @@ interface User {
   owner?: boolean;
 }
 
-type SchStatus = "pending" | "approved" | "denied";
-
-interface ScholarshipRequest {
-  email: string;
-  name: string;
-  country: string;
-  reason: string;
-  status: SchStatus;
-  submittedAt: number;
-  decidedAt?: number;
-}
-
 const WHEN = (ms: number) =>
   new Date(ms).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 
@@ -42,12 +30,6 @@ const STATUS_LABEL: Record<Status, string> = {
   pending: "Waiting for you",
   approved: "Has access",
   blocked: "Blocked",
-};
-
-const SCH_STATUS_LABEL: Record<SchStatus, string> = {
-  pending: "Waiting for you",
-  approved: "Approved",
-  denied: "Denied",
 };
 
 /** Who can get in, and the controls to change that. Owner only. */
@@ -106,39 +88,6 @@ export default function Admin() {
   const waiting = users?.filter((u) => u.status === "pending") ?? [];
   const rest = users?.filter((u) => u.status !== "pending") ?? [];
 
-  const [requests, setRequests] = useState<ScholarshipRequest[] | null>(null);
-  const [schBusy, setSchBusy] = useState<string | null>(null);
-
-  const loadScholarships = useCallback(async () => {
-    try {
-      const res = await fetch("/api/admin/scholarships");
-      if (!res.ok) return; // the users panel above is the one that has to report a load failure
-      const data = (await res.json()) as { requests: ScholarshipRequest[] };
-      setRequests(data.requests);
-    } catch {
-      // best-effort — same reasoning as above
-    }
-  }, []);
-
-  useEffect(() => { void loadScholarships(); }, [loadScholarships]);
-
-  const decideScholarship = async (email: string, decision: "approved" | "denied") => {
-    setSchBusy(email);
-    try {
-      const res = await fetch("/api/admin/scholarships", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, decision }),
-      });
-      if (res.ok) await loadScholarships();
-    } finally {
-      setSchBusy(null);
-    }
-  };
-
-  const waitingSch = requests?.filter((r) => r.status === "pending") ?? [];
-  const decidedSch = requests?.filter((r) => r.status !== "pending") ?? [];
-
   return (
     <>
       <h1>Who can get in</h1>
@@ -159,22 +108,6 @@ export default function Admin() {
       {error && <p className="note warn" style={{ marginTop: "var(--s5)" }}>{error}</p>}
 
       {!users && !error && <p className="muted" style={{ marginTop: "var(--s5)" }}>Loading…</p>}
-
-      {waitingSch.length > 0 && (
-        <Panel title={`Scholarship requests — ${waitingSch.length}`} style={{ marginTop: "var(--s5)" }}>
-          {waitingSch.map((r) => (
-            <ScholarshipRow key={r.email} request={r} busy={schBusy === r.email} onDecide={decideScholarship} />
-          ))}
-        </Panel>
-      )}
-
-      {decidedSch.length > 0 && (
-        <Panel title="Past scholarship decisions" style={{ marginTop: "var(--s4)" }}>
-          {decidedSch.map((r) => (
-            <ScholarshipRow key={r.email} request={r} busy={false} onDecide={decideScholarship} />
-          ))}
-        </Panel>
-      )}
 
       {waiting.length > 0 && (
         <Panel title={`Waiting for you — ${waiting.length}`} style={{ marginTop: "var(--s5)" }}>
@@ -249,59 +182,6 @@ function AdminRow({
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-/**
- * One scholarship application. Approving pre-grants access for whenever this
- * email next signs in with Google — see `preApprove` in the Worker — rather
- * than changing an existing account the way `AdminRow` does, because most
- * applicants have never signed in at all.
- */
-function ScholarshipRow({
-  request, busy, onDecide,
-}: {
-  request: ScholarshipRequest;
-  busy: boolean;
-  onDecide(email: string, decision: "approved" | "denied"): void;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex", flexDirection: "column", gap: "var(--s2)",
-        padding: "var(--s3) 0", borderTop: "1px solid var(--rule)",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--s3)", flexWrap: "wrap" }}>
-        <div style={{ flex: "1 1 14rem", minWidth: 0 }}>
-          <b style={{ fontFamily: "var(--sans)" }}>{request.name}</b>
-          <div className="small muted" style={{ wordBreak: "break-all" }}>{request.email}</div>
-          <div className="small muted">
-            {SCH_STATUS_LABEL[request.status]} · applied {WHEN(request.submittedAt)}
-            {request.country ? ` · ${request.country}` : ""}
-          </div>
-        </div>
-
-        {request.status === "pending" && (
-          <div className="cluster" style={{ gap: "var(--s2)" }}>
-            <button
-              type="button" className="btn primary" disabled={busy}
-              onClick={() => onDecide(request.email, "approved")}
-            >
-              Approve
-            </button>
-            <button
-              type="button" className="btn" disabled={busy}
-              onClick={() => onDecide(request.email, "denied")}
-            >
-              Deny
-            </button>
-          </div>
-        )}
-      </div>
-
-      {request.reason && <p className="small muted" style={{ margin: 0 }}>{request.reason}</p>}
     </div>
   );
 }
