@@ -39,15 +39,16 @@ const FAVICON =
 /** Stripe payment link — Octant Individual, $25 per user / month, quantity adjustable. */
 const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
 /**
- * The self-serve "choose what works" checkout — a Stripe Payment Link whose
- * price is customer-adjustable with a $15 floor (Stripe dashboard: Payment
- * Links → the price → "Customer chooses the price" → minimum $15). No
- * review, no waiting: anyone can land at $15–24/month on their own.
- *
- * TODO(owner): this is a placeholder. Create the real adjustable-price
- * Payment Link in Stripe and replace this constant — see DEPLOY.md.
+ * Self-serve "choose what works" checkout — two fixed-price Payment Links,
+ * not a slider. Stripe's customer-adjustable pricing (`custom_unit_amount`)
+ * is a one-time-payment feature only; its API refuses it outright on a
+ * recurring price ("You may only specify one of these parameters:
+ * custom_unit_amount, recurring"). A short ladder of real subscription
+ * prices is the closest equivalent that a monthly plan can actually offer.
+ * Both are real, live Payment Links on the same product as `STRIPE_LINK`.
  */
-export const FLEX_STRIPE_LINK = "https://buy.stripe.com/REPLACE_WITH_FLEX_PRICE_LINK";
+export const FLEX_STRIPE_LINK_15 = "https://buy.stripe.com/bJeeVfebo1Zu2RtbWC3Je0d";
+export const FLEX_STRIPE_LINK_20 = "https://buy.stripe.com/aFadRb8R4aw08bN3q63Je0e";
 const BUSINESS_MAILTO =
   "mailto:nick@stratfieldpartners.com?subject=Octant%20for%20our%20team";
 
@@ -532,7 +533,7 @@ export function marketingPage(origin: string): Response {
           <h3 class="sans" style="font-size:17px;font-weight:600">Can&rsquo;t do $25?</h3>
           <div class="amount" style="font-size:34px">From $15</div>
           <ul>
-            <li>Choose what works, $15&ndash;24/mo, instantly &mdash; no application</li>
+            <li>$15 or $20/mo, instantly &mdash; no application</li>
             <li>Still not workable? Apply for a free scholarship</li>
             <li>The complete instrument either way, no reduced version</li>
           </ul>

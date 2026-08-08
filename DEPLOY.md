@@ -86,30 +86,35 @@ removed by the next push anyway.
 ### The free scholarship and the paid webhook
 
 `/apply` is public, needs no secret, and is on by default. It opens on a
-**deal, not a form**: choose your own price from $15/month, instantly, with
-no application — only declining that goes on to collect a name, a situation
-and a reason, reflect them back for one last look, and — on submit — email
-whoever `OWNER_EMAIL`/`NOTIFY_EMAIL` points at. Nothing is granted until that
+**deal, not a form**: two lower prices, instant checkout, no application —
+only declining both goes on to collect a name, a situation and a reason,
+reflect them back for one last look, and — on submit — email whoever
+`OWNER_EMAIL`/`NOTIFY_EMAIL` points at. Nothing is granted until that
 email's approve link is tapped, or `/admin` decides. Approving pre-provisions
 the applicant's account, so their first Google sign-in with that address
 just works.
 
-The Stripe side automates both prices the same way. Two Payment Links, both
-plain dashboard objects this Worker only ever reacts to — it never calls the
-Stripe API or holds a secret key, only the webhook's signing secret:
+The Stripe side automates every price the same way. Three Payment Links,
+all plain dashboard objects this Worker only ever reacts to — it never
+calls the Stripe API or holds a secret key, only the webhook's signing
+secret:
 
-- `STRIPE_LINK` (`src/worker/marketing.ts`) — the standard $25/mo price,
-  already live.
-- `FLEX_STRIPE_LINK` (same file) — **currently a placeholder** you must
-  replace. In the Stripe dashboard: Payment Links → create one for the same
-  product, toggle **"Customer chooses the price"** (sometimes shown as
-  "let customers adjust the amount"), and set a $15 minimum. No maximum is
-  needed — $25 is still advertised as the standard price elsewhere.
+- `STRIPE_LINK` (`src/worker/marketing.ts`) — the standard $25/mo price.
+- `FLEX_STRIPE_LINK_15` / `FLEX_STRIPE_LINK_20` (same file) — self-serve
+  $15/mo and $20/mo, on their own product ("Octant — choose your price").
 
-Either link works with the same webhook, because `checkout.session.completed`
-pre-approves whatever email checked out regardless of amount paid — the
-$15 floor is enforced by Stripe's own price configuration, not by this
-Worker. What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
+A **continuous** pay-what-you-can slider isn't possible here: Stripe's
+customer-adjustable pricing (`custom_unit_amount`, "let the customer choose
+the price") is a one-time-payment feature only — its API rejects it outright
+on a recurring price. A short, fixed ladder is the closest a subscription
+can get; add a third rung the same way (Stripe dashboard → Prices → new
+recurring price on the same product → new Payment Link → add its URL to
+`marketing.ts` and the gate in `scholarship.ts`) if two isn't enough.
+
+Every link works with the same webhook, because `checkout.session.completed`
+pre-approves whatever email checked out regardless of which price was paid —
+the floor is enforced by which Payment Links exist, not by this Worker.
+What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
 
 1. In the Stripe dashboard, add a webhook endpoint at
    `https://<your-domain>/api/stripe/webhook` listening for

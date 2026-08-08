@@ -211,7 +211,8 @@ describe("the application wizard", () => {
     expect(html).toContain("&lt;script&gt;");
     expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain("Submit application");
-    expect(html).toContain("Choose a price that works instead");
+    expect(html).toContain("works instantly");
+    expect(html).toContain("buy.stripe.com");
   });
 
   it("submitting stores the application and notifies the owner, never the applicant directly", async () => {

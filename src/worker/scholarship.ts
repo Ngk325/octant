@@ -1,7 +1,7 @@
 import { escapeHtml } from "./html";
 import { normalise, type UserEnv } from "./users";
 import { notifyOwnerOfScholarship, type NotifyEnv } from "./notify";
-import { FLEX_STRIPE_LINK } from "./marketing";
+import { FLEX_STRIPE_LINK_15, FLEX_STRIPE_LINK_20 } from "./marketing";
 
 /* ------------------------------------------------------------------ *
  * THE FREE SCHOLARSHIP — "nobody is turned away for lack of funds."
@@ -169,11 +169,16 @@ function renderGate(origin: string, error?: string): string {
     origin,
     `
     <h1>If $25 isn&rsquo;t workable</h1>
-    <p>You don&rsquo;t need to ask first. Choose your own amount, $15 and up, and it&rsquo;s
-    instant — no application, no waiting.</p>
-    <a class="btn primary" href="${escapeHtml(FLEX_STRIPE_LINK)}" style="display:block;text-align:center">
-      Choose your price — from $15/mo →
-    </a>
+    <p>You don&rsquo;t need to ask first. Pick a lower price and it&rsquo;s instant — no
+    application, no waiting.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn primary" href="${escapeHtml(FLEX_STRIPE_LINK_15)}" style="flex:1 1 0;text-align:center;min-width:11rem">
+        $15/mo →
+      </a>
+      <a class="btn primary" href="${escapeHtml(FLEX_STRIPE_LINK_20)}" style="flex:1 1 0;text-align:center;min-width:11rem">
+        $20/mo →
+      </a>
+    </div>
     <p class="small" style="font:400 15px/1.6 system-ui,sans-serif;color:var(--ink2);margin:14px 0 0">
       After checkout, sign in with Google using the same email — access unlocks automatically.
     </p>
@@ -229,8 +234,8 @@ function renderStep(step: Step, v: Values, origin: string, error?: string): stri
         <div><span class="k">Why</span><span class="v">${escapeHtml(v.reason)}</span></div>
       </div>
       <p class="fine" style="margin-top:0">This is exactly what the owner will read. Go back to fix anything.
-      Changed your mind? <a href="${escapeHtml(FLEX_STRIPE_LINK)}">Choose a price that works instead</a>
-      — no waiting for a reply.</p>`;
+      Changed your mind? <a href="${escapeHtml(FLEX_STRIPE_LINK_15)}">$15/mo</a> or
+      <a href="${escapeHtml(FLEX_STRIPE_LINK_20)}">$20/mo</a> works instantly — no waiting for a reply.</p>`;
   }
 
   const nextValue = step === 4 ? "submit" : "next";
