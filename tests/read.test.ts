@@ -72,13 +72,12 @@ describe("SEO markup", () => {
     expect(html).not.toMatch(/<script(?![^>]*application\/ld\+json)/);
   });
 
-  it("the sitemap lists the home page, the scholarship, the index, all 16 types and all 120 pairs", async () => {
+  it("the sitemap lists the index, all 16 types and all 120 pairs", async () => {
     const res = call("/sitemap.xml");
     const xml = await res!.text();
     expect(res!.headers.get("content-type")).toContain("xml");
     const locs = (xml.match(/<loc>/g) ?? []).length;
-    expect(locs).toBe(1 /* home */ + 1 /* /apply */ + 1 /* /read */ + 16 + 120);
-    expect(xml).toContain("https://octant.test/apply");
+    expect(locs).toBe(1 /* home */ + 1 /* /read */ + 16 + 120);
     expect(xml).toContain("https://octant.test/read/entp-and-infj");
   });
 

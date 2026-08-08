@@ -1,8 +1,7 @@
 import { unseal } from "./crypto";
 import { escapeHtml } from "./html";
-import { getUser, listUsers, setStatus, preApprove, type UserEnv, type UserStatus } from "./users";
-import { getScholarship, listScholarships, decideScholarship } from "./scholarship";
-import { notifyApplicantOfScholarshipDecision, type ActionPayload, type NotifyEnv } from "./notify";
+import { getUser, listUsers, setStatus, type UserEnv, type UserStatus } from "./users";
+import type { ActionPayload } from "./notify";
 
 /* ------------------------------------------------------------------ *
  * ADMIN — approving, denying and disabling people.
@@ -28,7 +27,7 @@ import { notifyApplicantOfScholarshipDecision, type ActionPayload, type NotifyEn
  * decision is a POST from the form on that page.
  * ------------------------------------------------------------------ */
 
-export interface AdminEnv extends UserEnv, NotifyEnv {
+export interface AdminEnv extends UserEnv {
   AUTH_SECRET?: string;
 }
 
@@ -68,18 +67,7 @@ export async function handleAdmin(
       : url.searchParams.get("t") ?? "";
 
     const payload = await unseal<ActionPayload>(token, env.AUTH_SECRET, now);
-    if (!payload?.email) {
-      return page(
-        "That link is no longer valid",
-        "It has expired, or it was altered in transit. Open /admin and decide there instead.",
-        false,
-      );
-    }
-
-    if (payload.action === "approve_scholarship" || payload.action === "deny_scholarship") {
-      return scholarshipAction(request, env, payload, token, now);
-    }
-    if (payload.action !== "approve" && payload.action !== "block") {
+    if (!payload?.email || (payload.action !== "approve" && payload.action !== "block")) {
       return page(
         "That link is no longer valid",
         "It has expired, or it was altered in transit. Open /admin and decide there instead.",
@@ -142,86 +130,16 @@ export async function handleAdmin(
     return json({ error: "Use GET or POST." }, 405);
   }
 
-  if (url.pathname === "/api/admin/scholarships") {
-    if (request.method === "GET") {
-      return json({ requests: await listScholarships(env) }, 200);
-    }
-
-    if (request.method === "POST") {
-      let body: { email?: unknown; decision?: unknown };
-      try {
-        body = (await request.json()) as typeof body;
-      } catch {
-        return json({ error: "Body must be JSON." }, 400);
-      }
-      const email = typeof body.email === "string" ? body.email : "";
-      const decision = body.decision;
-      if (!email || (decision !== "approved" && decision !== "denied")) {
-        return json({ error: "Need an email and a valid decision." }, 400);
-      }
-
-      const decided = await decideScholarship(env, email, decision, now);
-      if (!decided) return json({ error: "No such application." }, 404);
-      if (decision === "approved") await preApprove(env, decided.email, decided.name, now);
-      await notifyApplicantOfScholarshipDecision(env, url.origin, decided, decision === "approved");
-
-      return json({ request: decided }, 200);
-    }
-
-    return json({ error: "Use GET or POST." }, 405);
-  }
-
   return json({ error: "Not found." }, 404);
 }
 
-/**
- * The scholarship half of `/api/admin/act` — same GET-shows/POST-decides
- * shape as the user flow above, on a different store. Approving pre-grants
- * access (users.ts's `preApprove`) rather than flipping an existing record,
- * because the applicant may never have signed in before; denying and
- * approving alike tell the applicant by email, which the user flow does not
- * need to because that person is already watching for a decision in-app.
- */
-async function scholarshipAction(
-  request: Request, env: AdminEnv, payload: ActionPayload, token: string, now: number,
-): Promise<Response> {
-  const approve = payload.action === "approve_scholarship";
-  const subject = await getScholarship(env, payload.email);
-  if (!subject) return page("Nobody by that name", "That application is not on the list any more.", false);
-
-  /* GET: show, do not decide. See the note at the top of this file. */
-  if (request.method !== "POST") {
-    return page(
-      approve ? "Let them in?" : "Turn them down?",
-      approve
-        ? `${subject.name} <${subject.email}> applied for a scholarship. Approving lets them straight in the next time they sign in with Google.`
-        : `${subject.name} <${subject.email}> applied for a scholarship. Denying tells them by email; nothing else changes.`,
-      false,
-      confirmForm(token, approve ? "approve" : "block", approve ? undefined : "Deny"),
-      200,
-    );
-  }
-
-  const decided = await decideScholarship(env, payload.email, approve ? "approved" : "denied", now);
-  if (!decided) return page("Nobody by that name", "That application is not on the list any more.", false);
-
-  if (approve) await preApprove(env, decided.email, decided.name, now);
-  await notifyApplicantOfScholarshipDecision(env, new URL(request.url).origin, decided, approve);
-
-  return approve
-    ? page("Approved", `${decided.name} can now sign in with Google and will get straight in.`, true)
-    : page("Denied", `${decided.name} has been told by email, and will not get access.`, true);
-}
-
 /* The button that actually decides. A POST, so no scanner can trip it, and
-   the token rides along in the body. `label` overrides the button text
-   without changing which decision it makes — the scholarship flow says
-   "Deny" where the user flow says "Block", for the same POST action. */
-const confirmForm = (token: string, action: "approve" | "block", label?: string) => `
+   the token rides along in the body. */
+const confirmForm = (token: string, action: "approve" | "block") => `
 <form method="POST" action="/api/admin/act" style="margin-top:24px">
   <input type="hidden" name="t" value="${escapeHtml(token)}">
   <button type="submit" class="${action === "approve" ? "yes" : "no"}">
-    ${label ?? (action === "approve" ? "Approve" : "Block")}
+    ${action === "approve" ? "Approve" : "Block"}
   </button>
 </form>`;
 

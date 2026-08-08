@@ -76,55 +76,11 @@ bundle.
 | `RESEND_API_KEY` | for email | Sign-up notifications and chat transcripts. Without it, sign-ups still record; nothing mails. |
 | `NOTIFY_FROM` | in practice, yes for email | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address — see `docs/GOOGLE-SETUP.md`. |
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
-| `STRIPE_WEBHOOK_SECRET` | for automatic paid access | Verifies `/api/stripe/webhook`. Without it, that route 503s and paid sign-ups still need a manual approval from `/admin`, same as before this existed. |
 
 The two KV namespaces (`USERS`, `CHAT_LOGS`), both rate-limit bindings and the
 hourly transcript-sweep cron live in `wrangler.jsonc` and deploy with the code
 — nothing to click in the dashboard, and dashboard-only bindings would be
 removed by the next push anyway.
-
-### The free scholarship and the paid webhook
-
-`/apply` is public, needs no secret, and is on by default. It opens on a
-**deal, not a form**: two lower prices, instant checkout, no application —
-only declining both goes on to collect a name, a situation and a reason,
-reflect them back for one last look, and — on submit — email whoever
-`OWNER_EMAIL`/`NOTIFY_EMAIL` points at. Nothing is granted until that
-email's approve link is tapped, or `/admin` decides. Approving pre-provisions
-the applicant's account, so their first Google sign-in with that address
-just works.
-
-The Stripe side automates every price the same way. Three Payment Links,
-all plain dashboard objects this Worker only ever reacts to — it never
-calls the Stripe API or holds a secret key, only the webhook's signing
-secret:
-
-- `STRIPE_LINK` (`src/worker/marketing.ts`) — the standard $25/mo price.
-- `FLEX_STRIPE_LINK_15` / `FLEX_STRIPE_LINK_20` (same file) — self-serve
-  $15/mo and $20/mo, on their own product ("Octant — choose your price").
-
-A **continuous** pay-what-you-can slider isn't possible here: Stripe's
-customer-adjustable pricing (`custom_unit_amount`, "let the customer choose
-the price") is a one-time-payment feature only — its API rejects it outright
-on a recurring price. A short, fixed ladder is the closest a subscription
-can get; add a third rung the same way (Stripe dashboard → Prices → new
-recurring price on the same product → new Payment Link → add its URL to
-`marketing.ts` and the gate in `scholarship.ts`) if two isn't enough.
-
-Every link works with the same webhook, because `checkout.session.completed`
-pre-approves whatever email checked out regardless of which price was paid —
-the floor is enforced by which Payment Links exist, not by this Worker.
-What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
-
-1. In the Stripe dashboard, add a webhook endpoint at
-   `https://<your-domain>/api/stripe/webhook` listening for
-   `checkout.session.completed` and `customer.subscription.deleted`.
-2. Copy its signing secret (`whsec_...`) and run
-   `npx wrangler secret put STRIPE_WEBHOOK_SECRET`.
-
-Without `STRIPE_WEBHOOK_SECRET`, the route fails closed at 503 and a paid
-sign-up still needs the owner to flip their status in `/admin` by hand,
-exactly as before this existed.
 
 ### Locally
 

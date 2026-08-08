@@ -38,17 +38,6 @@ const FAVICON =
 
 /** Stripe payment link — Octant Individual, $25 per user / month, quantity adjustable. */
 const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
-/**
- * Self-serve "choose what works" checkout — two fixed-price Payment Links,
- * not a slider. Stripe's customer-adjustable pricing (`custom_unit_amount`)
- * is a one-time-payment feature only; its API refuses it outright on a
- * recurring price ("You may only specify one of these parameters:
- * custom_unit_amount, recurring"). A short ladder of real subscription
- * prices is the closest equivalent that a monthly plan can actually offer.
- * Both are real, live Payment Links on the same product as `STRIPE_LINK`.
- */
-export const FLEX_STRIPE_LINK_15 = "https://buy.stripe.com/bJeeVfebo1Zu2RtbWC3Je0d";
-export const FLEX_STRIPE_LINK_20 = "https://buy.stripe.com/aFadRb8R4aw08bN3q63Je0e";
 const BUSINESS_MAILTO =
   "mailto:nick@stratfieldpartners.com?subject=Octant%20for%20our%20team";
 
@@ -307,7 +296,6 @@ export function marketingPage(origin: string): Response {
       <a href="#uses" class="hide-sm">Who it&rsquo;s for</a>
       <a href="#pricing">Pricing</a>
       <a href="#about" class="hide-sm">About</a>
-      <a href="/apply" class="hide-sm">Scholarship</a>
       <a href="/signin">Sign in</a>
       <a class="btn primary" href="#pricing">Get started</a>
     </nav>
@@ -326,10 +314,7 @@ export function marketingPage(origin: string): Response {
       <div class="cta-row">
         <a class="btn primary" href="#pricing">Start now — $25/user·mo</a>
         <a class="btn" href="#product">See how it works</a>
-        <span class="cta-note">
-          Cancel anytime. Paid access unlocks automatically; can&rsquo;t do $25?
-          <a href="/apply">See your options</a> — instant from $15, or a free scholarship decided by a person.
-        </span>
+        <span class="cta-note">Cancel anytime. Every account is enabled by a person, not a script.</span>
       </div>
     </div>
     <div class="art">${HERO_ART}</div>
@@ -525,22 +510,8 @@ export function marketingPage(origin: string): Response {
           </ul>
           <a class="btn primary" href="${STRIPE_LINK}">Start now</a>
           <p class="small muted" style="margin:12px 0 0">
-            Checkout via Stripe. After payment, sign in with Google using the same email —
-            access unlocks automatically, usually within a minute.
-          </p>
-        </div>
-        <div class="price">
-          <h3 class="sans" style="font-size:17px;font-weight:600">Can&rsquo;t do $25?</h3>
-          <div class="amount" style="font-size:34px">From $15</div>
-          <ul>
-            <li>$15 or $20/mo, instantly &mdash; no application</li>
-            <li>Still not workable? Apply for a free scholarship</li>
-            <li>The complete instrument either way, no reduced version</li>
-          </ul>
-          <a class="btn" href="/apply">See your options</a>
-          <p class="small muted" style="margin:12px 0 0">
-            Nobody is turned away from Octant for lack of funds. Free access is read personally
-            by the owner, not auto-approved.
+            Checkout via Stripe. After payment you&rsquo;ll sign in with Google and your account
+            is enabled — every account is switched on by a person.
           </p>
         </div>
         <div class="price">
@@ -572,12 +543,6 @@ export function marketingPage(origin: string): Response {
         about honesty: where the underlying model is settled, Octant derives it and shows the
         derivation; where it is not, Octant says so on the page instead of papering over it.
       </p>
-      <p>
-        We don&rsquo;t think understanding how your own mind works — or how it meshes with the
-        people you live and work with — should depend on what you can afford this month. That is
-        the whole reason the <a href="/apply">scholarship</a> exists: real access, decided by a
-        person, for as long as it takes.
-      </p>
       <p class="small muted">
         Questions, business enquiries, or press: <a href="${BUSINESS_MAILTO}">nick@stratfieldpartners.com</a>
       </p>
@@ -594,7 +559,6 @@ export function marketingPage(origin: string): Response {
         <a href="#uses">Who it&rsquo;s for</a>
         <a href="#pricing">Pricing</a>
         <a href="#about">About</a>
-        <a href="/apply">Scholarship</a>
         <a href="/signin">Sign in</a>
       </nav>
     </div>
