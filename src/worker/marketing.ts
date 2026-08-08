@@ -294,6 +294,7 @@ export function marketingPage(origin: string): Response {
     <nav class="mnav" aria-label="Site">
       <a href="#product" class="hide-sm">Product</a>
       <a href="#uses" class="hide-sm">Who it&rsquo;s for</a>
+      <a href="/read" class="hide-sm">Readings</a>
       <a href="#pricing">Pricing</a>
       <a href="#about" class="hide-sm">About</a>
       <a href="/apply" class="hide-sm">Scholarship</a>
@@ -318,6 +319,7 @@ export function marketingPage(origin: string): Response {
         <span class="cta-note">
           Cancel anytime. Paid access unlocks automatically; can&rsquo;t pay right now?
           <a href="/apply">Apply for a free scholarship</a> — every one of those is decided by a person.
+          Not ready for either — <a href="/read">browse a free reading first</a>.
         </span>
       </div>
     </div>
@@ -580,6 +582,7 @@ export function marketingPage(origin: string): Response {
       <nav aria-label="Footer">
         <a href="#product">Product</a>
         <a href="#uses">Who it&rsquo;s for</a>
+        <a href="/read">Readings</a>
         <a href="#pricing">Pricing</a>
         <a href="#about">About</a>
         <a href="/apply">Scholarship</a>
