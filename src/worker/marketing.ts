@@ -38,6 +38,16 @@ const FAVICON =
 
 /** Stripe payment link — Octant Individual, $25 per user / month, quantity adjustable. */
 const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
+/**
+ * The self-serve "choose what works" checkout — a Stripe Payment Link whose
+ * price is customer-adjustable with a $15 floor (Stripe dashboard: Payment
+ * Links → the price → "Customer chooses the price" → minimum $15). No
+ * review, no waiting: anyone can land at $15–24/month on their own.
+ *
+ * TODO(owner): this is a placeholder. Create the real adjustable-price
+ * Payment Link in Stripe and replace this constant — see DEPLOY.md.
+ */
+export const FLEX_STRIPE_LINK = "https://buy.stripe.com/REPLACE_WITH_FLEX_PRICE_LINK";
 const BUSINESS_MAILTO =
   "mailto:nick@stratfieldpartners.com?subject=Octant%20for%20our%20team";
 
@@ -316,8 +326,8 @@ export function marketingPage(origin: string): Response {
         <a class="btn primary" href="#pricing">Start now — $25/user·mo</a>
         <a class="btn" href="#product">See how it works</a>
         <span class="cta-note">
-          Cancel anytime. Paid access unlocks automatically; can&rsquo;t pay right now?
-          <a href="/apply">Apply for a free scholarship</a> — every one of those is decided by a person.
+          Cancel anytime. Paid access unlocks automatically; can&rsquo;t do $25?
+          <a href="/apply">See your options</a> — instant from $15, or a free scholarship decided by a person.
         </span>
       </div>
     </div>
@@ -519,16 +529,17 @@ export function marketingPage(origin: string): Response {
           </p>
         </div>
         <div class="price">
-          <h3 class="sans" style="font-size:17px;font-weight:600">Scholarship</h3>
-          <div class="amount">Free</div>
+          <h3 class="sans" style="font-size:17px;font-weight:600">Can&rsquo;t do $25?</h3>
+          <div class="amount" style="font-size:34px">From $15</div>
           <ul>
-            <li>The complete instrument, no reduced version</li>
-            <li>Read personally by the owner, not auto-approved</li>
-            <li>Ask again later if now isn&rsquo;t a yes</li>
+            <li>Choose what works, $15&ndash;24/mo, instantly &mdash; no application</li>
+            <li>Still not workable? Apply for a free scholarship</li>
+            <li>The complete instrument either way, no reduced version</li>
           </ul>
-          <a class="btn" href="/apply">Apply</a>
+          <a class="btn" href="/apply">See your options</a>
           <p class="small muted" style="margin:12px 0 0">
-            Can&rsquo;t pay right now? Say so. Nobody is turned away from Octant for lack of funds.
+            Nobody is turned away from Octant for lack of funds. Free access is read personally
+            by the owner, not auto-approved.
           </p>
         </div>
         <div class="price">

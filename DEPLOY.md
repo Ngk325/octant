@@ -85,17 +85,31 @@ removed by the next push anyway.
 
 ### The free scholarship and the paid webhook
 
-`/apply` is public, needs no secret, and is on by default: it collects a
-name, a situation and a reason, reflects them back for one last look, and —
-on submit — only ever emails whoever `OWNER_EMAIL`/`NOTIFY_EMAIL` points at.
-Nothing is granted until that email's approve link is tapped, or `/admin`
-decides. Approving pre-provisions the applicant's account, so their first
-Google sign-in with that address just works.
+`/apply` is public, needs no secret, and is on by default. It opens on a
+**deal, not a form**: choose your own price from $15/month, instantly, with
+no application — only declining that goes on to collect a name, a situation
+and a reason, reflect them back for one last look, and — on submit — email
+whoever `OWNER_EMAIL`/`NOTIFY_EMAIL` points at. Nothing is granted until that
+email's approve link is tapped, or `/admin` decides. Approving pre-provisions
+the applicant's account, so their first Google sign-in with that address
+just works.
 
-The Stripe side automates the other half of the same idea. The marketing
-page already links to a Stripe **Payment Link** (`STRIPE_LINK` in
-`src/worker/marketing.ts`) — that part needs no code, just a link from the
-Stripe dashboard. What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
+The Stripe side automates both prices the same way. Two Payment Links, both
+plain dashboard objects this Worker only ever reacts to — it never calls the
+Stripe API or holds a secret key, only the webhook's signing secret:
+
+- `STRIPE_LINK` (`src/worker/marketing.ts`) — the standard $25/mo price,
+  already live.
+- `FLEX_STRIPE_LINK` (same file) — **currently a placeholder** you must
+  replace. In the Stripe dashboard: Payment Links → create one for the same
+  product, toggle **"Customer chooses the price"** (sometimes shown as
+  "let customers adjust the amount"), and set a $15 minimum. No maximum is
+  needed — $25 is still advertised as the standard price elsewhere.
+
+Either link works with the same webhook, because `checkout.session.completed`
+pre-approves whatever email checked out regardless of amount paid — the
+$15 floor is enforced by Stripe's own price configuration, not by this
+Worker. What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
 
 1. In the Stripe dashboard, add a webhook endpoint at
    `https://<your-domain>/api/stripe/webhook` listening for
@@ -103,10 +117,9 @@ Stripe dashboard. What `STRIPE_WEBHOOK_SECRET` adds is automatic activation:
 2. Copy its signing secret (`whsec_...`) and run
    `npx wrangler secret put STRIPE_WEBHOOK_SECRET`.
 
-That's the whole setup — this Worker never calls the Stripe API and holds no
-secret key, only the webhook's signing secret. Without it, the route fails
-closed at 503 and a paid sign-up still needs the owner to flip their status
-in `/admin` by hand, exactly as before this existed.
+Without `STRIPE_WEBHOOK_SECRET`, the route fails closed at 503 and a paid
+sign-up still needs the owner to flip their status in `/admin` by hand,
+exactly as before this existed.
 
 ### Locally
 

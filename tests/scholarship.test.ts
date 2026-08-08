@@ -128,23 +128,38 @@ describe("the application wizard", () => {
     expect(await handleScholarship(req, ENV, new URL(req.url), NOW)).toBeNull();
   });
 
-  it("GET renders the first step, with no back button", async () => {
+  it("GET renders the deal first — a self-serve price, not the application", async () => {
     const res = (await apply(new Request(`${ORIGIN}/apply`)))!;
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(html).toContain("Apply for a scholarship");
-    expect(html).toContain('name="name"');
-    expect(html).toContain('name="email"');
-    expect(html).not.toContain("← Back");
+    expect(html).toContain("If $25 isn");
+    expect(html).toContain("buy.stripe.com");
+    expect(html).toContain("Apply for a free scholarship");
+    expect(html).not.toContain('name="name"');
   });
 
   it("is meant to be found: real title/description/canonical/OG, and no noindex", async () => {
     const html = await (await apply(new Request(`${ORIGIN}/apply`)))!.text();
-    expect(html).toContain("<title>Octant — apply for a scholarship</title>");
+    expect(html).toMatch(/<title>Octant — .{5,}<\/title>/);
     expect(html).toMatch(/<meta name="description" content=".{20,}"/);
     expect(html).toContain(`<link rel="canonical" href="${ORIGIN}/apply">`);
     expect(html).toContain('property="og:title"');
     expect(html).not.toContain("noindex");
+  });
+
+  it("declining the deal (step 0) advances into the actual application", async () => {
+    const res = (await apply(formReq({ step: "0", intent: "next" })))!;
+    const html = await res.text();
+    expect(html).toContain("Apply for a scholarship");
+    expect(html).toContain('name="name"');
+    expect(html).toContain('name="email"');
+    expect(html).toContain('name="step" value="1"');
+  });
+
+  it("step 1's back button returns to the deal, not nowhere", async () => {
+    const res = (await apply(formReq({ ...STEP1, intent: "back" })))!;
+    const html = await res.text();
+    expect(html).toContain("If $25 isn");
   });
 
   it("step 1 rejects a missing name and stays on step 1", async () => {
@@ -196,6 +211,7 @@ describe("the application wizard", () => {
     expect(html).toContain("&lt;script&gt;");
     expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain("Submit application");
+    expect(html).toContain("Choose a price that works instead");
   });
 
   it("submitting stores the application and notifies the owner, never the applicant directly", async () => {
@@ -341,7 +357,7 @@ describe("wired into the router, ahead of the wall", () => {
   it("GET /apply needs no session at all", async () => {
     const res = await worker.fetch(new Request("https://octant.example/apply"), fullEnv);
     expect(res.status).toBe(200);
-    expect(await res.text()).toContain("Apply for a scholarship");
+    expect(await res.text()).toContain("If $25 isn");
   });
 
   it("does not leak the app shell or bundle through /apply", async () => {
