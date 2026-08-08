@@ -413,7 +413,6 @@ ${cta("/signin", "Open the instrument", "Read your own type, any pairing in full
 function sitemap(origin: string): Response {
   const urls = [
     `${origin}/`,
-    `${origin}/apply`,
     `${origin}/read`,
     ...TYPES.map((t) => `${origin}/read/${typeSlug(t)}`),
     ...PAIRS.map(([a, b]) => `${origin}/read/${pairSlug(a, b)}`),

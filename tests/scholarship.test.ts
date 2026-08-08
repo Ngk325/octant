@@ -138,15 +138,6 @@ describe("the application wizard", () => {
     expect(html).not.toContain("← Back");
   });
 
-  it("is meant to be found: real title/description/canonical/OG, and no noindex", async () => {
-    const html = await (await apply(new Request(`${ORIGIN}/apply`)))!.text();
-    expect(html).toContain("<title>Octant — apply for a scholarship</title>");
-    expect(html).toMatch(/<meta name="description" content=".{20,}"/);
-    expect(html).toContain(`<link rel="canonical" href="${ORIGIN}/apply">`);
-    expect(html).toContain('property="og:title"');
-    expect(html).not.toContain("noindex");
-  });
-
   it("step 1 rejects a missing name and stays on step 1", async () => {
     const res = (await apply(formReq({ step: "1", intent: "next", name: "", email: "jane@example.com" })))!;
     const html = await res.text();

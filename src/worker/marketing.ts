@@ -560,12 +560,6 @@ export function marketingPage(origin: string): Response {
         about honesty: where the underlying model is settled, Octant derives it and shows the
         derivation; where it is not, Octant says so on the page instead of papering over it.
       </p>
-      <p>
-        We don&rsquo;t think understanding how your own mind works — or how it meshes with the
-        people you live and work with — should depend on what you can afford this month. That is
-        the whole reason the <a href="/apply">scholarship</a> exists: real access, decided by a
-        person, for as long as it takes.
-      </p>
       <p class="small muted">
         Questions, business enquiries, or press: <a href="${BUSINESS_MAILTO}">nick@stratfieldpartners.com</a>
       </p>

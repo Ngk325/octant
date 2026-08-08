@@ -149,7 +149,7 @@ function recordSubmission(ip: string, now: number): void {
 const hidden = (name: string, value: string) =>
   `<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(value)}">`;
 
-function renderStep(step: Step, v: Values, origin: string, error?: string): string {
+function renderStep(step: Step, v: Values, error?: string): string {
   const dots = ([1, 2, 3, 4] as const)
     .map((n) => `<span class="dot${n <= step ? " on" : ""}"></span>`).join("");
 
@@ -190,12 +190,7 @@ function renderStep(step: Step, v: Values, origin: string, error?: string): stri
   const nextValue = step === 4 ? "submit" : "next";
   const nextLabel = step === 4 ? "Submit application" : "Continue →";
 
-  return SHELL(
-    "Octant — apply for a scholarship",
-    "Nobody is turned away from Octant for lack of funds. Four short questions, read personally " +
-      "by the person who runs this — no form ever decides on its own.",
-    origin,
-    `
+  return SHELL("Octant — apply for a scholarship", `
     <h1>Apply for a scholarship</h1>
     <p>Nobody is turned away for lack of funds. A few short questions, read personally by the
     person who runs this — no form ever decides on its own.</p>
@@ -210,22 +205,16 @@ function renderStep(step: Step, v: Values, origin: string, error?: string): stri
       </div>
     </form>
     <p class="fine">Already applied? A new submission replaces your last one — the owner only
-    ever sees where things stand now. <a href="/signin">Have a code or an approved account?</a></p>`,
-  );
+    ever sees where things stand now. <a href="/signin">Have a code or an approved account?</a></p>`);
 }
 
-const thanksPage = (origin: string) => SHELL(
-  "Octant — application sent",
-  "Your Octant scholarship application went straight to the person who runs it. You'll hear back by email.",
-  origin,
-  `
+const thanksPage = () => SHELL("Octant — application sent", `
   <div class="mark">✓</div>
   <h1>Sent</h1>
   <p>Your application went straight to the person who runs Octant, with nothing in between.
   You'll hear back by email — approved or not — and if it's a yes, sign in with Google using the
   same address and you're straight in.</p>
-  <p class="fine"><a href="/">Back to the front page</a></p>`,
-);
+  <p class="fine"><a href="/">Back to the front page</a></p>`);
 
 /**
  * `/apply`. Returns null when the path is not ours, so the caller can carry
@@ -236,13 +225,12 @@ export async function handleScholarship(
   ctx?: { waitUntil?(p: Promise<unknown>): void },
 ): Promise<Response | null> {
   if (url.pathname !== "/apply") return null;
-  const origin = url.origin;
 
-  if (request.method === "GET") return htmlPage(renderStep(1, EMPTY, origin), 200);
-  if (request.method !== "POST") return htmlPage(renderStep(1, EMPTY, origin), 405);
+  if (request.method === "GET") return htmlPage(renderStep(1, EMPTY), 200);
+  if (request.method !== "POST") return htmlPage(renderStep(1, EMPTY), 405);
 
   const form = await request.formData().catch(() => null);
-  if (!form) return htmlPage(renderStep(1, EMPTY, origin, "That didn't come through. Try again."), 400);
+  if (!form) return htmlPage(renderStep(1, EMPTY, "That didn't come through. Try again."), 400);
 
   const currentStep = clampStep(Number(form.get("step")));
   const intent = form.get("intent") === "back" ? "back"
@@ -250,14 +238,14 @@ export async function handleScholarship(
   const v = readValues(form);
 
   if (intent === "back") {
-    return htmlPage(renderStep(Math.max(1, currentStep - 1) as Step, v, origin), 200);
+    return htmlPage(renderStep(Math.max(1, currentStep - 1) as Step, v), 200);
   }
 
   const error = validateStep(currentStep, v);
-  if (error) return htmlPage(renderStep(currentStep, v, origin, error), 200);
+  if (error) return htmlPage(renderStep(currentStep, v, error), 200);
 
   if (currentStep < 4) {
-    return htmlPage(renderStep((currentStep + 1) as Step, v, origin), 200);
+    return htmlPage(renderStep((currentStep + 1) as Step, v), 200);
   }
 
   /* currentStep === 4: the review screen's own submit. Re-validate every
@@ -265,12 +253,12 @@ export async function handleScholarship(
      jump straight here with a blank field the earlier steps never saw. */
   for (const s of [1, 2, 3] as const) {
     const err = validateStep(s, v);
-    if (err) return htmlPage(renderStep(s, v, origin, err), 200);
+    if (err) return htmlPage(renderStep(s, v, err), 200);
   }
 
   const ip = request.headers.get("cf-connecting-ip") ?? "local";
   if (tooManySubmissions(ip, now)) {
-    return htmlPage(renderStep(4, v, origin, "Too many attempts from this connection. Try again in an hour."), 429);
+    return htmlPage(renderStep(4, v, "Too many attempts from this connection. Try again in an hour."), 429);
   }
 
   const req: ScholarshipRequest = {
@@ -280,10 +268,10 @@ export async function handleScholarship(
   await putScholarship(env, req);
   recordSubmission(ip, now);
 
-  const send = notifyOwnerOfScholarship(env, origin, req, now);
+  const send = notifyOwnerOfScholarship(env, url.origin, req, now);
   if (typeof ctx?.waitUntil === "function") ctx.waitUntil(send); else await send;
 
-  return htmlPage(thanksPage(origin), 200);
+  return htmlPage(thanksPage(), 200);
 }
 
 /* -------------------------------- rendering -------------------------------- */
@@ -292,24 +280,10 @@ export async function handleScholarship(
    fonts. No inline <script> anywhere: back/next are two submit buttons on
    one form, so the CSP's two-hash allowance never has to grow a third. */
 
-/**
- * Unlike the gate and admin pages this borrows its shell from, `/apply` is
- * meant to be found — linked externally, crawled, shared — so it carries
- * the same real title/description/canonical/OG this codebase gives every
- * other public-facing page (see read.ts), and none of the `noindex` those
- * session-bound pages need to keep out of search results.
- */
-const SHELL = (title: string, description: string, origin: string, body: string) => `<!doctype html>
+const SHELL = (title: string, body: string) => `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHtml(title)}</title>
-<meta name="description" content="${escapeHtml(description)}">
-<link rel="canonical" href="${escapeHtml(origin)}/apply">
-<meta property="og:type" content="website">
-<meta property="og:title" content="${escapeHtml(title)}">
-<meta property="og:description" content="${escapeHtml(description)}">
-<meta property="og:url" content="${escapeHtml(origin)}/apply">
-<meta name="twitter:card" content="summary">
+<meta name="robots" content="noindex,nofollow"><title>${title}</title>
 <style>
   :root { color-scheme: light dark; --paper:#FDFCFA; --ink:#1A1714; --ink2:#4C463D;
           --rule:#E3DED4; --accent:#6B3BC4; --on:#fff; --bad:#AA2A1E; --surface:#fff; }
