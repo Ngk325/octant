@@ -46,20 +46,47 @@ import RelationLanding from "../components/RelationLanding";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 import FnIcon from "../components/glyphs/FnIcon";
 
+/* ==================================================================== *
+ * ONE TYPE, READ IN FULL — the "A type" section.
+ *
+ * This is the restructured reader (formerly previewed at /a-type-v2).
+ * It is a RESEQUENCE of the page it replaced, not a redesign: every
+ * component, token and engine call is that page's. What changed is the
+ * order, and the transitions the order made wrong.
+ *
+ * The page it replaced is kept, unrouted and unreachable, in
+ * `TypeReaderLegacy.tsx` — see the header there.
+ *
+ * Order, and why:
+ *   1  slots        foundational — defines every noun below it
+ *   2  powers       a lens on slots 1 and 8, so it must follow them
+ *   3  sides        the next mechanic on the same eight functions
+ *   4  exchange     a second reading of the ego block
+ *   5  growth       the payoff; needs the cave, the sides AND the overlay
+ *   6  octagram     a second layer on top of the whole type
+ *   7  self-report  both self-reported layers, together, out of the way
+ *   8  fit          other-facing, once the self is complete
+ *   9  reference    notation and other systems' vocabulary, last
+ *
+ * Every anchor id the previous page carried is kept — including #octagram,
+ * which learn/curriculum.tsx links into — so nothing that deep-links into
+ * /type/:type broke in the swap.
+ * ==================================================================== */
+
 /* The page's outline, and therefore its anchor nav — one array, so the two
-   cannot drift apart. The two "your …" entries are the page's interactive
-   forms; they were previously buried at 60% and 85% depth with no way to
-   reach them but scrolling. */
+   cannot drift apart. Nine h2 sections, one nav entry each: the previous
+   page mixed h2s and h3s in this row, which advertised "Your switches" and
+   "Your theme" as peers of "Growth". */
 const SECTIONS = [
-  ["powers", "Superpowers & kryptonite"],
   ["slots", "The eight slots"],
-  ["sides", "Four sides"],
+  ["powers", "Superpowers & kryptonite"],
+  ["sides", "Four sides of the mind"],
   ["exchange", "The exchange overlay"],
-  ["exchange-switches", "Your switches"],
   ["growth", "Growth"],
   ["octagram", "The Octagram"],
-  ["theme", "Your theme"],
+  ["self-report", "What you set yourself"],
   ["fit", "Who you fit"],
+  ["reference", "Reference"],
 ] as const;
 
 /** One type, read in full: slots, four sides, the exchange overlay, growth, the Octagram, and fit. */
@@ -76,6 +103,10 @@ const oneOf = <T extends string>(v: unknown, allowed: readonly T[]): T | undefin
  * `sensory: "ZZZ"` or a `development: "banana"` would otherwise restore into
  * state and drive the overlay from a value the UI can never have produced.
  * Anything malformed, at the record level or the field level, reads as unset.
+ *
+ * Unchanged `coins.<type>` key across the restructure, on purpose: these are
+ * one person's answers about themselves, and nobody should have to give them
+ * again because the page around them was resequenced.
  */
 function loadCoins(t: MbtiType): { sub: Subtype; oct: OctCoins } {
   try {
@@ -120,12 +151,8 @@ export default function TypeReader() {
      not survive a switch to a different type — otherwise reading ENTP with
      "sensory: masculine" set and then clicking through to INFJ silently
      attributes your answer to a type you never answered for. React keeps this
-     component mounted across /type/X → /type/Y, so the swap is explicit.
-
-     Since 2026-08 (owner's decision) they PERSIST per type in localStorage:
-     your ENTP answers come back when you return to ENTP, and never leak onto
-     INFJ, because the key carries the type. Still self-reported, still never
-     derived, and clearing a control clears the stored copy too. */
+     component mounted across /type/X → /type/Y, so the swap is
+     explicit. They persist per type in localStorage, keyed by the type. */
   const [sub, setSub] = useState<Subtype>(() => loadCoins(t).sub);
   /* The Octagram coins are kept SEPARATE from the exchange ones rather than
      bolted onto Subtype. The two layers are not reconciled anywhere else in this
@@ -155,9 +182,16 @@ export default function TypeReader() {
   const g = gate(t);
   const s = sides(t);
   const c = coins(t);
-  const [virtue, vice] = VIRTUE_VICE[t];
+  const [virtue] = VIRTUE_VICE[t];
   const b = BEHAVIOURAL[t];
   const powers = powersOf(t);
+
+  /* The three role-name alternates the header prints unsourced. The reference
+     section drops exactly these rows rather than printing the same three names
+     a second time with their systems attached — owner's call, recorded in the
+     PR. Filtered by term rather than by system so it cannot fall out of step
+     with translation.ts. */
+  const aliasNames = new Set(archetypeAliases(t));
 
   usePublishContext(() => ({ kind: "type", type: t }), [t]);
 
@@ -184,10 +218,9 @@ export default function TypeReader() {
         {ARCHETYPE[t].join(" · ")}
       </p>
 
-      {/* More color, still unsourced — same three role-names the "Known
-          elsewhere as" section cites further down, but here without which
-          system named them. Our own epithets above stay what every picker
-          and pair page uses; this line is this page only. */}
+      {/* More color, still unsourced. In this build these three names appear
+          ONCE — here — and the reference section no longer reprints them with
+          their systems attached. */}
       <p className="small muted" style={{ margin: "var(--s1) 0 0" }}>
         Also pictured as {archetypeAliases(t).join(" · ")}
       </p>
@@ -199,52 +232,21 @@ export default function TypeReader() {
 
       <SectionNav items={SECTIONS} />
 
-      {/* ------------------------------------------------ powers */}
-      <h2 id="powers" className="sec">Superpowers & kryptonite</h2>
-
-      <Explain
-        big
-        plain={powersPlain(t, powers.superpower.fn, powers.kryptonite.fn)}
-      >
-        <p>
-          Not new facts about {t} — the same Lead and Dread slots the eight-slot stack below
-          already carries, read through one question each: what runs so strong it looks
-          involuntary, and what one setting undoes it.
-        </p>
-      </Explain>
-
-      <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
-        <Panel title={<span className="cluster"><FnTag fn={powers.superpower.fn} size="var(--t-lg)" /> Superpower</span>}>
-          <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
-            <span className="chip">{powers.superpower.role}</span>
-            <span className="chip">wants {powers.superpower.wants.toLowerCase()}</span>
-          </div>
-          <p style={{ marginTop: 0 }}>{powers.superpower.what}</p>
-          <p className="small muted" style={{ margin: 0 }}>
-            Backed up by <FnTag fn={powers.superpower.ally} /> — the Support that keeps the Lead from
-            running alone.
-          </p>
-        </Panel>
-
-        <Panel title={<span className="cluster"><FnTag fn={powers.kryptonite.fn} size="var(--t-lg)" /> Kryptonite</span>}>
-          <div className="note warn" style={{ marginBottom: "var(--s3)" }}>
-            <span className="small">{powers.kryptonite.shadow}</span>
-          </div>
-          <Row stacked k="Avoid triggering" v={<span className="small">{powers.kryptonite.vice}</span>} />
-          <Row stacked k="Under stress" v={<span className="small">{powers.kryptonite.stressResponse}</span>} />
-          <Row stacked k="Deal breaker" v={<span className="small">{powers.kryptonite.dealBreaker}</span>} />
-        </Panel>
-      </div>
-
-      {/* ------------------------------------------------ slots */}
+      {/* ------------------------------------------------ slots
+          First, because every section under it names these eight positions.
+          The page this replaced opened on Superpowers & kryptonite, whose own
+          copy had to say "the eight-slot stack BELOW already carries" — a
+          forward reference in the page's first sentence. */}
       <h2 id="slots" className="sec">The eight slots</h2>
 
       <Explain
+        big
         plain={`Eight habits of mind, in ${t}'s order of strength. The top four feel like "me". The bottom four run anyway, and feel like things that happen to you.`}
       >
         <p>
-          The full eight-slot stack, generated from the (dominant, auxiliary) pair by the three
-          moves. Slots 1–4 are the ego block; 5–8 are the shadow.
+          The full eight-slot stack, generated from the (dominant, auxiliary) pair by the{" "}
+          <Term id="stack-map">three moves</Term> — flip a function's attitude, swap it for its
+          opposite element, or do both. Slots 1–4 are the ego block; 5–8 are the shadow.
         </p>
       </Explain>
 
@@ -260,23 +262,21 @@ export default function TypeReader() {
         label="Strongest at the top."
         caption={
           <>
-            Two regions are marked, because this model carries two readings of the same stack.
-            One puts the growth point at the <b>Cave</b> alone. The other marks a wider pair —
-            <b>Delight</b> <i>and</i> <b>Cave</b> — as its flinches. They agree on slot 4 and disagree
-            about slot 3, which the first treats as a delight and the second treats as neglected.
-            Neither reading is corrected into the other. The dashed arcs
-            pair each ego slot with its shadow mirror: same capacity, facing the other way.
+            Two regions are marked, because this model carries two readings of the same stack: one
+            puts the growth point at the <b>Cave</b> alone, the other marks <b>Delight</b>{" "}
+            <i>and</i> <b>Cave</b> as its flinches. They agree on slot 4 and disagree about slot 3,
+            which the first treats as a delight and the second treats as neglected. Neither is
+            corrected into the other — Growth below shows the two side by side. The dashed arcs pair
+            each ego slot with its shadow mirror: same capacity, facing the other way.
           </>
         }
       >
         <WiringSchematic type={t} showCorrespondence />
       </Figure>
 
-      {/* The two blocks as two labeled RANK-ORDERED columns. The first build
-          put all eight in one 2-column grid, which sat slot 1 beside slot 2 —
-          visually flattening the exact ordering the figure above asserts.
-          Here each column IS a rank order, and the columns are the ego/shadow
-          split the schematic draws. */}
+      {/* The two blocks as two labeled RANK-ORDERED columns. Each column IS a
+          rank order, and the columns are the ego/shadow split the schematic
+          draws. */}
       <div className="grid g2" style={{ alignItems: "start" }}>
         {[
           { label: "The ego block — slots 1–4, “me”", slots: [0, 1, 2, 3] },
@@ -311,6 +311,45 @@ export default function TypeReader() {
         ))}
       </div>
 
+      {/* ------------------------------------------------ powers
+          Second, not first: this is one question asked of slot 1 and one asked
+          of slot 8, both of which now exist on the page before it runs. */}
+      <h2 id="powers" className="sec">Superpowers &amp; kryptonite</h2>
+
+      <Explain
+        big
+        plain={powersPlain(t, powers.superpower.fn, powers.kryptonite.fn)}
+      >
+        <p>
+          Not new facts about {t} — the Lead and Dread slots the stack above already gave you, read
+          through one question each: what runs so strong it looks involuntary, and what one setting
+          undoes it.
+        </p>
+      </Explain>
+
+      <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
+        <Panel title={<span className="cluster"><FnTag fn={powers.superpower.fn} size="var(--t-lg)" /> Superpower</span>}>
+          <div className="cluster" style={{ marginBottom: "var(--s3)" }}>
+            <span className="chip">{powers.superpower.role}</span>
+            <span className="chip">wants {powers.superpower.wants.toLowerCase()}</span>
+          </div>
+          <p style={{ marginTop: 0 }}>{powers.superpower.what}</p>
+          <p className="small muted" style={{ margin: 0 }}>
+            Backed up by <FnTag fn={powers.superpower.ally} /> — the Support that keeps the Lead from
+            running alone.
+          </p>
+        </Panel>
+
+        <Panel title={<span className="cluster"><FnTag fn={powers.kryptonite.fn} size="var(--t-lg)" /> Kryptonite</span>}>
+          <div className="note warn" style={{ marginBottom: "var(--s3)" }}>
+            <span className="small">{powers.kryptonite.shadow}</span>
+          </div>
+          <Row stacked k="Avoid triggering" v={<span className="small">{powers.kryptonite.vice}</span>} />
+          <Row stacked k="Under stress" v={<span className="small">{powers.kryptonite.stressResponse}</span>} />
+          <Row stacked k="Deal breaker" v={<span className="small">{powers.kryptonite.dealBreaker}</span>} />
+        </Panel>
+      </div>
+
       {/* ------------------------------------------------ four sides */}
       <h2 id="sides" className="sec">Four sides of the mind</h2>
 
@@ -319,14 +358,24 @@ export default function TypeReader() {
         plain="You are not one type — you are four. Split those eight slots into groups of four and each group is itself one of the sixteen. You move between them all day."
       >
         <p>
-          The four sides are derived from the same three moves that generate the
-          relation table. Which is why each side stands in a fixed relation to the ego: the
-          subconscious is your <Term id="rel-du">Counterpart</Term>, the unconscious your{" "}
-          <Term id="rel-ex">Damper</Term> partner, and the superego your{" "}
-          <Term id="rel-se">Standoff</Term> partner. The relation and the structural side land on
-          the same type because they are the same operator.
+          The four sides are derived from the same three moves that generate the relation table.
+          Which is why each side stands in a fixed relation to the ego: the subconscious is your{" "}
+          <Term id="rel-du">Counterpart</Term>, the unconscious your <Term id="rel-ex">Damper</Term>{" "}
+          partner, and the superego your <Term id="rel-se">Standoff</Term> partner — three of the
+          sixteen relations Who you fit sets out further down. The relation and the structural side
+          land on the same type because they are the same operator.
         </p>
       </Explain>
+
+      {/* Promoted from the foot of this section to its head: it is a constraint
+          on everything the section (and Growth after it) tells you to go and
+          do, and at the bottom it read as a footnote to work already done. */}
+      <p className="note warn">
+        Before any of it: you cannot stay outside the ego for long. Running another side costs
+        energy, and when the mind tires it drops you back into the ego whether or not you were
+        finished. Prolonged stress, exhaustion or substances are what keep someone parked somewhere
+        else.
+      </p>
 
       <Figure
         label="The same eight functions, sorted four ways."
@@ -360,6 +409,10 @@ export default function TypeReader() {
         avoid and interact with each side, worked in this much more depth for {t} specifically.
       </p>
 
+      {/* Each side's deep working now sits inside the same disclosure the rest
+          of the app uses for its technical layer. Nothing is dropped — the
+          eight rows and both notes are all still here — but the section stops
+          being forty rows of detail standing between the reader and Growth. */}
       {SIDE_ORDER.map((k) => {
         const side = s[k];
         return (
@@ -368,40 +421,38 @@ export default function TypeReader() {
             title={`${side.name} — ${side.type}`}
             style={{ marginBottom: "var(--s4)" }}
           >
-            <Explain plain={side.plain}>
-              <p>{side.what}</p>
-            </Explain>
-
             <Row k="Way in" v={<span><FnTag fn={side.gateway.fn} />{k !== "ego" && <span className="small"> — your {side.gateway.egoSlot}</span>}</span>} />
-            <Row k="How to tell you're here" v={<span className="small">{side.assess}</span>} stacked />
-            <Row k="What holds it shut" v={<span className="small">{side.blockedBy}</span>} stacked />
-            <Row k="What opens it" v={<span className="small">{side.opensWith}</span>} stacked />
-            <Row k="Deliberately" v={<span className="small">{side.atWill}</span>} stacked />
-            <Row k="If you never do" v={<span className="small">{side.forced}</span>} stacked />
-            <Row k="Dealing with it in someone else" v={<span className="small">{side.interact}</span>} stacked />
-            <Row k="What it pays out" v={<span className="small">{side.produces}</span>} stacked />
 
-            {/* Two notes, stacked — not a grid inside a card inside a grid.
-                They are a contrast to read in sequence, not columns. */}
-            <div className="note" style={{ marginTop: "var(--s4)" }}>
-              <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Developed</b>{" "}
-              <span className="small">{side.developed}</span>
-            </div>
-            <div className="note warn" style={{ marginTop: "var(--s2)" }}>
-              <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Undeveloped</b>{" "}
-              <span className="small">{side.undeveloped}</span>
-            </div>
+            <Explain plain={side.plain} label="The full working">
+              <p>{side.what}</p>
+
+              <Row k="How to tell you're here" v={<span className="small">{side.assess}</span>} stacked />
+              <Row k="What holds it shut" v={<span className="small">{side.blockedBy}</span>} stacked />
+              <Row k="What opens it" v={<span className="small">{side.opensWith}</span>} stacked />
+              <Row k="Deliberately" v={<span className="small">{side.atWill}</span>} stacked />
+              <Row k="If you never do" v={<span className="small">{side.forced}</span>} stacked />
+              <Row k="Dealing with it in someone else" v={<span className="small">{side.interact}</span>} stacked />
+              <Row k="What it pays out" v={<span className="small">{side.produces}</span>} stacked />
+
+              {/* Two notes, stacked — not a grid inside a card inside a grid.
+                  They are a contrast to read in sequence, not columns. */}
+              <div className="note" style={{ marginTop: "var(--s4)" }}>
+                <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Developed</b>{" "}
+                <span className="small">{side.developed}</span>
+              </div>
+              <div className="note warn" style={{ marginTop: "var(--s2)" }}>
+                <b style={{ fontFamily: "var(--sans)", fontSize: "var(--t-sm)" }}>Undeveloped</b>{" "}
+                <span className="small">{side.undeveloped}</span>
+              </div>
+            </Explain>
           </Panel>
         );
       })}
 
-      <p className="note warn">
-        You cannot stay outside the ego for long. Running another side costs energy, and when the
-        mind tires it drops you back into the ego whether or not you were finished. Prolonged
-        stress, exhaustion or substances are what keep someone parked somewhere else.
-      </p>
-
-      {/* ------------------------------------------------ ops */}
+      {/* ------------------------------------------------ ops
+          The overlay's MECHANICS stay here, ahead of Growth, which reads one
+          of its two growth accounts off them. The self-reported switches that
+          used to interrupt this section have moved to "What you set yourself". */}
       <h2 id="exchange" className="sec">The exchange overlay</h2>
 
       <Explain
@@ -471,10 +522,14 @@ export default function TypeReader() {
       <h3>Your four currents</h3>
       <Explain plain={CONCEPT_PLAIN.animal}>
         <p>
-          Charge (Oe+De) and Settle (Oi+Di) move <b>energy</b>; Broadcast (Oi+De) and Absorb
-          (Oe+Di) move <b>information</b>. Positions 1 and 4 fall out of the type: the
-          double-anchor current is always in the anchor pair and the double-flinch current is always
-          last. The two in between need a switch you set.
+          Each current is one way of looking at the world bolted to one way of deciding, and it is
+          the <i>direction</i> of each that names it. An <Term id="observer">observer</Term> and a{" "}
+          <Term id="decider">decider</Term> both facing outward is Charge; both facing inward is
+          Settle — the two that move <b>energy</b>. One of each way round moves{" "}
+          <b>information</b>: inward observer with outward decider is Broadcast, outward observer
+          with inward decider is Absorb. Positions 1 and 4 fall out of the type: the double-anchor
+          current is always in the anchor pair and the double-flinch current is always last. The two
+          in between need a switch you set.
         </p>
       </Explain>
 
@@ -482,86 +537,17 @@ export default function TypeReader() {
         label={`Current stack · `}
         caption={
           o.unset.length
-            ? <>Still open: {o.unset.join(", ")}. These are self-reported switches, not derivable from a four-letter type — set them below and the code completes.</>
+            ? <>Still open: {o.unset.join(", ")}. These are self-reported switches, not derivable from a four-letter type — set them under <a href="#exchange-switches">What you set yourself</a> below and the code completes.</>
             : <>Fully coined. This is the complete notation for the reading you have set.</>
         }
       >
         <AnimalStack sig={o} />
       </Figure>
 
-      <h3 id="exchange-switches" className="sec">Your switches</h3>
-      <Panel title="Subtype switches — self-reported, not derived">
-        <p className="small">
-          The full overlay reaches 512 readings by adding switches this app&rsquo;s sixteen-type core
-          does not carry.
-          They are kept separate on purpose: nothing below changes a single relation, score or
-          playbook. Set them if you know yours.
-        </p>
-
-        <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
-          <label className="field">
-            <span>Which current joins the anchor pair?</span>
-            <select
-              value={sub.secondSavior ?? ""}
-              onChange={(e) => setSub((v) => ({ ...v, secondSavior: (e.target.value || undefined) as Animal | undefined }))}
-            >
-              <option value="">Not set</option>
-              {o.middles.map((m) => <option key={m} value={m}>{ANIMAL_LABEL[m]}</option>)}
-            </select>
-          </label>
-
-          <label className="field">
-            <span>Which of the two leads?</span>
-            <select
-              value={sub.lead ?? ""}
-              onChange={(e) => setSub((v) => ({ ...v, lead: (e.target.value || undefined) as Subtype["lead"] }))}
-            >
-              <option value="">Not set</option>
-              <option value="double-savior">{ANIMAL_LABEL[o.doubleSavior]} (both anchors)</option>
-              <option value="second-savior">The other anchor current</option>
-            </select>
-          </label>
-
-          <label className="field">
-            <span>Sensory modality</span>
-            <select value={sub.sensory ?? ""} onChange={(e) => setSub((v) => ({ ...v, sensory: (e.target.value || undefined) as "M" | "F" | undefined }))}>
-              <option value="">Not set</option>
-              <option value="M">Masculine — held hard, immovable</option>
-              <option value="F">Feminine — held loosely, malleable</option>
-            </select>
-          </label>
-
-          <label className="field">
-            <span>Extraverted decider modality</span>
-            <select value={sub.decider ?? ""} onChange={(e) => setSub((v) => ({ ...v, decider: (e.target.value || undefined) as "M" | "F" | undefined }))}>
-              <option value="">Not set</option>
-              <option value="M">Masculine — pushes outward</option>
-              <option value="F">Feminine — draws inward</option>
-            </select>
-          </label>
-        </div>
-
-        <label className="cluster" style={{ marginTop: "var(--s4)", gap: 10 }}>
-          <input
-            type="checkbox"
-            checked={!!sub.jumper}
-            onChange={(e) => setSub((v) => ({ ...v, jumper: e.target.checked }))}
-          />
-          <span className="small">
-            <b>Jumper</b> — anchors are the dominant and the <i>tertiary</i> rather than the
-            auxiliary. The overlay&rsquo;s other sixteen base readings.
-          </span>
-        </label>
-
-        <p className="small muted" style={{ marginTop: "var(--s3)", marginBottom: 0 }}>
-          Currently <b>{o.dominance}-dominant</b>.{" "}
-          {sub.jumper
-            ? "Jumpers are info-dominant: both anchors share an attitude, so an energy current is last."
-            : "Every non-jumper is energy-dominant, because a dominant and an auxiliary always run opposite attitudes — which is exactly the line where the overlay's 32 base readings leave this app's 16 types behind."}
-        </p>
-      </Panel>
-
-      {/* ------------------------------------------------ growth */}
+      {/* ------------------------------------------------ growth
+          Unmoved in sequence (5th of 9 here, 5th of 9 there) but now the
+          section every foundation before it was building toward, rather than
+          something the switches digression interrupted. */}
       <h2 id="growth" className="sec">Growth</h2>
 
       <Explain big plain={GATE_PLAIN[g.gate]}>
@@ -631,7 +617,10 @@ export default function TypeReader() {
         </div>
       </Panel>
 
-      {/* ------------------------------------------------ octagram */}
+      {/* ------------------------------------------------ octagram
+          Keeps "Where this app stops": an honesty note belongs beside the
+          claims it qualifies, not filed under Reference at the foot of the
+          page. The theme PICKER has moved on; the wheel still reflects it. */}
       <h2 id="octagram" className="sec">The Octagram</h2>
 
       <Explain big plain={CONCEPT_PLAIN.octagram}>
@@ -641,7 +630,7 @@ export default function TypeReader() {
           which is your <Term id="rel-du">Counterpart</Term>, and your <Term id="temple">temple</Term> is your
           full four-sides orbit. Both fall out of the same three moves the rest of the engine
           runs on, 16 of 16, with no lookup table anywhere. The theme layer is biographical, so it
-          is set below rather than computed.
+          is set under What you set yourself rather than computed.
         </p>
       </Explain>
 
@@ -671,8 +660,7 @@ export default function TypeReader() {
           </Panel>
 
           {/* One panel for the wheel's three readings — the figure beside it
-              already carries the words; this carries what they mean. The
-              first build stated the origin three separate times in one row. */}
+              already carries the words; this carries what they mean. */}
           <Panel title="Reading the wheel">
             <Row stacked k={`Origin — ${wheel.origin}`} v={<span className="small">{wheel.originPlain}</span>} />
             <Row stacked k={`Living virtue — ${wheel.livingVirtue}`} v={<span className="small">{wheel.virtuePlain}</span>} />
@@ -681,15 +669,115 @@ export default function TypeReader() {
         </div>
       </div>
 
-      <h3 id="theme" className="sec" style={{ marginTop: "var(--s5)" }}>Your theme</h3>
+      <Panel title="Where this app stops" style={{ marginTop: "var(--s4)" }}>
+        <p className="small" style={{ marginTop: 0 }}>
+          The Octagram is recent and unevenly published. Rather than filling the gaps with
+          plausible-sounding material, they are written down:
+        </p>
+        {UNSETTLED.map((u) => (
+          <Row key={u.what} stacked k={u.what} v={<span className="small">{u.why}</span>} />
+        ))}
+      </Panel>
+
+      {/* ------------------------------------------------ self-report
+          The page's two sets of controls, together. Both are explicitly not
+          derived, both are advanced, and before the restructure they sat three
+          sections apart — each having to establish the same posture from
+          scratch, in the middle of a derived section. */}
+      <h2 id="self-report" className="sec">What you set yourself</h2>
+
+      <Explain
+        big
+        plain="Two things on this page cannot be read off four letters: which way round some of your currents run, and what your childhood did to you. Those are questions, not results — answer them if you know, leave them if you do not."
+      >
+        <p>
+          Both layers are held in the same posture: self-reported, never inferred, and load-bearing
+          for nothing else. Nothing set here changes a single relation, score or playbook, and
+          nothing above it was derived from an answer given here. They are kept together — and last
+          — so that the derived reading above stands on its own.
+        </p>
+      </Explain>
+
+      <h3 id="exchange-switches" className="sec">Your switches</h3>
+      <Panel title="Subtype switches — self-reported, not derived">
+        <p className="small">
+          The full overlay reaches 512 readings by adding switches this app&rsquo;s sixteen-type core
+          does not carry. Set them if you know yours; they refine the current stack in{" "}
+          <a href="#exchange">The exchange overlay</a> above and nothing else.
+        </p>
+
+        <div className="grid g2" style={{ marginTop: "var(--s4)" }}>
+          <label className="field">
+            <span>Which current joins the anchor pair?</span>
+            <select
+              value={sub.secondSavior ?? ""}
+              onChange={(e) => setSub((v) => ({ ...v, secondSavior: (e.target.value || undefined) as Animal | undefined }))}
+            >
+              <option value="">Not set</option>
+              {o.middles.map((m) => <option key={m} value={m}>{ANIMAL_LABEL[m]}</option>)}
+            </select>
+          </label>
+
+          <label className="field">
+            <span>Which of the two leads?</span>
+            <select
+              value={sub.lead ?? ""}
+              onChange={(e) => setSub((v) => ({ ...v, lead: (e.target.value || undefined) as Subtype["lead"] }))}
+            >
+              <option value="">Not set</option>
+              <option value="double-savior">{ANIMAL_LABEL[o.doubleSavior]} (both anchors)</option>
+              <option value="second-savior">The other anchor current</option>
+            </select>
+          </label>
+
+          <label className="field">
+            <span>Sensory modality</span>
+            <select value={sub.sensory ?? ""} onChange={(e) => setSub((v) => ({ ...v, sensory: (e.target.value || undefined) as "M" | "F" | undefined }))}>
+              <option value="">Not set</option>
+              <option value="M">Masculine — held hard, immovable</option>
+              <option value="F">Feminine — held loosely, malleable</option>
+            </select>
+          </label>
+
+          <label className="field">
+            <span>Extraverted decider modality</span>
+            <select value={sub.decider ?? ""} onChange={(e) => setSub((v) => ({ ...v, decider: (e.target.value || undefined) as "M" | "F" | undefined }))}>
+              <option value="">Not set</option>
+              <option value="M">Masculine — pushes outward</option>
+              <option value="F">Feminine — draws inward</option>
+            </select>
+          </label>
+        </div>
+
+        <label className="cluster" style={{ marginTop: "var(--s4)", gap: 10 }}>
+          <input
+            type="checkbox"
+            checked={!!sub.jumper}
+            onChange={(e) => setSub((v) => ({ ...v, jumper: e.target.checked }))}
+          />
+          <span className="small">
+            <b>Jumper</b> — anchors are the dominant and the <i>tertiary</i> rather than the
+            auxiliary. The overlay&rsquo;s other sixteen base readings.
+          </span>
+        </label>
+
+        <p className="small muted" style={{ marginTop: "var(--s3)", marginBottom: 0 }}>
+          Currently <b>{o.dominance}-dominant</b>.{" "}
+          {sub.jumper
+            ? "Jumpers are info-dominant: both anchors share an attitude, so an energy current is last."
+            : "Every non-jumper is energy-dominant, because a dominant and an auxiliary always run opposite attitudes — which is exactly the line where the overlay's 32 base readings leave this app's 16 types behind."}
+        </p>
+      </Panel>
+
+      <h3 id="theme" className="sec">Your theme</h3>
       <Panel title="Self-reported, not derived">
         <Explain
           plain="Two questions about your life rather than your wiring. Nobody can read these off a four-letter type, which is the whole reason the layer exists: two people of the same type with different childhoods end up in different places."
         >
           <p style={{ margin: 0 }}>
             Development is described as set early and largely fixed; focus is mutable and is what
-            the growth section above is actually about. Held in the same posture as the subtype
-            coins — nothing is stored, and nothing is inferred.
+            the growth section above is actually about. Picking a square also marks the pole it
+            leans toward on <a href="#octagram">your wheel</a>.
           </p>
         </Explain>
 
@@ -723,17 +811,10 @@ export default function TypeReader() {
         )}
       </Panel>
 
-      <Panel title="Where this app stops" style={{ marginTop: "var(--s4)" }}>
-        <p className="small" style={{ marginTop: 0 }}>
-          The Octagram is recent and unevenly published. Rather than filling the gaps with
-          plausible-sounding material, they are written down:
-        </p>
-        {UNSETTLED.map((u) => (
-          <Row key={u.what} stacked k={u.what} v={<span className="small">{u.why}</span>} />
-        ))}
-      </Panel>
-
-      {/* ------------------------------------------------ fit */}
+      {/* ------------------------------------------------ fit
+          Other-facing, after the self is complete. The coin signature that
+          used to close this section has gone to Reference: it is notation
+          about how the type is fixed, not about who suits it. */}
       <h2 id="fit" className="sec">Who you fit</h2>
 
       <Explain
@@ -796,30 +877,35 @@ export default function TypeReader() {
         </p>
       </Panel>
 
-      {/* Fit-with-others content, so it lives in the fit section — it used to
-          sit under Growth, which is about the self. */}
+      {/* The behavioural profile, minus the three fields Kryptonite above
+          already renders from the same source (stress response, deal breaker,
+          vice) — before the restructure they were printed twice on this page. */}
       <Panel title="Working with them" style={{ marginTop: "var(--s4)" }}>
         <div className="grid g2">
           <div>
             <Row k="Motivation" v={b.motivation} stacked />
             <Row k="Decides by" v={b.decisionStyle} stacked />
-            <Row k="Speaks" v={b.commsStyle} stacked />
           </div>
           <div>
-            <Row k="Under stress" v={b.stressResponse} stacked />
-            <Row k="Deal breaker" v={b.dealBreaker} stacked />
+            <Row k="Speaks" v={b.commsStyle} stacked />
             <Row k="Flaw" v={b.commsFlaw} stacked />
           </div>
         </div>
         <p className="small" style={{ marginTop: "var(--s4)", marginBottom: 0 }}>
-          Appeal to <b>{virtue}</b>. Avoid triggering <b>{vice}</b>.
+          Appeal to <b>{virtue}</b>. What to avoid, how they go under pressure and what ends it are
+          in <a href="#powers">Superpowers &amp; kryptonite</a> above.
         </p>
       </Panel>
 
-      <Panel title="Coin signature" style={{ marginTop: "var(--s4)" }}>
+      {/* ------------------------------------------------ reference
+          Notation and other people's vocabulary, last. Nobody reads their own
+          type page for either, and both were sitting inside "Who you fit". */}
+      <h2 id="reference" className="sec">Reference</h2>
+
+      <Panel title="Coin signature">
         <p className="small">
           Four of these fix the type; the other four are derivable checks. Violet ones are the
-          determining coins.
+          determining coins — they are what the four letters at the top actually encode.
         </p>
         {c.map((v, i) => (
           <Row
@@ -850,21 +936,24 @@ export default function TypeReader() {
           <p className="small muted" style={{ margin: "var(--s3) 0" }}>
             Octant is one model, derived here — these are not its sources, and the names below are
             not interchangeable with ours. They are here so that if you arrived carrying somebody
-            else&rsquo;s vocabulary, you can find your footing.
+            else&rsquo;s vocabulary, you can find your footing. The three role-names at the top of
+            the page are the other alternates, printed there without their systems.
           </p>
-          {[...typeElsewhere(t), ...romanceElsewhere(t)].map((e) => (
-            <Row
-              key={`${e.system}-${e.term}`}
-              stacked
-              k={<span>{e.system}</span>}
-              v={
-                <span className="small">
-                  {e.term}
-                  {e.note && <span className="muted"> — {e.note}</span>}
-                </span>
-              }
-            />
-          ))}
+          {[...typeElsewhere(t), ...romanceElsewhere(t)]
+            .filter((e) => !aliasNames.has(e.term))
+            .map((e) => (
+              <Row
+                key={`${e.system}-${e.term}`}
+                stacked
+                k={<span>{e.system}</span>}
+                v={
+                  <span className="small">
+                    {e.term}
+                    {e.note && <span className="muted"> — {e.note}</span>}
+                  </span>
+                }
+              />
+            ))}
         </details>
       </Panel>
     </>
