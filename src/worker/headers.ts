@@ -1,5 +1,6 @@
 import { b64url } from "./crypto";
 import { GATE_SCRIPT } from "./auth";
+import { ONRAMP_SCRIPT } from "./onramp";
 
 /* ------------------------------------------------------------------ *
  * SECURITY HEADERS — one layer, at the Worker's single exit.
@@ -9,9 +10,10 @@ import { GATE_SCRIPT } from "./auth";
  * Wrapping the router's return means no future route can forget — a page
  * would have to opt out on purpose.
  *
- * The CSP allows exactly two inline scripts, by hash: the theme resolver
- * in index.html and the gate's login script. Everything else executable
- * must come from this origin. Two consequences worth knowing:
+ * The CSP allows exactly three inline scripts, by hash: the theme resolver
+ * in index.html, the gate's login script, and the onramp funnel's
+ * tap-to-advance script. Everything else executable must come from this
+ * origin. Two consequences worth knowing:
  *
  *   - The theme script's hash is a CONSTANT here, pinned by a test that
  *     recomputes it from index.html — editing that script without
@@ -42,9 +44,10 @@ let cspPromise: Promise<string> | null = null;
 function csp(): Promise<string> {
   cspPromise ??= (async () => {
     const gate = await sha256b64(GATE_SCRIPT);
+    const onramp = await sha256b64(ONRAMP_SCRIPT);
     return [
       "default-src 'self'",
-      `script-src 'self' 'sha256-${THEME_SCRIPT_HASH}' 'sha256-${gate}'`,
+      `script-src 'self' 'sha256-${THEME_SCRIPT_HASH}' 'sha256-${gate}' 'sha256-${onramp}'`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src https://fonts.gstatic.com",
       "img-src 'self' data:",

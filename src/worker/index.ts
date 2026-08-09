@@ -16,6 +16,7 @@ import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
 import { handleRead } from "./read";
+import { handleOnramp } from "./onramp";
 
 /**
  * Assets-plus-API Worker, behind an access wall.
@@ -97,6 +98,13 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   //     stays gated, reached only by their CTAs.
   const read = handleRead(url, url.origin);
   if (read) return read;
+
+  // 4c. The onramp quiz funnel — public by design, same posture as handleRead.
+  //     A worker-rendered surface, never a React route: the SPA sits entirely
+  //     behind the wall (assets.run_worker_first), so a gated route here
+  //     would ship the whole app to anonymous ad traffic.
+  const onramp = handleOnramp(url, url.origin);
+  if (onramp) return onramp;
 
   // 5. The wall. Returns a response for everyone not signed in and approved —
   //    with ONE carve-out: an anonymous GET of the front page gets the public
