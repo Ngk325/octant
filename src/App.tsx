@@ -5,6 +5,7 @@ import Welcome, { ONBOARDING_DONE_KEY } from "./views/Welcome";
 import Learn from "./views/Learn";
 import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
+import TypeReaderV2 from "./views/TypeReaderV2";
 import Sides from "./views/Sides";
 import PairReader from "./views/PairReader";
 import Calculator from "./views/Calculator";
@@ -185,6 +186,10 @@ export default function App() {
             <Route path="/read-someone" element={<Read />} />
             <Route path="/types" element={<Types />} />
             <Route path="/type/:type" element={<TypeReader />} />
+            {/* Unlisted in the nav on purpose — a draft restructure of the type
+                reader, for review only. /type/:type above is the shipped page. */}
+            <Route path="/a-type-v2" element={<TypeReaderV2 />} />
+            <Route path="/a-type-v2/:type" element={<TypeReaderV2 />} />
             <Route path="/sides" element={<Sides />} />
             <Route path="/sides/:type" element={<Sides />} />
             <Route path="/pair/:a/:b" element={<PairReader />} />
