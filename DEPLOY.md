@@ -131,6 +131,33 @@ nick:Rk9xQe2mVt8L,jane:7Zp3WsNbYc1H
 Secrets take effect on the next deploy. `npx wrangler deploy` if you are deploying
 directly; push to the branch if you are on Git-connected builds.
 
+### Optional: the stack export
+
+`GET /api/export/stack/:type` hands out the eight slots as
+`{ slot, function_attitude }` and nothing else — the one read-only seam out of
+this app, for a separate private tool that keeps its own per-person notes.
+`src/worker/export.ts` carries the full reasoning.
+
+Two optional secrets turn it on. Neither fails open: with no `EXPORT_TOKEN` the
+route is reachable only by someone already signed in on this origin, and with no
+`EXPORT_ORIGINS` it emits no cross-origin headers at all.
+
+```sh
+# the bearer token the caller presents
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+npx wrangler secret put EXPORT_TOKEN
+
+# the origins allowed to read it cross-site: comma-separated exact matches,
+# scheme and host, no trailing slash, no wildcards
+npx wrangler secret put EXPORT_ORIGINS
+```
+
+- **To revoke the export:** re-run `wrangler secret put EXPORT_TOKEN` with a
+  fresh value, or unset both to close the cross-origin door entirely.
+- **The token is not a session.** It reads stack orderings and can do nothing
+  else — it does not open the app, the readings or any other API route, and
+  `tests/workers/export.test.ts` holds that down.
+
 ### Verifying
 
 ```sh
