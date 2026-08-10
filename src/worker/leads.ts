@@ -67,6 +67,13 @@ const writeLead = (env: LeadsEnv, lead: Lead) =>
  * Capture one onramp lead and send the explainer immediately. Idempotent —
  * a reload of the done page finds the existing record and does nothing
  * further, so nobody gets the explainer twice. Never throws.
+ *
+ * The lead is written at `stage: 0` *before* the send attempt, and only
+ * advanced to `stage: 1` if the send actually succeeded. A failed send
+ * (missing key, Resend error, network) leaves the record at stage 0 with
+ * `nextSendAt` already due — sendQueuedNurture's hourly cron treats stage 0
+ * as "explainer still owed" and retries it, since a captured lead can never
+ * reach this function again to retry itself.
  */
 export async function captureLead(
   env: LeadsEnv, origin: string, email: string, goal: string | undefined,
@@ -81,9 +88,13 @@ export async function captureLead(
       nurture: { stage: 0, nextSendAt: now },
     };
     await writeLead(env, lead);
-    await sendMail(env, await explainerMessage(env, origin, lead, now), "leads");
-    lead.nurture = { stage: 1, nextSendAt: now + 3 * DAY_MS };
-    await writeLead(env, lead);
+    const result = await sendMail(
+      env, await explainerMessage(env, origin, lead, now), "leads", { requireVerifiedSender: true },
+    );
+    if (result.sent) {
+      lead.nurture = { stage: 1, nextSendAt: now + 3 * DAY_MS };
+      await writeLead(env, lead);
+    }
   } catch (err) {
     console.error("leads: capture failed", String(err));
   }
@@ -107,6 +118,12 @@ export async function markLeadConverted(env: LeadsEnv, email: string, now: numbe
  * Hourly-cron entry point (see index.ts scheduled()), same shape as
  * chatlog.ts's sweepIdle/refreshTrendingTags: paginated scan, best-effort,
  * never throws overall.
+ *
+ * Every stage transition here is gated on sendMail's actual result: a
+ * Resend failure leaves `stage`/`nextSendAt` untouched, so the same lead is
+ * picked up again next hour instead of silently skipping — and, since the
+ * second follow-up is the last entry in SEQUENCE, an unconditional advance
+ * there would otherwise mark the sequence "complete" without ever sending it.
  */
 export async function sendQueuedNurture(env: LeadsEnv, origin: string, now: number): Promise<void> {
   if (!env.LEADS) return;
@@ -118,8 +135,25 @@ export async function sendQueuedNurture(env: LeadsEnv, origin: string, now: numb
         const email = name.slice("lead:".length);
         try {
           const lead = await readLead(env, email);
-          if (!lead || lead.nurture.stoppedAt || !lead.optin) continue;
+          if (!lead || lead.nurture.stoppedAt) continue;
           if (lead.nurture.nextSendAt > now) continue;
+
+          if (lead.nurture.stage === 0) {
+            // captureLead's synchronous send failed at capture time. The
+            // explainer is transactional — owed to everyone regardless of
+            // optin — so retry it here rather than waiting on the opt-in
+            // gate below.
+            const result = await sendMail(
+              env, await explainerMessage(env, origin, lead, now), "leads", { requireVerifiedSender: true },
+            );
+            if (result.sent) {
+              lead.nurture = { stage: 1, nextSendAt: now + 3 * DAY_MS };
+              await writeLead(env, lead);
+            }
+            continue;
+          }
+
+          if (!lead.optin) continue;
           const entry = SEQUENCE[lead.nurture.stage - 1];
           if (!entry) continue; // sequence complete
           // Opt-in marketing mail must always carry an opt-out. Unlike the
@@ -133,10 +167,12 @@ export async function sendQueuedNurture(env: LeadsEnv, origin: string, now: numb
             continue;
           }
           const msg = await entry.build(env, origin, lead, now);
-          await sendMail(env, msg, "leads");
-          lead.nurture.stage += 1;
-          lead.nurture.nextSendAt = now + 7 * DAY_MS;
-          await writeLead(env, lead);
+          const result = await sendMail(env, msg, "leads", { requireVerifiedSender: true });
+          if (result.sent) {
+            lead.nurture.stage += 1;
+            lead.nurture.nextSendAt = now + 7 * DAY_MS;
+            await writeLead(env, lead);
+          }
         } catch (err) {
           console.error(`leads: nurture send failed for one lead`, String(err));
         }

@@ -136,6 +136,26 @@ describe("the user list", () => {
     expect(user.status).toBe("pending");
   });
 
+  it("keeps the preapproval marker intact if the user record write fails, instead of losing it", async () => {
+    // A paying customer must never be stranded pending because a KV write
+    // happened to fail on the one request that would have unlocked them —
+    // the marker is only cleared AFTER the approved record is durably
+    // written, so a failure here leaves it there for the next sign-in to
+    // retry, rather than deleting it first and losing it if the write below
+    // then fails.
+    await preapprove(ENV, "jane@example.com", NOW - 1000);
+    const brokenPut = USERS.put.bind(USERS);
+    USERS.put = async () => { throw new Error("KV put failed"); };
+    await expect(recordSignIn(ENV, "jane@example.com", "Jane", NOW)).rejects.toThrow("KV put failed");
+    expect(await USERS.get("preapproved:jane@example.com")).not.toBeNull();
+
+    USERS.put = brokenPut;
+    const { user, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 1000);
+    expect(wasPreapproved).toBe(true);
+    expect(user.status).toBe("approved");
+    expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
+  });
+
   it("does not reset an existing decision on a later sign-in", async () => {
     await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
     await setStatus(ENV, "jane@example.com", "approved", NOW);

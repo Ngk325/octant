@@ -132,25 +132,48 @@ describe("lead capture and analytics wiring at the done step", () => {
       // since fetch itself is stubbed) is required to make the "no second
       // send" claim mean anything.
       RESEND_API_KEY: "re_test",
+      NOTIFY_FROM: "Octant <octant@verified.example>",
       LEADS,
       ONRAMP_ANALYTICS: { writeDataPoint: (p: typeof points[number]) => points.push(p) },
     } as unknown as Env;
     return { LEADS, points, env };
   };
 
-  afterEach(() => vi.unstubAllGlobals());
+  /** Mint a real start token the way a visitor would — by loading step 0. */
+  async function startToken(env: Env): Promise<string> {
+    const html = await (await worker.fetch(new Request("https://octant.example/onramp?step=0"), env)).text();
+    const m = html.match(/name="_s" value="([^"]+)"/);
+    if (!m) throw new Error("step 0 did not render a start token");
+    return m[1];
+  }
+
+  const NOW = 1_800_000_000_000;
+  const MIN_COMPLETION_MS = 2_000;
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.useRealTimers();
+  });
 
   it("captures a lead exactly once at the done step when an email is present", async () => {
     const { LEADS, env } = withLeadsAndAnalytics();
     vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    const s = await startToken(env);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS + 1000);
 
-    await worker.fetch(new Request("https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes"), env);
+    await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes&_s=${encodeURIComponent(s)}`), env,
+    );
     expect(LEADS.store.has("lead:jane@example.com")).toBe(true);
 
     // A reload of the done page must not send a second explainer / re-capture.
     let sends = 0;
     vi.stubGlobal("fetch", async () => { sends++; return new Response("{}", { status: 200 }); });
-    await worker.fetch(new Request("https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes"), env);
+    await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes&_s=${encodeURIComponent(s)}`), env,
+    );
     expect(sends).toBe(0);
   });
 
@@ -172,14 +195,55 @@ describe("lead capture and analytics wiring at the done step", () => {
     expect(LEADS.store.size).toBe(0);
   });
 
+  it("never captures a lead from a bare step=11 request that skipped step 0 entirely", async () => {
+    // The exact abuse this guards against: a single unauthenticated GET
+    // with no prior render, previously enough to make the Worker mail an
+    // Octant-branded message to any address a caller supplied.
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    await worker.fetch(new Request("https://octant.example/onramp?step=11&email=jane@example.com"), env);
+    expect(LEADS.store.size).toBe(0);
+  });
+
+  it("never captures a lead replaying a forged or another env's start token", async () => {
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    await worker.fetch(
+      new Request("https://octant.example/onramp?step=11&email=jane@example.com&_s=garbage.notasignature"),
+      env,
+    );
+    expect(LEADS.store.size).toBe(0);
+  });
+
+  it("never captures a lead that replays a start token faster than a person could finish the funnel", async () => {
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    const s = await startToken(env);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS - 1); // one ms short of the floor
+
+    await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&_s=${encodeURIComponent(s)}`), env,
+    );
+    expect(LEADS.store.size).toBe(0);
+  });
+
   it("preserves every friction pick, not just the first, through capture", async () => {
     const { LEADS, env } = withLeadsAndAnalytics();
     vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    const s = await startToken(env);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS + 1000);
+
     // A real GET <form> submits repeated same-name checkboxes as repeated
     // params — this is the actual wire format, not a comma-joined value.
     await worker.fetch(
       new Request(
-        "https://octant.example/onramp?step=11&email=jane@example.com&friction=recurring&friction=meetings",
+        `https://octant.example/onramp?step=11&email=jane@example.com&friction=recurring&friction=meetings&_s=${encodeURIComponent(s)}`,
       ),
       env,
     );

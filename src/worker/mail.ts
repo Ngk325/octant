@@ -25,15 +25,31 @@ const RESEND_ENDPOINT = "https://api.resend.com/emails";
 /** Fallback sender — Resend only delivers this to the address the account is registered under. */
 export const DEFAULT_FROM = "Octant <onboarding@resend.dev>";
 
+export interface SendMailOptions {
+  /**
+   * Resend's shared `onboarding@resend.dev` sender only delivers to the
+   * account's own registered address — it is not able to reach arbitrary
+   * third parties, even though the API call itself still reports success.
+   * Set this for mail to recipients who are not the account owner (e.g.
+   * captured leads); it refuses to send rather than silently no-op through
+   * a sender that cannot actually reach them.
+   */
+  requireVerifiedSender?: boolean;
+}
+
 /**
  * Send one email via Resend. Never throws — a failed send must never break
  * whatever it was reporting on. Returns whether it went out, for logging and
  * for tests.
  */
 export async function sendMail(
-  env: MailEnv, msg: MailMessage, logPrefix: string,
+  env: MailEnv, msg: MailMessage, logPrefix: string, opts: SendMailOptions = {},
 ): Promise<{ sent: boolean; reason?: string }> {
   if (!env.RESEND_API_KEY) return { sent: false, reason: "no RESEND_API_KEY" };
+  if (opts.requireVerifiedSender && !env.NOTIFY_FROM) {
+    console.error(`${logPrefix}: refusing to send — no NOTIFY_FROM, and Resend's shared sender cannot reach this recipient`);
+    return { sent: false, reason: "no NOTIFY_FROM" };
+  }
   try {
     const res = await fetch(RESEND_ENDPOINT, {
       method: "POST",

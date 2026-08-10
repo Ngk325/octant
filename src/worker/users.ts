@@ -70,13 +70,28 @@ export async function preapprove(env: UserEnv, email: string, now: number): Prom
   await env.USERS.put(PREAPPROVE_KEY(email), String(now), { expirationTtl: PREAPPROVE_TTL_SECONDS });
 }
 
-/** Consume a pre-approval marker if one exists. One-shot: gone whether or not it was found. */
-async function consumePreapproval(env: UserEnv, email: string): Promise<boolean> {
+/** Whether a pre-approval marker exists, without consuming it. */
+async function hasPreapproval(env: UserEnv, email: string): Promise<boolean> {
   if (!env.USERS) return false;
-  const found = await env.USERS.get(PREAPPROVE_KEY(email));
-  if (!found) return false;
+  return (await env.USERS.get(PREAPPROVE_KEY(email))) !== null;
+}
+
+/**
+ * Clear a pre-approval marker. Only called from recordSignIn AFTER the
+ * approved user record has already been durably written — so if this
+ * delete itself fails, or a concurrent sign-in raced this one, the marker
+ * simply survives for a harmless re-consume next time (writing "approved"
+ * again is a no-op). The alternative order — delete first, write second —
+ * can lose a paying customer's only approval marker if the write fails in
+ * between, stranding them `pending` with no way back in but the owner's
+ * manual approval. This module has no compare-and-swap primitive to make
+ * the whole thing atomic (KV has none; that would need a Durable Object),
+ * so this ordering is the cheap way to make the failure mode "consumed
+ * twice, harmlessly" rather than "consumed and lost".
+ */
+async function clearPreapproval(env: UserEnv, email: string): Promise<void> {
+  if (!env.USERS) return;
   await env.USERS.delete(PREAPPROVE_KEY(email));
-  return true;
 }
 
 export const isOwner = (env: UserEnv, email: string) =>
@@ -120,7 +135,7 @@ export async function recordSignIn(
     // record is eligible — never re-check for `blocked` (a deliberate no
     // from the owner must not be silently overridden by a later payment).
     const wasPreapproved = !owner && existing.status === "pending" &&
-      (await consumePreapproval(env, email));
+      (await hasPreapproval(env, email));
     const user: User = {
       ...existing,
       name: name || existing.name,
@@ -132,10 +147,11 @@ export async function recordSignIn(
       decidedAt: owner || wasPreapproved ? now : existing.decidedAt,
     };
     await put(env, user);
+    if (wasPreapproved) await clearPreapproval(env, email);
     return { user, isNew: false, wasPreapproved };
   }
 
-  const wasPreapproved = !owner && (await consumePreapproval(env, email));
+  const wasPreapproved = !owner && (await hasPreapproval(env, email));
   const user: User = {
     email: normalise(email),
     name: name || normalise(email),
@@ -146,6 +162,7 @@ export async function recordSignIn(
     decidedAt: owner || wasPreapproved ? now : undefined,
   };
   await put(env, user);
+  if (wasPreapproved) await clearPreapproval(env, email);
   return { user, isNew: true, wasPreapproved };
 }
 

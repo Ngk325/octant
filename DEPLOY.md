@@ -74,7 +74,7 @@ bundle.
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | for Google sign-in | Without both, the Google button does not render and codes are the only way in. Setup: `docs/GOOGLE-SETUP.md`. |
 | `OWNER_EMAIL` | for approval + /admin | The auto-approved account and the only one `/admin` opens for. |
 | `RESEND_API_KEY` | for email | Sign-up notifications, chat transcripts, and onramp lead nurture. Without it, sign-ups still record; nothing mails. |
-| `NOTIFY_FROM` | in practice, yes for email | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address — see `docs/GOOGLE-SETUP.md`. |
+| `NOTIFY_FROM` | for owner mail: in practice yes; for onramp lead mail: yes, hard requirement | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address, so it can't reach a captured lead's inbox — lead/nurture mail refuses to send without `NOTIFY_FROM` rather than silently no-op through it. See `docs/GOOGLE-SETUP.md`. |
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
 | `STRIPE_WEBHOOK_SECRET` | for payment auto-approval | Verifies `POST /api/stripe/webhook` actually came from Stripe (`whsec_...`, from the webhook endpoint's settings in the Stripe dashboard — not the account's API key; no Stripe SDK or API key is used anywhere in this app). Without it, the endpoint 503s and payment stays manual — the customer signs in, lands `pending`, and the owner approves them the existing way. |
 

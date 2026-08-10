@@ -76,6 +76,13 @@ describe("captureLead", () => {
     await captureLead({}, "https://octant.example", "jane@example.com", undefined, [], undefined, true, NOW);
     expect(sent).toHaveLength(0);
   });
+
+  it("leaves the lead at stage 0 when the explainer send fails, instead of persisting stage 1 unsent", async () => {
+    const env: LeadsEnv = { ...ENV, NOTIFY_FROM: undefined }; // requireVerifiedSender now refuses to send
+    await captureLead(env, "https://octant.example", "jane@example.com", "self", [], undefined, true, NOW);
+    expect(sent).toHaveLength(0);
+    expect(lead("jane@example.com").nurture).toMatchObject({ stage: 0, nextSendAt: NOW });
+  });
 });
 
 describe("sendQueuedNurture", () => {
@@ -120,6 +127,41 @@ describe("sendQueuedNurture", () => {
     sent = [];
     await sendQueuedNurture(ENV, "https://octant.example", NOW + 30 * DAY_MS);
     expect(sent).toHaveLength(0);
+  });
+
+  it("retries the explainer for a lead stuck at stage 0 (its synchronous send failed at capture)", async () => {
+    const broken: LeadsEnv = { ...ENV, NOTIFY_FROM: undefined };
+    await captureLead(broken, "https://octant.example", "jane@example.com", undefined, [], undefined, false, NOW);
+    expect(sent).toHaveLength(0);
+    expect(lead("jane@example.com").nurture.stage).toBe(0);
+
+    // Fixed configuration, cron runs later — even a non-opted-in lead is
+    // still owed the transactional explainer.
+    await sendQueuedNurture(ENV, "https://octant.example", NOW + 1000);
+    expect(sent).toHaveLength(1);
+    expect(sent[0].subject).toContain("explainer");
+    expect(lead("jane@example.com").nurture).toMatchObject({ stage: 1, nextSendAt: NOW + 1000 + 3 * DAY_MS });
+  });
+
+  it("does not advance stage or lose the email when a follow-up send fails", async () => {
+    await captureLead(ENV, "https://octant.example", "jane@example.com", undefined, ["meetings"], undefined, true, NOW);
+    sent = [];
+
+    // Simulate a Resend outage for the day-3 follow-up only.
+    vi.stubGlobal("fetch", async () => new Response("boom", { status: 500 }));
+    await sendQueuedNurture(ENV, "https://octant.example", NOW + 3 * DAY_MS);
+    expect(sent).toHaveLength(0);
+    expect(lead("jane@example.com").nurture).toMatchObject({ stage: 1, nextSendAt: NOW + 3 * DAY_MS });
+
+    // Resend recovers; the same due lead is retried, not skipped forever.
+    vi.stubGlobal("fetch", async (_url: string, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body)) as { to: string[]; subject: string };
+      sent.push({ to: body.to, subject: body.subject });
+      return new Response("{}", { status: 200 });
+    });
+    await sendQueuedNurture(ENV, "https://octant.example", NOW + 3 * DAY_MS + 1000);
+    expect(sent).toHaveLength(1);
+    expect(lead("jane@example.com").nurture.stage).toBe(2);
   });
 });
 

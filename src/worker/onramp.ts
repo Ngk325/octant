@@ -1,4 +1,5 @@
 import { calculate, COIN_OPTIONS } from "../engine/ops";
+import { seal, unseal } from "./crypto";
 import { escapeHtml } from "./html";
 import { captureLead, FRICTION_COPY, stripeHref, type LeadsEnv } from "./leads";
 import { FAVICON, MARK, STRIPE_LINK } from "./marketing";
@@ -58,6 +59,43 @@ export interface OnrampEnv extends LeadsEnv {
 /** A basic, deliberately permissive format check — not full RFC 5322, just
  *  enough to reject "this endpoint can mail anything" abuse. */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/*
+ * A well-formed email alone does not prove anyone actually walked the
+ * funnel: `/onramp?step=11&email=<anything>` is a single unauthenticated
+ * GET, and without more it turns the endpoint into a script's way to make
+ * this Worker mail an Octant-branded message to any address it likes —
+ * spam-complaint and sender-reputation risk for the whole domain, not
+ * just a nuisance.
+ *
+ * The mitigation matches how this Worker already proves things without a
+ * session (seal/unseal, also used for the admin approve/deny links and the
+ * unsubscribe link): step 0 mints a short-lived signed token carrying its
+ * own issue time, and — because it isn't any step's own answer key —
+ * hiddenEcho() carries it forward through every later step for free. Lead
+ * capture at the done step requires a token whose signature checks out AND
+ * whose age is at least MIN_COMPLETION_MS: long enough that no real person
+ * could have answered ten questions in less, short enough to not slow down
+ * anyone who actually did. This does not stop a determined scripted
+ * attacker (two requests with a sleep between them still works) — it stops
+ * the single-request version of the abuse, which is the shape automated
+ * probing actually takes. IP-based rate limiting would close the rest, but
+ * needs new state this Worker doesn't have a cheap place to put (KV is the
+ * wrong tool for high-frequency writes — see leads.ts's header comment).
+ */
+const START_TTL_SECONDS = 60 * 60;
+const MIN_COMPLETION_MS = 2_000;
+
+async function issueStartToken(env: LeadsEnv, now: number): Promise<string | null> {
+  if (!env.AUTH_SECRET) return null;
+  return seal({ t: now }, env.AUTH_SECRET, START_TTL_SECONDS, now);
+}
+
+async function verifyStartToken(env: LeadsEnv, token: string | null, now: number): Promise<boolean> {
+  if (!env.AUTH_SECRET || !token) return false;
+  const payload = await unseal<{ t: number }>(token, env.AUTH_SECRET, now);
+  return !!payload && now - payload.t >= MIN_COMPLETION_MS;
+}
 
 type Option = { value: string; label: string };
 
@@ -248,7 +286,7 @@ const optionTile = (name: string, opt: Option, type: "radio" | "checkbox", check
     <span>${escapeHtml(opt.label)}</span>
   </label>`;
 
-function renderIntro(): string {
+function renderIntro(startToken: string | null): string {
   return `
   <h1>See your pattern.</h1>
   <p class="lede">
@@ -257,6 +295,7 @@ function renderIntro(): string {
   </p>
   <form method="get" action="/onramp">
     <input type="hidden" name="step" value="1">
+    ${startToken ? `<input type="hidden" name="_s" value="${escapeHtml(startToken)}">` : ""}
     <button class="btn primary" type="submit">Start</button>
   </form>`;
 }
@@ -354,10 +393,10 @@ function renderDone(p: URLSearchParams): string {
   <p class="muted small"><a href="/onramp">Start over</a></p>`;
 }
 
-function renderStep(i: number, p: URLSearchParams): string {
+function renderStep(i: number, p: URLSearchParams, startToken: string | null): string {
   const step = STEPS[i];
   switch (step.kind) {
-    case "intro": return renderIntro();
+    case "intro": return renderIntro(startToken);
     case "single": return renderSingle(step, i, p);
     case "likert5": return renderLikert(step, i, p);
     case "multi": return renderMulti(step, i, p);
@@ -452,8 +491,8 @@ export const ONRAMP_SCRIPT = `
 })();
 `;
 
-function page(step: number, p: URLSearchParams, origin: string): string {
-  const body = renderStep(step, p);
+function page(step: number, p: URLSearchParams, origin: string, startToken: string | null): string {
+  const body = renderStep(step, p, startToken);
   const indexable = step === 0;
   return `<!doctype html>
 <html lang="en">
@@ -506,26 +545,34 @@ export async function handleOnramp(
     /* best-effort — a telemetry failure must never affect the rendered page */
   }
 
+  const now = Date.now();
+  const startToken = step === 0 ? await issueStartToken(env, now) : null;
+
   if (step === STEPS.length - 1) {
     const email = url.searchParams.get("email");
-    // Server-side gate: this is a public GET route with no session and no
-    // prior-step signature — the HTML5 `type="email"` on the form only
-    // validates in a browser a visitor actually used. Without this check,
-    // any request to /onramp?step=11&email=<anything> makes the Worker
-    // send an Octant-branded email to that address from the verified
-    // sender, turning the endpoint into an open mail relay.
+    // Server-side gate: this is a public GET route with no session — the
+    // HTML5 `type="email"` on the form only validates in a browser a
+    // visitor actually used. Without both checks, any request to
+    // /onramp?step=11&email=<anything> makes the Worker send an
+    // Octant-branded email to that address from the verified sender,
+    // turning the endpoint into an open mail relay. EMAIL_RE rejects
+    // malformed addresses; the start-token check (above) rejects requests
+    // that never actually rendered step 0 first.
     if (email && email.length <= 254 && EMAIL_RE.test(email)) {
-      const now = Date.now();
-      const goal = url.searchParams.get("goal") ?? undefined;
-      const friction = frictionValues(url.searchParams);
-      const fieldSize = calculate(answersFrom(url.searchParams)).field.length;
-      const optin = url.searchParams.get("optin") === "yes";
-      const work = captureLead(env, url.origin, email, goal, friction, fieldSize, optin, now);
-      if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
+      if (await verifyStartToken(env, url.searchParams.get("_s"), now)) {
+        const goal = url.searchParams.get("goal") ?? undefined;
+        const friction = frictionValues(url.searchParams);
+        const fieldSize = calculate(answersFrom(url.searchParams)).field.length;
+        const optin = url.searchParams.get("optin") === "yes";
+        const work = captureLead(env, url.origin, email, goal, friction, fieldSize, optin, now);
+        if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
+      } else {
+        console.error("onramp: lead capture blocked — missing, forged, expired or too-fast start token");
+      }
     }
   }
 
-  return new Response(page(step, url.searchParams, url.origin), {
+  return new Response(page(step, url.searchParams, url.origin, startToken), {
     status: 200,
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" },
   });
