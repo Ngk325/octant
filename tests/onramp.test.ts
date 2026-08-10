@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import worker, { type Env } from "../src/worker/index";
 import { calculate } from "../src/engine/ops";
 import { DETERMINING } from "../src/engine/data";
@@ -27,7 +27,7 @@ const get = (path: string) => worker.fetch(new Request(`https://octant.example${
 
 describe("GET /onramp", () => {
   it("is reachable anonymously at every step, never 401/403", async () => {
-    for (let step = 0; step <= 9; step++) {
+    for (let step = 0; step <= 11; step++) {
       const res = await get(`/onramp?step=${step}&goal=self&q0=Observer&q4=Sensing`);
       expect(res.status).toBe(200);
       expect(res.headers.get("content-type")).toContain("text/html");
@@ -73,17 +73,93 @@ describe("GET /onramp", () => {
     expect(result.best).toBeNull();
     expect(result.field.length).toBeGreaterThan(1);
 
-    const html = await (await get("/onramp?step=9&q0=Observer&q4=Sensing")).text();
+    const html = await (await get("/onramp?step=11&q0=Observer&q4=Sensing")).text();
     expect(html).toContain(`one of about ${result.field.length} of the sixteen`);
   });
 
   it("the done step's Stripe CTA matches marketing.ts's single source of truth", async () => {
-    const html = await (await get("/onramp?step=9")).text();
+    const html = await (await get("/onramp?step=11")).text();
     expect(html).toContain(STRIPE_LINK);
   });
 
   it("the email step never pre-checks the marketing opt-in", async () => {
-    const html = await (await get("/onramp?step=8")).text();
+    const html = await (await get("/onramp?step=10")).text();
     expect(html).not.toMatch(/name="optin"[^>]*checked/);
+  });
+
+  it("the friction-reflection interstitial is personalized by the visitor's own answer", async () => {
+    const html = await (await get("/onramp?step=7&friction=meetings")).text();
+    expect(html).toContain("Group dynamics stay invisible");
+  });
+
+  it("the objection-handling interstitial precedes the email step, not after it", async () => {
+    const html = await (await get("/onramp?step=9")).text();
+    expect(html).toContain("Descriptions are horoscopes");
+  });
+});
+
+describe("lead capture and analytics wiring at the done step", () => {
+  function memoryKV() {
+    const store = new Map<string, string>();
+    return {
+      store,
+      async get(k: string) { return store.get(k) ?? null; },
+      async put(k: string, v: string) { store.set(k, v); },
+      async delete(k: string) { store.delete(k); },
+      async list({ prefix = "" }: { prefix?: string } = {}) {
+        const keys = [...store.keys()].filter((k) => k.startsWith(prefix)).sort();
+        return { keys: keys.map((name) => ({ name })), list_complete: true };
+      },
+    };
+  }
+
+  const withLeadsAndAnalytics = () => {
+    const LEADS = memoryKV();
+    const points: { blobs?: string[]; doubles?: number[]; indexes?: string[] }[] = [];
+    const env = {
+      ...ENV,
+      LEADS,
+      ONRAMP_ANALYTICS: { writeDataPoint: (p: typeof points[number]) => points.push(p) },
+    } as unknown as Env;
+    return { LEADS, points, env };
+  };
+
+  it("captures a lead exactly once at the done step when an email is present", async () => {
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+
+    await worker.fetch(new Request("https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes"), env);
+    expect(LEADS.store.has("lead:jane@example.com")).toBe(true);
+
+    // A reload of the done page must not send a second explainer / re-capture.
+    let sends = 0;
+    vi.stubGlobal("fetch", async () => { sends++; return new Response("{}", { status: 200 }); });
+    await worker.fetch(new Request("https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes"), env);
+    expect(sends).toBe(0);
+
+    vi.unstubAllGlobals();
+  });
+
+  it("captures nothing without an email at the done step", async () => {
+    const { LEADS, env } = withLeadsAndAnalytics();
+    await worker.fetch(new Request("https://octant.example/onramp?step=11"), env);
+    expect(LEADS.store.size).toBe(0);
+  });
+
+  it("writes one analytics point per step render, keyed by step index", async () => {
+    const { points, env } = withLeadsAndAnalytics();
+    await worker.fetch(new Request("https://octant.example/onramp?step=3"), env);
+    expect(points).toHaveLength(1);
+    expect(points[0].indexes).toEqual(["3"]);
+    expect(points[0].doubles).toEqual([3]);
+  });
+
+  it("a telemetry failure never breaks the rendered page", async () => {
+    const env = {
+      ...ENV,
+      ONRAMP_ANALYTICS: { writeDataPoint: () => { throw new Error("boom"); } },
+    } as unknown as Env;
+    const res = await worker.fetch(new Request("https://octant.example/onramp?step=0"), env);
+    expect(res.status).toBe(200);
   });
 });

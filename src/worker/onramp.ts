@@ -1,6 +1,22 @@
 import { calculate, COIN_OPTIONS } from "../engine/ops";
 import { escapeHtml } from "./html";
+import { captureLead, FRICTION_COPY, type LeadsEnv } from "./leads";
 import { FAVICON, MARK, STRIPE_LINK } from "./marketing";
+
+/** The third argument the runtime passes to fetch. Duplicated from index.ts's
+ *  Ctx (a type-only cross-import would work too, but this is a one-line
+ *  interface and index.ts already imports this file — keeping it local
+ *  avoids leaning on that direction reversing cleanly). */
+interface Ctx { waitUntil?(promise: Promise<unknown>): void }
+
+/** Minimal Workers Analytics Engine surface this file uses. */
+interface AnalyticsEngineDataset {
+  writeDataPoint(point: { blobs?: string[]; doubles?: number[]; indexes?: string[] }): void;
+}
+
+export interface OnrampEnv extends LeadsEnv {
+  ONRAMP_ANALYTICS?: AnalyticsEngineDataset;
+}
 
 /* ------------------------------------------------------------------ *
  * THE ONRAMP — a short, public, worker-rendered quiz funnel.
@@ -14,13 +30,20 @@ import { FAVICON, MARK, STRIPE_LINK } from "./marketing";
  * link. This file never imports anything from src/views or src/components.
  *
  * State lives entirely in the query string (?step=N&goal=...&q0=...),
- * never in a session, cookie or KV: every step is a plain GET <form>
- * that re-emits everything collected so far as hidden inputs plus the
- * new step's own field. That makes reload, the browser back button and
- * a resumed mid-funnel link all work for free, with nothing to persist
- * server-side. The one deliberate cost: the captured email transits as
- * a query parameter (server logs, browser history) — acceptable for a
- * v1 with no server-side lead storage at all.
+ * never in a session or cookie: every step is a plain GET <form> that
+ * re-emits everything collected so far as hidden inputs plus the new
+ * step's own field. That makes reload, the browser back button and a
+ * resumed mid-funnel link all work for free. The one deliberate cost:
+ * the captured email transits as a query parameter (server logs,
+ * browser history) — accepted in exchange for needing no client JS or
+ * storage at all to carry state between steps.
+ *
+ * The ONE write this file makes is at the done step, once, to LEADS
+ * (see leads.ts) — capturing the email and firing the explainer email
+ * the copy already promises. Every other step is still pure rendering
+ * with no side effect, and a captureLead() failure never blocks the
+ * page from rendering (best-effort, matching every other side effect
+ * in this Worker).
  *
  * Two of the questions read real coins (index 0 and 4, both members of
  * DETERMINING) and score them with the exact calculate() /calculator
@@ -129,6 +152,19 @@ const STEPS: readonly Step[] = [
     ],
   },
   {
+    // Personalized reflection, echoing the visitor's own friction answer
+    // back using marketing.ts's real #problem-section copy — not a new claim.
+    kind: "interstitial",
+    heading: (p) => {
+      const key = (p.get("friction") ?? "").split(",")[0];
+      return (key && FRICTION_COPY[key]?.heading) || FRICTION_COPY.drain.heading;
+    },
+    body: (p) => {
+      const key = (p.get("friction") ?? "").split(",")[0];
+      return (key && FRICTION_COPY[key]?.body) || FRICTION_COPY.drain.body;
+    },
+  },
+  {
     kind: "interstitial",
     heading: (p) => {
       const field = calculate(answersFrom(p)).field.length;
@@ -138,11 +174,21 @@ const STEPS: readonly Step[] = [
       "The other six either/or questions pin down exactly which one — that's the full read, " +
       "not this teaser.",
   },
+  {
+    // Objection handling right before the email ask — the same "descriptions
+    // are horoscopes" point marketing.ts's #how section already makes.
+    kind: "interstitial",
+    heading: () => "Descriptions are horoscopes.",
+    body: () =>
+      "A paragraph about \"your type\" can't tell you why one colleague energizes you and " +
+      "another exhausts you doing the same job. Octant derives every reading from the same " +
+      "underlying structure, so it can show you the mechanism — not just an adjective.",
+  },
   { kind: "email" },
   { kind: "done" },
 ];
 
-const QUESTION_STEPS = [1, 2, 3, 4, 5, 6, 7, 8]; // dot-progress range; 0 = intro, 9 = done
+const QUESTION_STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // dot-progress range; 0 = intro, 11 = done
 
 /* -------------------------------- rendering -------------------------------- */
 
@@ -424,11 +470,42 @@ ${backLink(p, step)}
  * `GET /onramp` — the whole funnel, one route, state in the query string.
  * Returns null for anything it doesn't own, matching handleRead's contract,
  * so index.ts's public-route block can dispatch to it unconditionally.
+ *
+ * Async now (it wasn't before) for two best-effort side effects, neither of
+ * which can block or fail the render: a per-step Analytics Engine write
+ * (piece 3 — never KV, see leads.ts's header comment on why), and, once,
+ * a lead capture at the done step.
  */
-export function handleOnramp(url: URL, origin: string): Response | null {
+export async function handleOnramp(
+  request: Request, env: OnrampEnv, url: URL, ctx?: Ctx,
+): Promise<Response | null> {
   if (url.pathname !== "/onramp" && url.pathname !== "/onramp/") return null;
   const step = clampStep(url.searchParams.get("step"));
-  return new Response(page(step, url.searchParams, origin), {
+
+  try {
+    env.ONRAMP_ANALYTICS?.writeDataPoint({
+      blobs: [STEPS[step].kind, url.searchParams.get("utm_source") ?? "", request.headers.get("referer") ?? ""],
+      doubles: [step],
+      indexes: [String(step)],
+    });
+  } catch {
+    /* best-effort — a telemetry failure must never affect the rendered page */
+  }
+
+  if (step === STEPS.length - 1) {
+    const email = url.searchParams.get("email");
+    if (email) {
+      const now = Date.now();
+      const goal = url.searchParams.get("goal") ?? undefined;
+      const friction = (url.searchParams.get("friction") ?? "").split(",").filter(Boolean);
+      const fieldSize = calculate(answersFrom(url.searchParams)).field.length;
+      const optin = url.searchParams.get("optin") === "yes";
+      const work = captureLead(env, url.origin, email, goal, friction, fieldSize, optin, now);
+      if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
+    }
+  }
+
+  return new Response(page(step, url.searchParams, url.origin), {
     status: 200,
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" },
   });

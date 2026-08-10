@@ -56,8 +56,37 @@
     // Chat transcripts, 90-day TTL, mailed to the owner at session end.
     // Same posture as USERS: without the binding, logging silently disables
     // and chat itself keeps working.
-    { "binding": "CHAT_LOGS", "id": "2f26c80cb0e143d48c4c559f8bd44cb8" }
+    { "binding": "CHAT_LOGS", "id": "2f26c80cb0e143d48c4c559f8bd44cb8" },
+    // Captured /onramp leads and their nurture-sequence progress, 180-day
+    // TTL. Own namespace, not a USERS prefix: a lead accumulates state over
+    // ~2 weeks and has nothing to do with authorization — same reasoning
+    // that gave CHAT_LOGS its own binding rather than living inside USERS.
+    // Without it, /onramp keeps working; leads are simply not captured.
+    //
+    // Created once via `npx wrangler kv namespace create LEADS`, id pasted
+    // below. Do NOT re-run that command against an existing binding — it
+    // does not check for one, it silently creates a second, empty
+    // namespace (see docs/COWORK-SETUP-RUNBOOK.md).
+    { "binding": "LEADS", "id": "REPLACE_WITH_ID_FROM_WRANGLER_KV_NAMESPACE_CREATE" }
   ],
+
+  // Per-step /onramp funnel telemetry. NOT KV — DEPLOY.md's write-budget
+  // note (1,000 writes/day on the free tier, one per second per key) rules
+  // out one KV record per pageview on any real ad traffic. Analytics Engine
+  // is built for exactly this write pattern, costs nothing extra, and is
+  // never read back by this Worker — query it via Cloudflare's own
+  // dashboard or Analytics Engine SQL API. Needs no `id`, no separate
+  // creation step; the binding itself provisions the dataset on first write.
+  "analytics_engine_datasets": [
+    { "binding": "ONRAMP_ANALYTICS", "dataset": "onramp_funnel" }
+  ],
+
+  // The deployed hostname, e.g. "https://octant.example.com" — a plain var,
+  // not a secret, since it is public knowledge. Used only to build the
+  // unsubscribe link in cron-driven nurture email (leads.ts), where there is
+  // no request to read url.origin from. Without it, those emails simply omit
+  // the unsubscribe link.
+  "vars": { "PUBLIC_ORIGIN": "" },
 
   // Cross-isolate rate limiting (GA since 2025-09, no plan cost). The
   // in-memory Maps in auth.ts and chat.ts survive as the dev fallback and

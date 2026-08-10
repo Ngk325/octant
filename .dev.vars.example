@@ -27,3 +27,13 @@ AUTH_SECRET=local-development-only-not-a-real-secret
 # Get a key from https://aistudio.google.com/apikey
 # Without it everything else works and the assistant reports itself unconfigured.
 GEMINI_API_KEY=your-key-here
+
+
+# ── Payment auto-approval ────────────────────────────────────────────────────
+# Verifies POST /api/stripe/webhook actually came from Stripe — the signing
+# secret from a webhook endpoint's settings in the Stripe dashboard (starts
+# `whsec_...`), NOT the account's API key; no Stripe SDK or API key is used
+# anywhere in this app. Without it, the endpoint 503s and payment stays
+# manual: the customer signs in, lands pending, and the owner approves them
+# the existing way. See DEPLOY.md, "Setting up the Stripe webhook".
+STRIPE_WEBHOOK_SECRET=whsec_your-test-mode-secret-here

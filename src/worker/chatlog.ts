@@ -1,4 +1,5 @@
 import { escapeHtml } from "./html";
+import { sendMail, type MailEnv } from "./mail";
 import type { KVNamespace } from "./users";
 
 /* ------------------------------------------------------------------ *
@@ -21,11 +22,9 @@ import type { KVNamespace } from "./users";
  *     honesty posture.
  * ------------------------------------------------------------------ */
 
-export interface ChatLogEnv {
+export interface ChatLogEnv extends MailEnv {
   CHAT_LOGS?: KVNamespace;
-  RESEND_API_KEY?: string;
   OWNER_EMAIL?: string;
-  NOTIFY_FROM?: string;
   NOTIFY_EMAIL?: string;
   /** Reused to name/summarize/tag a thread at session end. Same key as /api/chat. */
   GEMINI_API_KEY?: string;
@@ -101,9 +100,6 @@ const KEY = (threadId: string) => `chat:${threadId}`;
 /** Client-supplied ids are used as KV keys; keep them boring. */
 export const validThreadId = (id: unknown): id is string =>
   typeof id === "string" && /^[A-Za-z0-9-]{8,64}$/.test(id);
-
-const RESEND_ENDPOINT = "https://api.resend.com/emails";
-const DEFAULT_FROM = "Octant <onboarding@resend.dev>";
 
 async function readRecord(env: ChatLogEnv, threadId: string): Promise<ChatLogRecord | null> {
   if (!env.CHAT_LOGS) return null;
@@ -525,28 +521,11 @@ async function mailTranscript(env: ChatLogEnv, threadId: string, rec: ChatLogRec
   </div>`).join("")}
 </div>`;
 
-  try {
-    const res = await fetch(RESEND_ENDPOINT, {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${env.RESEND_API_KEY}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        from: env.NOTIFY_FROM || DEFAULT_FROM,
-        to: [to],
-        subject: `Octant chat — ${title} · ${rec.who.email ?? rec.who.label}`,
-        html,
-        text,
-      }),
-    });
-    if (!res.ok) {
-      console.error(`chatlog: resend ${res.status}`, await res.text().catch(() => ""));
-      return false;
-    }
-    return true;
-  } catch {
-    console.error("chatlog: network failure reaching Resend");
-    return false;
-  }
+  const { sent } = await sendMail(env, {
+    to: [to],
+    subject: `Octant chat — ${title} · ${rec.who.email ?? rec.who.label}`,
+    html,
+    text,
+  }, "chatlog");
+  return sent;
 }

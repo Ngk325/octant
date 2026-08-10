@@ -53,9 +53,31 @@ export interface User {
 }
 
 const KEY = (email: string) => `user:${normalise(email)}`;
+const PREAPPROVE_KEY = (email: string) => `preapproved:${normalise(email)}`;
+/** Long enough for someone to get around to signing in after paying; not indefinite. */
+const PREAPPROVE_TTL_SECONDS = 30 * 24 * 60 * 60;
 
 /** Emails are case-insensitive in practice; store and compare one way only. */
 export const normalise = (email: string) => email.trim().toLowerCase();
+
+/**
+ * Mark an email as pre-approved — set by the Stripe webhook (stripe.ts) the
+ * moment payment clears, ahead of any sign-in. A separate key, not a `USERS`
+ * record: nothing is known about this person yet except that they paid.
+ */
+export async function preapprove(env: UserEnv, email: string, now: number): Promise<void> {
+  if (!env.USERS) return;
+  await env.USERS.put(PREAPPROVE_KEY(email), String(now), { expirationTtl: PREAPPROVE_TTL_SECONDS });
+}
+
+/** Consume a pre-approval marker if one exists. One-shot: gone whether or not it was found. */
+async function consumePreapproval(env: UserEnv, email: string): Promise<boolean> {
+  if (!env.USERS) return false;
+  const found = await env.USERS.get(PREAPPROVE_KEY(email));
+  if (!found) return false;
+  await env.USERS.delete(PREAPPROVE_KEY(email));
+  return true;
+}
 
 export const isOwner = (env: UserEnv, email: string) =>
   !!env.OWNER_EMAIL && normalise(env.OWNER_EMAIL) === normalise(email);
@@ -77,14 +99,17 @@ export async function getUser(env: UserEnv, email: string): Promise<User | null>
  *
  * The owner is approved automatically — otherwise nobody could ever approve
  * anybody, since the first person to arrive would be waiting on themselves.
- * Everyone else starts `pending` and sees nothing until told otherwise.
+ * A non-owner who already paid (a `preapproved:` marker from the Stripe
+ * webhook, consumed here) is approved the same way, on sight. Everyone else
+ * starts `pending` and sees nothing until told otherwise.
  *
- * Returns the record and whether this was the first time, which is what
- * decides if the owner gets an email.
+ * Returns the record, whether this was the first time, and whether
+ * preapproval is what did it — together they decide which email (if any)
+ * the owner gets.
  */
 export async function recordSignIn(
   env: UserEnv, email: string, name: string, now: number,
-): Promise<{ user: User; isNew: boolean }> {
+): Promise<{ user: User; isNew: boolean; wasPreapproved: boolean }> {
   const existing = await getUser(env, email);
   const owner = isOwner(env, email);
 
@@ -99,20 +124,21 @@ export async function recordSignIn(
       status: owner ? "approved" : existing.status,
     };
     await put(env, user);
-    return { user, isNew: false };
+    return { user, isNew: false, wasPreapproved: false };
   }
 
+  const wasPreapproved = !owner && (await consumePreapproval(env, email));
   const user: User = {
     email: normalise(email),
     name: name || normalise(email),
-    status: owner ? "approved" : "pending",
+    status: owner || wasPreapproved ? "approved" : "pending",
     firstSeen: now,
     lastSeen: now,
     owner: owner || undefined,
-    decidedAt: owner ? now : undefined,
+    decidedAt: owner || wasPreapproved ? now : undefined,
   };
   await put(env, user);
-  return { user, isNew: true };
+  return { user, isNew: true, wasPreapproved };
 }
 
 /**

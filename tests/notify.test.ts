@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { notifyOwnerOfSignup, actionLink, type NotifyEnv } from "../src/worker/notify";
+import { notifyOwnerOfSignup, notifyOwnerOfApprovedSignup, actionLink, type NotifyEnv } from "../src/worker/notify";
 import type { User } from "../src/worker/users";
 
 /* ------------------------------------------------------------------ *
@@ -93,5 +93,27 @@ describe("the notification email's delivery knobs", () => {
     expect(html).not.toContain("<script>x");
     const approve = await actionLink("https://example.com", USER.email, "approve", BASE.AUTH_SECRET!, NOW);
     expect(String(sent[0].body.text)).toContain(approve.split("?")[0]);
+  });
+});
+
+describe("the auto-approved (already-paid) signup notification", () => {
+  it("is an FYI — offers only a block link, no approve link", async () => {
+    await notifyOwnerOfApprovedSignup(BASE, "https://example.com", USER, NOW);
+    expect(sent[0].body.subject).toContain("paid");
+    const block = await actionLink("https://example.com", USER.email, "block", BASE.AUTH_SECRET!, NOW);
+    const html = String(sent[0].body.html);
+    // The exact sealed block token is present...
+    expect(html).toContain(block);
+    // ...but the exact sealed approve token is not — the two tokens differ
+    // (they seal different `action` values), even though both links share
+    // the same /api/admin/act base path.
+    const approve = await actionLink("https://example.com", USER.email, "approve", BASE.AUTH_SECRET!, NOW);
+    expect(html).not.toContain(approve);
+    expect(html).not.toContain(">Approve<");
+  });
+
+  it("declines quietly when a prerequisite is missing, same as the waiting-for-approval mail", async () => {
+    expect(await notifyOwnerOfApprovedSignup({ ...BASE, RESEND_API_KEY: undefined }, "https://x.example", USER, NOW))
+      .toEqual({ sent: false, reason: "no RESEND_API_KEY" });
   });
 });

@@ -4,7 +4,7 @@ import {
   type AuthEnv,
 } from "../src/worker/auth";
 import {
-  recordSignIn, setStatus, getUser, listUsers, normalise, isOwner,
+  recordSignIn, setStatus, getUser, listUsers, normalise, isOwner, preapprove,
   type KVNamespace, type User,
 } from "../src/worker/users";
 import { handleAdmin } from "../src/worker/admin";
@@ -93,6 +93,33 @@ describe("the user list", () => {
     expect(user.status).toBe("approved");
     expect(user.owner).toBe(true);
     expect(isOwner(ENV, "OWNER@example.com")).toBe(true);
+  });
+
+  it("approves a preapproved (already-paid) newcomer on sight, and consumes the marker", async () => {
+    await preapprove(ENV, "Jane@Example.com", NOW - 1000);
+    const { user, isNew, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    expect(isNew).toBe(true);
+    expect(wasPreapproved).toBe(true);
+    expect(user.status).toBe("approved");
+    expect(user.decidedAt).toBe(NOW);
+    // One-shot: the marker is gone, so it cannot silently re-approve someone later.
+    expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
+  });
+
+  it("a preapproval never touches an EXISTING user's status", async () => {
+    await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await setStatus(ENV, "jane@example.com", "blocked", NOW);
+    await preapprove(ENV, "jane@example.com", NOW + 1000);
+    const { user, isNew, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 2000);
+    expect(isNew).toBe(false);
+    expect(wasPreapproved).toBe(false);
+    expect(user.status).toBe("blocked");
+  });
+
+  it("without a preapproval, a newcomer starts pending exactly as before", async () => {
+    const { wasPreapproved, user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    expect(wasPreapproved).toBe(false);
+    expect(user.status).toBe("pending");
   });
 
   it("does not reset an existing decision on a later sign-in", async () => {

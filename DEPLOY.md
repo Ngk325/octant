@@ -73,14 +73,41 @@ bundle.
 | `GEMINI_API_KEY` | for the assistant | Powers `/api/chat`. Everything else works without it. |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | for Google sign-in | Without both, the Google button does not render and codes are the only way in. Setup: `docs/GOOGLE-SETUP.md`. |
 | `OWNER_EMAIL` | for approval + /admin | The auto-approved account and the only one `/admin` opens for. |
-| `RESEND_API_KEY` | for email | Sign-up notifications and chat transcripts. Without it, sign-ups still record; nothing mails. |
+| `RESEND_API_KEY` | for email | Sign-up notifications, chat transcripts, and onramp lead nurture. Without it, sign-ups still record; nothing mails. |
 | `NOTIFY_FROM` | in practice, yes for email | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address — see `docs/GOOGLE-SETUP.md`. |
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
+| `STRIPE_WEBHOOK_SECRET` | for payment auto-approval | Verifies `POST /api/stripe/webhook` actually came from Stripe (`whsec_...`, from the webhook endpoint's settings in the Stripe dashboard — not the account's API key; no Stripe SDK or API key is used anywhere in this app). Without it, the endpoint 503s and payment stays manual — the customer signs in, lands `pending`, and the owner approves them the existing way. |
 
-The two KV namespaces (`USERS`, `CHAT_LOGS`), both rate-limit bindings and the
-hourly transcript-sweep cron live in `wrangler.jsonc` and deploy with the code
-— nothing to click in the dashboard, and dashboard-only bindings would be
-removed by the next push anyway.
+The three KV namespaces (`USERS`, `CHAT_LOGS`, `LEADS`), the Analytics Engine
+dataset, both rate-limit bindings and the hourly cron live in `wrangler.jsonc`
+and deploy with the code — nothing to click in the dashboard, and
+dashboard-only bindings would be removed by the next push anyway.
+
+**`LEADS` needs its own namespace created once**, since it did not exist before
+this feature shipped (`USERS`/`CHAT_LOGS` already have real ids committed):
+
+```sh
+npx wrangler kv namespace create LEADS
+```
+
+Paste the returned `id` over the placeholder in `wrangler.jsonc`'s
+`kv_namespaces` array and commit that file. **Run this command exactly
+once.** It does not check for an existing namespace of the same name — running
+it again creates a second, empty one, and pointing the binding at it would
+silently discard every captured lead (same hazard documented for `USERS` in
+`docs/COWORK-SETUP-RUNBOOK.md`).
+
+**`PUBLIC_ORIGIN`** (in `wrangler.jsonc`'s `vars`, not a secret) should be set
+to the deployed hostname, e.g. `"https://octant.example.com"`, so cron-driven
+nurture email can build a working unsubscribe link. Left blank, those emails
+simply omit the link.
+
+**Setting up the Stripe webhook (🔑 HUMAN):** in the Stripe dashboard, add a
+webhook endpoint pointed at `https://<your-worker-url>/api/stripe/webhook`,
+subscribed to `checkout.session.completed`. Copy its signing secret and set it
+below as `STRIPE_WEBHOOK_SECRET`. This is a live endpoint pointed at real
+payment events — do not create it from an automated tool; it belongs in the
+owner's own Stripe dashboard.
 
 ### Locally
 
@@ -100,6 +127,13 @@ Run each command, paste the value when prompted, press enter:
 npx wrangler secret put ACCESS_CODES
 npx wrangler secret put AUTH_SECRET
 npx wrangler secret put GEMINI_API_KEY
+```
+
+For payment auto-approval, also (value from the Stripe dashboard's webhook
+endpoint settings — see "Setting up the Stripe webhook" above):
+
+```sh
+npx wrangler secret put STRIPE_WEBHOOK_SECRET
 ```
 
 **Generate the values first** — do not invent them by hand:
@@ -134,7 +168,7 @@ directly; push to the branch if you are on Git-connected builds.
 ### Verifying
 
 ```sh
-npm run build && grep -rE "AIza|AQ\.|GOCSPX-|re_[A-Za-z0-9]|ACCESS_CODES|AUTH_SECRET|GEMINI_API_KEY|GOOGLE_CLIENT_SECRET" dist/
+npm run build && grep -rE "AIza|AQ\.|GOCSPX-|re_[A-Za-z0-9]|whsec_[A-Za-z0-9]|ACCESS_CODES|AUTH_SECRET|GEMINI_API_KEY|GOOGLE_CLIENT_SECRET|STRIPE_WEBHOOK_SECRET" dist/
 ```
 
 Must find **nothing** — every secret lives in the Worker, and the Worker's code is

@@ -315,7 +315,7 @@ export function marketingPage(origin: string): Response {
         <a class="btn primary" href="#pricing">Start now — $25/user·mo</a>
         <a class="btn" href="#product">See how it works</a>
         <a class="btn" href="/onramp">Not sure yet? Take the two-minute quiz</a>
-        <span class="cta-note">Cancel anytime. Every account is enabled by a person, not a script.</span>
+        <span class="cta-note">Cancel anytime. Paid access unlocks the moment checkout clears.</span>
       </div>
     </div>
     <div class="art">${HERO_ART}</div>
@@ -511,8 +511,8 @@ export function marketingPage(origin: string): Response {
           </ul>
           <a class="btn primary" href="${STRIPE_LINK}">Start now</a>
           <p class="small muted" style="margin:12px 0 0">
-            Checkout via Stripe. After payment you&rsquo;ll sign in with Google and your account
-            is enabled — every account is switched on by a person.
+            Checkout via Stripe. Payment unlocks your account automatically — sign in with
+            Google right after and you&rsquo;re straight in.
           </p>
         </div>
         <div class="price">
