@@ -62,6 +62,18 @@ describe("verifyStripeSignature", () => {
     expect(await verifyStripeSignature(body, "garbage", SECRET, NOW)).toBe(false);
     expect(await verifyStripeSignature(body, "t=123", SECRET, NOW)).toBe(false);
   });
+
+  it("accepts a header carrying multiple v1 signatures if any one matches (signing-secret rollover)", async () => {
+    const t = Math.floor(NOW / 1000);
+    const header = `t=${t},v1=deadbeef,v1=${sign(body, t)}`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(true);
+  });
+
+  it("rejects when none of several v1 signatures match", async () => {
+    const t = Math.floor(NOW / 1000);
+    const header = `t=${t},v1=deadbeef,v1=cafebabe`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(false);
+  });
 });
 
 describe("handleStripeWebhook", () => {
@@ -128,14 +140,52 @@ describe("handleStripeWebhook", () => {
     expect(USERS.store.size).toBe(0);
   });
 
-  it("preapproves the payer's email on a verified checkout.session.completed", async () => {
+  it("preapproves the payer's email on a settled checkout.session.completed", async () => {
     const body = JSON.stringify({
       type: "checkout.session.completed",
-      data: { object: { customer_details: { email: "Jane@Example.com" } } },
+      data: { object: { customer_details: { email: "Jane@Example.com" }, payment_status: "paid" } },
     });
     const res = await post(body);
     expect(res?.status).toBe(200);
     expect(USERS.store.get("preapproved:jane@example.com")).toBeTruthy();
+  });
+
+  it("preapproves on a $0 checkout (no_payment_required is a legitimate settled state)", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "no_payment_required" } },
+    });
+    await post(body);
+    expect(USERS.store.get("preapproved:jane@example.com")).toBeTruthy();
+  });
+
+  it("does NOT preapprove an unsettled payment (e.g. a delayed method still processing)", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "unpaid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(200); // acked, so Stripe doesn't retry — just not activated
+    expect(USERS.store.size).toBe(0);
+  });
+
+  it("preapproves on async_payment_succeeded — a delayed method settling later", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.async_payment_succeeded",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
+    });
+    await post(body);
+    expect(USERS.store.get("preapproved:jane@example.com")).toBeTruthy();
+  });
+
+  it("does not preapprove on async_payment_failed", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.async_payment_failed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "unpaid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(200);
+    expect(USERS.store.size).toBe(0);
   });
 
   it("marks a matching lead as converted", async () => {
@@ -144,7 +194,7 @@ describe("handleStripeWebhook", () => {
     }));
     const body = JSON.stringify({
       type: "checkout.session.completed",
-      data: { object: { customer_details: { email: "jane@example.com" } } },
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
     });
     await post(body);
     const lead = JSON.parse(LEADS.store.get("lead:jane@example.com")!);
@@ -152,9 +202,27 @@ describe("handleStripeWebhook", () => {
   });
 
   it("acks without erroring when the session carries no email", async () => {
-    const body = JSON.stringify({ type: "checkout.session.completed", data: { object: {} } });
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { payment_status: "paid" } },
+    });
     const res = await post(body);
     expect(res?.status).toBe(200);
     expect(USERS.store.size).toBe(0);
+  });
+
+  it("returns 500 (so Stripe retries) when preapprove fails, instead of silently losing access", async () => {
+    const brokenUsers: KVNamespace = {
+      ...USERS,
+      put: async () => { throw new Error("KV unavailable"); },
+    };
+    ENV = { ...ENV, USERS: brokenUsers };
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(500);
+    expect(console.error).toHaveBeenCalled();
   });
 });

@@ -106,7 +106,7 @@ describe("the user list", () => {
     expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
   });
 
-  it("a preapproval never touches an EXISTING user's status", async () => {
+  it("a preapproval never overrides a deliberate BLOCK — that decision is the owner's, not a payment's", async () => {
     await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
     await setStatus(ENV, "jane@example.com", "blocked", NOW);
     await preapprove(ENV, "jane@example.com", NOW + 1000);
@@ -114,6 +114,20 @@ describe("the user list", () => {
     expect(isNew).toBe(false);
     expect(wasPreapproved).toBe(false);
     expect(user.status).toBe("blocked");
+  });
+
+  it("a preapproval DOES unlock an existing PENDING user — someone who signed in before paying", async () => {
+    // First sign-in: no preapproval yet, lands pending (the exact gap the
+    // marketing copy's "payment unlocks automatically" promise depended on).
+    await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await preapprove(ENV, "jane@example.com", NOW + 1000);
+    // They pay, then sign in again.
+    const { user, isNew, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 2000);
+    expect(isNew).toBe(false);
+    expect(wasPreapproved).toBe(true);
+    expect(user.status).toBe("approved");
+    expect(user.decidedAt).toBe(NOW + 2000);
+    expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
   });
 
   it("without a preapproval, a newcomer starts pending exactly as before", async () => {

@@ -34,32 +34,47 @@ async function hmacSha256Hex(message: string, secret: string): Promise<string> {
 /**
  * Verify Stripe's `Stripe-Signature` header by hand, per Stripe's own
  * documented manual-verification steps: split on `,` then `=` to get `t`
- * (timestamp) and `v1` (signature), HMAC-SHA256 the string `${t}.${rawBody}`
- * with the endpoint's signing secret, compare in constant time, and reject
- * anything outside a clock-skew tolerance (5 minutes, matching Stripe's own
- * library default).
+ * (timestamp) and every `v1` (signature — Stripe sends more than one during
+ * a signing-secret rollover, one per active secret, so a valid webhook must
+ * be accepted if ANY of them matches, not just the last), HMAC-SHA256 the
+ * string `${t}.${rawBody}` with the endpoint's signing secret, compare in
+ * constant time, and reject anything outside a clock-skew tolerance (5
+ * minutes, matching Stripe's own library default).
  */
 export async function verifyStripeSignature(
   rawBody: string, header: string, secret: string, now: number, toleranceSeconds = 300,
 ): Promise<boolean> {
-  const parts: Record<string, string> = {};
+  let t: number | undefined;
+  const v1s: string[] = [];
   for (const kv of header.split(",")) {
     const eq = kv.indexOf("=");
     if (eq < 0) continue;
-    parts[kv.slice(0, eq).trim()] = kv.slice(eq + 1).trim();
+    const key = kv.slice(0, eq).trim();
+    const value = kv.slice(eq + 1).trim();
+    if (key === "t") t = Number(value);
+    else if (key === "v1") v1s.push(value);
   }
-  const t = Number(parts.t);
-  const v1 = parts.v1;
-  if (!t || !v1) return false;
+  if (!t || v1s.length === 0) return false;
   if (Math.abs(now / 1000 - t) > toleranceSeconds) return false;
   const expected = await hmacSha256Hex(`${t}.${rawBody}`, secret);
-  return v1.length === expected.length && sameDigest(v1, expected);
+  return v1s.some((v1) => v1.length === expected.length && sameDigest(v1, expected));
 }
 
 interface CheckoutSessionCompleted {
   type: string;
-  data?: { object?: { customer_details?: { email?: string | null } | null } };
+  data?: {
+    object?: {
+      customer_details?: { email?: string | null } | null;
+      payment_status?: string | null;
+    } | null;
+  };
 }
+
+/** Stripe fires `completed` even for payments that have not settled yet
+ * (e.g. ACH still processing) — `payment_status` is the actual signal.
+ * `no_payment_required` covers a $0 checkout (e.g. a 100%-off coupon),
+ * which is still a legitimate unlock. */
+const SETTLED = new Set(["paid", "no_payment_required"]);
 
 const json = (body: unknown, status: number) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -95,14 +110,30 @@ export async function handleStripeWebhook(
     return json({ error: "Malformed body." }, 400);
   }
 
-  // Ack and ignore anything but a completed checkout — the endpoint must not
-  // error on event types it doesn't care about, in case the Stripe dashboard
-  // is ever configured to send "all events."
-  if (event.type !== "checkout.session.completed") return json({ received: true }, 200);
+  // Ack and ignore anything but a checkout completion/settlement event — the
+  // endpoint must not error on event types it doesn't care about, in case
+  // the Stripe dashboard is ever configured to send "all events." Both
+  // `completed` (the common, immediate-payment-method case) and
+  // `async_payment_succeeded` (a delayed method like ACH settling later)
+  // can carry the payment that actually unlocks access; `completed` alone
+  // is not sufficient — for a delayed method it fires with `payment_status:
+  // "unpaid"`, before the money has actually moved. Delayed-method FAILURE
+  // (`async_payment_failed`) needs no explicit handling: nothing was ever
+  // preapproved for it, since `completed` on that same session had an
+  // unsettled status and was correctly skipped below.
+  const object = event.data?.object;
+  const settled = object?.payment_status ? SETTLED.has(object.payment_status) : false;
+  if (
+    (event.type !== "checkout.session.completed" &&
+      event.type !== "checkout.session.async_payment_succeeded") ||
+    !settled
+  ) {
+    return json({ received: true }, 200);
+  }
 
-  const email = event.data?.object?.customer_details?.email;
+  const email = object?.customer_details?.email;
   if (!email) {
-    console.error("stripe: checkout.session.completed with no customer email");
+    console.error("stripe: settled checkout with no customer email");
     return json({ received: true }, 200);
   }
 
@@ -111,6 +142,11 @@ export async function handleStripeWebhook(
     await markLeadConverted(env, email, now);
   } catch (err) {
     console.error("stripe: webhook processing failed", String(err));
+    // Non-2xx makes Stripe redeliver. preapprove()/markLeadConverted() are
+    // both idempotent, so a retry is always safe — and returning 200 here
+    // would silently and permanently lose a real payer's access on a
+    // transient KV failure, with no queue and no alert.
+    return json({ error: "Temporary failure." }, 500);
   }
 
   return json({ received: true }, 200);

@@ -114,6 +114,13 @@ export async function recordSignIn(
   const owner = isOwner(env, email);
 
   if (existing) {
+    // A visitor who signed in BEFORE paying is stuck `pending` unless this
+    // checks again here: preapproval is only ever consumed once, and the
+    // webhook has no way to know an account already exists. Only a `pending`
+    // record is eligible — never re-check for `blocked` (a deliberate no
+    // from the owner must not be silently overridden by a later payment).
+    const wasPreapproved = !owner && existing.status === "pending" &&
+      (await consumePreapproval(env, email));
     const user: User = {
       ...existing,
       name: name || existing.name,
@@ -121,10 +128,11 @@ export async function recordSignIn(
       // A promotion to owner is honoured on sight; a demotion is not silently
       // applied, because losing OWNER_EMAIL should not lock you out of /admin.
       owner: existing.owner || owner,
-      status: owner ? "approved" : existing.status,
+      status: owner || wasPreapproved ? "approved" : existing.status,
+      decidedAt: owner || wasPreapproved ? now : existing.decidedAt,
     };
     await put(env, user);
-    return { user, isNew: false, wasPreapproved: false };
+    return { user, isNew: false, wasPreapproved };
   }
 
   const wasPreapproved = !owner && (await consumePreapproval(env, email));

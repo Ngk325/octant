@@ -285,8 +285,11 @@ async function handleGoogle(
      task, it is a promise nobody is keeping alive.
 
      A preapproved (already-paid) signup gets the FYI version — no approve link,
-     since there is nothing left to approve. */
-  if (isNew && !user.owner) {
+     since there is nothing left to approve. `wasPreapproved` can fire on a
+     RETURNING sign-in too (someone who signed in before paying, then paid,
+     then signs in again) — `isNew` alone would miss that transition and the
+     owner would never learn a pending account just paid and unlocked. */
+  if ((isNew || wasPreapproved) && !user.owner) {
     const send = wasPreapproved
       ? notifyOwnerOfApprovedSignup(env, url.origin, user, now)
       : notifyOwnerOfSignup(env, url.origin, user, now);

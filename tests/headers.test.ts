@@ -49,6 +49,8 @@ describe("the hash pins", () => {
 
   it("the onramp script's hash is in the CSP, on the onramp page itself", async () => {
     const res = await worker.fetch(new Request("https://octant.test/onramp"), ENV);
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain(ONRAMP_SCRIPT);
     const policy = res.headers.get("content-security-policy") ?? "";
     expect(policy).toContain(`'sha256-${await sha256b64(ONRAMP_SCRIPT)}'`);
   });

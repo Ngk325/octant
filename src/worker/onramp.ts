@@ -1,6 +1,6 @@
 import { calculate, COIN_OPTIONS } from "../engine/ops";
 import { escapeHtml } from "./html";
-import { captureLead, FRICTION_COPY, type LeadsEnv } from "./leads";
+import { captureLead, FRICTION_COPY, stripeHref, type LeadsEnv } from "./leads";
 import { FAVICON, MARK, STRIPE_LINK } from "./marketing";
 
 /** The third argument the runtime passes to fetch. Duplicated from index.ts's
@@ -55,6 +55,10 @@ export interface OnrampEnv extends LeadsEnv {
  * positions Octant against tools that overclaim from a label.
  * ------------------------------------------------------------------ */
 
+/** A basic, deliberately permissive format check — not full RFC 5322, just
+ *  enough to reject "this endpoint can mail anything" abuse. */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 type Option = { value: string; label: string };
 
 type Step =
@@ -92,6 +96,15 @@ function answersFrom(p: URLSearchParams): (string | null)[] {
   a[4] = p.get("q4");
   return a;
 }
+
+/**
+ * A GET `<form>` submits repeated same-name checkboxes as repeated params
+ * (`friction=recurring&friction=meetings`), not one comma-joined value —
+ * `getAll` is the only correct way to read them back. `.get()` would
+ * silently return just the first pick and drop the second.
+ */
+const frictionValues = (p: URLSearchParams, key = "friction"): string[] =>
+  p.getAll(key).filter(Boolean);
 
 const STEPS: readonly Step[] = [
   { kind: "intro" },
@@ -156,11 +169,11 @@ const STEPS: readonly Step[] = [
     // back using marketing.ts's real #problem-section copy — not a new claim.
     kind: "interstitial",
     heading: (p) => {
-      const key = (p.get("friction") ?? "").split(",")[0];
+      const key = frictionValues(p)[0];
       return (key && FRICTION_COPY[key]?.heading) || FRICTION_COPY.drain.heading;
     },
     body: (p) => {
-      const key = (p.get("friction") ?? "").split(",")[0];
+      const key = frictionValues(p)[0];
       return (key && FRICTION_COPY[key]?.body) || FRICTION_COPY.drain.body;
     },
   },
@@ -276,7 +289,7 @@ function renderLikert(step: Extract<Step, { kind: "likert5" }>, i: number, p: UR
 }
 
 function renderMulti(step: Extract<Step, { kind: "multi" }>, i: number, p: URLSearchParams): string {
-  const picked = new Set((p.get(step.key) ?? "").split(",").filter(Boolean));
+  const picked = new Set(frictionValues(p, step.key));
   const tiles = step.options.map((o) => optionTile(step.key, o, "checkbox", picked.has(o.value))).join("");
   return `
   <h1>${escapeHtml(step.prompt)}</h1>
@@ -324,9 +337,10 @@ function renderEmail(i: number, p: URLSearchParams): string {
 function renderDone(p: URLSearchParams): string {
   const result = calculate(answersFrom(p));
   const email = p.get("email") ?? "";
-  const stripeHref = email
-    ? `${STRIPE_LINK}?client_reference_id=${encodeURIComponent(email.slice(0, 200))}`
-    : STRIPE_LINK;
+  // stripeHref() normalises the email — reused from leads.ts so this CTA and
+  // the nurture email's CTA build the identical client_reference_id for the
+  // same person, even when the address's casing differs between requests.
+  const href = email ? stripeHref(email) : STRIPE_LINK;
   return `
   <h1>Your pattern is one of about ${result.field.length} of the sixteen.</h1>
   <p class="lede">
@@ -334,7 +348,7 @@ function renderDone(p: URLSearchParams): string {
     the other six and shows the mechanism, not just where you land.
   </p>
   <div class="cta-row">
-    <a class="btn primary" href="${escapeHtml(stripeHref)}">Start now — $25/user·mo</a>
+    <a class="btn primary" href="${escapeHtml(href)}">Start now — $25/user·mo</a>
     <a class="btn" href="/signin">Sign in</a>
   </div>
   <p class="muted small"><a href="/onramp">Start over</a></p>`;
@@ -494,10 +508,16 @@ export async function handleOnramp(
 
   if (step === STEPS.length - 1) {
     const email = url.searchParams.get("email");
-    if (email) {
+    // Server-side gate: this is a public GET route with no session and no
+    // prior-step signature — the HTML5 `type="email"` on the form only
+    // validates in a browser a visitor actually used. Without this check,
+    // any request to /onramp?step=11&email=<anything> makes the Worker
+    // send an Octant-branded email to that address from the verified
+    // sender, turning the endpoint into an open mail relay.
+    if (email && email.length <= 254 && EMAIL_RE.test(email)) {
       const now = Date.now();
       const goal = url.searchParams.get("goal") ?? undefined;
-      const friction = (url.searchParams.get("friction") ?? "").split(",").filter(Boolean);
+      const friction = frictionValues(url.searchParams);
       const fieldSize = calculate(answersFrom(url.searchParams)).field.length;
       const optin = url.searchParams.get("optin") === "yes";
       const work = captureLead(env, url.origin, email, goal, friction, fieldSize, optin, now);

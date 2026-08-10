@@ -143,12 +143,17 @@ site is gated too, which is the only way to actually test the thing protecting y
 
 ### In production
 
-Run each command, paste the value when prompted, press enter:
+Run each command, paste the value when prompted, press enter. The first three
+are the minimum for the wall itself; without the rest, sign-ups and payments
+still record correctly, they just never mail anyone or reach `/admin`:
 
 ```sh
 npx wrangler secret put ACCESS_CODES
 npx wrangler secret put AUTH_SECRET
 npx wrangler secret put GEMINI_API_KEY
+npx wrangler secret put OWNER_EMAIL
+npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put NOTIFY_FROM
 ```
 
 For payment auto-approval, also (value from the Stripe dashboard's webhook
@@ -190,7 +195,7 @@ directly; push to the branch if you are on Git-connected builds.
 ### Verifying
 
 ```sh
-npm run build && grep -rE "AIza|AQ\.|GOCSPX-|re_[A-Za-z0-9]|whsec_[A-Za-z0-9]|ACCESS_CODES|AUTH_SECRET|GEMINI_API_KEY|GOOGLE_CLIENT_SECRET|STRIPE_WEBHOOK_SECRET" dist/
+npm run build && grep -rE "AIza|AQ\.|GOCSPX-|re_[A-Za-z0-9]|whsec_[A-Za-z0-9]|ACCESS_CODES|AUTH_SECRET|GEMINI_API_KEY|GOOGLE_CLIENT_SECRET" dist/
 ```
 
 Must find **nothing** — every secret lives in the Worker, and the Worker's code is

@@ -122,6 +122,16 @@ export async function sendQueuedNurture(env: LeadsEnv, origin: string, now: numb
           if (lead.nurture.nextSendAt > now) continue;
           const entry = SEQUENCE[lead.nurture.stage - 1];
           if (!entry) continue; // sequence complete
+          // Opt-in marketing mail must always carry an opt-out. Unlike the
+          // immediate explainer (transactional — owed to everyone, opt-in
+          // or not), these two sends wait for the misconfiguration
+          // (missing AUTH_SECRET or PUBLIC_ORIGIN) to be fixed rather than
+          // going out with no unsubscribe link; nextSendAt is left
+          // untouched, so the retry happens automatically next hour.
+          if (!env.AUTH_SECRET || !origin) {
+            console.error("leads: nurture skipped — no origin/secret for unsubscribe link");
+            continue;
+          }
           const msg = await entry.build(env, origin, lead, now);
           await sendMail(env, msg, "leads");
           lead.nurture.stage += 1;
@@ -210,7 +220,11 @@ export const FRICTION_COPY: Record<string, { heading: string; body: string }> = 
   },
 };
 
-const stripeHref = (email: string) =>
+/** Exported so onramp.ts's done-step CTA builds the exact same URL — both
+ *  paths must normalise the email first, or the same person's two CTAs
+ *  (nurture email vs. the done page) carry different client_reference_id
+ *  values when their address has mixed case. */
+export const stripeHref = (email: string) =>
   `${STRIPE_LINK}?client_reference_id=${encodeURIComponent(normalise(email).slice(0, 200))}`;
 
 async function unsubscribeLink(env: LeadsEnv, origin: string, email: string, now: number): Promise<string | null> {

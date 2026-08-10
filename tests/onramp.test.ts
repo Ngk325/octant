@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import worker, { type Env } from "../src/worker/index";
 import { calculate } from "../src/engine/ops";
 import { DETERMINING } from "../src/engine/data";
@@ -96,6 +96,14 @@ describe("GET /onramp", () => {
     const html = await (await get("/onramp?step=9")).text();
     expect(html).toContain("Descriptions are horoscopes");
   });
+
+  it("re-checks every previously-picked friction box, not just the first, on re-render", async () => {
+    // Repeated params — the real wire format a GET <form> with two checked
+    // same-name checkboxes actually submits.
+    const html = await (await get("/onramp?step=6&friction=recurring&friction=meetings")).text();
+    const checkedValues = [...html.matchAll(/name="friction" value="(\w+)" checked/g)].map((m) => m[1]);
+    expect(checkedValues.sort()).toEqual(["meetings", "recurring"]);
+  });
 });
 
 describe("lead capture and analytics wiring at the done step", () => {
@@ -118,11 +126,19 @@ describe("lead capture and analytics wiring at the done step", () => {
     const points: { blobs?: string[]; doubles?: number[]; indexes?: string[] }[] = [];
     const env = {
       ...ENV,
+      // Without a real key, sendMail() short-circuits before ever calling
+      // fetch — which would let the idempotency assertion below pass no
+      // matter what captureLead actually does. A key (even a fake one,
+      // since fetch itself is stubbed) is required to make the "no second
+      // send" claim mean anything.
+      RESEND_API_KEY: "re_test",
       LEADS,
       ONRAMP_ANALYTICS: { writeDataPoint: (p: typeof points[number]) => points.push(p) },
     } as unknown as Env;
     return { LEADS, points, env };
   };
+
+  afterEach(() => vi.unstubAllGlobals());
 
   it("captures a lead exactly once at the done step when an email is present", async () => {
     const { LEADS, env } = withLeadsAndAnalytics();
@@ -136,14 +152,39 @@ describe("lead capture and analytics wiring at the done step", () => {
     vi.stubGlobal("fetch", async () => { sends++; return new Response("{}", { status: 200 }); });
     await worker.fetch(new Request("https://octant.example/onramp?step=11&email=jane@example.com&goal=self&optin=yes"), env);
     expect(sends).toBe(0);
-
-    vi.unstubAllGlobals();
   });
 
   it("captures nothing without an email at the done step", async () => {
     const { LEADS, env } = withLeadsAndAnalytics();
     await worker.fetch(new Request("https://octant.example/onramp?step=11"), env);
     expect(LEADS.store.size).toBe(0);
+  });
+
+  it("rejects a malformed email server-side — the endpoint cannot be used to mail arbitrary strings", async () => {
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    for (const bad of ["not-an-email", "no-at-sign.com", "@no-local-part.com", "trailing@dot."]) {
+      const res = await worker.fetch(
+        new Request(`https://octant.example/onramp?step=11&email=${encodeURIComponent(bad)}`), env,
+      );
+      expect(res.status).toBe(200); // still renders the page, just doesn't capture/send
+    }
+    expect(LEADS.store.size).toBe(0);
+  });
+
+  it("preserves every friction pick, not just the first, through capture", async () => {
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    // A real GET <form> submits repeated same-name checkboxes as repeated
+    // params — this is the actual wire format, not a comma-joined value.
+    await worker.fetch(
+      new Request(
+        "https://octant.example/onramp?step=11&email=jane@example.com&friction=recurring&friction=meetings",
+      ),
+      env,
+    );
+    const lead = JSON.parse(LEADS.store.get("lead:jane@example.com")!);
+    expect(lead.friction).toEqual(["recurring", "meetings"]);
   });
 
   it("writes one analytics point per step render, keyed by step index", async () => {
