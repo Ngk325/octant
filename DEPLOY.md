@@ -81,20 +81,22 @@ bundle.
 The three KV namespaces (`USERS`, `CHAT_LOGS`, `LEADS`), the Analytics Engine
 dataset, both rate-limit bindings and the hourly cron live in `wrangler.jsonc`
 and deploy with the code — nothing to click in the dashboard, and
-dashboard-only bindings would be removed by the next push anyway.
+dashboard-only bindings would be removed by the next push anyway. All three
+KV namespaces already have real ids committed; there is no creation step left
+to do.
 
-**`LEADS` needs its own namespace created once**, since it did not exist before
-this feature shipped (`USERS`/`CHAT_LOGS` already have real ids committed):
+**If `LEADS` (or any KV namespace) is ever missing its id** — e.g. setting
+this app up fresh in a different Cloudflare account — create it once and
+paste the returned id into `wrangler.jsonc`'s `kv_namespaces` array:
 
 ```sh
 npx wrangler kv namespace create LEADS
 ```
 
-Paste the returned `id` over the placeholder in `wrangler.jsonc`'s
-`kv_namespaces` array and commit that file. **Run this command exactly
-once.** It does not check for an existing namespace of the same name — running
-it again creates a second, empty one, and pointing the binding at it would
-silently discard every captured lead (same hazard documented for `USERS` in
+**Run this command at most once per account.** It does not check for an
+existing namespace of the same name — running it again creates a second,
+empty one, and pointing the binding at it would silently discard every
+captured lead (same hazard documented for `USERS` in
 `docs/COWORK-SETUP-RUNBOOK.md`).
 
 **`PUBLIC_ORIGIN`** (in `wrangler.jsonc`'s `vars`, not a secret) should be set
