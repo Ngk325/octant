@@ -29,6 +29,16 @@ AUTH_SECRET=local-development-only-not-a-real-secret
 GEMINI_API_KEY=your-key-here
 
 
+# ── Payment auto-approval ────────────────────────────────────────────────────
+# Verifies POST /api/stripe/webhook actually came from Stripe — the signing
+# secret from a webhook endpoint's settings in the Stripe dashboard (starts
+# `whsec_...`), NOT the account's API key; no Stripe SDK or API key is used
+# anywhere in this app. Without it, the endpoint 503s and payment stays
+# manual: the customer signs in, lands pending, and the owner approves them
+# the existing way. See DEPLOY.md, "Setting up the Stripe webhook".
+STRIPE_WEBHOOK_SECRET=whsec_your-test-mode-secret-here
+
+
 # ── The stack export ─────────────────────────────────────────────────────────
 # GET /api/export/stack/:type returns the eight slots as
 # { slot, function_attitude } — the one read-only seam out of this app, for a

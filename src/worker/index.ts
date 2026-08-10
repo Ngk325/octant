@@ -13,9 +13,12 @@ import {
   endSession, sweepIdle, refreshTrendingTags, validThreadId, listThreads, getThreadFor, type ChatWho,
 } from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
-import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
+import { notifyOwnerOfSignup, notifyOwnerOfApprovedSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
 import { handleRead } from "./read";
+import { handleOnramp, type OnrampEnv } from "./onramp";
+import { handleStripeWebhook, type StripeEnv } from "./stripe";
+import { handleLeadsPublic, sendQueuedNurture } from "./leads";
 import {
   exportPreflight, handleExport, hasExportToken, isExportPath, withExportCors,
   type ExportEnv,
@@ -34,8 +37,16 @@ import {
  * ever invoking this file, and none of the below runs. tests/auth.test.ts
  * asserts that value for exactly this reason.
  */
-export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, ExportEnv {
+export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, OnrampEnv, StripeEnv, ExportEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
+  /**
+   * Absolute origin used to build the unsubscribe link in cron-driven
+   * nurture email (leads.ts) — there is no request to read `url.origin`
+   * from on a scheduled trigger. Without it, those emails just omit the
+   * unsubscribe link. Not a secret — it's the deployed hostname, e.g.
+   * `https://octant.example.com`.
+   */
+  PUBLIC_ORIGIN?: string;
 }
 
 /** The third argument the runtime passes to `fetch`. Only `waitUntil` is used. */
@@ -59,10 +70,15 @@ export default {
 
      The trending-tags refresh rides the same hourly tick — it is its own
      full KV scan and has no business running inline on the request path,
-     same reasoning as the sweep itself. */
+     same reasoning as the sweep itself. The queued-nurture send is the
+     same shape again: a paginated LEADS scan, best-effort, never throws. */
   async scheduled(_event: unknown, env: Env, ctx?: Ctx): Promise<void> {
     const now = Date.now();
-    const work = Promise.all([sweepIdle(env, now), refreshTrendingTags(env, now)]);
+    const work = Promise.all([
+      sweepIdle(env, now),
+      refreshTrendingTags(env, now),
+      sendQueuedNurture(env, env.PUBLIC_ORIGIN ?? "", now),
+    ]);
     if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
   },
 };
@@ -124,6 +140,24 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   //     stays gated, reached only by their CTAs.
   const read = handleRead(url, url.origin);
   if (read) return read;
+
+  // 4c. The onramp quiz funnel — public by design, same posture as handleRead.
+  //     A worker-rendered surface, never a React route: the SPA sits entirely
+  //     behind the wall (assets.run_worker_first), so a gated route here
+  //     would ship the whole app to anonymous ad traffic.
+  const onramp = await handleOnramp(request, env, url, ctx);
+  if (onramp) return onramp;
+
+  // 4d. The Stripe webhook. Public by necessity — a webhook carries no
+  //     session — gated entirely by signature verification instead.
+  const stripeWebhook = await handleStripeWebhook(request, env, now);
+  if (stripeWebhook) return stripeWebhook;
+
+  // 4e. The lead-nurture unsubscribe link. Public, single-tap, low severity —
+  //     opting out of optional marketing mail is not a security event the way
+  //     approve/block (item 3 above) is, so it skips that flow's GET/POST split.
+  const leadsPublic = await handleLeadsPublic(request, env, now);
+  if (leadsPublic) return leadsPublic;
 
   // 5. The wall. Returns a response for everyone not signed in and approved —
   //    with ONE carve-out: an anonymous GET of the front page gets the public
@@ -261,10 +295,11 @@ async function handleGoogle(
   const result = await completeGoogleSignIn(request, env, now);
   if (!result.ok) return signInProblem(result.error);
 
-  const { user, isNew } = await recordSignIn(env, result.identity.email, result.identity.name, now);
+  const { user, isNew, wasPreapproved } =
+    await recordSignIn(env, result.identity.email, result.identity.name, now);
 
-  /* The email is best-effort and must never fail the sign-in — notifyOwnerOfSignup
-     never throws, so neither branch below can.
+  /* The email is best-effort and must never fail the sign-in — neither notify
+     function ever throws, so neither branch below can.
 
      waitUntil lives on the ExecutionContext, the THIRD argument to fetch. It was
      previously read off the Request, where it does not exist: the check was always
@@ -274,9 +309,17 @@ async function handleGoogle(
 
      Without a context (a direct call in a test), await instead. Fire-and-forget was
      the other half of the bug: an unawaited promise in a Worker is not a background
-     task, it is a promise nobody is keeping alive. */
-  if (isNew && !user.owner) {
-    const send = notifyOwnerOfSignup(env, url.origin, user, now);
+     task, it is a promise nobody is keeping alive.
+
+     A preapproved (already-paid) signup gets the FYI version — no approve link,
+     since there is nothing left to approve. `wasPreapproved` can fire on a
+     RETURNING sign-in too (someone who signed in before paying, then paid,
+     then signs in again) — `isNew` alone would miss that transition and the
+     owner would never learn a pending account just paid and unlocked. */
+  if ((isNew || wasPreapproved) && !user.owner) {
+    const send = wasPreapproved
+      ? notifyOwnerOfApprovedSignup(env, url.origin, user, now)
+      : notifyOwnerOfSignup(env, url.origin, user, now);
     if (typeof ctx?.waitUntil === "function") ctx.waitUntil(send);
     else await send;
   }

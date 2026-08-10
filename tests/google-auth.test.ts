@@ -4,7 +4,7 @@ import {
   type AuthEnv,
 } from "../src/worker/auth";
 import {
-  recordSignIn, setStatus, getUser, listUsers, normalise, isOwner,
+  recordSignIn, setStatus, getUser, listUsers, normalise, isOwner, preapprove,
   type KVNamespace, type User,
 } from "../src/worker/users";
 import { handleAdmin } from "../src/worker/admin";
@@ -93,6 +93,70 @@ describe("the user list", () => {
     expect(user.status).toBe("approved");
     expect(user.owner).toBe(true);
     expect(isOwner(ENV, "OWNER@example.com")).toBe(true);
+  });
+
+  it("approves a preapproved (already-paid) newcomer on sight, and consumes the marker", async () => {
+    await preapprove(ENV, "Jane@Example.com", NOW - 1000);
+    const { user, isNew, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    expect(isNew).toBe(true);
+    expect(wasPreapproved).toBe(true);
+    expect(user.status).toBe("approved");
+    expect(user.decidedAt).toBe(NOW);
+    // One-shot: the marker is gone, so it cannot silently re-approve someone later.
+    expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
+  });
+
+  it("a preapproval never overrides a deliberate BLOCK — that decision is the owner's, not a payment's", async () => {
+    await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await setStatus(ENV, "jane@example.com", "blocked", NOW);
+    await preapprove(ENV, "jane@example.com", NOW + 1000);
+    const { user, isNew, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 2000);
+    expect(isNew).toBe(false);
+    expect(wasPreapproved).toBe(false);
+    expect(user.status).toBe("blocked");
+  });
+
+  it("a preapproval DOES unlock an existing PENDING user — someone who signed in before paying", async () => {
+    // First sign-in: no preapproval yet, lands pending (the exact gap the
+    // marketing copy's "payment unlocks automatically" promise depended on).
+    await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await preapprove(ENV, "jane@example.com", NOW + 1000);
+    // They pay, then sign in again.
+    const { user, isNew, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 2000);
+    expect(isNew).toBe(false);
+    expect(wasPreapproved).toBe(true);
+    expect(user.status).toBe("approved");
+    expect(user.decidedAt).toBe(NOW + 2000);
+    expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
+  });
+
+  it("without a preapproval, a newcomer starts pending exactly as before", async () => {
+    const { wasPreapproved, user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    expect(wasPreapproved).toBe(false);
+    expect(user.status).toBe("pending");
+  });
+
+  it("keeps the preapproval marker intact if the user record write fails, instead of losing it", async () => {
+    // A paying customer must never be stranded pending because a KV write
+    // happened to fail on the one request that would have unlocked them —
+    // the marker is only cleared AFTER the approved record is durably
+    // written, so a failure here leaves it there for the next sign-in to
+    // retry, rather than deleting it first and losing it if the write below
+    // then fails.
+    await preapprove(ENV, "jane@example.com", NOW - 1000);
+    const workingPut = USERS.put.bind(USERS);
+    try {
+      USERS.put = async () => { throw new Error("KV put failed"); };
+      await expect(recordSignIn(ENV, "jane@example.com", "Jane", NOW)).rejects.toThrow("KV put failed");
+      expect(await USERS.get("preapproved:jane@example.com")).not.toBeNull();
+    } finally {
+      USERS.put = workingPut;
+    }
+
+    const { user, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 1000);
+    expect(wasPreapproved).toBe(true);
+    expect(user.status).toBe("approved");
+    expect(await USERS.get("preapproved:jane@example.com")).toBeNull();
   });
 
   it("does not reset an existing decision on a later sign-in", async () => {

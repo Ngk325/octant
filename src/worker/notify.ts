@@ -1,5 +1,6 @@
 import { seal } from "./crypto";
 import { escapeHtml } from "./html";
+import { sendMail, type MailEnv } from "./mail";
 import type { User } from "./users";
 
 /* ------------------------------------------------------------------ *
@@ -20,19 +21,9 @@ import type { User } from "./users";
  * is an inconvenience; losing the sign-in would be a bug.
  * ------------------------------------------------------------------ */
 
-export interface NotifyEnv {
-  /** Omit to run without email. Everything else still works. */
-  RESEND_API_KEY?: string;
+export interface NotifyEnv extends MailEnv {
   OWNER_EMAIL?: string;
   AUTH_SECRET?: string;
-  /**
-   * Sender, e.g. `Octant <octant@your-verified-domain.com>`. Defaults to
-   * Resend's shared onboarding address — which Resend only delivers to the
-   * address the Resend ACCOUNT is registered under. If OWNER_EMAIL is any
-   * other inbox, every send 403s silently; set this to an address on a
-   * domain verified in Resend.
-   */
-  NOTIFY_FROM?: string;
   /**
    * Recipient override. Defaults to OWNER_EMAIL — and stays a SEPARATE knob
    * on purpose: OWNER_EMAIL decides who owns /admin, which is an
@@ -43,9 +34,6 @@ export interface NotifyEnv {
   NOTIFY_EMAIL?: string;
 }
 
-const RESEND_ENDPOINT = "https://api.resend.com/emails";
-/** Fallback sender. See NOTIFY_FROM above for why it usually is not enough. */
-const DEFAULT_FROM = "Octant <onboarding@resend.dev>";
 /** Long enough to survive a holiday, short enough not to linger forever. */
 const ACTION_TTL_SECONDS = 7 * 24 * 60 * 60;
 
@@ -77,37 +65,45 @@ export async function notifyOwnerOfSignup(
   const approve = await actionLink(origin, user.email, "approve", env.AUTH_SECRET, now);
   const block = await actionLink(origin, user.email, "block", env.AUTH_SECRET, now);
 
-  try {
-    const res = await fetch(RESEND_ENDPOINT, {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${env.RESEND_API_KEY}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        from: env.NOTIFY_FROM || DEFAULT_FROM,
-        to: [to],
-        subject: `Octant — ${user.name} is waiting for access`,
-        html: signupEmail(user, approve, block, origin),
-        text:
-          `${user.name} <${user.email}> signed in to Octant and is waiting for approval.\n\n` +
-          `Approve: ${approve}\nDeny:    ${block}\n\n` +
-          `Or manage everyone at ${origin}/admin\n`,
-      }),
-    });
-    if (!res.ok) {
-      /* Logged, not just returned. A silent { sent: false } cost a day of
-         debugging when Resend was refusing the shared sender: the sign-in
-         succeeded, the KV write succeeded, and nothing anywhere said why no
-         mail arrived. Observability is enabled on this Worker; use it. */
-      console.error(`notify: resend ${res.status}`, await res.text().catch(() => ""));
-      return { sent: false, reason: `resend ${res.status}` };
-    }
-    return { sent: true };
-  } catch {
-    console.error("notify: network failure reaching Resend");
-    return { sent: false, reason: "network" };
-  }
+  /* Logged, not just returned. A silent { sent: false } cost a day of
+     debugging when Resend was refusing the shared sender: the sign-in
+     succeeded, the KV write succeeded, and nothing anywhere said why no
+     mail arrived. Observability is enabled on this Worker; use it. */
+  return sendMail(env, {
+    to: [to],
+    subject: `Octant — ${user.name} is waiting for access`,
+    html: signupEmail(user, approve, block, origin),
+    text:
+      `${user.name} <${user.email}> signed in to Octant and is waiting for approval.\n\n` +
+      `Approve: ${approve}\nDeny:    ${block}\n\n` +
+      `Or manage everyone at ${origin}/admin\n`,
+  }, "notify");
+}
+
+/**
+ * Tell the owner a payment already approved someone — an FYI, not a decision
+ * request. Only a block link is offered: approving an already-approved
+ * account is meaningless, but the owner can still act fast on fraud.
+ */
+export async function notifyOwnerOfApprovedSignup(
+  env: NotifyEnv, origin: string, user: User, now: number,
+): Promise<{ sent: boolean; reason?: string }> {
+  if (!env.RESEND_API_KEY) return { sent: false, reason: "no RESEND_API_KEY" };
+  const to = env.NOTIFY_EMAIL || env.OWNER_EMAIL;
+  if (!to) return { sent: false, reason: "no OWNER_EMAIL" };
+  if (!env.AUTH_SECRET) return { sent: false, reason: "no AUTH_SECRET" };
+
+  const block = await actionLink(origin, user.email, "block", env.AUTH_SECRET, now);
+
+  return sendMail(env, {
+    to: [to],
+    subject: `Octant — ${user.name} paid and is in already`,
+    html: approvedSignupEmail(user, block, origin),
+    text:
+      `${user.name} <${user.email}> paid and their account was switched on automatically.\n\n` +
+      `Revoke: ${block}\n\n` +
+      `Or manage everyone at ${origin}/admin\n`,
+  }, "notify");
 }
 
 /* Inline styles only — every mail client strips <style>, and half of them
@@ -127,6 +123,24 @@ const signupEmail = (user: User, approve: string, block: string, origin: string)
 
   <p style="color:#4C463D;font-size:14px;margin-top:28px;padding-top:16px;border-top:1px solid #E3DED4">
     These links expire in seven days. You can also change anyone's access at any
+    time from <a href="${origin}/admin" style="color:#6B3BC4">${origin}/admin</a>.
+  </p>
+</div>`;
+
+const approvedSignupEmail = (user: User, block: string, origin: string) => `
+<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1714;max-width:520px">
+  <p style="font:600 20px/1.3 Georgia,serif;margin:0 0 4px">Paid, and already in</p>
+  <p style="color:#4C463D;margin:0 0 20px">Payment cleared, so their account switched on automatically — nothing for you to approve.</p>
+
+  <div style="border:1px solid #E3DED4;border-radius:8px;padding:16px;margin-bottom:24px">
+    <div style="font-weight:600">${escapeHtml(user.name)}</div>
+    <div style="color:#4C463D;font-size:15px">${escapeHtml(user.email)}</div>
+  </div>
+
+  <a href="${block}" style="display:inline-block;background:#fff;color:#AA2A1E;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:500;border:1px solid #E3DED4">Revoke access</a>
+
+  <p style="color:#4C463D;font-size:14px;margin-top:28px;padding-top:16px;border-top:1px solid #E3DED4">
+    This link expires in seven days. You can also change anyone's access at any
     time from <a href="${origin}/admin" style="color:#6B3BC4">${origin}/admin</a>.
   </p>
 </div>`;

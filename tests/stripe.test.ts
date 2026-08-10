@@ -1,0 +1,234 @@
+import { createHmac } from "node:crypto";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { verifyStripeSignature, handleStripeWebhook, type StripeEnv } from "../src/worker/stripe";
+import type { KVNamespace } from "../src/worker/users";
+
+/* ------------------------------------------------------------------ *
+ * PAYMENT -> AUTOMATIC ACCESS
+ *
+ * No live Stripe call anywhere in this suite — signatures are hand-
+ * computed the same way Stripe documents doing it manually, and the
+ * webhook handler is exercised directly against a stub KV.
+ * ------------------------------------------------------------------ */
+
+const SECRET = "whsec_test_secret";
+const NOW = 1_800_000_000_000;
+
+const sign = (body: string, t: number, secret = SECRET) =>
+  createHmac("sha256", secret).update(`${t}.${body}`).digest("hex");
+
+function memoryKV(): KVNamespace & { store: Map<string, string> } {
+  const store = new Map<string, string>();
+  return {
+    store,
+    async get(k) { return store.get(k) ?? null; },
+    async put(k, v) { store.set(k, v); },
+    async delete(k) { store.delete(k); },
+    async list({ prefix = "" } = {}) {
+      const keys = [...store.keys()].filter((k) => k.startsWith(prefix)).sort();
+      return { keys: keys.map((name) => ({ name })), list_complete: true };
+    },
+  };
+}
+
+describe("verifyStripeSignature", () => {
+  const body = JSON.stringify({ type: "checkout.session.completed" });
+
+  it("accepts a correctly-signed payload", async () => {
+    const t = Math.floor(NOW / 1000);
+    const header = `t=${t},v1=${sign(body, t)}`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(true);
+  });
+
+  it("rejects a tampered body", async () => {
+    const t = Math.floor(NOW / 1000);
+    const header = `t=${t},v1=${sign(body, t)}`;
+    expect(await verifyStripeSignature(body + "x", header, SECRET, NOW)).toBe(false);
+  });
+
+  it("rejects the wrong secret", async () => {
+    const t = Math.floor(NOW / 1000);
+    const header = `t=${t},v1=${sign(body, t, "whsec_wrong")}`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(false);
+  });
+
+  it("rejects a timestamp outside the tolerance window", async () => {
+    const staleT = Math.floor(NOW / 1000) - 600; // 10 minutes old
+    const header = `t=${staleT},v1=${sign(body, staleT)}`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(false);
+  });
+
+  it("rejects a malformed header", async () => {
+    expect(await verifyStripeSignature(body, "garbage", SECRET, NOW)).toBe(false);
+    expect(await verifyStripeSignature(body, "t=123", SECRET, NOW)).toBe(false);
+  });
+
+  it("accepts a header carrying multiple v1 signatures if any one matches (signing-secret rollover)", async () => {
+    const t = Math.floor(NOW / 1000);
+    const header = `t=${t},v1=deadbeef,v1=${sign(body, t)}`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(true);
+  });
+
+  it("rejects when none of several v1 signatures match", async () => {
+    const t = Math.floor(NOW / 1000);
+    // Full-length (64 hex char) values, matching the real expected digest's
+    // length — short values like "deadbeef" get rejected by the length
+    // pre-check before ever reaching the constant-time comparison this test
+    // means to exercise.
+    const header = `t=${t},v1=${"a".repeat(64)},v1=${"b".repeat(64)}`;
+    expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(false);
+  });
+});
+
+describe("handleStripeWebhook", () => {
+  let USERS: ReturnType<typeof memoryKV>;
+  let LEADS: ReturnType<typeof memoryKV>;
+  let ENV: StripeEnv;
+
+  beforeEach(() => {
+    USERS = memoryKV();
+    LEADS = memoryKV();
+    ENV = { USERS, LEADS, STRIPE_WEBHOOK_SECRET: SECRET };
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => vi.restoreAllMocks());
+
+  const post = (body: string, headerOverride?: string, envOverride?: StripeEnv) => {
+    const t = Math.floor(NOW / 1000);
+    const header = headerOverride ?? `t=${t},v1=${sign(body, t)}`;
+    return handleStripeWebhook(
+      new Request("https://octant.example/api/stripe/webhook", {
+        method: "POST", body, headers: { "stripe-signature": header },
+      }),
+      envOverride ?? ENV, NOW,
+    );
+  };
+
+  it("returns null for any other path", async () => {
+    const res = await handleStripeWebhook(new Request("https://octant.example/onramp"), ENV, NOW);
+    expect(res).toBeNull();
+  });
+
+  it("503s when the webhook secret is not configured", async () => {
+    const res = await post(JSON.stringify({ type: "checkout.session.completed" }));
+    // rebuild with a secret-less env to test the actual 503 path
+    const bareEnv: StripeEnv = { USERS, LEADS };
+    const body = JSON.stringify({ type: "checkout.session.completed" });
+    const bare = await handleStripeWebhook(
+      new Request("https://octant.example/api/stripe/webhook", { method: "POST", body }), bareEnv, NOW,
+    );
+    expect(bare?.status).toBe(503);
+    expect(res?.status).not.toBe(503); // sanity: the configured env behaves differently
+  });
+
+  it("400s on a missing signature header", async () => {
+    const res = await handleStripeWebhook(
+      new Request("https://octant.example/api/stripe/webhook", {
+        method: "POST", body: JSON.stringify({ type: "checkout.session.completed" }),
+      }),
+      ENV, NOW,
+    );
+    expect(res?.status).toBe(400);
+  });
+
+  it("400s on an invalid signature", async () => {
+    const body = JSON.stringify({ type: "checkout.session.completed" });
+    const res = await post(body, "t=1,v1=deadbeef");
+    expect(res?.status).toBe(400);
+  });
+
+  it("acks and ignores event types other than checkout.session.completed", async () => {
+    const res = await post(JSON.stringify({ type: "customer.subscription.deleted" }));
+    expect(res?.status).toBe(200);
+    expect(USERS.store.size).toBe(0);
+  });
+
+  it("preapproves the payer's email on a settled checkout.session.completed", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "Jane@Example.com" }, payment_status: "paid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(200);
+    expect(USERS.store.get("preapproved:jane@example.com")).toBeTruthy();
+  });
+
+  it("preapproves on a $0 checkout (no_payment_required is a legitimate settled state)", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "no_payment_required" } },
+    });
+    await post(body);
+    expect(USERS.store.get("preapproved:jane@example.com")).toBeTruthy();
+  });
+
+  it("does NOT preapprove an unsettled payment (e.g. a delayed method still processing)", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "unpaid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(200); // acked, so Stripe doesn't retry — just not activated
+    expect(USERS.store.size).toBe(0);
+  });
+
+  it("preapproves on async_payment_succeeded — a delayed method settling later", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.async_payment_succeeded",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
+    });
+    await post(body);
+    expect(USERS.store.get("preapproved:jane@example.com")).toBeTruthy();
+  });
+
+  it("does not preapprove on async_payment_failed", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.async_payment_failed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "unpaid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(200);
+    expect(USERS.store.size).toBe(0);
+  });
+
+  it("marks a matching lead as converted", async () => {
+    LEADS.store.set("lead:jane@example.com", JSON.stringify({
+      email: "jane@example.com", firstSeen: NOW, optin: true, nurture: { stage: 1, nextSendAt: NOW },
+    }));
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
+    });
+    await post(body);
+    const lead = JSON.parse(LEADS.store.get("lead:jane@example.com")!);
+    expect(lead.nurture.stopReason).toBe("converted");
+  });
+
+  it("acks without erroring when the session carries no email", async () => {
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { payment_status: "paid" } },
+    });
+    const res = await post(body);
+    expect(res?.status).toBe(200);
+    expect(USERS.store.size).toBe(0);
+  });
+
+  it("returns 500 (so Stripe retries) when preapprove fails, instead of silently losing access", async () => {
+    const brokenUsers: KVNamespace = {
+      ...USERS,
+      put: async () => { throw new Error("KV unavailable"); },
+    };
+    // A local env, not a reassignment of the shared ENV binding — this test
+    // only wants preapprove()'s KV write broken, not to risk that state
+    // leaking into a later test via the outer variable.
+    const body = JSON.stringify({
+      type: "checkout.session.completed",
+      data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
+    });
+    const res = await post(body, undefined, { ...ENV, USERS: brokenUsers });
+    expect(res?.status).toBe(500);
+    expect(console.error).toHaveBeenCalled();
+  });
+});

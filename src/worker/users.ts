@@ -53,9 +53,46 @@ export interface User {
 }
 
 const KEY = (email: string) => `user:${normalise(email)}`;
+const PREAPPROVE_KEY = (email: string) => `preapproved:${normalise(email)}`;
+/** Long enough for someone to get around to signing in after paying; not indefinite. */
+const PREAPPROVE_TTL_SECONDS = 30 * 24 * 60 * 60;
 
 /** Emails are case-insensitive in practice; store and compare one way only. */
 export const normalise = (email: string) => email.trim().toLowerCase();
+
+/**
+ * Mark an email as pre-approved — set by the Stripe webhook (stripe.ts) the
+ * moment payment clears, ahead of any sign-in. A separate key, not a `USERS`
+ * record: nothing is known about this person yet except that they paid.
+ */
+export async function preapprove(env: UserEnv, email: string, now: number): Promise<void> {
+  if (!env.USERS) return;
+  await env.USERS.put(PREAPPROVE_KEY(email), String(now), { expirationTtl: PREAPPROVE_TTL_SECONDS });
+}
+
+/** Whether a pre-approval marker exists, without consuming it. */
+async function hasPreapproval(env: UserEnv, email: string): Promise<boolean> {
+  if (!env.USERS) return false;
+  return (await env.USERS.get(PREAPPROVE_KEY(email))) !== null;
+}
+
+/**
+ * Clear a pre-approval marker. Only called from recordSignIn AFTER the
+ * approved user record has already been durably written — so if this
+ * delete itself fails, or a concurrent sign-in raced this one, the marker
+ * simply survives for a harmless re-consume next time (writing "approved"
+ * again is a no-op). The alternative order — delete first, write second —
+ * can lose a paying customer's only approval marker if the write fails in
+ * between, stranding them `pending` with no way back in but the owner's
+ * manual approval. This module has no compare-and-swap primitive to make
+ * the whole thing atomic (KV has none; that would need a Durable Object),
+ * so this ordering is the cheap way to make the failure mode "consumed
+ * twice, harmlessly" rather than "consumed and lost".
+ */
+async function clearPreapproval(env: UserEnv, email: string): Promise<void> {
+  if (!env.USERS) return;
+  await env.USERS.delete(PREAPPROVE_KEY(email));
+}
 
 export const isOwner = (env: UserEnv, email: string) =>
   !!env.OWNER_EMAIL && normalise(env.OWNER_EMAIL) === normalise(email);
@@ -77,18 +114,28 @@ export async function getUser(env: UserEnv, email: string): Promise<User | null>
  *
  * The owner is approved automatically — otherwise nobody could ever approve
  * anybody, since the first person to arrive would be waiting on themselves.
- * Everyone else starts `pending` and sees nothing until told otherwise.
+ * A non-owner who already paid (a `preapproved:` marker from the Stripe
+ * webhook, consumed here) is approved the same way, on sight. Everyone else
+ * starts `pending` and sees nothing until told otherwise.
  *
- * Returns the record and whether this was the first time, which is what
- * decides if the owner gets an email.
+ * Returns the record, whether this was the first time, and whether
+ * preapproval is what did it — together they decide which email (if any)
+ * the owner gets.
  */
 export async function recordSignIn(
   env: UserEnv, email: string, name: string, now: number,
-): Promise<{ user: User; isNew: boolean }> {
+): Promise<{ user: User; isNew: boolean; wasPreapproved: boolean }> {
   const existing = await getUser(env, email);
   const owner = isOwner(env, email);
 
   if (existing) {
+    // A visitor who signed in BEFORE paying is stuck `pending` unless this
+    // checks again here: preapproval is only ever consumed once, and the
+    // webhook has no way to know an account already exists. Only a `pending`
+    // record is eligible — never re-check for `blocked` (a deliberate no
+    // from the owner must not be silently overridden by a later payment).
+    const wasPreapproved = !owner && existing.status === "pending" &&
+      (await hasPreapproval(env, email));
     const user: User = {
       ...existing,
       name: name || existing.name,
@@ -96,23 +143,27 @@ export async function recordSignIn(
       // A promotion to owner is honoured on sight; a demotion is not silently
       // applied, because losing OWNER_EMAIL should not lock you out of /admin.
       owner: existing.owner || owner,
-      status: owner ? "approved" : existing.status,
+      status: owner || wasPreapproved ? "approved" : existing.status,
+      decidedAt: owner || wasPreapproved ? now : existing.decidedAt,
     };
     await put(env, user);
-    return { user, isNew: false };
+    if (wasPreapproved) await clearPreapproval(env, email);
+    return { user, isNew: false, wasPreapproved };
   }
 
+  const wasPreapproved = !owner && (await hasPreapproval(env, email));
   const user: User = {
     email: normalise(email),
     name: name || normalise(email),
-    status: owner ? "approved" : "pending",
+    status: owner || wasPreapproved ? "approved" : "pending",
     firstSeen: now,
     lastSeen: now,
     owner: owner || undefined,
-    decidedAt: owner ? now : undefined,
+    decidedAt: owner || wasPreapproved ? now : undefined,
   };
   await put(env, user);
-  return { user, isNew: true };
+  if (wasPreapproved) await clearPreapproval(env, email);
+  return { user, isNew: true, wasPreapproved };
 }
 
 /**

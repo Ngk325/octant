@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import worker, { type Env } from "../src/worker/index";
 import { GATE_SCRIPT } from "../src/worker/auth";
+import { ONRAMP_SCRIPT } from "../src/worker/onramp";
 import { THEME_SCRIPT_HASH, withSecurityHeaders } from "../src/worker/headers";
 
 /* ------------------------------------------------------------------ *
@@ -44,6 +45,14 @@ describe("the hash pins", () => {
     const policy = res.headers.get("content-security-policy") ?? "";
     expect(policy).toContain(`'sha256-${await sha256b64(GATE_SCRIPT)}'`);
     expect(policy).toContain(`'sha256-${THEME_SCRIPT_HASH}'`);
+  });
+
+  it("the onramp script's hash is in the CSP, on the onramp page itself", async () => {
+    const res = await worker.fetch(new Request("https://octant.test/onramp"), ENV);
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain(ONRAMP_SCRIPT);
+    const policy = res.headers.get("content-security-policy") ?? "";
+    expect(policy).toContain(`'sha256-${await sha256b64(ONRAMP_SCRIPT)}'`);
   });
 
   it("the rendered gate page ships GATE_SCRIPT byte-for-byte", async () => {

@@ -18,7 +18,7 @@
  * ------------------------------------------------------------------ */
 
 /** The mark: two squares at 45° making an eight-pointed figure, one centre. */
-const MARK = (size: number, stroke = "currentColor", accent = "#6B3BC4") => `
+export const MARK = (size: number, stroke = "currentColor", accent = "#6B3BC4") => `
 <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
   <rect x="14" y="14" width="36" height="36" rx="5" stroke="${stroke}" stroke-width="2.5" opacity=".9"/>
   <rect x="14" y="14" width="36" height="36" rx="5" stroke="${stroke}" stroke-width="2.5" opacity=".45"
@@ -27,7 +27,7 @@ const MARK = (size: number, stroke = "currentColor", accent = "#6B3BC4") => `
 </svg>`;
 
 /** The same mark as a favicon, self-contained. */
-const FAVICON =
+export const FAVICON =
   "data:image/svg+xml," +
   encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">` +
@@ -37,7 +37,7 @@ const FAVICON =
   );
 
 /** Stripe payment link — Octant Individual, $25 per user / month, quantity adjustable. */
-const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
+export const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
 const BUSINESS_MAILTO =
   "mailto:nick@stratfieldpartners.com?subject=Octant%20for%20our%20team";
 
@@ -314,7 +314,8 @@ export function marketingPage(origin: string): Response {
       <div class="cta-row">
         <a class="btn primary" href="#pricing">Start now — $25/user·mo</a>
         <a class="btn" href="#product">See how it works</a>
-        <span class="cta-note">Cancel anytime. Every account is enabled by a person, not a script.</span>
+        <a class="btn" href="/onramp">Not sure yet? Take the two-minute quiz</a>
+        <span class="cta-note">Cancel anytime. Paid access unlocks the moment checkout clears.</span>
       </div>
     </div>
     <div class="art">${HERO_ART}</div>
@@ -510,8 +511,8 @@ export function marketingPage(origin: string): Response {
           </ul>
           <a class="btn primary" href="${STRIPE_LINK}">Start now</a>
           <p class="small muted" style="margin:12px 0 0">
-            Checkout via Stripe. After payment you&rsquo;ll sign in with Google and your account
-            is enabled — every account is switched on by a person.
+            Checkout via Stripe. Payment unlocks your account automatically — sign in with
+            Google right after and you&rsquo;re straight in.
           </p>
         </div>
         <div class="price">
