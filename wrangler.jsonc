@@ -70,16 +70,22 @@
     { "binding": "LEADS", "id": "da8a250b591e47209b68d7fc65565e9b" }
   ],
 
-  // Per-step /onramp funnel telemetry. NOT KV — DEPLOY.md's write-budget
-  // note (1,000 writes/day on the free tier, one per second per key) rules
-  // out one KV record per pageview on any real ad traffic. Analytics Engine
-  // is built for exactly this write pattern, costs nothing extra, and is
-  // never read back by this Worker — query it via Cloudflare's own
-  // dashboard or Analytics Engine SQL API. Needs no `id`, no separate
-  // creation step; the binding itself provisions the dataset on first write.
-  "analytics_engine_datasets": [
-    { "binding": "ONRAMP_ANALYTICS", "dataset": "onramp_funnel" }
-  ],
+  // Per-step /onramp funnel telemetry (src/worker/onramp.ts) is written
+  // through an ONRAMP_ANALYTICS binding when one is present — deliberately
+  // NOT KV, per DEPLOY.md's write-budget note (1,000 writes/day on the free
+  // tier, one per second per key rules out one record per pageview on any
+  // real ad traffic). The binding is commented out here rather than
+  // declared: unlike the KV namespaces above, there is no way to verify
+  // ahead of time that Analytics Engine is available/enabled for this
+  // account, and a bad guess here would fail the whole deploy the same way
+  // the LEADS placeholder id just did. `writeDataPoint` is called through
+  // optional chaining, so the app works identically with or without this
+  // binding — see DEPLOY.md, "Turning on funnel analytics", for how to add
+  // it once confirmed to work.
+  //
+  // "analytics_engine_datasets": [
+  //   { "binding": "ONRAMP_ANALYTICS", "dataset": "onramp_funnel" }
+  // ],
 
   // The deployed hostname, e.g. "https://octant.example.com" — a plain var,
   // not a secret, since it is public knowledge. Used only to build the

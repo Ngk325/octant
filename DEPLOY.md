@@ -78,12 +78,32 @@ bundle.
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
 | `STRIPE_WEBHOOK_SECRET` | for payment auto-approval | Verifies `POST /api/stripe/webhook` actually came from Stripe (`whsec_...`, from the webhook endpoint's settings in the Stripe dashboard — not the account's API key; no Stripe SDK or API key is used anywhere in this app). Without it, the endpoint 503s and payment stays manual — the customer signs in, lands `pending`, and the owner approves them the existing way. |
 
-The three KV namespaces (`USERS`, `CHAT_LOGS`, `LEADS`), the Analytics Engine
-dataset, both rate-limit bindings and the hourly cron live in `wrangler.jsonc`
-and deploy with the code — nothing to click in the dashboard, and
-dashboard-only bindings would be removed by the next push anyway. All three
-KV namespaces already have real ids committed; there is no creation step left
-to do.
+The three KV namespaces (`USERS`, `CHAT_LOGS`, `LEADS`), both rate-limit
+bindings and the hourly cron live in `wrangler.jsonc` and deploy with the code
+— nothing to click in the dashboard, and dashboard-only bindings would be
+removed by the next push anyway. All three KV namespaces already have real
+ids committed; there is no creation step left to do.
+
+**Turning on funnel analytics (🔑 HUMAN, one-time, optional).** Per-step
+`/onramp` telemetry (`ONRAMP_ANALYTICS`, an Analytics Engine binding) is left
+commented out in `wrangler.jsonc`, unlike everything else in this file. KV
+namespace ids can be verified before committing them (as above); Analytics
+Engine cannot — there's no way to confirm ahead of time that it's
+available/enabled on a given Cloudflare account, and a bad guess there fails
+the *entire* deploy, not just analytics (this is exactly what happened
+shipping this feature: the auto-deploy pipeline rejected the binding, and
+without visibility into why, the safer fix was to defer it rather than guess
+again). To turn it on:
+
+1. In the Cloudflare dashboard, confirm **Analytics Engine** is available for
+   this account (Workers & Pages → the account → Analytics Engine).
+2. Uncomment the `analytics_engine_datasets` block in `wrangler.jsonc` and
+   push. The dataset provisions itself on the first write — no separate
+   creation step, unlike KV.
+3. If the deploy fails again, the binding is still safe to leave commented
+   out indefinitely: `onramp.ts` calls `env.ONRAMP_ANALYTICS?.writeDataPoint`
+   through optional chaining, so the funnel works identically either way —
+   analytics is a pure bonus, never a dependency.
 
 **If `LEADS` (or any KV namespace) is ever missing its id** — e.g. setting
 this app up fresh in a different Cloudflare account — create it once and
