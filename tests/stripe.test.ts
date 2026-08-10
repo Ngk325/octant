@@ -71,7 +71,11 @@ describe("verifyStripeSignature", () => {
 
   it("rejects when none of several v1 signatures match", async () => {
     const t = Math.floor(NOW / 1000);
-    const header = `t=${t},v1=deadbeef,v1=cafebabe`;
+    // Full-length (64 hex char) values, matching the real expected digest's
+    // length — short values like "deadbeef" get rejected by the length
+    // pre-check before ever reaching the constant-time comparison this test
+    // means to exercise.
+    const header = `t=${t},v1=${"a".repeat(64)},v1=${"b".repeat(64)}`;
     expect(await verifyStripeSignature(body, header, SECRET, NOW)).toBe(false);
   });
 });
@@ -90,14 +94,14 @@ describe("handleStripeWebhook", () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  const post = (body: string, headerOverride?: string) => {
+  const post = (body: string, headerOverride?: string, envOverride?: StripeEnv) => {
     const t = Math.floor(NOW / 1000);
     const header = headerOverride ?? `t=${t},v1=${sign(body, t)}`;
     return handleStripeWebhook(
       new Request("https://octant.example/api/stripe/webhook", {
         method: "POST", body, headers: { "stripe-signature": header },
       }),
-      ENV, NOW,
+      envOverride ?? ENV, NOW,
     );
   };
 
@@ -216,12 +220,14 @@ describe("handleStripeWebhook", () => {
       ...USERS,
       put: async () => { throw new Error("KV unavailable"); },
     };
-    ENV = { ...ENV, USERS: brokenUsers };
+    // A local env, not a reassignment of the shared ENV binding — this test
+    // only wants preapprove()'s KV write broken, not to risk that state
+    // leaking into a later test via the outer variable.
     const body = JSON.stringify({
       type: "checkout.session.completed",
       data: { object: { customer_details: { email: "jane@example.com" }, payment_status: "paid" } },
     });
-    const res = await post(body);
+    const res = await post(body, undefined, { ...ENV, USERS: brokenUsers });
     expect(res?.status).toBe(500);
     expect(console.error).toHaveBeenCalled();
   });

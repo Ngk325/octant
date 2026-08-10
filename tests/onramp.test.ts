@@ -186,9 +186,15 @@ describe("lead capture and analytics wiring at the done step", () => {
   it("rejects a malformed email server-side — the endpoint cannot be used to mail arbitrary strings", async () => {
     const { LEADS, env } = withLeadsAndAnalytics();
     vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    const s = await startToken(env);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS + 1000);
+    // A valid start token is included so rejection is isolated to EMAIL_RE,
+    // not the (separately tested) missing-token case.
     for (const bad of ["not-an-email", "no-at-sign.com", "@no-local-part.com", "trailing@dot."]) {
       const res = await worker.fetch(
-        new Request(`https://octant.example/onramp?step=11&email=${encodeURIComponent(bad)}`), env,
+        new Request(`https://octant.example/onramp?step=11&email=${encodeURIComponent(bad)}&_s=${encodeURIComponent(s)}`), env,
       );
       expect(res.status).toBe(200); // still renders the page, just doesn't capture/send
     }
@@ -213,6 +219,16 @@ describe("lead capture and analytics wiring at the done step", () => {
     await worker.fetch(
       new Request("https://octant.example/onramp?step=11&email=jane@example.com&_s=garbage.notasignature"),
       env,
+    );
+    expect(LEADS.store.size).toBe(0);
+
+    // A well-formed token signed with a DIFFERENT secret — the case that
+    // actually exercises signature verification, not just format parsing.
+    const otherEnv = { ...env, AUTH_SECRET: "a-different-secret" } as unknown as Env;
+    const s = await startToken(otherEnv);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS + 1000);
+    await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&_s=${encodeURIComponent(s)}`), env,
     );
     expect(LEADS.store.size).toBe(0);
   });

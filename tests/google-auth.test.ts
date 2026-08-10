@@ -144,12 +144,15 @@ describe("the user list", () => {
     // retry, rather than deleting it first and losing it if the write below
     // then fails.
     await preapprove(ENV, "jane@example.com", NOW - 1000);
-    const brokenPut = USERS.put.bind(USERS);
-    USERS.put = async () => { throw new Error("KV put failed"); };
-    await expect(recordSignIn(ENV, "jane@example.com", "Jane", NOW)).rejects.toThrow("KV put failed");
-    expect(await USERS.get("preapproved:jane@example.com")).not.toBeNull();
+    const workingPut = USERS.put.bind(USERS);
+    try {
+      USERS.put = async () => { throw new Error("KV put failed"); };
+      await expect(recordSignIn(ENV, "jane@example.com", "Jane", NOW)).rejects.toThrow("KV put failed");
+      expect(await USERS.get("preapproved:jane@example.com")).not.toBeNull();
+    } finally {
+      USERS.put = workingPut;
+    }
 
-    USERS.put = brokenPut;
     const { user, wasPreapproved } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW + 1000);
     expect(wasPreapproved).toBe(true);
     expect(user.status).toBe("approved");

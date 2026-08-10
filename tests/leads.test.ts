@@ -143,6 +143,18 @@ describe("sendQueuedNurture", () => {
     expect(lead("jane@example.com").nurture).toMatchObject({ stage: 1, nextSendAt: NOW + 1000 + 3 * DAY_MS });
   });
 
+  it("backs off a day, not an hour, when a stage-0 retry itself fails — never a permanently-due lead", async () => {
+    const broken: LeadsEnv = { ...ENV, NOTIFY_FROM: undefined };
+    await captureLead(broken, "https://octant.example", "jane@example.com", undefined, [], undefined, false, NOW);
+    expect(lead("jane@example.com").nurture).toMatchObject({ stage: 0, nextSendAt: NOW });
+
+    // Still broken an hour later — without a backoff this would retry every
+    // single hour, one Resend call per lead, for the whole retention window.
+    await sendQueuedNurture(broken, "https://octant.example", NOW + 1000);
+    expect(sent).toHaveLength(0);
+    expect(lead("jane@example.com").nurture).toMatchObject({ stage: 0, nextSendAt: NOW + 1000 + DAY_MS });
+  });
+
   it("does not advance stage or lose the email when a follow-up send fails", async () => {
     await captureLead(ENV, "https://octant.example", "jane@example.com", undefined, ["meetings"], undefined, true, NOW);
     sent = [];

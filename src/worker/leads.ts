@@ -149,6 +149,11 @@ export async function sendQueuedNurture(env: LeadsEnv, origin: string, now: numb
             if (result.sent) {
               lead.nurture = { stage: 1, nextSendAt: now + 3 * DAY_MS };
               await writeLead(env, lead);
+            } else {
+              // Back off instead of retrying an undeliverable address every
+              // hour for the whole retention window.
+              lead.nurture.nextSendAt = now + DAY_MS;
+              await writeLead(env, lead);
             }
             continue;
           }
