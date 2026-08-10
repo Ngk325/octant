@@ -27,3 +27,23 @@ AUTH_SECRET=local-development-only-not-a-real-secret
 # Get a key from https://aistudio.google.com/apikey
 # Without it everything else works and the assistant reports itself unconfigured.
 GEMINI_API_KEY=your-key-here
+
+
+# ── The stack export ─────────────────────────────────────────────────────────
+# GET /api/export/stack/:type returns the eight slots as
+# { slot, function_attitude } — the one read-only seam out of this app, for a
+# separate private tool that keeps its own per-person notes. See
+# src/worker/export.ts for the reasoning, including why this is a bearer token
+# rather than the session cookie.
+#
+# Both are optional and neither fails open. Without EXPORT_TOKEN the route is
+# reachable only by someone signed in on this origin; without EXPORT_ORIGINS it
+# emits no cross-origin headers and is same-origin only.
+
+# Bearer token the caller presents. Generate one with:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+# EXPORT_TOKEN=
+
+# Origins allowed to read it cross-site. Comma-separated, exact matches — a
+# scheme and host, no trailing slash and no wildcards.
+# EXPORT_ORIGINS=http://localhost:5173

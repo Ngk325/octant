@@ -16,6 +16,10 @@ import { recordSignIn, isOwner, getUser } from "./users";
 import { notifyOwnerOfSignup, type NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
 import { handleRead } from "./read";
+import {
+  exportPreflight, handleExport, hasExportToken, isExportPath, withExportCors,
+  type ExportEnv,
+} from "./export";
 
 /**
  * Assets-plus-API Worker, behind an access wall.
@@ -30,7 +34,7 @@ import { handleRead } from "./read";
  * ever invoking this file, and none of the below runs. tests/auth.test.ts
  * asserts that value for exactly this reason.
  */
-export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv {
+export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, ExportEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
@@ -89,6 +93,29 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
     const session = await readSession(request, env, now);
     if (session) return new Response(null, { status: 302, headers: { location: "/" } });
     return signinPage(env, safeReturn(url.searchParams.get("returnTo") ?? "/"));
+  }
+
+  // 4a. The stack export. Ahead of the wall for the same reason /api/admin/act
+  //     is: the token IS the authorisation. Two things force the position —
+  //     a CORS preflight carries no credentials, so a gated OPTIONS would 401
+  //     and the real request would never be sent; and the session cookie is
+  //     SameSite=Lax, so a cross-site caller cannot present one however the
+  //     route is placed (see export.ts for why that is not worth changing).
+  //
+  //     Being ahead of the wall is not being outside it. A caller with no
+  //     valid token falls through to requireAuth exactly as before, so the
+  //     route is reachable anonymously only if someone sets EXPORT_TOKEN and
+  //     hands the token out. Refusals carry the CORS headers too — otherwise
+  //     the browser shows an opaque network error instead of the 401.
+  if (isExportPath(url.pathname)) {
+    const preflight = exportPreflight(request, env);
+    if (preflight) return preflight;
+
+    if (!(await hasExportToken(request, env))) {
+      const blocked = await requireAuth(request, env, now);
+      if (blocked) return withExportCors(blocked, request, env);
+    }
+    return withExportCors(handleExport(request, url)!, request, env);
   }
 
   // 4b. The public readings, the sitemap and robots.txt. Public by design —
