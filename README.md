@@ -237,6 +237,25 @@ real cells, scrollable figures are keyboard-reachable, and facts that lived only
 tooltips also exist as text a screen reader announces. A render throw shows a readable fallback
 page, not a blank document (`ErrorBoundary`, tested in jsdom).
 
+## The deck
+
+Sixty-six printed cards, generated from the engine rather than written for it:
+sixteen Wirings, eight Elements, eight Seats, four Camps, four Sides, sixteen
+Channels and eight Wheels, plus a title card and a key. Each card carries a
+generative composition seeded by its own id and coloured from the app's function
+palette — a Channel's bundle crosses or runs parallel according to its ease score,
+a Side's door stands open by exactly as much as that side is reachable.
+
+```sh
+npm run cards      # → dist-cards/octant-cards.pdf (bleed size, one card per page)
+                   #   dist-cards/octant-sheets.pdf (A4 proof sheets, crop marks)
+```
+
+Standard poker trim, 63 x 88mm inside a 69.09 x 94.23mm page. Vector all the way
+into the PDF, no image files anywhere in the repo, and the build fails if any
+card's text overruns its safe area — a browser measures every one.
+**[docs/CARDS.md](./docs/CARDS.md)** is the full spec.
+
 ## Develop
 
 ```sh
