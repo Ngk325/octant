@@ -6,6 +6,7 @@ import { REL, relation } from "../src/engine/core";
 import { FN_COLOR } from "../src/engine/palette";
 import { ART_W, LABEL_MIN, artFor, backArt } from "../src/cards/art";
 import { bondFacts, deck, deckSuits, fit, sparkFacts, type Card, type Suit } from "../src/cards/deck";
+import { sides } from "../src/engine/sides";
 import { CARD_PAGE, TRIM, cardHtml, cardsDocument, sheetsDocument } from "../src/cards/render";
 
 /* ------------------------------------------------------------------ *
@@ -339,6 +340,26 @@ describe("what the cards claim is what the engine says", () => {
       const examiner = TYPES.find((p) => relation(t, p) === "SR")!;
       expect(st[6], `${t} examiner`).toBe(stack(examiner)[0]);
     }
+  });
+
+  /**
+   * The Superego is two-faced by the app's own canon: sides.ts calls it the
+   * side "built for real power, earned last" — destructive by default,
+   * convertible once the other three are developed (Beebe's demonic/daimonic
+   * duality says the same of the eighth slot). The deck's first printing was
+   * valley-only ("opens... never usefully"), contradicting the engine. Pin
+   * both faces, on the card and in the engine copy it must agree with.
+   */
+  it("gives the Superego both its faces, like the engine does", () => {
+    const card = byId("side-superego");
+    const all = [card.lede, ...card.blocks.map((b) => b.text)].join(" ");
+    expect(all).toMatch(/power/i);
+    expect(all).toMatch(/damage|parasite/i);
+    expect(all).not.toMatch(/never usefully/i);
+    const eng = sides("ENTP").superego;
+    expect(eng.produces).toMatch(/power/i);
+    expect(eng.undeveloped).toMatch(/parasite/i);
+    expect(eng.developed).toMatch(/on purpose/i);
   });
 
   it("no longer prints the disclaimer the deck dropped", () => {

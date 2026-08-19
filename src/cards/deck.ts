@@ -102,11 +102,18 @@ const SIDE_COPY: Record<SideKey, { lede: string; blocked: string; opens: string;
     opens: "A problem the ego has visibly failed at, taken up deliberately rather than in panic.",
     produces: "Correction, and a second opinion you did not have to ask anyone for.",
   },
+  // Two faces, not one. The first printing was valley-only ("never usefully"),
+  // which contradicted the engine's own superego copy — sides.ts calls it "the
+  // one side actually built for real power, earned last", destructive by
+  // default and convertible once the other three sides are grown. The
+  // published eight-slot literature the app draws on says the same of this
+  // slot's archetype: destructive undeveloped, generative integrated.
+  // Seized in the valleys; entered at the peaks.
   superego: {
-    lede: "The parasite persona. Your worst element leads it, which is why it reads as someone else.",
-    blocked: "Fear — the one door worth leaving shut.",
-    opens: "Threat. It opens by itself, under pressure, and never usefully.",
-    produces: "Damage, and afterwards the sense that someone else was driving.",
+    lede: "Led by your worst tool, it reads as someone else: parasite in valleys, power at peaks.",
+    blocked: "Fear — rightly. The door opens two ways.",
+    opens: "Seized, by itself, when the other three sides fail — or entered on purpose once they are grown.",
+    produces: "Ungoverned, damage and the sense someone else was driving; governed, raw power on purpose.",
   },
 };
 
@@ -153,7 +160,7 @@ const SEAT_SENSE: Record<SlotName, string> = {
   "Doubt": "The first shadow seat — the second opinion you argue with instead of trusting.",
   "Scold": "The shadow's critic. A borrowed edge: sharp in bursts, corrosive if lived in.",
   "Blind spot": "The seat you cannot watch. It sounds fluent and is not, and you will not notice.",
-  "Dread": "The last seat. It wakes rarely, under threat, and swings without your permission.",
+  "Dread": "The last seat: it swings without your permission — until, developed last, on purpose.",
 };
 
 /** Which side a numbered ego seat belongs to, and where the same tool sits in the mirrored side. */
@@ -299,7 +306,7 @@ function attitudeCards(): Card[] {
     subtitle: `seat ${i + 1} of 8 — carries ${SLOT_TAGS[i].replace("Blindspot", "Blind spot")}`,
     lede: `${SEAT_SENSE[slot]}${
       i === 0 ? " Its Power is the Superpower the Wirings print."
-      : i === 7 ? " Its Hate is the Kryptonite the Wirings print."
+      : i === 7 ? " Its Hate is the Wirings' Kryptonite."
       : " Any tool can sit here; your wiring says which."}`,
     chips: [{ text: i < 4 ? "conscious" : "shadow", dim: i >= 4 }],
     blocks: [

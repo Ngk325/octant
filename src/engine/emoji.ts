@@ -35,7 +35,7 @@ export const DOOR_STATE: Record<SideKey, string> = {
   ego: "open — you live here",
   subconscious: "ajar — opens past insecurity",
   unconscious: "closed — opens past worry",
-  superego: "barred — opens last, if at all",
+  superego: "barred — opens last: seized, or earned",
 };
 
 export const DOOR_EMOJI: Record<SideKey, string> = {
