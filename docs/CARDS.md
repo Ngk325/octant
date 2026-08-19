@@ -1,10 +1,11 @@
 # The deck
 
-Seventy-one printed cards — sixty-eight in eight suits, plus three that teach the
+Seventy-five printed cards — seventy-two in eight suits, plus three that teach the
 deck its own vocabulary — generated from the same engine that renders `/type`,
-`/pair` and `/matrix`. A card cannot disagree with the app, because no card carries
-a fact of its own: the stacks, the relation codes, the ease scores, the Octagram
-wheels and the four sides are all read off `src/engine/` at build time.
+`/pair` and `/matrix`, with a matching card back. A card cannot disagree with the
+app, because no card carries a fact of its own: the stacks, the relation codes, the
+ease scores, the Octagram wheels and the four sides are all read off `src/engine/`
+at build time.
 
 ```sh
 npm run cards         # → dist-cards/ (two PDFs, two HTML files)
@@ -13,22 +14,28 @@ npm run cards:html    # HTML only, no browser needed
 
 ## What is in it
 
-Suits run easiest first, so the deck can be read in print order from a standing
-start: the alphabet, then the seats it sits in, then the sixteen orders it comes in.
+Suits run easiest first, and one mind is finished before two appear: the alphabet,
+the seats it sits in, the sixteen orders it comes in, the four sides each order
+runs, and only then the group and pair suits.
 
 | Suit | Cards | What one card is |
 |---|---:|---|
 | **Elements** | 8 | One information element: what it claims authority over, what it sounds like out loud, what it looks like starved. |
-| **Seats** | 8 | One of the eight slots, by the attitude it carries — Power, Responsibility, Innocence, Fear, Worry, Cynicism, Blindspot, Hate. |
-| **Wirings** | 16 | One type: its stack in slot order, superpower, kryptonite, and who it rests with. |
-| **Camps** | 4 | One quadra: its four shared elements, its members, what it values and what it does not. |
+| **Seats** | 8 | One of the eight seats, titled by its name — Lead, Support, Delight, Cave, Doubt, Scold, Blind spot, Dread — with the attitude it carries in the subtitle. |
+| **Wirings** | 16 | One type: its stack in seat order, superpower, kryptonite, and who it rests with. |
 | **Sides** | 4 | One of the four sides of the mind: its gateway, what blocks it, what opens it, what it produces. |
-| **Bonds** | 4 | One high-compatibility pairing, stated by element rather than by type. |
+| **Camps** | 4 | One quadra: its four shared elements, its members, what it values and what it does not. |
+| **Bonds** | 8 | One high-compatibility pairing, stated by element rather than by type — four axis bonds and four crosswise meshes. |
 | **Channels** | 16 | One intertype relation: its ease score, a worked example in both directions, and where it sits on the ramp. |
 | **Wheels** | 8 | One Octagram wheel: its dyad, its origin, its living virtue, its deadly sin and its two poles. |
 
-Sixty-eight is not a target that was worked back from — it is what the model has.
+Seventy-two is not a target that was worked back from — it is what the model has.
 `tests/cards.test.ts` asserts each suit's size against the structure that produces it.
+
+The Seat suit and the Wiring suit index each other on purpose: a Seat card is
+titled by the same name the Wiring strip prints under each element, the Lead card
+says its Power is what the Wirings print as the Superpower, and the Dread card
+says its Hate is the Kryptonite.
 
 Three cards sit in front of the suits, because a deck has to teach its own
 vocabulary from a standing start: **Octant** (what this is, in eight parts), **The
@@ -40,10 +47,10 @@ the cards themselves have not defined.
 
 Every other pair surface in this app names four-letter types. That is the wrong
 altitude for "who works well with whom", because the answer is not about types: it
-is about which element answers which.
+is about which element answers which. The suit has two halves of four.
 
-`bondFacts()` sweeps all 240 ordered cross-type pairs, groups them by the two
-Leads, and reads the mean ease straight off `ease()`. The sweep says:
+**Axis bonds — Lead meets Lead.** `bondFacts()` sweeps all 240 ordered cross-type
+pairs, groups them by the two Leads, and reads the mean ease straight off `ease()`:
 
 | Lead pairing | Mean ease | Example |
 |---|---:|---|
@@ -53,19 +60,46 @@ Leads, and reads the mean ease straight off `ease()`. The sweep says:
 | Element swap (`beta`) | 40 | Ne · Se |
 
 The four axis pairings are 29 points clear of the field and are the only ones that
-produce Counterpart and Near fit. Each gets a card, and every number printed on it
-is recomputed from the engine — `tests/cards.test.ts` re-derives the whole sweep
-and fails if a card and the engine ever disagree. Because the claim is about
-elements, it holds for any two types that carry them.
+produce Counterpart and Near fit.
 
-## Derived, with two exceptions
+**Spark bonds — Lead meets Support, crosswise.** Each camp's two axes admit exactly
+one mesh: whoever leads the observer axis's pole is answered by its other pole
+sitting in the *Support* seat behind the decider lead, and vice versa. `sparkFacts()`
+derives the whole structure, and the sweep behind it proves the general fact the
+cards print:
 
-Two tables in `src/cards/deck.ts` are authored, and both are declared in place:
+| Crossings holding | Relation | Ease |
+|---|---|---:|
+| Both — each Lead answered by the other's Support | **Spark** | **92**, both directions |
+| Only their Lead answers your Support | Upstream | 54 |
+| Only their Support answers your Lead | Downstream | 48 |
+
+One mesh per camp, realised twice — once with both leads facing outward, once
+inward — which is why the second four is four cards and not eight. Every number
+printed on any Bond card is recomputed from the engine; `tests/cards.test.ts`
+re-derives both sweeps and fails if a card and the engine ever disagree. Because
+the claims are about elements, they hold for any two types that carry them.
+
+## Derived, with declared exceptions
+
+Four tables in `src/cards/deck.ts` are authored in some sense, and each is
+declared in place:
 
 - `SUIT_ABOUT` — one line per suit, printed on the key card only.
 - `SIDE_COPY` — four sentences per side. The engine's own side copy is written
   per type (it interpolates that type's functions), and a Side card is not about
   one type, so it could not be borrowed.
+- `SEAT_SENSE` — one plain line per seat, for the same reason: the engine's seat
+  copy answers "what happens when you aim at it" and "what running it costs",
+  and neither says what the seat *is*. The first printing opened every Seat card
+  with its cross-side mapping instead, which leant on four Side names the deck
+  had not defined yet; the mapping now lives in the footer.
+- `REL_TRANSLATE` — a vocabulary map, not new claims. The engine's relation copy
+  speaks the app's lexicon ("mobilising function", "base channel"); the deck
+  teaches none of those words, so its quotes pass through this map into the
+  deck's own seat names (Delight, Blind spot, Lead, Support). Every equivalence
+  in it is structural and asserted in `tests/cards.test.ts` — the "mobilising
+  function" a Spark feeds *is* the Delight seat, for all sixteen types.
 
 Everything else is composed from engine tables. Where a field is longer than 63mm
 of card can hold, `fit()` keeps whole sentences — falling back to whole clauses,
@@ -139,7 +173,8 @@ Two files come out of `dist-cards/`:
 - **`octant-cards.pdf`** — one card per page at the bleed size. This is the file a
   print-on-demand house wants (MakePlayingCards, Printer Studio and similar all
   take 2.72 × 3.71in with bleed). 66 pages.
-- **`octant-sheets.pdf`** — A4, nine cards to a page at trim size with crop marks,
+- **`octant-sheets.pdf`** — 9 A4 pages, nine cards to a page at trim size with crop marks, for cutting a proof at home.
+- **`octant-back.pdf`** — the deck's back as a single bleed-size page, which is how print-on-demand houses take it: the eight elements named in a ring, the four axes drawn straight through it, centred so it does not mind being upside down.
   for cutting a proof at home. 8 pages.
 
 There is no card back in either file. Print-on-demand services take the back as a

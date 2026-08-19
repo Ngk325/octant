@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { alpha, stack } from "../src/engine/core";
-import { RECIPROCAL, REL_NAME, REL_SCORE, SLOT_NAMES, TYPES, type Fn, type RelCode } from "../src/engine/data";
+import { alpha, complements, ease, omega, quadra, stack } from "../src/engine/core";
+import { DOM_AUX, RECIPROCAL, REL_NAME, REL_SCORE, SLOT_NAMES, SLOT_TAGS, TYPES, type Fn, type RelCode } from "../src/engine/data";
+import { correlation } from "../src/engine/empirical";
 import { REL, relation } from "../src/engine/core";
 import { FN_COLOR } from "../src/engine/palette";
-import { ART_W, LABEL_MIN, artFor } from "../src/cards/art";
-import { deck, deckSuits, fit, type Card, type Suit } from "../src/cards/deck";
+import { ART_W, LABEL_MIN, artFor, backArt } from "../src/cards/art";
+import { bondFacts, deck, deckSuits, fit, sparkFacts, type Card, type Suit } from "../src/cards/deck";
 import { CARD_PAGE, TRIM, cardHtml, cardsDocument, sheetsDocument } from "../src/cards/render";
 
 /* ------------------------------------------------------------------ *
@@ -27,18 +28,18 @@ const EXPECTED: Record<Suit, number> = {
   front: 3,     // what this is, the alphabet, how to read a card
   type: 16,     // the sixteen (lead, support) pairs
   function: 8,  // the eight information elements
-  attitude: 8,  // the eight slots an element can occupy
+  attitude: 8,  // the eight seats an element can occupy
   quadra: 4,    // four value camps
   side: 4,      // four sides of one mind
-  bond: 4,      // the four axis pairings — omega has exactly four orbits on eight elements
+  bond: 8,      // four axis pairings (omega's four orbits) + four crosswise meshes (one per camp)
   relation: 16, // sixteen intertype codes
   wheel: 8,     // eight Octagram wheels
 };
 
 describe("deck shape", () => {
-  it("is sixty-eight cards in eight suits, plus three of front matter", () => {
-    expect(CARDS).toHaveLength(71);
-    expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(68);
+  it("is seventy-two cards in eight suits, plus three of front matter", () => {
+    expect(CARDS).toHaveLength(75);
+    expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(72);
   });
 
   it("has exactly the suit sizes the model implies", () => {
@@ -65,7 +66,7 @@ describe("deck shape", () => {
 
   it("agrees with deckSuits(), which the key card prints", () => {
     const total = deckSuits().reduce((n, s) => n + s.count, 0);
-    expect(total).toBe(68);
+    expect(total).toBe(72);
     for (const s of deckSuits()) expect(s.count, s.label).toBe(EXPECTED[s.suit]);
   });
 });
@@ -192,6 +193,137 @@ describe("what the cards claim is what the engine says", () => {
     expect(scores[0]).toBe(100);
     expect(scores[15]).toBe(10);
   });
+
+  /**
+   * The Spark bonds print a strong general claim: both crosswise meshes
+   * holding at once IS the Spark relation, and one alone is Upstream or
+   * Downstream. Sweep all 240 ordered pairs and check the equivalence in both
+   * directions — no relation may sneak into a mesh class it does not belong to.
+   */
+  it("holds the crosswise-mesh equivalence the Spark bonds print", () => {
+    for (const a of TYPES) {
+      for (const b of TYPES) {
+        if (a === b) continue;
+        const [ad, ax] = DOM_AUX[a];
+        const [bd, bx] = DOM_AUX[b];
+        const theirLead = bd === omega[ax];    // their Lead answers my Support
+        const theirSupport = bx === omega[ad]; // their Support answers my Lead
+        const code = relation(a, b);
+        const expected = theirLead && theirSupport ? "AC" : theirLead ? "BR" : theirSupport ? "BE" : null;
+        if (expected) expect(code, `${a}→${b}`).toBe(expected);
+        else expect(["AC", "BR", "BE"], `${a}→${b}`).not.toContain(code);
+      }
+    }
+  });
+
+  it("prints spark facts the engine reproduces: one mesh per camp, ease 92 both ways", () => {
+    const facts = sparkFacts();
+    expect(facts.map((f) => f.quadra)).toEqual(["Alpha", "Beta", "Gamma", "Delta"]);
+    for (const f of facts) {
+      for (const [x, y] of [f.outward, f.inward]) {
+        expect(relation(x, y), `${x}·${y}`).toBe("AC");
+        expect(ease(x, y)).toBe(f.ease);
+        expect(ease(y, x)).toBe(f.ease);
+        expect(quadra(x)).toBe(f.quadra);
+        expect(quadra(y)).toBe(f.quadra);
+      }
+      expect(f.ease).toBe(REL_SCORE.AC);
+      const card = byId(`bond-spark-${f.quadra.toLowerCase()}`);
+      expect(card.footer).toContain(String(f.ease));
+      expect(card.footer).toContain(f.outward.join(" · "));
+      expect(card.footer).toContain(f.inward.join(" · "));
+      // The mesh art draws exactly the outward pair's top-two, in role order.
+      expect(card.art).toEqual({ kind: "mesh", fns: [...DOM_AUX[f.outward[0]], ...DOM_AUX[f.outward[1]]].map((fn) => fn) });
+    }
+  });
+
+  it("keeps the axis bonds and the spark bonds one suit, axis first", () => {
+    const bonds = CARDS.filter((c) => c.suit === "bond");
+    expect(bonds).toHaveLength(8);
+    expect(bonds.map((c) => c.n)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(bonds.slice(0, 4).every((c) => c.art.kind === "bond")).toBe(true);
+    expect(bonds.slice(4).every((c) => c.art.kind === "mesh")).toBe(true);
+    // The axis bonds outrank the sparks, which is the order the suit reads in.
+    expect(Math.round(bondFacts()[0].mean)).toBeGreaterThan(REL_SCORE.AC);
+  });
+
+  /**
+   * The Camp footer names the in-camp relations. The first printing asserted
+   * "Twin, Opposite hand, Cousin or Colleague", and Cousin and Colleague are
+   * cross-camp — so this footer is derived now, and this test re-derives it.
+   */
+  it("names exactly the in-camp relations on every Camp footer", () => {
+    for (const q of ["Alpha", "Beta", "Gamma", "Delta"]) {
+      const members = TYPES.filter((t) => quadra(t) === q);
+      const rels = [...new Set(members.flatMap((x) => members.filter((y) => y !== x).map((y) => relation(x, y))))];
+      const card = byId(`quadra-${q.toLowerCase()}`);
+      for (const code of rels) expect(card.footer, q).toContain(REL_NAME[code]);
+      for (const code of ["KD", "BU", "CF"] as RelCode[]) expect(card.footer, q).not.toContain(REL_NAME[code]);
+      expect(card.footer).toContain(String(Math.min(...rels.map((c) => REL_SCORE[c]))));
+    }
+  });
+
+  it("titles every Seat by its name and carries its attitude in the subtitle", () => {
+    SLOT_NAMES.forEach((slot, i) => {
+      const card = CARDS.filter((c) => c.suit === "attitude")[i];
+      expect(card.title).toBe(slot);
+      // The engine's tag key "Blindspot" prints with the title's spacing.
+      expect(card.subtitle).toContain(SLOT_TAGS[i].replace("Blindspot", "Blind spot"));
+    });
+    // The two seats the Wirings single out say so: Power is the Superpower,
+    // Hate is the Kryptonite. powersOf() reads exactly these two slots.
+    expect(byId("attitude-lead").lede).toContain("Superpower");
+    expect(byId("attitude-dread").lede).toContain("Kryptonite");
+  });
+
+  it("names the Counterpart and the Spark in the order complements() returns them", () => {
+    for (const t of TYPES) {
+      const [du, ac] = complements(t);
+      expect(relation(t, du), t).toBe("DU");
+      expect(relation(t, ac), t).toBe("AC");
+      const company = byId(`type-${t}`).blocks[2].text;
+      expect(company, t).toContain(`${du}, your Counterpart`);
+      expect(company, t).toContain(`${ac}, your Spark`);
+    }
+  });
+
+  it("prints the survey correlation the empirical module computes", () => {
+    const key = byId("front-key");
+    expect(key.footer).toContain(`r = ${correlation(TYPES).toFixed(2)}`);
+    expect(correlation(TYPES)).toBeLessThan(0); // the counterweight counters
+  });
+
+  /* The engine's relation copy speaks the app's lexicon ("mobilising
+     function", "base channel"); the deck translates it into its own seat
+     names via REL_TRANSLATE. If a new engine string brings new jargon, this
+     fails before the press does. */
+  it("prints no lexicon vocabulary the deck never teaches", () => {
+    for (const c of CARDS) {
+      const all = [c.title, c.subtitle, c.lede, c.footer, ...c.blocks.flatMap((b) => [b.label, b.text]), ...c.chips.map((x) => x.text)].join(" ");
+      expect(all, c.id).not.toMatch(/mobilising|vulnerable function|base channel|creative channel|most defended weakness/i);
+    }
+  });
+
+  it("holds the seat equivalences REL_TRANSLATE prints", () => {
+    for (const t of TYPES) {
+      const st = stack(t);
+      // "Mobilising function" is the Delight: in Spark/Upstream/Downstream the
+      // element one Lead lands on sits in the other's Delight seat (slot 3).
+      const spark = TYPES.find((p) => relation(t, p) === "AC")!;
+      expect(stack(spark)[2], `${t} spark delight`).toBe(st[0]);
+      // "Vulnerable function" is the Blind spot: the Examiner's Lead sits in
+      // the examined type's slot 7.
+      const examiner = TYPES.find((p) => relation(t, p) === "SR")!;
+      expect(st[6], `${t} examiner`).toBe(stack(examiner)[0]);
+    }
+  });
+
+  it("no longer prints the disclaimer the deck dropped", () => {
+    for (const c of CARDS) {
+      const all = [c.lede, c.footer, ...c.blocks.map((b) => b.text)].join(" ");
+      expect(all, c.id).not.toMatch(/not a test|not a verdict/i);
+    }
+  });
 });
 
 describe("art", () => {
@@ -282,6 +414,15 @@ describe("art", () => {
   });
 });
 
+describe("the back", () => {
+  it("renders deterministically and names all eight elements", () => {
+    const svg = backArt();
+    expect(svg).toBe(backArt());
+    for (const fn of ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"]) expect(svg).toContain(`>${fn}<`);
+    expect(svg).not.toMatch(/NaN|Infinity|undefined/);
+  });
+});
+
 describe("print geometry", () => {
   it("is a standard poker card: 63 x 88 trim inside a 69.09 x 94.23 page", () => {
     expect(TRIM).toEqual({ w: 63, h: 88 });
@@ -292,13 +433,13 @@ describe("print geometry", () => {
   it("sets the single-card page to the bleed size, one card per page", () => {
     const doc = cardsDocument(CARDS);
     expect(doc).toContain(`@page{size:${CARD_PAGE.w}mm ${CARD_PAGE.h}mm;margin:0;}`);
-    expect(doc.match(/<article class="card/g)).toHaveLength(71);
+    expect(doc.match(/<article class="card/g)).toHaveLength(75);
   });
 
   it("lays the proof sheets out nine to an A4 page, with crop marks", () => {
     const doc = sheetsDocument(CARDS);
     expect(doc).toContain("@page{size:210mm 297mm;margin:0;}");
-    expect(doc.match(/class="sheet"/g)).toHaveLength(Math.ceil(66 / 9));
+    expect(doc.match(/class="sheet"/g)).toHaveLength(Math.ceil(CARDS.length / 9));
     expect(doc).toContain('class="mark v"');
     expect(doc).toContain('class="mark h"');
   });

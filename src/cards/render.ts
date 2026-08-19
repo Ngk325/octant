@@ -1,4 +1,4 @@
-import { artFor } from "./art";
+import { artFor, backArt } from "./art";
 import type { Card, Chip } from "./deck";
 import { FN_COLOR } from "../engine/palette";
 
@@ -188,6 +188,22 @@ html,body{background:${PAPER};}
 .card{width:${CARD_PAGE.w}mm;height:${CARD_PAGE.h}mm;break-after:page;}
 .card:last-child{break-after:auto;}`;
   return page("Octant — cards, bleed size", css, cards.map(cardHtml).join(""), probe);
+}
+
+/**
+ * The deck's back, as its own single-page document — print-on-demand houses
+ * take the back as a separate upload from the fronts. Full-bleed art, no body
+ * text, and no paper wash: the wash exists to keep art from fighting copy,
+ * and a back has no copy to protect.
+ */
+export function backDocument(): string {
+  const css = `
+@page{size:${CARD_PAGE.w}mm ${CARD_PAGE.h}mm;margin:0;}
+html,body{background:${PAPER};}
+.card{width:${CARD_PAGE.w}mm;height:${CARD_PAGE.h}mm;}
+.card.back .artwrap::after{background:none;}`;
+  const body = `<article class="card back" data-id="back"><div class="artwrap">${backArt()}</div></article>`;
+  return page("Octant — card back, bleed size", css, body, false);
 }
 
 /** Nine to an A4 page at trim size, with crop marks, for a home proof. */

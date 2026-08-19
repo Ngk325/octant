@@ -1,6 +1,6 @@
-import { catalysts, complements, ease, omega, quadra, relation, stack, type MbtiType, type Quadra } from "../engine/core";
+import { catalysts, complements, ease, isExtraverted, isObserver, omega, quadra, relation, stack, type MbtiType, type Quadra } from "../engine/core";
 import {
-  ARCHETYPE, BEHAVIOURAL, FN_FULL, FN_LONG, FN_SHADOW, GROUP, INTERACTION_STYLE,
+  ARCHETYPE, BEHAVIOURAL, FN_FULL, FN_LONG, FN_SHADOW, INTERACTION_STYLE,
   REL_DEF, REL_NAME, REL_SCORE, RECIPROCAL, SLOT_COST, SLOT_EFFECT, SLOT_NAMES, SLOT_TAGS,
   TYPES, VIRTUE_VICE, type Fn, type RelCode, type SlotName,
 } from "../engine/data";
@@ -8,17 +8,21 @@ import { FN_KEYWORD, FN_KEYWORD_GLOSS, FN_ROLE, FN_SAYS, FN_STARVATION, FN_WANTS
 import { wheelOf, wheels, type Wheel } from "../engine/octagram";
 import { SIDE_ORDER, sides, type SideKey } from "../engine/sides";
 import { powersOf } from "../engine/powers";
+import { correlation } from "../engine/empirical";
 
 /* ------------------------------------------------------------------ *
  * THE DECK
  *
- * Sixty-six cards, and only two of them are new facts. Everything a card
- * says is read off the engine that already renders /type, /pair and
- * /lexicon — the stacks, the relation codes, the ease ramp, the Octagram
- * wheels — so a card cannot disagree with the app it came from. The two
- * authored additions are declared where they sit: SUIT_ABOUT (what each
- * suit is for) and SIDE_COPY (four sentences per side, because the
- * engine's own side copy is written per type and a card is not).
+ * Seventy-five cards, and none of them carries a fact the engine does not.
+ * Everything a card says is read off the engine that already renders /type,
+ * /pair and /lexicon — the stacks, the relation codes, the ease ramp, the
+ * Octagram wheels — so a card cannot disagree with the app it came from.
+ * The authored additions are declared where they sit: SUIT_ABOUT (what each
+ * suit is for), SIDE_COPY and SEAT_SENSE (one plain line per side and per
+ * seat, because the engine's own copy there is written per type and a card
+ * is not), and REL_TRANSLATE (a vocabulary map, not new claims — the
+ * engine's relation copy speaks the app's lexicon and a card has only the
+ * deck's own seat names to speak with).
  *
  * Rendering lives in render.ts and art.ts; this module is pure data and
  * is asserted card-by-card in tests/cards.test.ts.
@@ -36,7 +40,8 @@ export type ArtSpec =
   | { kind: "channel"; score: number; fns: Fn[] }
   | { kind: "star"; fns: Fn[] }
   | { kind: "mark"; fns: Fn[] }
-  | { kind: "bond"; fns: Fn[] };
+  | { kind: "bond"; fns: Fn[] }
+  | { kind: "mesh"; fns: [Fn, Fn, Fn, Fn] };
 
 /** A labelled paragraph on the lower half of a card. */
 export interface CardBlock { label: string; text: string }
@@ -68,12 +73,12 @@ export interface Card {
 /** AUTHORED: what each suit is for, printed on the key card and nowhere else. */
 const SUIT_ABOUT: Record<Exclude<Suit, "front">, string> = {
   function: "one mental tool each. Start here.",
-  attitude: "the eight seats, most conscious first.",
+  attitude: "what each position does; any tool can sit in any seat.",
   type: "the sixteen orders they come in. Find yours.",
-  quadra: "types who trust the same four tools.",
   side: "the four modes one person runs in.",
-  bond: "the pairings that work, by element.",
-  relation: "the sixteen ways two types meet, scored.",
+  quadra: "types who trust the same four tools.",
+  bond: "the eight pairings that work, by element.",
+  relation: "how two types meet, scored for ease, 0 to 100.",
   wheel: "the long arc — what a pair is for.",
 };
 
@@ -87,7 +92,7 @@ const SIDE_COPY: Record<SideKey, { lede: string; blocked: string; opens: string;
   },
   subconscious: {
     lede: "Runs on the element you are most afraid of, and rests you when it does.",
-    blocked: "Insecurity — the Cave is the door, so entry runs through what you dread being bad at.",
+    blocked: "Insecurity — the Cave is the door, so entry runs through what you are afraid of being bad at.",
     opens: "Low stakes and no audience — play, not performance.",
     produces: "Rest, humour, and the range the ego cannot reach alone.",
   },
@@ -105,17 +110,60 @@ const SIDE_COPY: Record<SideKey, { lede: string; blocked: string; opens: string;
   },
 };
 
+/**
+ * AUTHORED IN FORM ONLY: the engine's relation copy names seats in the app's
+ * lexicon vocabulary — "mobilising function" is the Delight, "vulnerable
+ * function" the Blind spot, "base/creative channel" the Lead/Support axes.
+ * The deck teaches none of those words, so its quotes of REL_DEF pass through
+ * this map first. Each equivalence is structural and asserted in
+ * tests/cards.test.ts, mirroring src/engine/translation.ts for print.
+ */
+const REL_TRANSLATE: [RegExp, string][] = [
+  [/mobilising function/g, "Delight"],
+  [/vulnerable function/g, "Blind spot"],
+  [/your most defended weakness/g, "your Blind spot"],
+  [/Shares the Counterpart base channel but not the creative one/g,
+    "Your Leads share an axis, as a Counterpart's do; your Supports do not"],
+  [/Shares the Counterpart creative channel only/g, "Only your Supports share an axis"],
+  [/Same elements, every position and attitude rearranged/g, "Same four letters, every position and attitude rearranged"],
+  [/Same functions, every attitude flipped/g, "Same four letters, every attitude flipped"],
+  [/You perceive the same thing and then do different things with it/g,
+    "You start from the same tool and do different things with it"],
+];
+
+/** Engine relation copy, restated in the vocabulary this deck actually teaches. */
+export const deckify = (text: string): string =>
+  REL_TRANSLATE.reduce((t, [from, to]) => t.replace(from, to), text);
+
 const SIDE_OPENNESS: Record<SideKey, number> = { ego: 1, subconscious: 0.55, unconscious: 0.25, superego: 0 };
 
 /** The eight slots, in stack order, with the attitude each one carries. */
 const slotIndex = (s: SlotName) => SLOT_NAMES.indexOf(s);
 
-/** Which side a numbered ego slot leads, and where the same function sits in the mirrored side. */
+/**
+ * AUTHORED: one plain line per seat, for the same reason as SIDE_COPY — the
+ * engine's seat copy (SLOT_EFFECT, SLOT_COST) answers "what happens when you
+ * aim at it" and "what running it costs", and neither says what the seat IS.
+ * The first printing opened every Seat card with its cross-side mapping
+ * instead, which leant on four Side names the deck had not defined yet.
+ */
+const SEAT_SENSE: Record<SlotName, string> = {
+  "Lead": "The seat you live from: what sits here runs first, and without being asked.",
+  "Support": "The responsible second move — it aims and steadies whatever the Lead starts.",
+  "Delight": "The seat that plays. Whatever sits here is light, warm, and easy to reach.",
+  "Cave": "The seat you guard. Real ability lives here, but it bruises, so it works in private.",
+  "Doubt": "The first shadow seat — the second opinion you argue with instead of trusting.",
+  "Scold": "The shadow's critic. A borrowed edge: sharp in bursts, corrosive if lived in.",
+  "Blind spot": "The seat you cannot watch. It sounds fluent and is not, and you will not notice.",
+  "Dread": "The last seat. It wakes rarely, under threat, and swings without your permission.",
+};
+
+/** Which side a numbered ego seat belongs to, and where the same tool sits in the mirrored side. */
 function seatPlacement(i: number): string {
   const mirror = i < 4 ? 3 - i : 11 - i;
   const here = i < 4 ? "ego" : "unconscious";
   const there = i < 4 ? "subconscious" : "superego";
-  return `Slot ${i + 1} of the ${here}; the ${["Lead", "Support", "Delight", "Cave"][i < 4 ? mirror : mirror - 4]} of the ${there}.`;
+  return `In the four Sides: seat ${i + 1} of the ${here}, the ${["Lead", "Support", "Delight", "Cave"][i < 4 ? mirror : mirror - 4]} of the ${there}`;
 }
 
 /**
@@ -125,7 +173,9 @@ function seatPlacement(i: number): string {
  */
 function seatTwin(i: number): string {
   const [a, b] = i < 4 ? [i, i + 4] : [i - 4, i];
-  return `Slots ${a + 1} and ${b + 1} always hold one element with its attitude flipped: the ${SLOT_NAMES[a]} facing out is the ${SLOT_NAMES[b]} facing in.`;
+  // No "facing out / facing in" here: which way the pair faces depends on the
+  // type (INTP's Lead faces in), and a type-agnostic card may not pick one.
+  return `Seats ${a + 1} and ${b + 1} hold the same tool facing opposite ways — the ${SLOT_NAMES[a]} and the ${SLOT_NAMES[b]} are one letter, turned.`;
 }
 
 /**
@@ -184,14 +234,16 @@ function typeCards(): Card[] {
         },
         {
           label: "Kryptonite",
-          text: `${kryptonite.fn} from the shadow — ${lower(fit(FN_SHADOW[kryptonite.fn], 78))} Under strain: ${b.stressResponse.toLowerCase()}.`,
+          text: `${kryptonite.fn} from the shadow — ${lower(fit(FN_SHADOW[kryptonite.fn], 78))} First move under strain: ${b.stressResponse.toLowerCase()}.`,
         },
         {
           label: "Company",
-          text: `Rests with ${join(complements(t))}. Sharpens against ${join(catalysts(t))}.`,
+          // complements() returns [Counterpart, Spark] in that order — asserted in
+          // tests/cards.test.ts, since this line names them positionally.
+          text: `Rests with ${complements(t)[0]}, your Counterpart, and ${complements(t)[1]}, your Spark. Sharpens against ${join(catalysts(t))}.`,
         },
       ],
-      footer: `${quadra(t)} · ${GROUP[t]} · ${w.temple} temple · ${virtue} over ${vice}`,
+      footer: `Camp ${quadra(t)} · ${w.origin} wheel of the ${w.temple} temple · virtue ${virtue}, vice ${vice}`,
       art: { kind: "circuit", fns: st },
     };
   });
@@ -210,7 +262,7 @@ function functionCards(): Card[] {
       lede: fit(FN_LONG[fn], 142),
       chips: [{ text: FN_ROLE[fn], fn }, { text: `wants ${FN_WANTS[fn]}`, fn }, { text: FN_KEYWORD[fn], fn, dim: true }],
       blocks: [
-        { label: "Claims authority over", text: fit(FN_KEYWORD_GLOSS[fn], 110) },
+        { label: `Claims ${FN_KEYWORD[fn]}`, text: fit(FN_KEYWORD_GLOSS[fn], 110) },
         { label: "Sounds like", text: FN_SAYS[fn].map((q) => `“${q}”`).join("  ") },
         { label: "Starved", text: fit(FN_STARVATION[fn], 140) },
       ],
@@ -220,20 +272,32 @@ function functionCards(): Card[] {
   });
 }
 
+/**
+ * A Seat card is titled by the seat's NAME — Lead, Support, Delight, Cave and
+ * their shadow four — the same names the Wiring strip prints, so the two suits
+ * index each other. The attitude a seat carries (Power, Responsibility, ...)
+ * rides in the subtitle and the first chip; and on the two seats the Wirings
+ * single out, the card says so in the lede: the Lead's Power is the
+ * Superpower, and the Dread's Hate is the Kryptonite.
+ */
 function attitudeCards(): Card[] {
   return SLOT_NAMES.map((slot, i) => ({
     id: `attitude-${slot.replace(/\s+/g, "-").toLowerCase()}`,
     suit: "attitude" as const, suitLabel: "Seat", n: i + 1, of: 8,
-    title: SLOT_TAGS[i],
-    subtitle: `the ${slot} — slot ${i + 1}`,
-    lede: seatPlacement(i),
-    chips: [{ text: i < 4 ? "conscious" : "shadow", dim: i >= 4 }, { text: `slot ${i + 1} of 8`, dim: true }],
+    title: slot,
+    // "Blindspot" is the engine's tag key; print gives it the title's spacing.
+    subtitle: `seat ${i + 1} of 8 — carries ${SLOT_TAGS[i].replace("Blindspot", "Blind spot")}`,
+    lede: `${SEAT_SENSE[slot]}${
+      i === 0 ? " Its Power is the Superpower the Wirings print."
+      : i === 7 ? " Its Hate is the Kryptonite the Wirings print."
+      : " Any tool can sit here; your wiring says which."}`,
+    chips: [{ text: i < 4 ? "conscious" : "shadow", dim: i >= 4 }],
     blocks: [
-      { label: "Aim at it and", text: `You are addressing ${SLOT_EFFECT[slot]}.` },
-      { label: "Running it yourself costs", text: sentence(fit(SLOT_COST[slot], 104)) },
+      { label: "Aim here and you address", text: sentence(SLOT_EFFECT[slot]) },
+      { label: "Running it yourself costs", text: sentence(fit(SLOT_COST[slot], 88)) },
       { label: "Its shadow twin", text: seatTwin(i) },
     ],
-    footer: "Any of the eight elements can sit in this seat — your type says which",
+    footer: seatPlacement(i),
     art: { kind: "seat", depth: i, fn: null },
   }));
 }
@@ -245,6 +309,12 @@ function quadraCards(): Card[] {
     const members = TYPES.filter((t) => quadra(t) === q);
     const ego = [...new Set(members.flatMap((t) => stack(t).slice(0, 4)))];
     const shadow = [...new Set(members.flatMap((t) => stack(t).slice(4)))];
+    // Derived, because the first printing of this footer was wrong: it claimed
+    // in-camp pairs were Twin, Opposite hand, Cousin or Colleague, and Cousin
+    // and Colleague are in fact cross-camp relations. Read it off the engine.
+    const inCamp = [...new Set(members.flatMap((x) => members.filter((y) => y !== x).map((y) => relation(x, y))))]
+      .sort((x, y) => REL_SCORE[y] - REL_SCORE[x]);
+    const floor = Math.min(...inCamp.map((c) => REL_SCORE[c]));
     return {
       id: `quadra-${q.toLowerCase()}`,
       suit: "quadra" as const, suitLabel: "Camp", n: i + 1, of: 4,
@@ -254,10 +324,10 @@ function quadraCards(): Card[] {
       chips: ego.map((fn) => ({ text: fn, fn })),
       blocks: [
         { label: "Members", text: members.join(" · ") },
-        { label: "Values", text: `${capitalise(join(ego.map((f) => FN_WANTS[f].toLowerCase())))} — in whatever order the stack puts them.` },
-        { label: "Undervalues", text: `${capitalise(join(shadow.map((f) => FN_KEYWORD[f].toLowerCase())))} — fluent in the four above, defensive about these four.` },
+        { label: "Values", text: `${capitalise(join(ego.map((f) => `${FN_WANTS[f].toLowerCase()} (${f})`)))} — in whatever order the wiring seats them.` },
+        { label: "Undervalues", text: `${capitalise(join(shadow.map((f) => `${FN_KEYWORD[f].toLowerCase()} (${f})`)))} — fluent in the four above, defensive about these four.` },
       ],
-      footer: "Inside a camp every pair is Twin, Opposite hand, Cousin or Colleague — never Headwind",
+      footer: `In-camp pairs are only ${join(inCamp.map((c) => REL_NAME[c]))} — the floor is ease ${floor}`,
       art: { kind: "rosette", fns: ego },
     };
   });
@@ -283,7 +353,7 @@ function sideCards(): Card[] {
         { label: "Opens with", text: copy.opens },
         { label: "Produces", text: copy.produces },
       ],
-      footer: `Stands to the ego as ${REL_NAME[side.relationToEgo]} · slots ${side.slots.map((sl) => slotIndex(sl.egoSlot) + 1).join("·")}`,
+      footer: `Its Channel to the ego: ${REL_NAME[side.relationToEgo]} · runs your seats ${side.slots.map((sl) => slotIndex(sl.egoSlot) + 1).join("·")}`,
       art: { kind: "door", openness: SIDE_OPENNESS[key] },
     };
   });
@@ -297,17 +367,23 @@ function sideCards(): Card[] {
  * Every other pair surface in this app names four-letter types. That is the
  * wrong altitude for the question "who works well with whom", because the
  * answer is not about types at all: it is about which element answers which.
- * `omega` — flip both the element and the attitude — is the axis opposite, and
- * pairing an element with its axis opposite is the single strongest signal in
- * the whole model.
+ * The suit has two halves of four:
  *
- * Nothing here is asserted. `bondFacts()` sweeps all 240 ordered cross-type
- * pairs, groups them by (lead, lead), and reads the mean ease and the relation
- * names straight off the engine, so the numbers a Bond card prints are the
- * numbers /matrix would print. The sweep says: the four axis pairings average
- * 93 of 100 and produce only Counterpart and Near fit, while same-lead averages
- * 64, attitude-flip 54 and element-swap 40. tests/cards.test.ts re-derives all
- * of it and fails if a card and the engine ever disagree.
+ *   AXIS bonds — Lead meets Lead across `omega`, the axis opposite. The
+ *   strongest signal in the model: bondFacts() sweeps all 240 ordered
+ *   cross-type pairs, groups them by (lead, lead), and finds the four axis
+ *   pairings averaging 93 of 100 — against 64 for same-lead, 54 for
+ *   attitude-flip, 40 for element-swap — producing only Counterpart and
+ *   Near fit.
+ *
+ *   SPARK bonds — Lead meets Support, crosswise, on both axes at once. Each
+ *   camp's two axes admit exactly one mesh, realised twice (once outward,
+ *   once inward). sparkFacts() verifies the whole structure by sweep: both
+ *   crossings holding is exactly the Spark relation (92 in both directions),
+ *   and one crossing alone is exactly Upstream (54) or Downstream (48).
+ *
+ * Nothing here is asserted — every number a Bond card prints is recomputed
+ * from the engine, and tests/cards.test.ts fails if they ever disagree.
  */
 export interface BondFacts {
   a: Fn;
@@ -359,20 +435,22 @@ export function bondFacts(): BondFacts[] {
 
 function bondCards(): Card[] {
   const facts = bondFacts();
-  return facts.map((f, i) => {
+  const of = facts.length + sparkFacts().length;
+  const axis = facts.map((f, i) => {
     const { a, b } = f;
     return {
       id: `bond-${a}-${b}`,
-      suit: "bond" as const, suitLabel: "Bond", n: i + 1, of: facts.length,
+      suit: "bond" as const, suitLabel: "Bond", n: i + 1, of,
       title: `${a} · ${b}`,
-      subtitle: `${FN_FULL[a]} and ${FN_FULL[b]}`,
-      lede: `Each of these two is exactly what the other does not do, so the pair covers ground neither reaches alone. The strongest pairing in the model.`,
+      subtitle: `one axis: ${FN_FULL[a]} and ${FN_FULL[b]}`,
+      lede: `Each of these two is exactly what the other does not do, so the pair covers ground neither reaches alone. The strongest kind of pairing there is.`,
+      // (The Spark bonds, next, run the same two axes crosswise for 92.)
       // Two chips, not three: the ease number is already in the footer, and a
       // third pill tipped the longest pairings onto a second chip row, which the
       // print probe measured as an overrun on Te·Fi and Ni·Se.
       chips: [
-        { text: FN_WANTS[a].toLowerCase(), note: `${a} wants`, fn: a },
-        { text: FN_WANTS[b].toLowerCase(), note: `${b} wants`, fn: b },
+        { text: FN_WANTS[a], note: `${a} wants`, fn: a },
+        { text: FN_WANTS[b], note: `${b} wants`, fn: b },
       ],
       blocks: [
         { label: `${a} brings`, text: sentence(fit(FN_KEYWORD_GLOSS[a], 44)) },
@@ -382,8 +460,88 @@ function bondCards(): Card[] {
           text: `Whoever leads ${a} carries ${b} in the Cave — the seat they fear being bad at — and the reverse. Each raises what the other skipped.`,
         },
       ],
-      footer: `As Leads these two meet only as ${join(f.rels.map((c) => REL_NAME[c]))} · mean ease ${Math.round(f.mean)}, ${Math.round(f.overNext)} clear of the field`,
-      art: { kind: "bond", fns: [a, b] },
+      footer: `Leads meet only as ${join(f.rels.map((c) => REL_NAME[c]))} · mean ease ${Math.round(f.mean)}, ${Math.round(f.overNext)} above every other Lead pairing`,
+      art: { kind: "bond", fns: [a, b] } as ArtSpec,
+    };
+  });
+  return [...axis, ...sparkCards(facts.length, of)];
+}
+
+/** One camp's crosswise mesh: its two axes, and the two type pairs that realise it. */
+export interface SparkFacts {
+  quadra: Quadra;
+  /** The camp's observer axis and decider axis, outward pole first. */
+  obs: [Fn, Fn];
+  dec: [Fn, Fn];
+  /** The two realisations, [a, b] with a leading the observer axis's pole. */
+  outward: [MbtiType, MbtiType];
+  inward: [MbtiType, MbtiType];
+  /** Ease of every realised pair, both directions — asserted identical. */
+  ease: number;
+}
+
+/**
+ * The four crosswise meshes, one per camp, read off the engine. A mesh holds
+ * when each Lead is answered by the other's SUPPORT rather than their Lead:
+ * within a camp that picks out the two same-attitude pairs, and the sweep in
+ * tests/cards.test.ts confirms the general fact this suit prints — both
+ * crossings at once is exactly Spark, one alone is Upstream or Downstream.
+ */
+export function sparkFacts(): SparkFacts[] {
+  return QUADRA_ORDER.map((q) => {
+    const members = TYPES.filter((t) => quadra(t) === q);
+    const pairs: [MbtiType, MbtiType][] = [];
+    for (const x of members) {
+      for (const y of members) {
+        if (x < y && relation(x, y) === "AC") pairs.push([x, y]);
+      }
+    }
+    const shared = [...new Set(members.flatMap((t) => stack(t).slice(0, 2)))];
+    const obs = shared.filter(isObserver).sort((x) => (isExtraverted(x) ? -1 : 1)) as [Fn, Fn];
+    const dec = shared.filter((f) => !isObserver(f)).sort((x) => (isExtraverted(x) ? -1 : 1)) as [Fn, Fn];
+    /** The pair whose leads face the given way, observer-lead first. */
+    const facing = (outward: boolean) => {
+      const p = pairs.find(([x]) => isExtraverted(stack(x)[0]) === outward)!;
+      return (isObserver(stack(p[0])[0]) ? p : [p[1], p[0]]) as [MbtiType, MbtiType];
+    };
+    const outward = facing(true);
+    const inward = facing(false);
+    const scores = new Set([outward, inward].flatMap(([x, y]) => [ease(x, y), ease(y, x)]));
+    if (scores.size !== 1) throw new Error(`spark ease is not uniform in ${q}`);
+    return { quadra: q, obs, dec, outward, inward, ease: [...scores][0] };
+  });
+}
+
+function sparkCards(offset: number, of: number): Card[] {
+  return sparkFacts().map((f, i) => {
+    const [o1, o2] = f.obs;
+    const [d1, d2] = f.dec;
+    return {
+      id: `bond-spark-${f.quadra.toLowerCase()}`,
+      suit: "bond" as const, suitLabel: "Bond", n: offset + i + 1, of,
+      title: `${o1} · ${o2} × ${d1} · ${d2}`,
+      subtitle: `the ${f.quadra} camp's two axes, meshed crosswise`,
+      lede: "Lead does not meet Lead here: each Lead is answered by the other's Support.",
+      chips: [
+        { text: `outward: ${stack(f.outward[0])[0]} with ${stack(f.outward[1])[0]}` },
+        { text: `inward: ${stack(f.inward[0])[0]} with ${stack(f.inward[1])[0]}`, dim: true },
+      ],
+      blocks: [
+        {
+          label: "The mesh",
+          text: "Each Lead is answered by the Support standing behind the other's Lead — both crossings at once.",
+        },
+        {
+          label: "Half a mesh tilts",
+          text: `One crossing alone tilts the pair — ${REL_NAME.BR} ${REL_SCORE.BR}, ${REL_NAME.BE} ${REL_SCORE.BE}. Both at once is ${REL_NAME.AC}.`,
+        },
+        {
+          label: "Against the axis bond",
+          text: `A Counterpart rests; a Spark runs — each feeds the other's Delight, and it tires if never stepped out of.`,
+        },
+      ],
+      footer: `Ease ${f.ease} both ways · the only relation where both crossings hold · ${f.outward.join(" · ")}, ${f.inward.join(" · ")}`,
+      art: { kind: "mesh", fns: [stack(f.outward[0])[0], stack(f.outward[0])[1], stack(f.outward[1])[0], stack(f.outward[1])[1]] },
     };
   });
 }
@@ -401,7 +559,7 @@ function relationCards(): Card[] {
       suit: "relation" as const, suitLabel: "Channel", n: i + 1, of: 16,
       title: REL_NAME[code],
       subtitle: `${code} · ease ${REL_SCORE[code]}`,
-      lede: fit(REL_DEF[code], 140),
+      lede: fit(deckify(REL_DEF[code]), 140),
       // Only the symmetric channels get a chip; on an asymmetric one the same
       // fact is the worked example below, and saying it twice costs a line the
       // longer definitions need.
@@ -410,14 +568,14 @@ function relationCards(): Card[] {
         {
           label: "Worked example",
           text: symmetric
-            ? `ENTP and ${b} each see a ${REL_NAME[code]} in the other. Both directions score ${REL_SCORE[code]}.`
+            ? `ENTP and ${b} each see ${/^[AEIOU]/.test(REL_NAME[code]) ? "an" : "a"} ${REL_NAME[code]} in the other. Both directions score ${REL_SCORE[code]}.`
             : `ENTP sees ${b} as ${REL_NAME[code]}, and scores it ${ease(a, b)}. ${b} sees ENTP as ${REL_NAME[RECIPROCAL[code]]}, and scores it ${ease(b, a)}.`,
         },
         {
           label: "Where it sits",
           text: `Rank ${i + 1} of 16 on the ease ramp${i > 0 ? `, under ${REL_NAME[REL_ORDER[i - 1]]}` : ", at the top"}${i < 15 ? ` and over ${REL_NAME[REL_ORDER[i + 1]]}` : " and at the bottom"}.`,
         },
-        { label: "Reading it", text: symmetric ? "Symmetric: whatever you feel here, they are feeling too." : "Asymmetric: these are not the same seat, and the quieter chair notices less." },
+        { label: "Reading it", text: symmetric ? "Symmetric: whatever you feel here, they are feeling too." : "Asymmetric: these are not the same chair, and the quieter chair notices less." },
       ],
       footer: `One of ${symmetric ? "twelve symmetric" : "four asymmetric"} channels · 16 of 256 cells`,
       art: { kind: "channel", score: REL_SCORE[code], fns: [stack(a)[0], stack(b)[0]] },
@@ -438,7 +596,7 @@ function wheelCards(): Card[] {
       { label: `Deadly sin — ${w.deadlySin}`, text: fit(w.sinPlain, 88) },
       { label: `Poles — ${w.shadowPole} / ${w.aspirationalPole}`, text: `${fit(w.shadowPlain, 70)} Against: ${lower(fit(w.aspirationalPlain, 64))}` },
     ],
-    footer: "The sin is not always bad, nor the virtue always good — a wheel is a geometry, not a verdict",
+    footer: "The sin is not always bad, nor the virtue always good — both are positions on the same wheel",
     art: { kind: "star", fns: [...stack(w.pair[0]).slice(0, 2), ...stack(w.pair[1]).slice(0, 2)] },
   }));
 }
@@ -471,11 +629,11 @@ function frontMatter(): Card[] {
         },
         {
           label: "The eight seats",
-          text: "They sit in a fixed order. The first four you use knowingly; the last four run in the background. Which tool sits where is your type, one of sixteen.",
+          text: "The seats are fixed, 1 through 8: the first four you use knowingly, the last four run in the background. Which tool takes which seat is your type — one of sixteen.",
         },
         {
           label: "Where to start",
-          text: "Elements, then your own Wiring. Bonds and Channels take two people. This is not a test and not a verdict.",
+          text: "Elements first, then your own Wiring and its four Sides. Bonds and Channels take two people; Wheels are the long arc.",
         },
       ],
       footer: `${total} cards · octant · read the wiring`,
@@ -487,10 +645,10 @@ function frontMatter(): Card[] {
       title: "The eight elements",
       subtitle: "the alphabet every other card is spelled in",
       dense: true,
-      lede: "Capital letter names the tool — N intuition, S sensing, T thinking, F feeling. Small letter is the direction: e outward, i inward.",
+      lede: "Capital letter names the family — N intuition, S sensing, T thinking, F feeling. Small letter is its attitude, the way it faces: e outward, i inward.",
       chips: [],
-      blocks: FN_ORDER.map((fn) => ({ label: fn, text: `${FN_ROLE[fn].toLowerCase()}, after ${FN_WANTS[fn].toLowerCase()}.` })),
-      footer: "Hue is the family: violet N, amber S, teal T, rose F · filled is knowing, hollow is shadow",
+      blocks: FN_ORDER.map((fn) => ({ label: fn, text: `${FN_ROLE[fn].toLowerCase()} — wants ${FN_WANTS[fn].toLowerCase()}.` })),
+      footer: "Hue is the family: violet N, amber S, teal T, rose F · filled is conscious, hollow is shadow",
       art: { kind: "mark", fns: FN_ORDER },
     },
     {
@@ -499,10 +657,10 @@ function frontMatter(): Card[] {
       title: "How to read a card",
       subtitle: `${total} cards, ${suits.length} suits`,
       dense: true,
-      lede: "Every card draws the fact it states, names each element in it, then says it in one plain sentence before the detail.",
+      lede: "Every card draws its fact, names each element it draws, then says it plainly before the detail.",
       chips: [],
       blocks: suits.map((s) => ({ label: `${s.label} — ${s.count}`, text: SUIT_ABOUT[s.suit] })),
-      footer: "Suits run in this order, easiest first · a card names every element it draws",
+      footer: `The ease ramp is the model's own; a survey disagrees (r = ${correlation(TYPES).toFixed(2)}) — the app shows both`,
       art: { kind: "mark", fns: FN_ORDER },
     },
   ];
@@ -518,7 +676,7 @@ const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 /** The seven playing suits, in deck order, with their sizes — derived from the deck itself. */
 export function deckSuits(): { suit: Exclude<Suit, "front">; label: string; count: number }[] {
-  const order: Exclude<Suit, "front">[] = ["function", "attitude", "type", "quadra", "side", "bond", "relation", "wheel"];
+  const order: Exclude<Suit, "front">[] = ["function", "attitude", "type", "side", "quadra", "bond", "relation", "wheel"];
   const built = [...typeCards(), ...functionCards(), ...attitudeCards(), ...quadraCards(), ...sideCards(), ...bondCards(), ...relationCards(), ...wheelCards()];
   return order.map((suit) => {
     const cards = built.filter((c) => c.suit === suit);
@@ -533,8 +691,8 @@ export function deck(): Card[] {
     ...functionCards(),
     ...attitudeCards(),
     ...typeCards(),
-    ...quadraCards(),
     ...sideCards(),
+    ...quadraCards(),
     ...bondCards(),
     ...relationCards(),
     ...wheelCards(),

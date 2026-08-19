@@ -514,7 +514,7 @@ export const BEHAVIOURAL: Record<MbtiType, Behavioural> = {
     "persuasionTrigger": "Validate feelings",
     "rapportBuilder": "Listen deeply",
     "conflictStyle": "Empathetic",
-    "stressResponse": "Emotional",
+    "stressResponse": "Emotional outbursts",
     "trustBuilder": "Validation",
     "dealBreaker": "Cruelty",
     "commsFlaw": "Passive-aggressive"

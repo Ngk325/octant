@@ -77,7 +77,7 @@ const server = await createServer({
 
 try {
   const { deck } = await server.ssrLoadModule("/src/cards/deck.ts");
-  const { cardsDocument, sheetsDocument, CARD_PAGE, TRIM } = await server.ssrLoadModule("/src/cards/render.ts");
+  const { backDocument, cardsDocument, sheetsDocument, CARD_PAGE, TRIM } = await server.ssrLoadModule("/src/cards/render.ts");
 
   const cards = deck();
   rmSync(OUT, { recursive: true, force: true });
@@ -86,10 +86,12 @@ try {
   const files = {
     cards: join(OUT, "octant-cards.html"),
     sheets: join(OUT, "octant-sheets.html"),
+    back: join(OUT, "octant-back.html"),
     probe: join(OUT, "probe.html"),
   };
   writeFileSync(files.cards, cardsDocument(cards));
   writeFileSync(files.sheets, sheetsDocument(cards));
+  writeFileSync(files.back, backDocument());
   writeFileSync(files.probe, cardsDocument(cards, true));
 
   console.log(`deck: ${cards.length} cards`);
@@ -117,7 +119,7 @@ try {
     console.log("overflow: none — every card fits its safe area");
   }
 
-  for (const [name, src] of [["octant-cards.pdf", files.cards], ["octant-sheets.pdf", files.sheets]]) {
+  for (const [name, src] of [["octant-cards.pdf", files.cards], ["octant-sheets.pdf", files.sheets], ["octant-back.pdf", files.back]]) {
     const dest = join(OUT, name);
     chrome(bin, ["--no-pdf-header-footer", `--print-to-pdf=${dest}`, `file://${src}`]);
     const bytes = readFileSync(dest);

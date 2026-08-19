@@ -239,21 +239,24 @@ page, not a blank document (`ErrorBoundary`, tested in jsdom).
 
 ## The deck
 
-Seventy-one printed cards, generated from the engine rather than written for it:
-eight Elements, eight Seats, sixteen Wirings, four Camps, four Sides, four Bonds,
-sixteen Channels and eight Wheels, plus three cards that teach the deck its own
-vocabulary before the suits start. Each card carries a generative composition
-seeded by its own id and coloured from the app's function palette — a Channel's
-bundle crosses or runs parallel according to its ease score, a Side's door stands
-open by exactly as much as that side is reachable — and every element the art
-draws prints its two letters, because four hue families over eight elements means
-colour alone cannot name one.
+Seventy-five printed cards plus a matching back, generated from the engine rather
+than written for it: eight Elements, eight Seats, sixteen Wirings, four Sides,
+four Camps, eight Bonds, sixteen Channels and eight Wheels, with three cards that
+teach the deck its own vocabulary before the suits start. Each card carries a
+generative composition seeded by its own id and coloured from the app's function
+palette — a Channel's bundle crosses or runs parallel according to its ease score,
+a Side's door stands open by exactly as much as that side is reachable — and every
+element the art draws prints its two letters, because four hue families over eight
+elements means colour alone cannot name one.
 
-**Bonds** are the one surface here that does not name a type. `bondFacts()` sweeps
-all 240 ordered cross-type pairs and reads the mean ease off the engine: the four
-axis-opposite lead pairings (Ne·Si, Se·Ni, Te·Fi, Ti·Fe) average 93 of 100, 29
-clear of the next-best class, and are the only ones that produce Counterpart and
-Near fit. The claim is about elements, so it holds for any two types carrying them.
+**Bonds** are the one surface here that does not name a type, in two derived
+halves. The axis bonds: `bondFacts()` sweeps all 240 ordered cross-type pairs and
+finds the four axis-opposite lead pairings (Ne·Si, Se·Ni, Te·Fi, Ti·Fe) averaging
+93 of 100, 29 clear of the next class. The Spark bonds: `sparkFacts()` proves that
+each Lead being answered by the other's *Support* — both crossings at once — is
+exactly the Spark relation at 92, while one crossing alone is only Upstream (54)
+or Downstream (48). Both claims are about elements, so they hold for any two
+types carrying them.
 
 ```sh
 npm run cards      # → dist-cards/octant-cards.pdf (bleed size, one card per page)

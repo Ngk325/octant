@@ -1,4 +1,4 @@
-import { omega } from "../engine/core";
+import { alpha as alphaOp, beta as betaOp, omega } from "../engine/core";
 import type { Fn } from "../engine/data";
 import { CANVAS, FN_COLOR, easeColor } from "../engine/palette";
 import type { ArtSpec } from "./deck";
@@ -634,6 +634,70 @@ function bond(fns: Fn[], r: R): string {
   return out.join("");
 }
 
+/**
+ * Spark bonds: two pairs of tools, Leads above Supports, with the two
+ * crossings drawn — each Lead lined to the OTHER side's Support. The X is the
+ * card's whole fact; the faint verticals (a Lead over its own Support) are
+ * there so the crossing reads as a crossing and not as a layout.
+ */
+function mesh(fns: Fn[], r: R): string {
+  const [aL, aS, bL, bS] = fns;
+  const out: string[] = [ground(hue(aL), r)];
+  const ax = 104, bx = ART_W - 104;
+  const yL = SAFE_TOP + 11, yS = SAFE_BOTTOM - 11;
+
+  out.push(gesture(aL, ax, yL, 15, r, 0.4));
+  out.push(gesture(bL, bx, yL, 15, r, 0.4));
+  for (const x of [ax, bx]) out.push(line(`M${pt(x, yL + 11)}L${pt(x, yS - 10)}`, INK, 0.5, 0.16));
+  out.push(line(`M${pt(ax + 8, yL + 8)}L${pt(bx - 7, yS - 7)}`, hue(aL), 1.1, 0.55));
+  out.push(line(`M${pt(bx - 8, yL + 8)}L${pt(ax + 7, yS - 7)}`, hue(bL), 1.1, 0.55));
+  out.push(label(38, yL, "LEADS", 7.5, INK, { weight: 700, o: 0.55, spread: 0.12 }));
+  out.push(label(38, yS, "SUPPORTS", 7.5, INK, { weight: 700, o: 0.55, spread: 0.12 }));
+  out.push(fnMark(aL, ax, yL, 11));
+  out.push(fnMark(bL, bx, yL, 11));
+  out.push(fnMark(aS, ax, yS, 10));
+  out.push(fnMark(bS, bx, yS, 10));
+  return out.join("");
+}
+
+/**
+ * The deck's back — one composition for the whole deck, so it lives outside
+ * the Card list. Full page, so the ring the band could never hold fits here:
+ * the eight elements named, the four axes drawn as straight chords, the other
+ * two involutions as faint bows behind them. Centred and near-symmetric,
+ * because a back is seen upside down half the time and must not mind.
+ */
+export function backArt(): string {
+  const r = rng("octant-back");
+  const out: string[] = [`<rect width="${ART_W}" height="${ART_H}" fill="${PAPER}"/>`];
+  for (let i = 0; i < 420; i++) {
+    out.push(dot(r.between(0, ART_W), r.between(0, ART_H), r.between(0.2, 0.8), INK, r.between(0.02, 0.07)));
+  }
+  const cx = ART_W / 2, cy = 178, R0 = 86;
+  const FNS: Fn[] = ["Ne", "Ni", "Se", "Si", "Te", "Ti", "Fe", "Fi"];
+  const at = (f: Fn): [number, number] => polar(cx, cy, R0, (FNS.indexOf(f) / 8) * Math.PI * 2 - Math.PI / 2);
+  for (const [op, opacity, bow] of [[alphaOp, 0.14, 0.5], [betaOp, 0.12, 0.4]] as [Record<Fn, Fn>, number, number][]) {
+    for (const f of FNS) {
+      const [x1, y1] = at(f);
+      const [x2, y2] = at(op[f]);
+      const mx = cx + ((x1 + x2) / 2 - cx) * bow;
+      const my = cy + ((y1 + y2) / 2 - cy) * bow;
+      out.push(line(curve([[x1, y1], [mx, my], [x2, y2]]), INK, 0.6, opacity));
+    }
+  }
+  for (const f of FNS) {
+    const [x1, y1] = at(f);
+    const [x2, y2] = at(omega[f]);
+    out.push(line(`M${pt(x1, y1)}L${pt(x2, y2)}`, hue(f), 0.9, 0.4));
+  }
+  out.push(ring(cx, cy, R0, INK, 0.5, 0.2));
+  out.push(ring(cx, cy, R0 * 0.5, INK, 0.35, 0.12));
+  for (const f of FNS) out.push(fnMark(f, ...at(f), 13));
+  out.push(label(cx, 330, "OCTANT", 15, INK, { weight: 700, o: 0.8, spread: 0.34 }));
+  out.push(label(cx, 348, "READ THE WIRING", 7.5, INK, { weight: 600, o: 0.5, spread: 0.22 }));
+  return `<svg class="art" viewBox="0 0 ${ART_W} ${ART_H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${out.join("")}</svg>`;
+}
+
 /* ------------------------------- entry ------------------------------- */
 
 /** The art for one card, as a complete `<svg>` element. Deterministic in `id`. */
@@ -650,6 +714,7 @@ export function artFor(id: string, spec: ArtSpec): string {
     case "star": body = star(spec.fns, r); break;
     case "mark": body = mark(spec.fns, r); break;
     case "bond": body = bond(spec.fns, r); break;
+    case "mesh": body = mesh(spec.fns, r); break;
   }
   return `<svg class="art" viewBox="0 0 ${ART_W} ${ART_H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${body}</svg>`;
 }
