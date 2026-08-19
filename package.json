@@ -15,7 +15,8 @@
     "cf:whoami": "wrangler whoami",
     "lint": "biome lint .",
     "cards": "node scripts/build-cards.mjs",
-    "cards:html": "node scripts/build-cards.mjs --html"
+    "cards:html": "node scripts/build-cards.mjs --html",
+    "rate-card": "node scripts/build-rate-card.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
