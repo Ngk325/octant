@@ -33,7 +33,11 @@ describe("the public front door", () => {
     const res = await get("/");
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(html).toContain("See how minds mesh");
+    expect(html).toContain("Compatibility runs in two directions");
+    // The proof band is the page's one uncopyable asset. If it ever silently
+    // drops out again, this is the assertion that should notice.
+    expect(html).toContain("128/128");
+    expect(html).toContain("r &minus;0.15");
     expect(html).toContain("$25");
     expect(html).toContain("Stratfield Partners LLC");
     expect(html).toContain("buy.stripe.com");

@@ -42,45 +42,6 @@ const BUSINESS_MAILTO =
   "mailto:nick@stratfieldpartners.com?subject=Octant%20for%20our%20team";
 
 /** The two-stacks-with-arrows hero drawing — the product's core idea, inline. */
-const HERO_ART = (() => {
-  const rowY = (i: number) => 56 + i * 24; // eight rows, inside the boxes
-  const left = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-    const strong = i < 4;
-    return `
-    <circle cx="40" cy="${rowY(i)}" r="${strong ? 7 : 5}" fill="var(--m-accent)" opacity="${strong ? 1 : 0.4}"/>
-    <rect x="58" y="${rowY(i) - 4}" width="${94 - i * 7}" height="8" rx="4" fill="var(--m-ink)" opacity="${strong ? 0.5 : 0.18}"/>`;
-  }).join("");
-  const right = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-    const strong = i < 4;
-    const hit = i === 2 || i === 4;
-    return `
-    ${hit ? `<rect x="290" y="${rowY(i) - 10}" width="158" height="20" rx="6" fill="var(--m-accent)" opacity=".14"/>` : ""}
-    <circle cx="318" cy="${rowY(i)}" r="${strong ? 7 : 5}" fill="var(--m-rose)" opacity="${strong ? 1 : 0.4}"/>
-    <rect x="336" y="${rowY(i) - 4}" width="${94 - i * 7}" height="8" rx="4" fill="var(--m-ink)" opacity="${strong ? 0.5 : 0.18}"/>`;
-  }).join("");
-  return `
-<svg viewBox="0 0 460 306" fill="none" role="img"
-     aria-label="Two minds drawn as ordered stacks, with arrows showing where one person's strengths land in the other's pattern.">
-  <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="14">
-    <text x="24" y="26" fill="var(--m-muted)" font-weight="600">Their mind</text>
-    <text x="436" y="26" fill="var(--m-muted)" font-weight="600" text-anchor="end">Yours</text>
-    <rect x="16" y="38" width="150" height="204" rx="10" fill="var(--m-soft)"/>
-    ${left}
-    <rect x="294" y="38" width="150" height="204" rx="10" fill="var(--m-soft)"/>
-    ${right}
-    <path d="M 172 ${rowY(0)} C 240 ${rowY(0)}, 236 ${rowY(2)}, 282 ${rowY(2)}" stroke="var(--m-accent)" stroke-width="2.5" fill="none"/>
-    <path d="M 284 ${rowY(2)} l -9 -5 v 10 z" fill="var(--m-accent)"/>
-    <path d="M 172 ${rowY(1)} C 238 ${rowY(1)}, 234 ${rowY(4)}, 282 ${rowY(4)}" stroke="var(--m-accent)" stroke-width="2.5" fill="none" opacity=".65"/>
-    <path d="M 284 ${rowY(4)} l -9 -5 v 10 z" fill="var(--m-accent)" opacity=".65"/>
-    <text x="230" y="272" fill="var(--m-ink)" text-anchor="middle" font-size="15">
-      Where their strengths land in your pattern
-    </text>
-    <text x="230" y="294" fill="var(--m-muted)" text-anchor="middle" font-size="14">
-      decides how the relationship feels — in each direction separately.
-    </text>
-  </g>
-</svg>`;
-})();
 
 /* ------------------------------------------------------------------ *
  * Audience-card glyphs, echoing the app's glyph language: people are a
@@ -136,11 +97,48 @@ const GLYPH_SELF = `
   <circle cx="64" cy="50" r="4.6" fill="var(--m-rose)" opacity=".55"/>
 </svg>`;
 
-const TITLE = "Octant — see how minds mesh";
+/* The hero shows an actual reading rather than an illustration of one. Both
+ * scores are ease() output for this pair and both descriptions are that
+ * relation's own REL_DEF gloss, so the panel cannot drift away from what the
+ * app would say on /pair/ENTP/INFP. It is HTML and not SVG on purpose: the
+ * text reflows on a phone, stays selectable and is read out in order. */
+const HERO_READING = `
+<div class="reading" role="figure" aria-label="A worked reading of the ENTP and INFP pair, scored in both directions">
+  <div class="reading-top">
+    <span class="mono rlabel">Worked example</span>
+    <span class="mono rpair">ENTP &middot; INFP</span>
+  </div>
+
+  <div class="dir">
+    <div class="dir-head">
+      <span class="mono way">ENTP &rarr; INFP</span>
+      <span class="rel">Examined</span>
+      <span class="mono val">44</span>
+    </div>
+    <div class="meter" aria-hidden="true"><span style="width:44%"></span></div>
+    <p>Your leading function lands on their Blind spot; you can flatten them without noticing.</p>
+  </div>
+
+  <div class="dir">
+    <div class="dir-head">
+      <span class="mono way">INFP &rarr; ENTP</span>
+      <span class="rel">Examiner</span>
+      <span class="mono val">34</span>
+    </div>
+    <div class="meter" aria-hidden="true"><span style="width:34%"></span></div>
+    <p>Their leading function lands on your Blind spot; their casual remarks land as verdicts.</p>
+  </div>
+
+  <p class="reading-foot">
+    Same two people. Ten points apart, and only one of them can feel it.
+  </p>
+</div>`;
+
+const TITLE = "Octant — compatibility runs in two directions";
 const DESCRIPTION =
-  "Octant maps how people think and how those patterns fit together — both directions of " +
-  "every relationship, whole-team dynamics, and a growth path for each person. " +
-  "For coaches, teams, and anyone who takes their relationships seriously.";
+  "A single compatibility score is a fiction. Octant scores every relationship in both " +
+  "directions separately, derives all 256 ordered pairs from one small piece of structure " +
+  "rather than a lookup table, and shows the derivation behind every number.";
 
 /** The complete public landing page. */
 
@@ -167,6 +165,7 @@ export const SITE_CSS = `  :root {
     --m-accent-soft:#ECEBF7; --m-on:#fff; --m-rose:#C2477F;
     --serif:"Newsreader",Georgia,"Times New Roman",serif;
     --sans:"Inter",system-ui,-apple-system,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -294,12 +293,85 @@ export const SITE_CSS = `  :root {
          padding:20px; box-shadow:0 1px 2px rgba(26,23,20,.05), 0 12px 32px rgba(26,23,20,.06); }
   .art svg { width:100%; height:auto; display:block; }
 
+  /* ---- the worked reading, and the proof band ---------------------- *
+   * Violet is spent here and almost nowhere else now: the scores, the
+   * meters and the proof figures are the reading, and everything around
+   * them sits in warm neutral so the accent still means something.
+   * ------------------------------------------------------------------ */
+  .mono { font-family:var(--mono); font-variant-numeric:tabular-nums; }
+
+  .reading { background:var(--m-surface); border:1px solid var(--m-rule); border-radius:14px;
+             padding:22px 24px 20px;
+             box-shadow:0 1px 2px rgba(26,23,20,.05), 0 12px 32px rgba(26,23,20,.06); }
+  .reading-top { display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+                 padding-bottom:14px; border-bottom:1px solid var(--m-rule); }
+  .rlabel { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
+            color:var(--m-muted); }
+  .rpair { font-size:13px; font-weight:600; color:var(--m-ink); letter-spacing:.04em; }
+
+  .dir { padding:16px 0 4px; border-bottom:1px solid var(--m-rule); }
+  .dir:last-of-type { border-bottom:none; }
+  .dir-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .dir-head .way { font-size:12.5px; font-weight:500; color:var(--m-ink2); letter-spacing:.02em; }
+  .dir-head .rel { font-family:var(--sans); font-size:13px; font-weight:600; color:var(--m-ink); }
+  .dir-head .val { margin-left:auto; font-size:26px; font-weight:500; color:var(--m-accent);
+                   letter-spacing:-.02em; line-height:1; }
+  .meter { height:4px; border-radius:2px; background:var(--m-soft); margin:10px 0 10px; overflow:hidden; }
+  .meter span { display:block; height:100%; background:var(--m-accent); border-radius:2px; }
+  .dir p { font-family:var(--sans); font-size:14.5px; line-height:1.55; color:var(--m-ink2);
+           margin:0 0 4px; max-width:none; }
+  .reading-foot { font-family:var(--sans); font-size:13.5px; color:var(--m-muted);
+                  margin:14px 0 0; padding-top:14px; border-top:1px solid var(--m-rule); max-width:none; }
+
+  .proof { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:22px 20px;
+           padding:26px 0 30px; border-top:1px solid var(--m-rule); }
+  .proof-item .pv { display:block; font-family:var(--mono); font-variant-numeric:tabular-nums;
+                    font-size:26px; font-weight:500; letter-spacing:-.02em; color:var(--m-accent); }
+  .proof-item .pk { display:block; font-family:var(--sans); font-size:13px; line-height:1.45;
+                    color:var(--m-ink2); margin-top:6px; }
+
+  @media (max-width:560px){
+    .reading { padding:18px 18px 16px; }
+    .dir-head .val { font-size:23px; }
+    .proof { gap:18px 16px; padding:22px 0 24px; }
+    .proof-item .pv { font-size:22px; }
+  }
+
   section { padding:56px 0; }
   section.alt { background:var(--m-surface); border-top:1px solid var(--m-rule);
                 border-bottom:1px solid var(--m-rule); }
   .kicker { font-family:var(--sans); font-size:14px; font-weight:600; letter-spacing:.04em;
             text-transform:uppercase; color:var(--m-accent-ink); margin-bottom:10px; }
   .cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:32px; }
+  /* Four cards in an auto-fit grid wrap 3+1 at desktop widths and strand the
+     fourth on a row of its own. Pin any four-up set to a square instead. */
+  .cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width:760px){ .cols-2 { grid-template-columns:minmax(0,1fr); } }
+
+  /* ---- the router -------------------------------------------------- *
+   * The audience section used to be four co-equal pitches, which asked
+   * the reader to work out which one they were. These are destinations:
+   * breadth lives in the navigation now, not in the argument.
+   * ------------------------------------------------------------------ */
+  .router { display:grid; gap:0; margin-top:32px; border-top:1px solid var(--m-rule); }
+  .route { display:flex; align-items:flex-start; gap:18px; padding:22px 4px;
+           border-bottom:1px solid var(--m-rule); text-decoration:none; color:inherit; }
+  .route:hover { background:var(--m-surface); }
+  .route:focus-visible { outline:2px solid var(--m-accent); outline-offset:-2px; }
+  .route .glyph { flex:0 0 auto; height:40px; width:40px; display:block; }
+  .route .glyph svg { height:100%; width:auto; display:block; }
+  .route-body { display:block; flex:1 1 auto; }
+  .route-t { display:block; font-family:var(--sans); font-size:17px; font-weight:600;
+             color:var(--m-ink); margin-bottom:4px; }
+  .route-d { display:block; font-family:var(--sans); font-size:14.5px; line-height:1.55;
+             color:var(--m-ink2); }
+  .route-go { flex:0 0 auto; align-self:center; font-size:12.5px; font-weight:500;
+              color:var(--m-accent-ink); white-space:nowrap; }
+  @media (max-width:560px){
+    .route { gap:14px; padding:18px 2px; flex-wrap:wrap; }
+    .route .glyph { height:30px; width:30px; }
+    .route-go { width:100%; align-self:flex-start; padding-left:44px; }
+  }
   .card { background:var(--m-surface); border:1px solid var(--m-rule); border-radius:12px; padding:24px; }
   section.alt .card { background:var(--m-paper); }
   .card h3 { margin-bottom:8px; }
@@ -368,7 +440,10 @@ export function siteHead(o: {
 <meta property="og:site_name" content="Octant">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${o.title}">
-<meta name="twitter:description" content="${o.description}">`;
+<meta name="twitter:description" content="${o.description}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">`;
 }
 
 /** The sticky masthead. On the front page the section links are bare anchors. */
@@ -378,6 +453,7 @@ export function siteHeader(home: boolean): string {
     [`${at}#product`, "Product"],
     [`${at}#uses`, "Who it&rsquo;s for"],
     [`${at}#pricing`, "Pricing"],
+    ["/compare", "Compared"],
     ["/partners", "Partners"],
     ["/signin", "Sign in"],
   ];
@@ -406,7 +482,6 @@ export function siteHeader(home: boolean): string {
 </header>`;
 }
 
-
 /** The footer, including the standing legal notice both pages carry. */
 export function siteFooter(home: boolean): string {
   const at = home ? "" : "/";
@@ -419,6 +494,7 @@ export function siteFooter(home: boolean): string {
         <a href="${at}#uses">Who it&rsquo;s for</a>
         <a href="${at}#pricing">Pricing</a>
         <a href="${at}#about">About</a>
+        <a href="/compare">Compared</a>
         <a href="/partners">Partners</a>
         <a href="/signin">Sign in</a>
       </nav>
@@ -448,20 +524,30 @@ ${siteHeader(true)}
 <main>
   <div class="wrap hero">
     <div>
-      <h1>See how minds mesh.</h1>
+      <h1>Compatibility runs in two directions.</h1>
       <p class="lede">
-        Most of what looks like personality is a pattern — a running order of eight habits of
-        mind, different in each of us, meshing with each other in ways that are predictable once
-        you can see them. Octant is the instrument for seeing them.
+        A single compatibility score is a fiction. Most relationships are easier from one side
+        than the other, and the person on the heavier side rarely knows it is happening. Octant
+        scores every direction separately &mdash; and shows the derivation behind each number.
       </p>
       <div class="cta-row">
-        <a class="btn primary" href="#pricing">Start now — $25/user·mo</a>
-        <a class="btn" href="#product">See how it works</a>
-        <a class="btn" href="/onramp">Not sure yet? Take the two-minute quiz</a>
-        <span class="cta-note">Cancel anytime. Paid access unlocks the moment checkout clears.</span>
+        <a class="btn primary" href="/onramp">Take the two-minute read</a>
+        <a class="btn" href="#pricing">Pricing &mdash; $25/user&middot;mo</a>
+        <span class="cta-note">Free, no account. Eight either-or questions, no scoring you can fail.</span>
       </div>
     </div>
-    <div class="art">${HERO_ART}</div>
+
+    ${HERO_READING}
+  </div>
+
+  <div class="wrap">
+    <div class="proof">
+      <div class="proof-item"><span class="pv">16</span><span class="pk">patterns generate every reading</span></div>
+      <div class="proof-item"><span class="pv">256</span><span class="pk">ordered pairs, each scored twice</span></div>
+      <div class="proof-item"><span class="pv">27%</span><span class="pk">of pairs differ by direction</span></div>
+      <div class="proof-item"><span class="pv">128/128</span><span class="pk">agreement with an independent published table</span></div>
+      <div class="proof-item"><span class="pv">r &minus;0.15</span><span class="pk">the survey matrix that disagrees, shipped anyway</span></div>
+    </div>
   </div>
 
   <section id="problem">
@@ -516,7 +602,7 @@ ${siteHeader(true)}
         structure, never looked up in a table. Nothing can quietly contradict anything else, and
         every claim can show its work.
       </p>
-      <div class="cols">
+      <div class="cols cols-2">
         <div class="card">
           <h3>Read one mind</h3>
           <p>
@@ -554,45 +640,49 @@ ${siteHeader(true)}
 
   <section id="uses">
     <div class="wrap">
-      <p class="kicker">Who it&rsquo;s for</p>
-      <h2>Built for people whose work is other people.</h2>
-      <div class="cols">
-        <div class="card">
-          <span class="glyph">${GLYPH_COACH}</span>
-          <h3>Coaches &amp; practitioners</h3>
-          <p>
-            Give clients a structured mirror: why the same feedback lands on one person and
-            wounds another, what their growth edge actually is, and language for patterns they
-            have felt for years but never had words for.
-          </p>
-        </div>
-        <div class="card">
-          <span class="glyph">${GLYPH_TEAM}</span>
-          <h3>Teams &amp; founders</h3>
-          <p>
-            See the friction before it has a name. Understand why two strong people keep
-            colliding, who is absorbing corrections nobody means to issue, and what kind of
-            person the room is missing.
-          </p>
-        </div>
-        <div class="card">
-          <span class="glyph">${GLYPH_PAIR}</span>
-          <h3>Partners &amp; families</h3>
-          <p>
-            The same argument, every time, with the same person? Read the pairing in both
-            directions and get a playbook — what to lead with, what to stop doing, and why it
-            works.
-          </p>
-        </div>
-        <div class="card">
+      <p class="kicker">Where to start</p>
+      <h2>One instrument. Four things people point it at.</h2>
+      <p>
+        The reading is the same mechanism every time. What changes is who you put into it &mdash;
+        so pick the one you actually came for.
+      </p>
+      <div class="router">
+        <a class="route" href="/onramp">
           <span class="glyph">${GLYPH_SELF}</span>
-          <h3>Anyone reading themselves</h3>
-          <p>
-            Eight either-or questions find your pattern. Then the interesting part: your four
-            sides, the fear your life is quietly organised around, and the door your growth
-            actually goes through.
-          </p>
-        </div>
+          <span class="route-body">
+            <span class="route-t">Yourself</span>
+            <span class="route-d">Eight either-or questions find your pattern. Then the four sides,
+            the fear your life is quietly organised around, and the door your growth goes through.</span>
+          </span>
+          <span class="route-go mono">Free &rarr;</span>
+        </a>
+        <a class="route" href="#pricing">
+          <span class="glyph">${GLYPH_PAIR}</span>
+          <span class="route-body">
+            <span class="route-t">One relationship</span>
+            <span class="route-d">The same argument, every time, with the same person? Read the
+            pairing in both directions and get a playbook for handling them well.</span>
+          </span>
+          <span class="route-go mono">Pricing &rarr;</span>
+        </a>
+        <a class="route" href="#pricing">
+          <span class="glyph">${GLYPH_TEAM}</span>
+          <span class="route-body">
+            <span class="route-t">A team, a family, a founding trio</span>
+            <span class="route-d">The group as a weighted directed graph: average ease, the hardest
+            single direction, who absorbs corrections nobody means to issue.</span>
+          </span>
+          <span class="route-go mono">Pricing &rarr;</span>
+        </a>
+        <a class="route" href="/partners">
+          <span class="glyph">${GLYPH_COACH}</span>
+          <span class="route-body">
+            <span class="route-t">Your own clients</span>
+            <span class="route-d">Coaches, practitioners and consultants who want the relational
+            layer inside what they already sell, under one of four arrangements.</span>
+          </span>
+          <span class="route-go mono">Partners &rarr;</span>
+        </a>
       </div>
     </div>
   </section>

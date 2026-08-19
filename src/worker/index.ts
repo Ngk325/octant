@@ -4,6 +4,7 @@ import {
   type AuthEnv,
 } from "./auth";
 import { marketingPage } from "./marketing";
+import { comparePage, comparisonPage } from "./compare";
 import { partnersPage } from "./partners";
 import {
   startGoogleSignIn, completeGoogleSignIn, googleConfigured, safeReturn,
@@ -161,17 +162,23 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   if (leadsPublic) return leadsPublic;
 
   // 5. The wall. Returns a response for everyone not signed in and approved —
-  //    with TWO carve-outs, the public pages: an anonymous GET of "/" gets the
-  //    marketing page instead of a 401, and "/partners" gets the partner page.
-  //    Only the 401 (no session at all) is softened, only for those two exact
-  //    paths, and only for GET; a pending or blocked person (403) still sees
-  //    their status page, and no app markup or asset is ever in either
-  //    response. The wall itself is untouched.
+  //    with a carve-out for the public pages: an anonymous GET of one of them
+  //    gets that page instead of a 401. Only the 401 (no session at all) is
+  //    softened, only for GET, and only for these exact paths -- the comparison
+  //    slug is matched against a known list rather than by prefix, so
+  //    "/compare/anything-else" keeps hitting the wall like every other path. A
+  //    pending or blocked person (403) still sees their status page, and no app
+  //    markup or asset is ever in any of these responses. The wall is untouched.
   const blocked = await requireAuth(request, env, now);
   if (blocked) {
     if (request.method === "GET" && blocked.status === 401) {
       if (url.pathname === "/") return marketingPage(url.origin);
       if (url.pathname === "/partners") return partnersPage(url.origin);
+      if (url.pathname === "/compare") return comparePage(url.origin);
+      if (url.pathname.startsWith("/compare/")) {
+        const page = comparisonPage(url.origin, url.pathname.slice("/compare/".length));
+        if (page) return page;
+      }
     }
     return blocked;
   }
