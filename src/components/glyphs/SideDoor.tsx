@@ -22,7 +22,7 @@ export default function SideDoor({ side, fn }: { side: SideKey; fn: Fn }) {
     ego: "open — you live here",
     subconscious: "ajar — opens past insecurity",
     unconscious: "closed — opens past worry",
-    superego: "barred — opens last, if at all",
+    superego: "barred — opens last: seized, or earned",
   };
 
   /* the arch: jambs up, a curve over the top */

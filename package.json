@@ -13,7 +13,9 @@
     "deploy": "npm run build && wrangler deploy",
     "cf:login": "wrangler login",
     "cf:whoami": "wrangler whoami",
-    "lint": "biome lint ."
+    "lint": "biome lint .",
+    "cards": "node scripts/build-cards.mjs",
+    "cards:html": "node scripts/build-cards.mjs --html"
   },
   "dependencies": {
     "react": "^19.2.8",

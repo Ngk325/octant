@@ -6,6 +6,9 @@ dist
 .vscode
 *.tsbuildinfo
 
+# Built card deck — regenerate with `npm run cards`.
+dist-cards
+
 # Local secrets for `npm run dev` and `wrangler dev`. Never commit.
 .dev.vars
 .env

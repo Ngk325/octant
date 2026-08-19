@@ -81,9 +81,9 @@ Two derived fields that the original workbook conflated into one:
 - **Counterpart** — Counterpart + Spark. Supplies your **Cave**, the function you fear. Restful.
 - **Catalyst** — the two types whose Lead is your **Doubt**. Supplies the function you are
   consciously reaching for and reflexively arguing with. Stimulating, slightly abrasive.
-  Structurally this always resolves to your Damper and False-fit partners.
+  Structurally this always resolves to your Damper and Loose-fit partners.
 
-An ENTP wants convergence, but convergence is introverted intuition, and that is the Doubt —
+An ENTP wants convergence, but convergence is intraverted intuition, and that is the Doubt —
 which is why INTJ and INFJ feel compelling rather than comfortable, and why the old
 "Sidekicks" column kept reaching for them.
 
@@ -236,6 +236,41 @@ own canvas in both themes. Structure is tested too (`tests/a11y.test.ts`): ARIA 
 real cells, scrollable figures are keyboard-reachable, and facts that lived only in hover
 tooltips also exist as text a screen reader announces. A render throw shows a readable fallback
 page, not a blank document (`ErrorBoundary`, tested in jsdom).
+
+## The deck
+
+Seventy-eight printed cards plus a matching back, generated from the engine rather
+than written for it: eight Elements, eight Seats, sixteen Wirings, four Sides,
+four Camps, eight Bonds, seventeen Channels (the 256-cell compatibility grid that
+indexes the suit, then the sixteen relations) and eight Wheels, with five cards
+that teach the deck its own vocabulary before the suits start — a frame card that
+says what each suit is for, and a decoder that walks four letters to a stack.
+Each card carries a generative composition seeded by its own id and coloured
+from the app's function palette — a Channel's bundle crosses or runs parallel
+according to its ease score, a Side's door stands open by exactly as much as
+that side is reachable, a Wiring bears the bold seal of its own archetypes
+opposite its name — and every element the art draws prints its two letters and
+ripples with its attitude (crests breaking outward for e, inward for i), because
+four hue families over eight elements means colour alone cannot name one.
+
+**Bonds** are the one surface here that does not name a type, in two derived
+halves. The axis bonds: `bondFacts()` sweeps all 240 ordered cross-type pairs and
+finds the four axis-opposite lead pairings (Ne·Si, Se·Ni, Te·Fi, Ti·Fe) averaging
+93 of 100, 29 clear of the next class. The Spark bonds: `sparkFacts()` proves that
+each Lead being answered by the other's *Support* — both crossings at once — is
+exactly the Spark relation at 92, while one crossing alone is only Upstream (54)
+or Downstream (48). Both claims are about elements, so they hold for any two
+types carrying them.
+
+```sh
+npm run cards      # → dist-cards/octant-cards.pdf (bleed size, one card per page)
+                   #   dist-cards/octant-sheets.pdf (A4 proof sheets, crop marks)
+```
+
+Standard poker trim, 63 x 88mm inside a 69.09 x 94.23mm page. Vector all the way
+into the PDF, no image files anywhere in the repo, and the build fails if any
+card's text overruns its safe area — a browser measures every one.
+**[docs/CARDS.md](./docs/CARDS.md)** is the full spec.
 
 ## Develop
 

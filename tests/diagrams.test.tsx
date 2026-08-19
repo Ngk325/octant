@@ -253,7 +253,7 @@ describe("the lexicon figure registry", () => {
       TYPES.filter((x) => DOM_AUX[x][0] === stack(t)[4]).map((x) => REL[t][x]),
     );
 
-    expect(catalyst, "Catalyst resolves to Damper and False fit").toEqual(new Set(["EX", "MG"]));
+    expect(catalyst, "Catalyst resolves to Damper and Loose fit").toEqual(new Set(["EX", "MG"]));
     expect(complement.has("DU"), "Complement includes the Counterpart").toBe(true);
 
     /* Every relation the caption names, not just the first — the caption
@@ -357,7 +357,7 @@ describe("the lexicon figure registry", () => {
 
   it("draws the coin poles the glyph language can state, and no others", () => {
     /* Initiating/Responding used to sit in this bare set too, even though
-       they are literally "maps to extraversion"/"...introversion" — exactly
+       they are literally "maps to extraversion"/"...intraversion" — exactly
        what AttitudeMark already draws, and already shipped elsewhere in the
        app. The four left bare ask about sequencing and delivery, which no
        mark in the language means — the same restraint Calculator takes.

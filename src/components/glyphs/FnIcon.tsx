@@ -5,7 +5,7 @@ import { ring, arrowhead, outward } from "./geometry";
 /**
  * One abstract icon per function — the pictorial answer to "what does this
  * function feel like", eight original marks built from one rule: extraverted
- * functions move OUTWARD (rays, branches, reach), introverted ones move
+ * functions move OUTWARD (rays, branches, reach), intraverted ones move
  * INWARD (cores, strata, convergence).
  *
  *   Ne branches out from a node        Ni converges many lines to a point

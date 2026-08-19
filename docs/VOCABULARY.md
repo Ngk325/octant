@@ -137,7 +137,7 @@ Relation **codes** never change, so the engine never notices this table.
 | `DU` | **Counterpart** | Duality |
 | `AC` | **Spark** | Activity |
 | `HD` | **Near fit** | Semi-Duality |
-| `MG` | **False fit** | Mirage |
+| `MG` | **Loose fit** | Mirage |
 | `ID` | **Twin** | Identity |
 | `MI` | **Opposite hand** | Mirror |
 | `KD` | **Cousin** | Kindred |

@@ -3,7 +3,7 @@ import { usePalette } from "../Theme";
 import { person, outward } from "./geometry";
 
 /**
- * Where a function's calibration comes from, drawn: an introverted
+ * Where a function's calibration comes from, drawn: an intraverted
  * function is a narrow beam rising from one person to a single point they
  * hold alone; an extraverted function is a wide fan cast over the crowd.
  * Fi answers to the self's values, Fe to the tribe's; Ti to the self's

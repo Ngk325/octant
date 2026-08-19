@@ -124,7 +124,7 @@ export default function Guide() {
         </div>
         <div className="grid g2">
           <AttitudeColumn title="Extraverted — facing out" fns={visibleFns.filter(isExtraverted)} />
-          <AttitudeColumn title="Introverted — facing in" fns={visibleFns.filter((f) => !isExtraverted(f))} />
+          <AttitudeColumn title="Intraverted — facing in" fns={visibleFns.filter((f) => !isExtraverted(f))} />
         </div>
       </Section>
 

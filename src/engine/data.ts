@@ -97,7 +97,7 @@ export const REL_NAME: Record<RelCode, string> = {
   "DU": "Counterpart",
   "AC": "Spark",
   "HD": "Near fit",
-  "MG": "False fit",
+  "MG": "Loose fit",
   "ID": "Twin",
   "MI": "Opposite hand",
   "KD": "Cousin",
@@ -262,7 +262,7 @@ export const REL_FRAME: Record<RelCode, string> = {
   "KD": "Cousin. Shared leading function: you see the same thing and then do different things with it.",
   "BU": "Business. Shared second function — easy to work alongside, harder to get close to.",
   "HD": "Near fit. Partial completion; comfortable until the half you do not share is the half that is needed.",
-  "MG": "False fit. Relaxing and slightly unserious — good for rest, poor for joint execution.",
+  "MG": "Loose fit. Relaxing and slightly unserious — good for rest, poor for joint execution.",
   "SE": "Super-Ego. Fascinating at a distance, abrasive up close.",
   "CF": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours.",
   "QI": "Near-twin. You look alike from outside and arrive by routes that do not translate.",
@@ -514,7 +514,7 @@ export const BEHAVIOURAL: Record<MbtiType, Behavioural> = {
     "persuasionTrigger": "Validate feelings",
     "rapportBuilder": "Listen deeply",
     "conflictStyle": "Empathetic",
-    "stressResponse": "Emotional",
+    "stressResponse": "Emotional outbursts",
     "trustBuilder": "Validation",
     "dealBreaker": "Cruelty",
     "commsFlaw": "Passive-aggressive"
@@ -666,13 +666,13 @@ export const CONFIRMING = [
 
 export const FN_FULL: Record<Fn, string> = {
   "Ne": "Extraverted Intuition",
-  "Ni": "Introverted Intuition",
+  "Ni": "Intraverted Intuition",
   "Se": "Extraverted Sensing",
-  "Si": "Introverted Sensing",
+  "Si": "Intraverted Sensing",
   "Te": "Extraverted Thinking",
-  "Ti": "Introverted Thinking",
+  "Ti": "Intraverted Thinking",
   "Fe": "Extraverted Feeling",
-  "Fi": "Introverted Feeling"
+  "Fi": "Intraverted Feeling"
 };
 export const SLOT_NAMES = ["Lead","Support","Delight","Cave","Doubt","Scold","Blind spot","Dread"] as const;
 export const SLOT_TAGS  = ["Power","Responsibility","Innocence","Fear","Worry","Cynicism","Blindspot","Hate"] as const;

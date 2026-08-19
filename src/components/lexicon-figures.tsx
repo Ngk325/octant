@@ -91,7 +91,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
      two and the caption names the other rather than implying it is the whole
      set. Getting the sets from the entries: a Complement is {Counterpart,
      Spark}; a Catalyst is the two types whose Lead is your Doubt, which
-     resolves to {Damper, False fit} — NOT to Spark. Drawing Spark here was
+     resolves to {Damper, Loose fit} — NOT to Spark. Drawing Spark here was
      exactly the error this pairing invites, so the sets are asserted against
      the engine in tests/diagrams.test.tsx. */
   complement: () => <RelationFigure code="DU" alsoSee="AC" />,
@@ -224,7 +224,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   ),
 
   /* Initiating/Responding are the switch language's name for extraversion
-     and introversion themselves ("Maps to extraversion" / "...introversion"
+     and intraversion themselves ("Maps to extraversion" / "...intraversion"
      in the entries' own text) — exactly what AttitudeMark already draws
      bare, with no function attached. It was built and shipped elsewhere
      (Guide, Learn, Home, Welcome) but never wired into the lexicon that
