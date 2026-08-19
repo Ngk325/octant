@@ -47,11 +47,11 @@ export default function WiringSchematic({ type, showCorrespondence }: {
       viewBox={`0 0 ${W} ${H}`}
       width="100%"
       role="img"
-      aria-label={`The eight function slots of ${type}, from Lead down to Dread`}
+      aria-label={`The eight function seats of ${type}, from Lead down to Dread`}
       style={{ display: "block", maxWidth: 700, fontFamily: "Inter, system-ui, sans-serif" }}
     >
       <text x="0" y="16" fill="var(--muted)" fontSize="14" fontWeight="600">
-        {type} — the eight slots
+        {type} — the eight seats
       </text>
       <text x={W} y="16" fill="var(--muted)" fontSize="14" textAnchor="end">
         1–4 you · 5–8 your shadow

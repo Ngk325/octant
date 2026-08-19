@@ -108,7 +108,7 @@ export default function Sides() {
           stacked
           k="The rest of this type"
           v={<span className="small">
-            <Link to={`/type/${type}`}>The full {type} reader</Link> has the eight slots, the
+            <Link to={`/type/${type}`}>The full {type} reader</Link> has the eight seats, the
             exchange overlay, the growth gate and the Octagram wheel this page assumes.
           </span>}
         />

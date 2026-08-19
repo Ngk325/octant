@@ -27,7 +27,7 @@ export default function TwoReadings({ type = "ENTP" }: { type?: MbtiType }) {
   const READINGS = [
     {
       name: "Eight-function stack",
-      how: "Four letters, eight slots",
+      how: "Four letters, eight seats",
       marks: [3],
       says: "The Cave is the weak point.",
     },

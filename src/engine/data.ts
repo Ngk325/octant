@@ -113,21 +113,21 @@ export const REL_NAME: Record<RelCode, string> = {
 };
 export const REL_DEF: Record<RelCode, string> = {
   "DU": "Their wiring completes yours: your weak functions are their strong ones and vice versa. Lowest-friction pairing in the model.",
-  "AC": "Energising and fast to warm, because each of you feeds the other's mobilising function. Exhausting if never stepped out of.",
-  "HD": "Partial completion. Shares the Counterpart base channel but not the creative one; comfortable until the unshared half is what is needed.",
-  "MG": "Relaxing and slightly unserious. Shares the Counterpart creative channel only; good for rest, poor for joint execution.",
+  "AC": "Energising and fast to warm, because each of you feeds the other's Delight. Exhausting if never stepped out of.",
+  "HD": "Partial completion. Your Leads share an axis, as a Counterpart's do; your Supports do not; comfortable until the unshared half is what is needed.",
+  "MG": "Relaxing and slightly unserious. Only your Supports share an axis; good for rest, poor for joint execution.",
   "ID": "Same wiring. Instant mutual understanding and perfectly shared blind spots, so no one covers the gap.",
   "MI": "Same two functions in opposite order. Agreement on what matters, persistent argument about sequence.",
-  "KD": "Same leading function, different second. You perceive the same thing and then do different things with it.",
+  "KD": "Same leading function, different second. You start from the same tool and do different things with it.",
   "BU": "Same second function, different leading. Easy to work alongside, harder to be close to.",
-  "BR": "Asymmetric admiration. Their leading function lands on your mobilising function, so you find them compelling and they do not quite return it.",
-  "BE": "Asymmetric admiration, reversed. Your leading function lands on their mobilising function; they orbit you more than you orbit them.",
-  "SV": "Asymmetric correction. Your leading function lands on their vulnerable function; you can flatten them without noticing.",
-  "QI": "Same elements, every position and attitude rearranged. You look alike from outside and reach conclusions by incompatible routes.",
-  "SR": "Asymmetric correction, reversed. Their leading function lands on your vulnerable function; their casual remarks land as verdicts.",
-  "EX": "Same functions, every attitude flipped. Constant near-miss: you keep misreading each other's intent.",
+  "BR": "Asymmetric admiration. Their leading function lands on your Delight, so you find them compelling and they do not quite return it.",
+  "BE": "Asymmetric admiration, reversed. Your leading function lands on their Delight; they orbit you more than you orbit them.",
+  "SV": "Asymmetric correction. Your leading function lands on their Blind spot; you can flatten them without noticing.",
+  "QI": "Same four letters, every position and attitude rearranged. You look alike from outside and reach conclusions by incompatible routes.",
+  "SR": "Asymmetric correction, reversed. Their leading function lands on your Blind spot; their casual remarks land as verdicts.",
+  "EX": "Same four letters, every attitude flipped. Constant near-miss: you keep misreading each other's intent.",
   "SE": "Ego meets ego's understudy. Fascinating at a distance, abrasive up close.",
-  "CF": "Their leading function lands directly on your most defended weakness, and yours on theirs. Maximum cognitive friction."
+  "CF": "Their leading function lands directly on your Blind spot, and yours on theirs. Maximum cognitive friction."
 };
 export const REL_SCORE: Record<RelCode, number> = {
   "DU": 100,
@@ -217,7 +217,7 @@ export const SLOT_EFFECT: Record<SlotName, string> = {
 export const SLOT_COST: Record<SlotName, string> = {
   "Lead": "nothing to speak of — it is already who you are, not a performance",
   "Support": "little — it already backs the Lead, so it feels like an extension of yourself",
-  "Delight": "little, and it is the one slot that feels like play rather than effort",
+  "Delight": "little, and it is the one seat that feels like play rather than effort",
   "Cave": "real strain — it works, but it drains fast and starts to show within a day",
   "Doubt": "discomfort more than cost — like arguing yourself into a stance you do not hold",
   "Scold": "real effort — sustainable for a meeting, not a life; the edge is borrowed, not felt",
@@ -264,9 +264,9 @@ export const REL_FRAME: Record<RelCode, string> = {
   "HD": "Near fit. Partial completion; comfortable until the half you do not share is the half that is needed.",
   "MG": "Loose fit. Relaxing and slightly unserious — good for rest, poor for joint execution.",
   "SE": "Super-Ego. Fascinating at a distance, abrasive up close.",
-  "CF": "Conflict. Your strongest function lands on their most defended weakness, and theirs on yours.",
+  "CF": "Conflict. Your strongest function lands on their Blind spot, and theirs on yours.",
   "QI": "Near-twin. You look alike from outside and arrive by routes that do not translate.",
-  "EX": "Damper. Same functions, every attitude flipped — a constant near-miss on intent.",
+  "EX": "Damper. Same four letters, every attitude flipped — a constant near-miss on intent.",
   "SR": "You supervise them. Asymmetric: your Lead lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
   "SV": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
   "BR": "You are Upstream of them. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",

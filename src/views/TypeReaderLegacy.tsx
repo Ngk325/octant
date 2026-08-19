@@ -68,7 +68,7 @@ import FnIcon from "../components/glyphs/FnIcon";
    reach them but scrolling. */
 const SECTIONS = [
   ["powers", "Superpowers & kryptonite"],
-  ["slots", "The eight slots"],
+  ["slots", "The eight seats"],
   ["sides", "Four sides"],
   ["exchange", "The exchange overlay"],
   ["exchange-switches", "Your switches"],
@@ -253,7 +253,7 @@ export default function TypeReaderLegacy() {
       </div>
 
       {/* ------------------------------------------------ slots */}
-      <h2 id="slots" className="sec">The eight slots</h2>
+      <h2 id="slots" className="sec">The eight seats</h2>
 
       <Explain
         plain={`Eight habits of mind, in ${t}'s order of strength. The top four feel like "me". The bottom four run anyway, and feel like things that happen to you.`}
@@ -278,8 +278,8 @@ export default function TypeReaderLegacy() {
           <>
             Two regions are marked, because this model carries two readings of the same stack.
             One puts the growth point at the <b>Cave</b> alone. The other marks a wider pair —
-            <b>Delight</b> <i>and</i> <b>Cave</b> — as its flinches. They agree on slot 4 and disagree
-            about slot 3, which the first treats as a delight and the second treats as neglected.
+            <b>Delight</b> <i>and</i> <b>Cave</b> — as its flinches. They agree on seat 4 and disagree
+            about seat 3, which the first treats as a delight and the second treats as neglected.
             Neither reading is corrected into the other. The dashed arcs
             pair each ego slot with its shadow mirror: same capacity, facing the other way.
           </>
@@ -295,8 +295,8 @@ export default function TypeReaderLegacy() {
           split the schematic draws. */}
       <div className="grid g2" style={{ alignItems: "start" }}>
         {[
-          { label: "The ego block — slots 1–4, “me”", slots: [0, 1, 2, 3] },
-          { label: "The shadow block — slots 5–8, “what happens to me”", slots: [4, 5, 6, 7] },
+          { label: "The ego block — seats 1–4, “me”", slots: [0, 1, 2, 3] },
+          { label: "The shadow block — seats 5–8, “what happens to me”", slots: [4, 5, 6, 7] },
         ].map(({ label, slots }) => (
           <div key={label} className="stack-v">
             <h3 style={{ margin: "var(--s2) 0 0" }}>{label}</h3>
@@ -332,7 +332,7 @@ export default function TypeReaderLegacy() {
 
       <Explain
         big
-        plain="You are not one type — you are four. Split those eight slots into groups of four and each group is itself one of the sixteen. You move between them all day."
+        plain="You are not one type — you are four. Split those eight seats into groups of four and each group is itself one of the sixteen. You move between them all day."
       >
         <p>
           The four sides are derived from the same three moves that generate the

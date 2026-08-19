@@ -180,7 +180,7 @@ function AttitudeColumn({ title, fns }: { title: string; fns: Fn[] }) {
 function StackMatrix({ types, highlight }: { types: MbtiType[]; highlight?: MbtiType }) {
   return (
     /* biome-ignore lint/a11y/noNoninteractiveTabindex: the table scrolls sideways inside this div; the tabstop is how a keyboard pans it. */
-    <div className="matrix-wrap" tabIndex={0} role="group" aria-label="Every type's eight-slot stack, as emoji">
+    <div className="matrix-wrap" tabIndex={0} role="group" aria-label="Every type's eight-seat stack, as emoji">
       <table className="matrix">
         <caption className="small muted" style={{ captionSide: "top", textAlign: "left", paddingBottom: "var(--s3)" }}>
           Click a type, or its row, to open the full stack and four sides.
@@ -279,7 +279,7 @@ function TypeDrilldown({
             aria-pressed={view === v}
             onClick={() => setView(v)}
           >
-            {v === "slots" ? "By slot order" : "By the four sides"}
+            {v === "slots" ? "By seat order" : "By the four sides"}
           </button>
         ))}
       </div>

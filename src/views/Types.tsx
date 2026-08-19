@@ -36,7 +36,7 @@ export default function Types() {
 
       <div className="cluster" style={{ margin: "var(--s5) 0 var(--s6)" }}>
         <span className="small muted">Group by</span>
-        {([["quadra", "Quadra"], ["temperament", "Temperament"], ["alpha", "Nothing"]] as const).map(
+        {([["quadra", "Camp"], ["temperament", "Temperament"], ["alpha", "Nothing"]] as const).map(
           ([v, label]) => (
             <button type="button"
               key={v}

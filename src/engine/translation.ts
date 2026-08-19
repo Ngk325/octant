@@ -258,7 +258,7 @@ export const DIVERGENCES: { title: string; body: string }[] = [
     title: "Slot order",
     body:
       "Six of eight positions move between our arrangement and theirs. The permutation is " +
-      "1,2,6,5,7,8,4,3, and it is the same for all sixteen types. Anyone equating our slot 3 " +
+      "1,2,6,5,7,8,4,3, and it is the same for all sixteen types. Anyone equating our seat 3 " +
       "with their position 3 will be wrong twice over — our Delight is their Mobilizing, and " +
       "our Blind spot is their much-discussed Vulnerable position.",
   },
@@ -273,7 +273,7 @@ export const DIVERGENCES: { title: string; body: string }[] = [
     title: "The two growth readings do not reconcile",
     body:
       "One puts the growth point at the Cave alone. The exchange overlay marks Delight and Cave " +
-      "together. They agree about slot 4 and disagree about slot 3. This is not a gap we can " +
+      "together. They agree about seat 4 and disagree about seat 3. This is not a gap we can " +
       "close — we carry both deliberately, and that is the honest position rather than a defect.",
   },
   {

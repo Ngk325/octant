@@ -137,7 +137,7 @@ export default function Network() {
               />
             )}
             <Row
-              k="Quadras present"
+              k="Camps present"
               v={
                 <span className="cluster" style={{ justifyContent: "flex-end" }}>
                   {report.quadras.map((q) => (

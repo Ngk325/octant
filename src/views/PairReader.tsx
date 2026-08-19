@@ -140,7 +140,7 @@ export default function PairReader() {
             />
           ))}
           <Row
-            k="Quadras"
+            k="Camps"
             v={
               <span className="cluster" style={{ justifyContent: "flex-end" }}>
                 <span className="chip"><i className="dot" style={{ background: p.quadra(quadra(target)) }} />{quadra(target)}</span>

@@ -328,7 +328,7 @@ export const STAGES: Stage[] = [
   {
     slug: "powers",
     title: "Superpower and kryptonite",
-    blurb: "The same two slots from the last two stages — Lead and Dread — asked one question each.",
+    blurb: "The same two seats from the last two stages — Lead and Dread — asked one question each.",
     body: (t) => {
       const { superpower, kryptonite } = powersOf(t);
       return (
@@ -381,14 +381,14 @@ export const STAGES: Stage[] = [
   {
     slug: "four-sides",
     title: "Four sides of the mind",
-    blurb: "Those eight slots are really four types. You are all four of them.",
+    blurb: "Those eight seats are really four types. You are all four of them.",
     body: (t) => {
       const s = sides(t);
       return (
         <>
           <Explain
             big
-            plain="Split those eight slots into four groups of four, and each group is itself one of the sixteen types. So you are not one type. You are four, and you move between them."
+            plain="Split those eight seats into four groups of four, and each group is itself one of the sixteen types. So you are not one type. You are four, and you move between them."
           >
             <p>
               The four sides. The subconscious is the ego stack reversed; the
@@ -964,7 +964,7 @@ export const STAGES: Stage[] = [
 
           <h3>Two: performing — what it costs to run someone else&rsquo;s function</h3>
           <p>
-            Every function you have is already sitting at one of your own eight slots. Performing
+            Every function you have is already sitting at one of your own eight seats. Performing
             one that sits near the top costs almost nothing, because it is already close to who
             you are. Performing one near the bottom is a real, measurable strain.
           </p>
@@ -1007,7 +1007,7 @@ export const STAGES: Stage[] = [
       );
     },
     check:
-      "Name a function you can already perform even though it isn't your own Lead. Which of your own eight slots does it sit in — and what would it actually cost to keep running it for a whole day?",
+      "Name a function you can already perform even though it isn't your own Lead. Which of your own eight seats does it sit in — and what would it actually cost to keep running it for a whole day?",
   },
 ];
 

@@ -66,7 +66,7 @@ export default function Home() {
           </span>
           <h3 style={{ margin: "0 0 var(--s2)" }}>A type, in full →</h3>
           <p className="small" style={{ margin: 0 }}>
-            The eight slots, all four sides of the mind, the exchange overlay, the growth gate and who
+            The eight seats, all four sides of the mind, the exchange overlay, the growth gate and who
             you fit with — with the plain reading on top of each.
           </p>
         </Tile>

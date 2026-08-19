@@ -27,13 +27,13 @@ const TOPIC: Record<string, string> = {
   ego: CONCEPT_PLAIN.ego,
   shadow:
     "The bottom four still run. They just do not feel like you doing something — they feel like " +
-    "something happening to you. Each shadow slot is the attitude-flip of its ego counterpart: " +
+    "something happening to you. Each shadow seat is the attitude-flip of its ego counterpart: " +
     "the Doubt is the Lead's function in the opposite attitude, and so on down the stack.",
   powers:
     "No new data — this reads the Lead and the Dread, one question each: what runs so strong it " +
     "looks involuntary, and what one setting undoes it.",
   "four-sides":
-    `${CONCEPT_PLAIN.ego.split(".")[0]}. Split the eight slots into four groups of four and each ` +
+    `${CONCEPT_PLAIN.ego.split(".")[0]}. Split the eight seats into four groups of four and each ` +
     "group is itself one of the sixteen types: the subconscious is the ego stack reversed, the " +
     "unconscious is the shadow block read forwards, the superego is the shadow reversed.",
   growth:

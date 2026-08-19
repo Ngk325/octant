@@ -20,9 +20,8 @@ import { correlation } from "../engine/empirical";
  * The authored additions are declared where they sit: SUIT_ABOUT (what each
  * suit is for), SIDE_COPY and SEAT_SENSE (one plain line per side and per
  * seat, because the engine's own copy there is written per type and a card
- * is not), and REL_TRANSLATE (a vocabulary map, not new claims — the
- * engine's relation copy speaks the app's lexicon and a card has only the
- * deck's own seat names to speak with).
+ * is not). The engine's relation copy speaks the deck's seat names natively
+ * since the platform backport, so the cards quote REL_DEF unmediated.
  *
  * Rendering lives in render.ts and art.ts; this module is pure data and
  * is asserted card-by-card in tests/cards.test.ts.
@@ -122,30 +121,16 @@ const SIDE_COPY: Record<SideKey, { lede: string; blocked: string; opens: string;
   },
 };
 
-/**
- * AUTHORED IN FORM ONLY: the engine's relation copy names seats in the app's
- * lexicon vocabulary — "mobilising function" is the Delight, "vulnerable
- * function" the Blind spot, "base/creative channel" the Lead/Support axes.
- * The deck teaches none of those words, so its quotes of REL_DEF pass through
- * this map first. Each equivalence is structural and asserted in
- * tests/cards.test.ts, mirroring src/engine/translation.ts for print.
+/*
+ * REL_TRANSLATE is gone: it existed because the engine's relation copy spoke
+ * the app's old lexicon vocabulary ("mobilising function", "base channel")
+ * while the deck spoke seat names. In the platform backport's Phase 1 the
+ * ENGINE adopted the deck's language — REL_DEF and the lexicon's relation
+ * entries now say Delight, Blind spot, and "Leads/Supports share an axis"
+ * natively — so the deck quotes REL_DEF directly. The structural
+ * equivalences behind that language are still asserted in
+ * tests/cards.test.ts, and the no-jargon test now guards the engine itself.
  */
-const REL_TRANSLATE: [RegExp, string][] = [
-  [/mobilising function/g, "Delight"],
-  [/vulnerable function/g, "Blind spot"],
-  [/your most defended weakness/g, "your Blind spot"],
-  [/Shares the Counterpart base channel but not the creative one/g,
-    "Your Leads share an axis, as a Counterpart's do; your Supports do not"],
-  [/Shares the Counterpart creative channel only/g, "Only your Supports share an axis"],
-  [/Same elements, every position and attitude rearranged/g, "Same four letters, every position and attitude rearranged"],
-  [/Same functions, every attitude flipped/g, "Same four letters, every attitude flipped"],
-  [/You perceive the same thing and then do different things with it/g,
-    "You start from the same tool and do different things with it"],
-];
-
-/** Engine relation copy, restated in the vocabulary this deck actually teaches. */
-export const deckify = (text: string): string =>
-  REL_TRANSLATE.reduce((t, [from, to]) => t.replace(from, to), text);
 
 /** The eight slots, in stack order, with the attitude each one carries. */
 const slotIndex = (s: SlotName) => SLOT_NAMES.indexOf(s);
@@ -613,7 +598,7 @@ function relationCard(code: RelCode, i: number): Card {
       suit: "relation" as const, suitLabel: "Channel", n: i + 2, of: 17,
       title: REL_NAME[code],
       subtitle: `${code} · ease ${REL_SCORE[code]}`,
-      lede: fit(deckify(REL_DEF[code]), 140),
+      lede: fit(REL_DEF[code], 140),
       // Only the symmetric channels get a chip; on an asymmetric one the same
       // fact is the worked example below, and saying it twice costs a line the
       // longer definitions need.
