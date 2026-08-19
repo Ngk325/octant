@@ -42,7 +42,8 @@ export type ArtSpec =
   | { kind: "star"; fns: Fn[] }
   | { kind: "mark"; fns: Fn[] }
   | { kind: "bond"; fns: Fn[] }
-  | { kind: "mesh"; fns: [Fn, Fn, Fn, Fn] };
+  | { kind: "mesh"; fns: [Fn, Fn, Fn, Fn] }
+  | { kind: "grid"; scores: number[] };
 
 /** A labelled paragraph on the lower half of a card. `fn` prints that element's
  * own mark — the named, rippled disc — beside the row as a key. */
@@ -70,6 +71,8 @@ export interface Card {
   dense?: boolean;
   footer: string;
   art: ArtSpec;
+  /** The 256-cell ease grid, rendered as a table on the card body — only the Channel suit's index card carries one. */
+  matrix?: { types: readonly MbtiType[]; ease: number[][] };
 }
 
 /** AUTHORED: what each suit is for, printed on the key card and nowhere else. */
@@ -182,7 +185,8 @@ function seatTwin(i: number): string {
   const [a, b] = i < 4 ? [i, i + 4] : [i - 4, i];
   // No "facing out / facing in" here: which way the pair faces depends on the
   // type (INTP's Lead faces in), and a type-agnostic card may not pick one.
-  return `Seats ${a + 1} and ${b + 1} hold the same tool facing opposite ways — the ${SLOT_NAMES[a]} and the ${SLOT_NAMES[b]} are one letter, turned.`;
+  // The Ne/Ni pair is an example of the flip itself, not a seat mapping.
+  return `Seats ${a + 1} and ${b + 1} hold one tool facing opposite ways, as Ne is to Ni — whatever the ${SLOT_NAMES[a]} runs, the ${SLOT_NAMES[b]} runs its flipped twin.`;
 }
 
 /**
@@ -571,14 +575,40 @@ function sparkCards(offset: number, of: number): Card[] {
 /** Relations, richest first, so the deck reads from Counterpart down to Headwind. */
 const REL_ORDER = (Object.keys(REL_SCORE) as RelCode[]).sort((a, b) => REL_SCORE[b] - REL_SCORE[a]);
 
+/**
+ * The Channel suit's index: all 256 readings in one grid, the print twin of
+ * the app's /matrix. Row is your type, column is theirs, and the number is
+ * ease FOR THE ROW — the grid is deliberately not a mirror, and the footer
+ * carries the same worked asymmetry /matrix opens with, read live off the
+ * engine so the two surfaces cannot drift apart.
+ */
+function gridCard(of: number): Card {
+  return {
+    id: "relation-grid",
+    suit: "relation", suitLabel: "Channel", n: 1, of,
+    title: "Every pair at once",
+    subtitle: "all 256 readings — ease for the row type, 0 to 100",
+    lede: "Your row, their column; ease for the row.",
+    chips: [],
+    blocks: [],
+    footer: `ENTP reads ISTP at ${ease("ENTP", "ISTP")}; ISTP reads ENTP at ${ease("ISTP", "ENTP")} — four of the sixteen channels differ by chair`,
+    matrix: { types: TYPES, ease: TYPES.map((a) => TYPES.map((b) => ease(a, b))) },
+    art: { kind: "grid", scores: REL_ORDER.map((c) => REL_SCORE[c]) },
+  };
+}
+
 function relationCards(): Card[] {
-  return REL_ORDER.map((code, i) => {
+  const named = REL_ORDER.map((code, i) => relationCard(code, i));
+  return [gridCard(named.length + 1), ...named];
+}
+
+function relationCard(code: RelCode, i: number): Card {
     const a: MbtiType = "ENTP";
     const b = TYPES.find((t) => relation(a, t) === code)!;
     const symmetric = RECIPROCAL[code] === code;
     return {
       id: `relation-${code}`,
-      suit: "relation" as const, suitLabel: "Channel", n: i + 1, of: 16,
+      suit: "relation" as const, suitLabel: "Channel", n: i + 2, of: 17,
       title: REL_NAME[code],
       subtitle: `${code} · ease ${REL_SCORE[code]}`,
       lede: fit(deckify(REL_DEF[code]), 140),
@@ -602,7 +632,6 @@ function relationCards(): Card[] {
       footer: `One of ${symmetric ? "twelve symmetric" : "four asymmetric"} channels · 16 of 256 cells`,
       art: { kind: "channel", score: REL_SCORE[code], fns: [stack(a)[0], stack(b)[0]] },
     };
-  });
 }
 
 function wheelCards(): Card[] {
@@ -642,7 +671,7 @@ function frontMatter(): Card[] {
   const suits = deckSuits();
   const total = suits.reduce((s, x) => s + x.count, 0);
   // The decoder's worked example. INTJ, because it exercises the harder
-  // (introvert) branch of the derivation; every value below is read off
+  // (intravert) branch of the derivation; every value below is read off
   // stack(), so the card cannot disagree with the engine.
   const ex: MbtiType = "INTJ";
   const ext = stack(ex);
@@ -657,7 +686,7 @@ function frontMatter(): Card[] {
       blocks: [
         {
           label: "The eight tools",
-          text: "Four take the world in — Ne, Ni, Se, Si. Four decide about it — Te, Ti, Fe, Fi. The next card names them.",
+          text: "Four take the world in — Ne, Ni, Se, Si. Four decide about it — Te, Ti, Fe, Fi. Card 3 names them.",
         },
         {
           label: "The eight seats",
@@ -700,14 +729,14 @@ function frontMatter(): Card[] {
       lede: "Capital is the family, small the direction it faces.",
       chips: [],
       // Each row keys itself: the element's own mark on the left, then the
-      // full name, what it does, and what it claims authority over. "Wants"
-      // lives on the element's own suit card — a key row holds two lines
-      // beside its disc, and the full name earns its place by spelling out
-      // what the capital and small letters mean, row by row.
+      // full name as the label — the disc already prints the two letters, so
+      // repeating the code in text would say "Ne" twice side by side. The
+      // full name spells out what the capital and small letters mean, row
+      // by row.
       blocks: FN_ORDER.map((fn) => ({
-        label: fn,
+        label: FN_FULL[fn],
         fn,
-        text: `${FN_FULL[fn]} — ${FN_ROLE[fn].toLowerCase()}, claims ${FN_KEYWORD[fn].toLowerCase()}.`,
+        text: `${FN_ROLE[fn].toLowerCase()}, claims ${FN_KEYWORD[fn].toLowerCase()}; wants ${FN_WANTS[fn].toLowerCase()}.`,
       })),
       footer: "Hues: violet N, amber S, teal T, rose F · filled conscious, hollow shadow · ripple e out, i in",
       art: { kind: "mark", fns: FN_ORDER },
@@ -722,7 +751,7 @@ function frontMatter(): Card[] {
       chips: [],
       blocks: [
         { label: "I or E", text: `which way the strongest tool faces. ${ex} starts with I: inward.` },
-        { label: "J or P", text: "the tool shown to the world — deciding for J, perceiving for P. Extraverts show their strongest; introverts their second." },
+        { label: "J or P", text: "the tool shown to the world — deciding for J, perceiving for P. Extraverts show their strongest; intraverts their second." },
         { label: "The middle two", text: `the two tools in play. ${ex} shows its decider, so the perceiver leads: ${ext[0]} first, ${ext[1]} second, facing out.` },
         { label: "The mirror", text: `the next two seats oppose the first two — ${ext[2]} against ${ext[1]}, ${ext[3]} against ${ext[0]}. Seats 5–8 are these four, turned.` },
       ],

@@ -91,7 +91,7 @@ describe("TypeMolecule", () => {
 });
 
 describe("SelfTribeCone", () => {
-  it("draws a crowd for extraverted functions and a single point for introverted", () => {
+  it("draws a crowd for extraverted functions and a single point for intraverted", () => {
     for (const fn of FNS) {
       const html = draw(<SelfTribeCone fn={fn} />);
       expectAccessible(html);

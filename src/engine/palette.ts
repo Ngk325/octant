@@ -11,7 +11,7 @@ export type Theme = "light" | "dark";
  * decorative-but-illegible range the first build shipped with.
  *
  * Hue families: N = violet, S = amber/brown, T = teal, F = rose.
- * Extraverted reads lighter; introverted reads deeper.
+ * Extraverted reads lighter; intraverted reads deeper.
  * ------------------------------------------------------------------ */
 
 export const CANVAS: Record<Theme, string> = {

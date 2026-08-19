@@ -224,7 +224,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   ),
 
   /* Initiating/Responding are the switch language's name for extraversion
-     and introversion themselves ("Maps to extraversion" / "...introversion"
+     and intraversion themselves ("Maps to extraversion" / "...intraversion"
      in the entries' own text) — exactly what AttitudeMark already draws
      bare, with no function attached. It was built and shipped elsewhere
      (Guide, Learn, Home, Welcome) but never wired into the lexicon that

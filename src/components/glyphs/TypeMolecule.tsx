@@ -58,13 +58,13 @@ export default function TypeMolecule({ type, size = 64, labels }: {
         return (
           <g key={fn}>
             <circle cx={x} cy={y} r={r} fill={p.fn(fn)} />
-            {/* extraverted beads glow outward; introverted carry a core */}
+            {/* extraverted beads glow outward; intraverted carry a core */}
             {fn[1] === "e"
               ? <circle cx={x} cy={y} r={r + 3} fill="none" stroke={p.fn(fn)} strokeOpacity=".35" strokeWidth="2" />
               : <circle cx={x} cy={y} r={r * 0.35} fill="var(--canvas)" opacity=".55" />}
             {showLabels && i < 2 && (
               /* Fixed inks, not vars: extraverted beads are the LIGHT palette
-                 variant in both themes (dark text holds), introverted the deep
+                 variant in both themes (dark text holds), intraverted the deep
                  one (light text holds). A var would flip with the theme while
                  the bead colour does not. */
               <text

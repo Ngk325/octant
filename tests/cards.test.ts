@@ -33,14 +33,14 @@ const EXPECTED: Record<Suit, number> = {
   quadra: 4,    // four value camps
   side: 4,      // four sides of one mind
   bond: 8,      // four axis pairings (omega's four orbits) + four crosswise meshes (one per camp)
-  relation: 16, // sixteen intertype codes
+  relation: 17, // the 256-cell grid that indexes the suit, then sixteen intertype codes
   wheel: 8,     // eight Octagram wheels
 };
 
 describe("deck shape", () => {
-  it("is seventy-two cards in eight suits, plus five of front matter", () => {
-    expect(CARDS).toHaveLength(77);
-    expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(72);
+  it("is seventy-three cards in eight suits, plus five of front matter", () => {
+    expect(CARDS).toHaveLength(78);
+    expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(73);
   });
 
   it("opens with the five teaching cards, in teaching order", () => {
@@ -73,7 +73,7 @@ describe("deck shape", () => {
 
   it("agrees with deckSuits(), which the key card prints", () => {
     const total = deckSuits().reduce((n, s) => n + s.count, 0);
-    expect(total).toBe(72);
+    expect(total).toBe(73);
     for (const s of deckSuits()) expect(s.count, s.label).toBe(EXPECTED[s.suit]);
   });
 });
@@ -85,7 +85,8 @@ describe("card copy", () => {
         expect(value, `${c.id}.${field}`).toBeTruthy();
         expect(value, `${c.id}.${field}`).not.toMatch(/undefined|NaN|\[object|\$\{/);
       }
-      expect(c.blocks.length, c.id).toBeGreaterThanOrEqual(2);
+      // The grid card carries the 256-cell table where blocks would sit.
+      expect(c.blocks.length, c.id).toBeGreaterThanOrEqual(c.matrix ? 0 : 2);
       // Three blocks on a playing card — four on a Wiring, whose fourth is the
       // four-sides pull line. The front-matter list cards run their eight items
       // as a dense list instead, which is why they declare `dense`.
@@ -199,11 +200,33 @@ describe("what the cards claim is what the engine says", () => {
     for (const a of TYPES) for (const b of TYPES) expect(REL[b][a]).toBe(RECIPROCAL[REL[a][b]]);
   });
 
-  it("orders the channel suit by ease, richest first", () => {
-    const scores = CARDS.filter((c) => c.suit === "relation").map((c) => Number(c.subtitle.match(/ease (\d+)/)![1]));
+  it("orders the channel suit by ease, richest first, behind its grid index", () => {
+    const suit = CARDS.filter((c) => c.suit === "relation");
+    expect(suit[0].id).toBe("relation-grid");
+    const scores = suit.slice(1).map((c) => Number(c.subtitle.match(/ease (\d+)/)![1]));
     expect(scores).toEqual([...scores].sort((a, b) => b - a));
     expect(scores[0]).toBe(100);
     expect(scores[15]).toBe(10);
+  });
+
+  /**
+   * The grid card is the print twin of /matrix: 256 cells, ease for the row
+   * type, deliberately not a mirror. Every cell and both numbers in the
+   * worked asymmetry are read off the engine here, cell by cell.
+   */
+  it("prints the engine's own 256 cells on the grid card", () => {
+    const card = byId("relation-grid");
+    expect(card.matrix!.types).toEqual(TYPES);
+    TYPES.forEach((a, i) => {
+      TYPES.forEach((b, j) => {
+        expect(card.matrix!.ease[i][j], `${a}→${b}`).toBe(ease(a, b));
+      });
+    });
+    expect(card.footer).toContain(String(ease("ENTP", "ISTP")));
+    expect(card.footer).toContain(String(ease("ISTP", "ENTP")));
+    expect(ease("ENTP", "ISTP")).not.toBe(ease("ISTP", "ENTP"));
+    // And the rendered card really carries all 256 cells.
+    expect(cardHtml(card).match(/<td /g)).toHaveLength(256);
   });
 
   /**
@@ -531,7 +554,7 @@ describe("print geometry", () => {
   it("sets the single-card page to the bleed size, one card per page", () => {
     const doc = cardsDocument(CARDS);
     expect(doc).toContain(`@page{size:${CARD_PAGE.w}mm ${CARD_PAGE.h}mm;margin:0;}`);
-    expect(doc.match(/<article class="card/g)).toHaveLength(77);
+    expect(doc.match(/<article class="card/g)).toHaveLength(78);
   });
 
   it("lays the proof sheets out nine to an A4 page, with crop marks", () => {
@@ -554,11 +577,13 @@ describe("print geometry", () => {
     expect(markFor("Ni")).toContain('class="rip i"');
   });
 
-  /* dt uppercases its label as chrome, which set "Ne" as "NE" on the very
-     card that teaches the alphabet. Codes now ride in a span that opts out. */
+  /* dt uppercases its label as chrome, which set "Ne" as "NE" wherever a
+     code sat in a label. Codes now ride in a span that opts out. (The
+     alphabet card no longer carries code labels at all — its discs are the
+     codes — so the Bond suit's "Ne brings" is the reference case.) */
   it("keeps element codes in their own case inside uppercased block labels", () => {
-    const html = cardHtml(byId("front-elements"));
-    expect(html).toContain('<dt><span class="code">Ne</span></dt>');
+    const html = cardHtml(byId("bond-Ne-Si"));
+    expect(html).toContain('<dt><span class="code">Ne</span> brings</dt>');
     expect(cardsDocument(CARDS)).toContain("dt .code{text-transform:none;}");
   });
 

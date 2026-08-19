@@ -64,7 +64,7 @@ export const STAGES: Stage[] = [
         <Explain big plain={CONCEPT_PLAIN.function}>
           <p>
             Eight cognitive functions: four perceiving (Ne, Ni, Se, Si) and four judging
-            (Te, Ti, Fe, Fi), each in an extraverted or introverted attitude. This app treats them
+            (Te, Ti, Fe, Fi), each in an extraverted or intraverted attitude. This app treats them
             as the eight information elements, and the whole model is three moves over them.
           </p>
         </Explain>

@@ -19,7 +19,7 @@ export default function LettersToStack({ type }: { type: MbtiType }) {
   const st = stack(type);
   const [hero, parent, child, inferior] = st;
 
-  const attitude = type[0] === "I" ? "introverted" : "extraverted";
+  const attitude = type[0] === "I" ? "intraverted" : "extraverted";
   const lastLetter = type[3] === "J" ? "Judger" : "Perceiver";
   const heroKind = isObserver(hero) ? "perceiving" : "judging";
 
@@ -27,7 +27,7 @@ export default function LettersToStack({ type }: { type: MbtiType }) {
     {
       letter: type[0],
       title: `${type[0]} — which way the strongest function faces`,
-      body: `You are ${attitude === "introverted" ? "an Introvert" : "an Extravert"}, so your strongest function is ${attitude}.`,
+      body: `You are ${attitude === "intraverted" ? "an Intravert" : "an Extravert"}, so your strongest function is ${attitude}.`,
     },
     {
       letter: type[3],
@@ -35,7 +35,7 @@ export default function LettersToStack({ type }: { type: MbtiType }) {
       /* The two cases are genuinely different, and collapsing them makes the
          extravert version circular. The last letter always describes the
          function you turn OUTWARD. For an Extravert that is the strongest
-         function itself, so the letter names it directly. For an Introvert the
+         function itself, so the letter names it directly. For an Intravert the
          outward function is only the second, so the letter names the second and
          the strongest is the other kind. */
       body: attitude === "extraverted"

@@ -274,7 +274,7 @@ describe("no derived mapping was smuggled in", () => {
  *     (A is Benefactor to B), which is the reciprocal of REL's indexing.
  * ------------------------------------------------------------------ */
 describe("Socionics intertype chart (external validation of all 256 relations)", () => {
-  // Socionics notation -> MBTI. Extraverts unchanged; introverts swap the last letter.
+  // Socionics notation -> MBTI. Extraverts unchanged; intraverts swap the last letter.
   const SOC: Record<string, MbtiType> = {
     ENTp: "ENTP", ISFp: "ISFJ", ESFj: "ESFJ", INTj: "INTP", ENFj: "ENFJ", ISTj: "ISTP",
     ESTp: "ESTP", INFp: "INFJ", ESFp: "ESFP", INTp: "INTJ", ENTj: "ENTJ", ISFj: "ISFP",

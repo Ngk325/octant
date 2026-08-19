@@ -1,6 +1,6 @@
 # The deck
 
-Seventy-seven printed cards — seventy-two in eight suits, plus five that teach the
+Seventy-eight printed cards — seventy-three in eight suits, plus five that teach the
 deck its own vocabulary — generated from the same engine that renders `/type`,
 `/pair` and `/matrix`, with a matching card back. A card cannot disagree with the
 app, because no card carries a fact of its own: the stacks, the relation codes, the
@@ -26,11 +26,13 @@ runs, and only then the group and pair suits.
 | **Sides** | 4 | One of the four sides of the mind: its gateway, what blocks it, what opens it, what it produces. |
 | **Camps** | 4 | One quadra: its four shared elements, its members, what it values and what it does not. |
 | **Bonds** | 8 | One high-compatibility pairing, stated by element rather than by type — four axis bonds and four crosswise meshes. |
-| **Channels** | 16 | One intertype relation: its ease score, a worked example in both directions, and where it sits on the ramp. |
+| **Channels** | 17 | The suit's index — all 256 readings as a colour-scaled grid, the print twin of `/matrix` — then one card per intertype relation: its ease score, a worked example in both directions, and where it sits on the ramp. |
 | **Wheels** | 8 | One Octagram wheel: its dyad, its origin, its living virtue, its deadly sin and its two poles. |
 
-Seventy-two is not a target that was worked back from — it is what the model has.
-`tests/cards.test.ts` asserts each suit's size against the structure that produces it.
+Seventy-three is not a target that was worked back from — it is what the model
+has (seventy-two structural cards, plus the Channel suit's own 256-cell index).
+`tests/cards.test.ts` asserts each suit's size against the structure that produces
+it, and re-derives every one of the grid's cells against `ease()`.
 
 The Seat suit and the Wiring suit index each other on purpose: a Seat card is
 titled by the same name the Wiring strip prints under each element, the Lead card
@@ -98,6 +100,15 @@ doors open onto. The mapping is derived from the same involutions as the
 relation table and asserted per type in `tests/cards.test.ts`, including that
 each side's own stack opens with the named type's (lead, support) pair.
 
+## Spelled: Intraverted
+
+The whole app and deck spell the inward attitude **Intraverted** (and
+**Intravert**), by the owner's convention. The one module exempt is
+`src/engine/translation.ts`, which exists to quote *other* systems'
+vocabulary verbatim — socionics' "Logical Intuitive Introvert" stays as
+socionics wrote it — and the source transcriptions under `docs/transcripts/`,
+which are records, not voice.
+
 ## Renamed: Loose fit
 
 The MG relation (socionics' Mirage) printed as **False fit**, which reads as a
@@ -157,7 +168,7 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
 4. **Directed.** Attitude reads as direction, not just as a small letter: every
    disc carries four ripples on its diagonals, arcs with a pointed crest that
    breaks *outward* on an extraverted element and back *into* the disc on an
-   introverted one. The diagonals are deliberate — rows, captions, dividers and
+   intraverted one. The diagonals are deliberate — rows, captions, dividers and
    connecting lines all run horizontal or vertical, so the ripples never sit on
    one. The alphabet card's footer states the convention; a test asserts the
    eight-element card carries four of each.
@@ -218,7 +229,7 @@ the build downloads none.
 
 Three files come out of `dist-cards/`:
 
-- **`octant-cards.pdf`** — one card per page at the bleed size, 77 pages. This is
+- **`octant-cards.pdf`** — one card per page at the bleed size, 78 pages. This is
   the file a print-on-demand house wants (MakePlayingCards, Printer Studio and
   similar all take 2.72 × 3.71in with bleed).
 - **`octant-sheets.pdf`** — 9 A4 pages, nine cards to a page at trim size with

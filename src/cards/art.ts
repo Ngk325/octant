@@ -1,6 +1,6 @@
 import { alpha as alphaOp, beta as betaOp, omega, type MbtiType } from "../engine/core";
 import type { Fn } from "../engine/data";
-import { CANVAS, FN_COLOR, easeColor } from "../engine/palette";
+import { CANVAS, FN_COLOR, easeColor, easeFill } from "../engine/palette";
 import type { ArtSpec } from "./deck";
 
 /* ------------------------------------------------------------------ *
@@ -134,7 +134,7 @@ const label = (
 /**
  * The attitude, as direction: four ripples on the disc's diagonals, each an
  * arc with a pointed crest. On an extraverted element the crests break
- * outward — the tool spends itself on the world; on an introverted one they
+ * outward — the tool spends itself on the world; on an intraverted one they
  * break back into the disc. A second channel besides the small letter, so the
  * e/i convention survives at a size where a lowercase letter asks for a
  * squint. The diagonals are deliberate: rows, captions, dividers and
@@ -619,7 +619,12 @@ function seat(depth: number, r: R): string {
   out.push(label(26 + gapW * 6, floor + 14, "SHADOW", 7, INK, { weight: 700, o: depth < 4 ? 0.32 : 0.62, spread: 0.12 }));
   const [ax, bx] = [xAt(depth), xAt(twin)];
   out.push(line(`M${pt(ax, floor - hAt(depth) - 2)}Q${pt((ax + bx) / 2, SAFE_TOP + 8)} ${pt(bx, floor - hAt(twin) - 2)}`, INK, 0.55, 0.5));
-  out.push(label((ax + bx) / 2, SAFE_TOP + 4, "SAME TOOL, TURNED", 7, INK, { weight: 600, o: 0.55, spread: 0.08 }));
+  // "Turned" alone read as a riddle; say the fact in full — over a paper
+  // halo, because on the Lead and Support cards the tallest bars reach the
+  // caption line and were striking through its first word.
+  const mid = (ax + bx) / 2;
+  out.push(`<rect x="${n(mid - 71)}" y="${n(SAFE_TOP - 0.5)}" width="142" height="9" fill="${PAPER}" fill-opacity="0.88"/>`);
+  out.push(label(mid, SAFE_TOP + 4, "SAME TOOL, FACING THE OTHER WAY", 7, INK, { weight: 600, o: 0.55, spread: 0.06 }));
   return out.join("");
 }
 
@@ -830,6 +835,34 @@ function decode(letters: string, fns: Fn[], seats: string[], r: R): string {
 }
 
 /**
+ * The grid card's band: the ease ramp itself, as the legend for the 256
+ * colour-scaled cells below. A tick under the ramp for each of the sixteen
+ * relation scores — the ramp is continuous but the model only ever lands on
+ * those sixteen values.
+ */
+function gridKey(scores: number[], r: R): string {
+  const out: string[] = [ground(INK, r)];
+  const x0 = 46, x1 = ART_W - 46, y = 46, h = 15;
+  const at = (v: number) => x0 + ((x1 - x0) * v) / 100;
+  const steps = 64;
+  for (let i = 0; i < steps; i++) {
+    const v = (i / (steps - 1)) * 100;
+    // easeFill, not easeColor: the ramp is the legend for the table's cell
+    // backgrounds, so it must be drawn in the same ink they are.
+    out.push(
+      `<rect x="${n(at(0) + ((x1 - x0) * i) / steps)}" y="${n(y - h / 2)}" width="${n((x1 - x0) / steps + 0.4)}" height="${h}" fill="${easeFill(v, "light")}"/>`,
+    );
+  }
+  out.push(`<rect x="${n(x0)}" y="${n(y - h / 2)}" width="${n(x1 - x0)}" height="${h}" fill="none" stroke="${INK}" stroke-width="0.6" stroke-opacity="0.5"/>`);
+  for (const s of scores) out.push(line(`M${pt(at(s), y + h / 2)}L${pt(at(s), y + h / 2 + 4)}`, INK, 0.7, 0.6));
+  out.push(label(x0 - 12, y, "0", 8, INK, { weight: 700, o: 0.7 }));
+  out.push(label(x1 + 16, y, "100", 8, INK, { weight: 700, o: 0.7 }));
+  out.push(label(ART_W / 2, SAFE_TOP + 4, "EASE, 0 TO 100 — TICKS ARE THE SIXTEEN CHANNELS", 7, INK, { weight: 700, o: 0.55, spread: 0.06 }));
+  out.push(label(ART_W / 2, y + h / 2 + 10, "HARDER ← → EASIER", 7, INK, { weight: 600, o: 0.5, spread: 0.1 }));
+  return out.join("");
+}
+
+/**
  * Bonds: two elements that answer each other, and the traffic between them.
  * Type-agnostic by construction — nobody's four letters appear, because the
  * pairing holds wherever these two elements sit.
@@ -937,6 +970,7 @@ export function artFor(id: string, spec: ArtSpec): string {
     case "mark": body = mark(spec.fns, r); break;
     case "bond": body = bond(spec.fns, r); break;
     case "mesh": body = mesh(spec.fns, r); break;
+    case "grid": body = gridKey(spec.scores, r); break;
   }
   return `<svg class="art" viewBox="0 0 ${ART_W} ${ART_H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${body}</svg>`;
 }

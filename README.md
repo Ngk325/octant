@@ -83,7 +83,7 @@ Two derived fields that the original workbook conflated into one:
   consciously reaching for and reflexively arguing with. Stimulating, slightly abrasive.
   Structurally this always resolves to your Damper and Loose-fit partners.
 
-An ENTP wants convergence, but convergence is introverted intuition, and that is the Doubt —
+An ENTP wants convergence, but convergence is intraverted intuition, and that is the Doubt —
 which is why INTJ and INFJ feel compelling rather than comfortable, and why the old
 "Sidekicks" column kept reaching for them.
 
@@ -239,10 +239,11 @@ page, not a blank document (`ErrorBoundary`, tested in jsdom).
 
 ## The deck
 
-Seventy-seven printed cards plus a matching back, generated from the engine rather
+Seventy-eight printed cards plus a matching back, generated from the engine rather
 than written for it: eight Elements, eight Seats, sixteen Wirings, four Sides,
-four Camps, eight Bonds, sixteen Channels and eight Wheels, with five cards that
-teach the deck its own vocabulary before the suits start — a frame card that
+four Camps, eight Bonds, seventeen Channels (the 256-cell compatibility grid that
+indexes the suit, then the sixteen relations) and eight Wheels, with five cards
+that teach the deck its own vocabulary before the suits start — a frame card that
 says what each suit is for, and a decoder that walks four letters to a stack.
 Each card carries a generative composition seeded by its own id and coloured
 from the app's function palette — a Channel's bundle crosses or runs parallel

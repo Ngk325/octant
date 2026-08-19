@@ -1,6 +1,6 @@
 import { artFor, backArt, markFor, sealFor } from "./art";
 import type { Card, Chip } from "./deck";
-import { FN_COLOR } from "../engine/palette";
+import { FN_COLOR, easeFill, onEaseFill } from "../engine/palette";
 
 /* ------------------------------------------------------------------ *
  * PRINT RENDERING
@@ -126,6 +126,19 @@ svg.seal{flex:none;width:9mm;height:9mm;margin-top:.2mm;}
 .card.front.dense .b.key dt,.card.front.dense .b.key dd{line-height:inherit;}
 .b.key svg.keymark{flex:none;width:4.7mm;height:4.7mm;}
 .b.key .kt{min-width:0;}
+/* The 256-cell grid, print twin of /matrix. Column heads run vertical —
+   sixteen four-letter codes cannot sit upright in 2.8mm columns. Cell type
+   is the one deliberate step below the chrome floor's usual duty: each
+   number is a two-digit lookup value beside a colour that says the same
+   thing, not prose. */
+table.gridm{border-collapse:collapse;table-layout:fixed;width:100%;margin-top:1.2mm;}
+.gridm th{font-family:${SANS};font-weight:600;color:var(--muted);padding:0;}
+.gridm thead th{font-size:4.2pt;writing-mode:vertical-rl;transform:rotate(180deg);
+  height:4.6mm;vertical-align:bottom;text-align:left;}
+.gridm tbody th{font-size:4.2pt;text-align:right;padding-right:.4mm;}
+.gridm col.lbl{width:4.4mm;}
+.gridm td{font-family:${SANS};font-size:4pt;text-align:center;height:2.35mm;
+  line-height:1;padding:0;}
 .card.front h1{font-size:18pt;}
 .card.front .lede{font-size:7pt;}
 .card.front dd{font-size:5.7pt;line-height:1.22;}
@@ -166,6 +179,20 @@ function stripHtml(chips: Chip[]): string {
   return `<ul class="strip">${cells}</ul>`;
 }
 
+/** The 256-cell ease grid, coloured with the same ramp the app's /matrix uses. */
+function matrixHtml(m: NonNullable<Card["matrix"]>): string {
+  const ink = onEaseFill("light");
+  const cols = `<colgroup><col class="lbl"/>${m.types.map(() => "<col/>").join("")}</colgroup>`;
+  const head = `<thead><tr><th></th>${m.types.map((t) => `<th scope="col">${esc(t)}</th>`).join("")}</tr></thead>`;
+  const rows = m.ease
+    .map((row, i) =>
+      `<tr><th scope="row">${esc(m.types[i])}</th>` +
+      row.map((v) => `<td style="background:${easeFill(v, "light")};color:${ink}">${v}</td>`).join("") +
+      `</tr>`)
+    .join("");
+  return `<table class="gridm">${cols}${head}<tbody>${rows}</tbody></table>`;
+}
+
 /** One card, as an absolutely-positioned block. Sizing is the caller's job. */
 export function cardHtml(card: Card): string {
   const isStrip = card.chips.some((c) => c.note);
@@ -183,14 +210,17 @@ export function cardHtml(card: Card): string {
     titleBlock +
     `<p class="lede">${esc(card.lede)}</p>` +
     (card.chips.length ? (isStrip ? stripHtml(card.chips) : `<ul class="chips">${card.chips.map(chipHtml).join("")}</ul>`) : "") +
-    `<dl class="blocks">` +
-    card.blocks.map((b) => {
-      const inner = `<dt>${dtHtml(b.label)}</dt><dd>${esc(b.text)}</dd>`;
-      return b.fn
-        ? `<div class="b key">${markFor(b.fn)}<div class="kt">${inner}</div></div>`
-        : `<div class="b">${inner}</div>`;
-    }).join("") +
-    `</dl>` +
+    (card.matrix ? matrixHtml(card.matrix) : "") +
+    (card.blocks.length
+      ? `<dl class="blocks">` +
+        card.blocks.map((b) => {
+          const inner = `<dt>${dtHtml(b.label)}</dt><dd>${esc(b.text)}</dd>`;
+          return b.fn
+            ? `<div class="b key">${markFor(b.fn)}<div class="kt">${inner}</div></div>`
+            : `<div class="b">${inner}</div>`;
+        }).join("") +
+        `</dl>`
+      : "") +
     `<p class="foot">${esc(card.footer)}</p>` +
     `</div></article>`
   );

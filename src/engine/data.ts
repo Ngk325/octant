@@ -666,13 +666,13 @@ export const CONFIRMING = [
 
 export const FN_FULL: Record<Fn, string> = {
   "Ne": "Extraverted Intuition",
-  "Ni": "Introverted Intuition",
+  "Ni": "Intraverted Intuition",
   "Se": "Extraverted Sensing",
-  "Si": "Introverted Sensing",
+  "Si": "Intraverted Sensing",
   "Te": "Extraverted Thinking",
-  "Ti": "Introverted Thinking",
+  "Ti": "Intraverted Thinking",
   "Fe": "Extraverted Feeling",
-  "Fi": "Introverted Feeling"
+  "Fi": "Intraverted Feeling"
 };
 export const SLOT_NAMES = ["Lead","Support","Delight","Cave","Doubt","Scold","Blind spot","Dread"] as const;
 export const SLOT_TAGS  = ["Power","Responsibility","Innocence","Fear","Worry","Cynicism","Blindspot","Hate"] as const;

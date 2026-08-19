@@ -13,7 +13,7 @@
  *      asserted. Semantic colour via usePalette() hex; chrome via CSS
  *      custom properties.
  *   3. Attitude is motion. Extraverted = outward (rays, fans, arrows
- *      out); introverted = inward (cores, beams, arrows in).
+ *      out); intraverted = inward (cores, beams, arrows in).
  *   4. Rank is size. Lead > Support > Delight > Cave at one fixed
  *      ratio, everywhere a stack is drawn small.
  *   5. People are geometry. A person is a circle head over a shoulder

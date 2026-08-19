@@ -64,7 +64,7 @@ describe("Guide — static render", () => {
       expect(html, FN_EMOJI[fn]).toContain(FN_EMOJI[fn]);
     }
     expect(html).toContain("Extraverted — facing out");
-    expect(html).toContain("Introverted — facing in");
+    expect(html).toContain("Intraverted — facing in");
   });
 
   it("/guide's matrix has one column per slot plus the type column, one row per type", () => {
@@ -140,7 +140,7 @@ describe("Guide — interactive", () => {
       setValue.call(input, "Fi");
       input.dispatchEvent(new Event("input", { bubbles: true }));
     });
-    expect(el.textContent).toContain("Introverted Feeling");
+    expect(el.textContent).toContain("Intraverted Feeling");
     expect(el.textContent).not.toContain("Extraverted Intuition");
   });
 
