@@ -94,6 +94,9 @@ h1{font-size:14pt;line-height:1.02;font-weight:600;letter-spacing:-.01em;}
 .blocks .b:first-child{margin-top:0;}
 dt{font-family:${SANS};font-size:4.7pt;letter-spacing:.13em;text-transform:uppercase;
   color:var(--muted);margin-bottom:.35mm;}
+/* An element code is a proper name: "Ne", never "NE". Labels are uppercased
+   as chrome, so any code inside one rides in a span that opts back out. */
+dt .code{text-transform:none;}
 dd{font-size:6.5pt;line-height:1.22;color:var(--ink2);}
 .foot{font-family:${SANS};font-size:4.5pt;line-height:1.25;color:var(--muted);
   border-top:.24mm solid var(--rule);padding-top:.9mm;margin-top:auto;}
@@ -127,6 +130,15 @@ function chipHtml(c: Chip): string {
   return `<li class="chip${c.dim ? " dim" : ""}"${style}>${esc(c.text)}</li>`;
 }
 
+/**
+ * A block label, with any element code exempted from the dt uppercase. The
+ * first printing set "Ne" in a label as "NE" — a different string from the
+ * one every mark, chip and body line prints, on the very card that teaches
+ * the alphabet.
+ */
+const dtHtml = (label: string) =>
+  esc(label).replace(/\b(N[ei]|S[ei]|T[ei]|F[ei])\b/g, '<span class="code">$1</span>');
+
 function stripHtml(chips: Chip[]): string {
   const cells = chips
     .map((c) => {
@@ -151,7 +163,7 @@ export function cardHtml(card: Card): string {
     `<p class="lede">${esc(card.lede)}</p>` +
     (card.chips.length ? (isStrip ? stripHtml(card.chips) : `<ul class="chips">${card.chips.map(chipHtml).join("")}</ul>`) : "") +
     `<dl class="blocks">` +
-    card.blocks.map((b) => `<div class="b"><dt>${esc(b.label)}</dt><dd>${esc(b.text)}</dd></div>`).join("") +
+    card.blocks.map((b) => `<div class="b"><dt>${dtHtml(b.label)}</dt><dd>${esc(b.text)}</dd></div>`).join("") +
     `</dl>` +
     `<p class="foot">${esc(card.footer)}</p>` +
     `</div></article>`

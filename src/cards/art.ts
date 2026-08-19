@@ -1,4 +1,4 @@
-import { alpha as alphaOp, beta as betaOp, omega } from "../engine/core";
+import { alpha as alphaOp, beta as betaOp, omega, type MbtiType } from "../engine/core";
 import type { Fn } from "../engine/data";
 import { CANVAS, FN_COLOR, easeColor } from "../engine/palette";
 import type { ArtSpec } from "./deck";
@@ -132,20 +132,57 @@ const label = (
   `letter-spacing="${n(size * spread)}" font-family="Inter, DejaVu Sans, Liberation Sans, sans-serif">${text}</text>`;
 
 /**
+ * The attitude, as direction: four ripples on the disc's diagonals, each an
+ * arc with a pointed crest. On an extraverted element the crests break
+ * outward — the tool spends itself on the world; on an introverted one they
+ * break back into the disc. A second channel besides the small letter, so the
+ * e/i convention survives at a size where a lowercase letter asks for a
+ * squint. The diagonals are deliberate: rows, captions, dividers and
+ * connecting lines all run horizontal or vertical, so the ripples never sit
+ * on top of one.
+ */
+function ripple(fn: Fn, x: number, y: number, r: number): string {
+  const c = hue(fn);
+  const outward = fn[1] === "e";
+  const w = Math.max(r * 0.08, 0.75);
+  // Inward ripples start a shade further out — their crest travels toward the
+  // rim, and the whole figure must still clear a neighbouring mark's ripples.
+  const arcR = outward ? r * 1.22 : r * 1.3;
+  const span = outward ? 0.42 : 0.4;
+  const tipR = outward ? r * 1.5 : r * 1.04;
+  const parts: string[] = [];
+  for (let k = 0; k < 4; k++) {
+    const a = Math.PI / 4 + (k * Math.PI) / 2;
+    const [sx, sy] = polar(x, y, arcR, a - span);
+    const [ex, ey] = polar(x, y, arcR, a + span);
+    parts.push(
+      `<path d="M${pt(sx, sy)}A${n(arcR)} ${n(arcR)} 0 0 1 ${pt(ex, ey)}" fill="none" stroke="${c}" stroke-width="${n(w)}" stroke-opacity="0.45" stroke-linecap="round"/>`,
+    );
+    const [b1x, b1y] = polar(x, y, arcR, a - 0.13);
+    const [b2x, b2y] = polar(x, y, arcR, a + 0.13);
+    const [tx, ty] = polar(x, y, tipR, a);
+    parts.push(`<path d="M${pt(b1x, b1y)}L${pt(tx, ty)}L${pt(b2x, b2y)}Z" fill="${c}" fill-opacity="0.55"/>`);
+  }
+  return `<g class="rip ${outward ? "e" : "i"}">${parts.join("")}</g>`;
+}
+
+/**
  * THE ONE MARK THIS DECK IS BUILT ON: an element, named.
  *
  * Colour alone cannot say which element a circle is — four hue families over
  * eight elements means every hue appears twice, and a reader opening the box
  * has been given no key yet. So every function mark in every generator prints
  * its two letters. Filled means the element is conscious here, hollow means it
- * runs in shadow; the letters are legible either way.
+ * runs in shadow; the letters are legible either way. Around the rim, the
+ * ripples say which way it faces — outward for e, inward for i — so attitude
+ * reads as direction, not just as a small letter.
  */
 function fnMark(
   fn: Fn, x: number, y: number, r: number,
   { solid = true, caption, captionSize = 8 }: { solid?: boolean; caption?: string; captionSize?: number } = {},
 ): string {
   const c = hue(fn);
-  const out = [dot(x, y, r, PAPER, 1)];
+  const out = [ripple(fn, x, y, r), dot(x, y, r, PAPER, 1)];
   if (solid) {
     out.push(dot(x, y, r, c, 1));
     out.push(label(x, y, fn, r * 1.02, PAPER));
@@ -296,6 +333,125 @@ function gesture(fn: Fn, cx: number, cy: number, scale: number, r: R, weight = 1
   return out.join("");
 }
 
+/* ---------------------------- the emblems ---------------------------- */
+
+/**
+ * One emblem per Wiring — a sigil for the card's own ARCHETYPE names, drawn
+ * from this system and no other: the Prospector's seams fanning from one
+ * strike, the Watchman's tower on the horizon, the Keeper's key. All sixteen
+ * are original figures keyed to the archetype table in engine/data.ts, drawn
+ * in ink with one accent in the Lead's hue, and fully deterministic — no
+ * randomness, so the same Wiring stamps the same seal forever.
+ *
+ * It renders as a watermark behind the stack row rather than as a crisp badge
+ * beside it: the row is the card's fact and nothing may compete with it, but
+ * a crest under the fact gives each of the sixteen a face of its own.
+ */
+function emblem(t: MbtiType, cx: number, cy: number, s: number, o: number, c: string): string {
+  const X = (px: number) => cx + px * s;
+  const Y = (py: number) => cy + py * s;
+  const w = s * 0.07;
+  const M = (px: number, py: number) => `M${pt(X(px), Y(py))}`;
+  const L = (px: number, py: number) => `L${pt(X(px), Y(py))}`;
+  const Q = (qx: number, qy: number, px: number, py: number) => `Q${pt(X(qx), Y(qy))} ${pt(X(px), Y(py))}`;
+  const st = (d: string, k = 1, ww = 1) =>
+    `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${n(w * ww)}" stroke-opacity="${n(0.34 * o * k)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const hu = (d: string, k = 1) =>
+    `<path d="${d}" fill="none" stroke="${c}" stroke-width="${n(w)}" stroke-opacity="${n(0.5 * o * k)}" stroke-linecap="round"/>`;
+  const hueFill = (d: string, k = 1) => `<path d="${d}" fill="${c}" fill-opacity="${n(0.4 * o * k)}"/>`;
+  const hueDot = (px: number, py: number, pr: number) => dot(X(px), Y(py), pr * s, c, 0.45 * o);
+  const inkDot = (px: number, py: number, pr: number) => dot(X(px), Y(py), pr * s, INK, 0.4 * o);
+  const inkRing = (px: number, py: number, pr: number, ww = 1) => ring(X(px), Y(py), pr * s, INK, w * ww, 0.34 * o);
+  const dia = (px: number, py: number, d: number) => hueFill(M(px, py - d) + L(px + d, py) + L(px, py + d) + L(px - d, py) + "Z");
+  const p: string[] = [];
+
+  switch (t) {
+    case "ENTP": // Prospector — seams fanning open from one strike
+      p.push(st(M(0, 0.8) + L(-0.75, -0.5)), st(M(0, 0.8) + L(-0.15, -0.85)), st(M(0, 0.8) + L(0.6, -0.65)));
+      p.push(hueDot(0, 0.8, 0.08), dia(-0.75, -0.5, 0.11), dia(-0.15, -0.85, 0.11), dia(0.6, -0.65, 0.11));
+      break;
+    case "INTP": // Cartographer — the compass rose
+      p.push(inkRing(0, 0, 0.85));
+      p.push(st(M(0, -0.8) + L(0.16, -0.16) + L(0.8, 0) + L(0.16, 0.16) + L(0, 0.8) + L(-0.16, 0.16) + L(-0.8, 0) + L(-0.16, -0.16) + "Z"));
+      p.push(hueFill(M(0, -0.8) + L(0.16, -0.16) + L(-0.16, -0.16) + "Z"), inkDot(0, 0, 0.06));
+      break;
+    case "ENTJ": // Closer — the pennant planted on the steps
+      p.push(st(M(-0.85, 0.85) + L(0.85, 0.85)), st(M(-0.45, 0.62) + L(0.45, 0.62)));
+      p.push(st(M(0, 0.62) + L(0, -0.82), 1, 1.2), hueFill(M(0, -0.82) + L(0.68, -0.56) + L(0, -0.3) + "Z"));
+      break;
+    case "INTJ": // Watchman — the tower on the horizon, one star out
+      p.push(st(M(-0.9, 0.72) + L(0.9, 0.72)));
+      p.push(st(M(-0.2, 0.72) + L(-0.12, -0.3) + L(0.12, -0.3) + L(0.2, 0.72)), st(M(-0.18, -0.3) + L(0.18, -0.3)));
+      p.push(hu(M(0, -0.88) + L(0, -0.48)), hu(M(-0.2, -0.68) + L(0.2, -0.68)));
+      break;
+    case "ENFP": // Kindler — a young fire, sparks already leaving
+      p.push(hueFill(M(0, 0.7) + Q(-0.5, 0.25, 0, -0.35) + Q(0.4, 0.2, 0, 0.7) + "Z", 0.8));
+      p.push(st(M(-0.4, 0.78) + L(0.4, 0.78)));
+      p.push(hueDot(-0.38, -0.5, 0.06), hueDot(0.12, -0.75, 0.06), hueDot(0.48, -0.42, 0.06));
+      break;
+    case "INFP": // Poet — one flame, kept in a lamp
+      p.push(st(M(-0.5, 0.25) + Q(0, 0.95, 0.5, 0.25)), st(M(-0.62, 0.25) + L(0.62, 0.25)));
+      p.push(hueFill(M(0, 0.05) + Q(-0.2, -0.2, 0, -0.5) + Q(0.2, -0.2, 0, 0.05) + "Z"));
+      break;
+    case "ENFJ": // Shepherd — the crook, the flock alongside
+      p.push(st(M(-0.3, 0.85) + L(-0.3, -0.4), 1, 1.2));
+      p.push(st(M(-0.3, -0.4) + Q(-0.3, -0.85, 0.05, -0.85) + Q(0.35, -0.85, 0.35, -0.55)));
+      p.push(hueDot(0.35, 0.1, 0.07), hueDot(0.62, 0.4, 0.07), hueDot(0.28, 0.6, 0.07));
+      break;
+    case "INFJ": // Seer — the eye, lit from above
+      p.push(st(M(-0.75, 0.1) + Q(0, -0.45, 0.75, 0.1) + Q(0, 0.65, -0.75, 0.1) + "Z"));
+      p.push(hueDot(0, 0.1, 0.14));
+      p.push(st(M(0, -0.55) + L(0, -0.85)), st(M(-0.4, -0.42) + L(-0.58, -0.66)), st(M(0.4, -0.42) + L(0.58, -0.66)));
+      break;
+    case "ESTP": // Daredevil — the bolt
+      p.push(hueFill(M(0.3, -0.85) + L(-0.35, 0.08) + L(-0.02, 0.08) + L(-0.3, 0.85) + L(0.42, -0.12) + L(0.08, -0.12) + "Z", 0.75));
+      p.push(st(M(0.3, -0.85) + L(-0.35, 0.08) + L(-0.02, 0.08) + L(-0.3, 0.85) + L(0.42, -0.12) + L(0.08, -0.12) + "Z", 0.9));
+      break;
+    case "ISTP": // Marksman — the crosshair
+      p.push(inkRing(0, 0, 0.6));
+      p.push(st(M(0, -0.95) + L(0, -0.42)), st(M(0, 0.42) + L(0, 0.95)), st(M(-0.95, 0) + L(-0.42, 0)), st(M(0.42, 0) + L(0.95, 0)));
+      p.push(hueDot(0, 0, 0.09));
+      break;
+    case "ESTJ": // Foreman — the plumb line off the beam
+      p.push(st(M(-0.55, 0.85) + L(-0.55, -0.62), 1, 1.2), st(M(-0.85, -0.62) + L(0.75, -0.62), 1, 1.2));
+      p.push(st(M(0.35, -0.62) + L(0.35, 0.3), 0.9, 0.8));
+      p.push(hueFill(M(0.25, 0.3) + L(0.45, 0.3) + L(0.35, 0.62) + "Z"));
+      break;
+    case "ISTJ": // Keeper — the key
+      p.push(inkRing(0, -0.5, 0.26), st(M(0, -0.24) + L(0, 0.8), 1, 1.2));
+      p.push(st(M(0, 0.8) + L(0.3, 0.8)), st(M(0, 0.56) + L(0.2, 0.56)));
+      p.push(hueDot(0, -0.5, 0.07));
+      break;
+    case "ESFP": // Showman — the firework
+      for (let k = 0; k < 8; k++) {
+        const a = (k * Math.PI) / 4;
+        const len = k % 2 ? 0.55 : 0.85;
+        const [x1, y1] = [Math.cos(a) * 0.2, Math.sin(a) * 0.2];
+        const [x2, y2] = [Math.cos(a) * len, Math.sin(a) * len];
+        p.push(k % 2 ? st(M(x1, y1) + L(x2, y2)) : hu(M(x1, y1) + L(x2, y2)));
+        if (k % 2 === 0) p.push(hueDot(x2, y2, 0.06));
+      }
+      p.push(hueDot(0, 0, 0.09));
+      break;
+    case "ISFP": // Maker — the leaf
+      p.push(st(M(0, -0.85) + Q(0.62, -0.2, 0, 0.85) + Q(-0.62, -0.2, 0, -0.85) + "Z"));
+      p.push(st(M(0, -0.6) + L(0, 0.6), 0.8));
+      p.push(hu(M(0, -0.1) + L(0.26, -0.3)), hu(M(0, 0.25) + L(-0.26, 0.05)));
+      break;
+    case "ESFJ": // Host — the bowl, still warm
+      p.push(st(M(-0.62, 0.05) + Q(0, 0.9, 0.62, 0.05)), st(M(-0.72, 0.05) + L(0.72, 0.05)));
+      p.push(hu(M(-0.2, -0.15) + Q(-0.34, -0.4, -0.2, -0.65)), hu(M(0.2, -0.1) + Q(0.06, -0.35, 0.2, -0.6)));
+      break;
+    case "ISFJ": // Custodian — the house, kept
+      p.push(st(M(-0.8, -0.02) + L(0, -0.72) + L(0.8, -0.02), 1, 1.1));
+      p.push(st(M(-0.58, -0.02) + L(-0.58, 0.82) + L(0.58, 0.82) + L(0.58, -0.02)));
+      p.push(st(M(-0.12, 0.82) + L(-0.12, 0.4) + L(0.12, 0.4) + L(0.12, 0.82), 0.9, 0.8));
+      p.push(hueFill(M(0.2, 0.22) + L(0.4, 0.22) + L(0.4, 0.42) + L(0.2, 0.42) + "Z"));
+      break;
+  }
+  return `<g class="emblem">${p.join("")}</g>`;
+}
+
 /* ---------------------------- generators ---------------------------- */
 
 /** Faint continuation below the band, so the lower half of the card is toned rather than blank. */
@@ -318,16 +474,18 @@ function descent(fns: Fn[], r: R, density = 26): string {
 }
 
 /**
- * Types: the eight-slot stack, read left to right, over a flow field aimed by
- * the Lead.
+ * Types: the eight-slot stack, read left to right, over the type's own
+ * archetype emblem and a flow field aimed by the Lead.
  *
  * The stack is the whole point of a Wiring card, so it is drawn as eight named
  * marks in slot order rather than as a decorative crescent — filled for the
  * four conscious slots, hollow for the four in shadow, numbered to match the
- * slot strip printed directly beneath it. The field behind is held well back:
- * it carries the Lead's character, and nothing else may compete with the row.
+ * slot strip printed directly beneath it. On the band's right flank, in its
+ * own sealed ring, the emblem of the card's own archetypes — the row stays
+ * the fact, the crest gives each of the sixteen a face. The field is held
+ * well back: it carries the Lead's character, and nothing may compete.
  */
-function circuit(fns: Fn[], r: R): string {
+function circuit(fns: Fn[], t: MbtiType, r: R): string {
   const lead = fns[0];
   const out: string[] = [ground(hue(lead), r)];
 
@@ -337,7 +495,7 @@ function circuit(fns: Fn[], r: R): string {
   const swirl = fam === "F" ? 0.9 : fam === "N" ? 0.55 : fam === "T" ? 0.12 : 0.3;
   const inward = lead[1] === "i";
 
-  for (let i = 0; i < 74; i++) {
+  for (let i = 0; i < 46; i++) {
     const f = fns[i % 8];
     const front = i % 8 < 4;
     let x = r.between(-20, ART_W + 20);
@@ -355,12 +513,19 @@ function circuit(fns: Fn[], r: R): string {
     out.push(line(curve(pts), hue(f), front ? r.between(0.4, 0.9) : r.between(0.3, 0.6), front ? r.between(0.16, 0.3) : r.between(0.08, 0.16)));
   }
 
-  // The row. Inset so the end marks clear the trim by 6mm even if the
-  // guillotine wanders — the art bleeds, the data printed on it must not.
-  const R0 = 12;
+  // The archetype seal: its own ring on the band's right flank, clear of the
+  // row — a first draft drew it as a watermark behind the marks, and the
+  // marks (rightly) won: nothing of the crest survived but slivers.
+  out.push(ring(262, 48, 21.5, INK, 0.6, 0.35));
+  out.push(emblem(t, 262, 48, 17, 1.3, hue(lead)));
+
+  // The row, compressed a step to leave the seal its flank. Inset so the end
+  // marks clear the trim by 6mm even if the guillotine wanders — the art
+  // bleeds, the data printed on it must not.
+  const R0 = 11;
   const x0 = 26 + R0;
-  const gap = (ART_W - x0 * 2) / 7;
-  const y = 47;
+  const gap = 27;
+  const y = 49;
   out.push(line(`M${pt(x0, y)}L${pt(x0 + gap * 7, y)}`, INK, 0.5, 0.25));
   for (let i = 0; i < 8; i++) {
     out.push(fnMark(fns[i], x0 + gap * i, y, R0, { solid: i < 4, caption: String(i + 1), captionSize: 8 }));
@@ -443,7 +608,9 @@ function rosette(fns: Fn[], r: R): string {
   const R0 = 13;
   const x0 = 26 + R0 + 14;
   const gap = (ART_W - x0 * 2) / (fns.length - 1);
-  const y = 48;
+  // 50, not 48: the marks' inward ripples reach 1.3R above the row, and at 48
+  // they grazed the caption line printed at the top of the band.
+  const y = 50;
   for (let i = 0; i < fns.length; i++) out.push(gesture(fns[i], x0 + gap * i, y, 17, r, 0.55));
   // One brace under all four: what makes a camp is that these are held in common.
   const bx0 = x0 - R0 - 6, bx1 = x0 + gap * (fns.length - 1) + R0 + 6;
@@ -611,6 +778,29 @@ function mark(fns: Fn[], _r: R): string {
 }
 
 /**
+ * The decoder: four letters over the four conscious seats they pick out.
+ * One worked example, drawn — each letter in its own tile, a fall line, and
+ * under it the element that ends up in each seat, named and rippled, with
+ * the seat's name as its caption. The card's text walks the derivation; the
+ * art shows its input and its output so the two can be checked against each
+ * other at a glance.
+ */
+function decode(letters: string, fns: Fn[], seats: string[], r: R): string {
+  const out: string[] = [ground(INK, r)];
+  const xs = [72, 124, 176, 228];
+  for (let i = 0; i < 4; i++) {
+    const x = xs[i];
+    out.push(
+      `<rect x="${n(x - 8.5)}" y="24" width="17" height="16" fill="${PAPER}" fill-opacity="0.9" stroke="${INK}" stroke-width="0.6" stroke-opacity="0.5"/>`,
+    );
+    out.push(label(x, 32, letters[i], 10.5, INK, { weight: 700, o: 0.8 }));
+    out.push(line(`M${pt(x, 41)}L${pt(x, 45)}`, INK, 0.5, 0.35));
+    out.push(fnMark(fns[i], x, 53, 10, { caption: seats[i].toUpperCase(), captionSize: 7 }));
+  }
+  return out.join("");
+}
+
+/**
  * Bonds: two elements that answer each other, and the traffic between them.
  * Type-agnostic by construction — nobody's four letters appear, because the
  * pairing holds wherever these two elements sit.
@@ -707,8 +897,9 @@ export function artFor(id: string, spec: ArtSpec): string {
   const r = rng(id);
   let body: string;
   switch (spec.kind) {
-    case "circuit": body = circuit(spec.fns, r); break;
+    case "circuit": body = circuit(spec.fns, spec.t, r); break;
     case "element": body = element(spec.fn, r); break;
+    case "decode": body = decode(spec.letters, spec.fns, spec.seats, r); break;
     case "seat": body = seat(spec.depth, r); break;
     case "rosette": body = rosette(spec.fns, r); break;
     case "door": body = door(spec.index, spec.gate, r); break;

@@ -1,6 +1,6 @@
 # The deck
 
-Seventy-five printed cards — seventy-two in eight suits, plus three that teach the
+Seventy-six printed cards — seventy-two in eight suits, plus four that teach the
 deck its own vocabulary — generated from the same engine that renders `/type`,
 `/pair` and `/matrix`, with a matching card back. A card cannot disagree with the
 app, because no card carries a fact of its own: the stacks, the relation codes, the
@@ -37,11 +37,15 @@ titled by the same name the Wiring strip prints under each element, the Lead car
 says its Power is what the Wirings print as the Superpower, and the Dread card
 says its Hate is the Kryptonite.
 
-Three cards sit in front of the suits, because a deck has to teach its own
+Four cards sit in front of the suits, because a deck has to teach its own
 vocabulary from a standing start: **Octant** (what this is, in eight parts), **The
-eight elements** (the alphabet, with the letter system explained), and **How to
-read a card** (the anatomy and the suit list). Nothing on those three uses a term
-the cards themselves have not defined.
+eight elements** (the alphabet, with the letter system explained), **The four
+letters** (the decoder: how a code like INTJ picks the seats, worked from
+`stack()` so it cannot disagree with the engine), and **How to read a card**
+(the anatomy and the suit list). Nothing on those four uses a term the cards
+themselves have not defined. The decoder answers the first question anyone
+arriving with "I'm an INTJ" actually has — the app's own `LettersToStack`
+walkthrough, condensed to card size.
 
 ## Bonds
 
@@ -148,6 +152,22 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
    appears twice, and someone opening the box has not been given a key yet.
    `fnMark()` is the single mark the whole deck is built from: filled for a
    conscious element, hollow for one in shadow, legible either way.
+4. **Directed.** Attitude reads as direction, not just as a small letter: every
+   disc carries four ripples on its diagonals, arcs with a pointed crest that
+   breaks *outward* on an extraverted element and back *into* the disc on an
+   introverted one. The diagonals are deliberate — rows, captions, dividers and
+   connecting lines all run horizontal or vertical, so the ripples never sit on
+   one. The alphabet card's footer states the convention; a test asserts the
+   eight-element card carries four of each.
+
+Each Wiring also bears the **seal of its own archetypes** — sixteen original
+figures keyed to the `ARCHETYPE` table (the Prospector's seams fanning from one
+strike, the Watchman's tower on the horizon, the Keeper's key…), drawn in ink
+with one accent in the Lead's hue, in a ring on the band's right flank. They are
+this system's own imagery, not borrowed icons; a test asserts all sixteen are
+distinct. A first draft drew the seal as a watermark behind the stack row, and
+the row (rightly) won — nothing survived but slivers, so the seal got a flank of
+its own instead.
 
 ### What the art may not say
 
@@ -190,18 +210,17 @@ the build downloads none.
 | Colour | RGB. A press wanting CMYK will convert; the palette is contrast-checked, not ink-matched |
 | Text floor | 4.5pt on chrome, 6.5pt on body copy |
 
-Two files come out of `dist-cards/`:
+Three files come out of `dist-cards/`:
 
-- **`octant-cards.pdf`** — one card per page at the bleed size. This is the file a
-  print-on-demand house wants (MakePlayingCards, Printer Studio and similar all
-  take 2.72 × 3.71in with bleed). 66 pages.
-- **`octant-sheets.pdf`** — 9 A4 pages, nine cards to a page at trim size with crop marks, for cutting a proof at home.
-- **`octant-back.pdf`** — the deck's back as a single bleed-size page, which is how print-on-demand houses take it: the eight elements named in a ring, the four axes drawn straight through it, centred so it does not mind being upside down.
-  for cutting a proof at home. 8 pages.
-
-There is no card back in either file. Print-on-demand services take the back as a
-separate single image; the front-matter art (`mark`, on the title card) is the
-obvious candidate and can be exported on its own from `octant-cards.html`.
+- **`octant-cards.pdf`** — one card per page at the bleed size, 76 pages. This is
+  the file a print-on-demand house wants (MakePlayingCards, Printer Studio and
+  similar all take 2.72 × 3.71in with bleed).
+- **`octant-sheets.pdf`** — 9 A4 pages, nine cards to a page at trim size with
+  crop marks, for cutting a proof at home.
+- **`octant-back.pdf`** — the deck's back as a single bleed-size page, which is
+  how print-on-demand houses take it: the eight elements named in a ring, the
+  four axes drawn straight through it, centred so it does not mind being upside
+  down.
 
 ## How the build checks itself
 

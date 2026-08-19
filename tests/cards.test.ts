@@ -26,7 +26,7 @@ const byId = (id: string) => CARDS.find((c) => c.id === id)!;
 
 /** What each suit must contain, and why that is the number. */
 const EXPECTED: Record<Suit, number> = {
-  front: 3,     // what this is, the alphabet, how to read a card
+  front: 4,     // what this is, the alphabet, the letter decoder, how to read a card
   type: 16,     // the sixteen (lead, support) pairs
   function: 8,  // the eight information elements
   attitude: 8,  // the eight seats an element can occupy
@@ -38,8 +38,8 @@ const EXPECTED: Record<Suit, number> = {
 };
 
 describe("deck shape", () => {
-  it("is seventy-two cards in eight suits, plus three of front matter", () => {
-    expect(CARDS).toHaveLength(75);
+  it("is seventy-two cards in eight suits, plus four of front matter", () => {
+    expect(CARDS).toHaveLength(76);
     expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(72);
   });
 
@@ -362,6 +362,25 @@ describe("what the cards claim is what the engine says", () => {
     expect(eng.developed).toMatch(/on purpose/i);
   });
 
+  /**
+   * The decoder card walks INTJ from its letters to its seats. Every value it
+   * prints is read off stack(), and the general claims it makes are engine
+   * facts: the tertiary opposes the auxiliary and the inferior the dominant
+   * (omega), and — per the shadow-twin test above — seats 5–8 are the
+   * conscious four, turned.
+   */
+  it("derives the decoder card from the engine, and its mirror claim holds generally", () => {
+    const c = byId("front-decode");
+    const st = stack("INTJ");
+    expect(c.art).toEqual({ kind: "decode", letters: "INTJ", fns: st.slice(0, 4), seats: [...SLOT_NAMES.slice(0, 4)] });
+    for (const fn of st.slice(0, 4)) expect(c.footer).toContain(fn);
+    for (const t of TYPES) {
+      const s = stack(t);
+      expect(s[2], t).toBe(omega[s[1]]);
+      expect(s[3], t).toBe(omega[s[0]]);
+    }
+  });
+
   it("no longer prints the disclaimer the deck dropped", () => {
     for (const c of CARDS) {
       const all = [c.lede, c.footer, ...c.blocks.map((b) => b.text)].join(" ");
@@ -439,6 +458,31 @@ describe("art", () => {
     }
   });
 
+  /* The attitude prints as direction, not just as a small letter: every disc
+     carries four ripples, crests breaking outward on an e element and back
+     into the disc on an i. The alphabet card draws all eight, four of each. */
+  it("ripples every element mark by attitude — e outward, i inward", () => {
+    const svg = artFor("front-elements", byId("front-elements").art);
+    expect(svg.match(/class="rip e"/g)).toHaveLength(4);
+    expect(svg.match(/class="rip i"/g)).toHaveLength(4);
+    // A stack is all eight elements, so a Wiring's row splits four and four.
+    const wiring = artFor("type-ENTP", byId("type-ENTP").art);
+    expect(wiring.match(/class="rip e"/g)!.length).toBeGreaterThanOrEqual(4);
+    expect(wiring.match(/class="rip i"/g)!.length).toBeGreaterThanOrEqual(4);
+  });
+
+  /* Each Wiring carries the emblem of its own archetypes — sixteen original
+     figures, keyed to the ARCHETYPE table, no two alike. */
+  it("stamps a distinct archetype emblem on each of the sixteen Wirings", () => {
+    const emblems = TYPES.map((t) => {
+      const svg = artFor(`type-${t}`, byId(`type-${t}`).art);
+      const m = svg.match(/<g class="emblem">[\s\S]*?<\/g>/);
+      expect(m, t).toBeTruthy();
+      return m![0];
+    });
+    expect(new Set(emblems).size).toBe(TYPES.length);
+  });
+
   /* The art bleeds off all four edges; the text printed on it must not. Every
      label sits between 6mm from the page edge and the line where render.ts
      starts washing the art back to paper. Both numbers in art units. */
@@ -477,7 +521,7 @@ describe("print geometry", () => {
   it("sets the single-card page to the bleed size, one card per page", () => {
     const doc = cardsDocument(CARDS);
     expect(doc).toContain(`@page{size:${CARD_PAGE.w}mm ${CARD_PAGE.h}mm;margin:0;}`);
-    expect(doc.match(/<article class="card/g)).toHaveLength(75);
+    expect(doc.match(/<article class="card/g)).toHaveLength(76);
   });
 
   it("lays the proof sheets out nine to an A4 page, with crop marks", () => {
@@ -486,6 +530,14 @@ describe("print geometry", () => {
     expect(doc.match(/class="sheet"/g)).toHaveLength(Math.ceil(CARDS.length / 9));
     expect(doc).toContain('class="mark v"');
     expect(doc).toContain('class="mark h"');
+  });
+
+  /* dt uppercases its label as chrome, which set "Ne" as "NE" on the very
+     card that teaches the alphabet. Codes now ride in a span that opts out. */
+  it("keeps element codes in their own case inside uppercased block labels", () => {
+    const html = cardHtml(byId("front-elements"));
+    expect(html).toContain('<dt><span class="code">Ne</span></dt>');
+    expect(cardsDocument(CARDS)).toContain("dt .code{text-transform:none;}");
   });
 
   it("escapes card text rather than letting it into the markup", () => {

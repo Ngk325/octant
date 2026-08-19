@@ -239,15 +239,17 @@ page, not a blank document (`ErrorBoundary`, tested in jsdom).
 
 ## The deck
 
-Seventy-five printed cards plus a matching back, generated from the engine rather
+Seventy-six printed cards plus a matching back, generated from the engine rather
 than written for it: eight Elements, eight Seats, sixteen Wirings, four Sides,
-four Camps, eight Bonds, sixteen Channels and eight Wheels, with three cards that
-teach the deck its own vocabulary before the suits start. Each card carries a
-generative composition seeded by its own id and coloured from the app's function
-palette — a Channel's bundle crosses or runs parallel according to its ease score,
-a Side's door stands open by exactly as much as that side is reachable — and every
-element the art draws prints its two letters, because four hue families over eight
-elements means colour alone cannot name one.
+four Camps, eight Bonds, sixteen Channels and eight Wheels, with four cards that
+teach the deck its own vocabulary before the suits start — including a decoder
+that walks four letters to a stack. Each card carries a generative composition
+seeded by its own id and coloured from the app's function palette — a Channel's
+bundle crosses or runs parallel according to its ease score, a Side's door stands
+open by exactly as much as that side is reachable, a Wiring bears the seal of its
+own archetypes — and every element the art draws prints its two letters and
+ripples with its attitude (crests breaking outward for e, inward for i), because
+four hue families over eight elements means colour alone cannot name one.
 
 **Bonds** are the one surface here that does not name a type, in two derived
 halves. The axis bonds: `bondFacts()` sweeps all 240 ordered cross-type pairs and

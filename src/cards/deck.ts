@@ -13,7 +13,7 @@ import { correlation } from "../engine/empirical";
 /* ------------------------------------------------------------------ *
  * THE DECK
  *
- * Seventy-five cards, and none of them carries a fact the engine does not.
+ * Seventy-six cards, and none of them carries a fact the engine does not.
  * Everything a card says is read off the engine that already renders /type,
  * /pair and /lexicon — the stacks, the relation codes, the ease ramp, the
  * Octagram wheels — so a card cannot disagree with the app it came from.
@@ -32,8 +32,9 @@ export type Suit = "type" | "function" | "attitude" | "quadra" | "side" | "bond"
 
 /** What the art generator draws behind the text. Every variant is seeded by the card id. */
 export type ArtSpec =
-  | { kind: "circuit"; fns: Fn[] }
+  | { kind: "circuit"; fns: Fn[]; t: MbtiType }
   | { kind: "element"; fn: Fn }
+  | { kind: "decode"; letters: string; fns: Fn[]; seats: string[] }
   | { kind: "seat"; depth: number; fn: Fn | null }
   | { kind: "rosette"; fns: Fn[] }
   | { kind: "door"; index: number; gate: SlotName }
@@ -261,7 +262,7 @@ function typeCards(): Card[] {
         },
       ],
       footer: `Camp ${quadra(t)} · ${w.origin} wheel of the ${w.temple} temple · virtue ${virtue}, vice ${vice}`,
-      art: { kind: "circuit", fns: st },
+      art: { kind: "circuit", fns: st, t },
     };
   });
 }
@@ -622,22 +623,30 @@ function wheelCards(): Card[] {
 }
 
 /**
- * The three cards someone opening the box reads first, in this order:
- * what this is, the alphabet it is written in, and how to read one card.
+ * The four cards someone opening the box reads first, in this order:
+ * what this is, the alphabet it is written in, how four letters pick a
+ * stack, and how to read one card.
  *
  * The first build opened with "computed from sixteen (lead, support) pairs and
  * three involutions on eight elements" — true, and useless to anyone who has
  * not already read the app. A deck has to teach its own vocabulary from a
- * standing start, so nothing on these three cards uses a term the cards
- * themselves have not defined.
+ * standing start, so nothing on these cards uses a term the cards
+ * themselves have not defined. The decoder is the third, not the last,
+ * because it answers the first question anyone arriving with "I'm an INTJ"
+ * actually has — how those letters become the row every Wiring card draws.
  */
 function frontMatter(): Card[] {
   const suits = deckSuits();
   const total = suits.reduce((s, x) => s + x.count, 0);
+  // The decoder's worked example. INTJ, because it exercises the harder
+  // (introvert) branch of the derivation; every value below is read off
+  // stack(), so the card cannot disagree with the engine.
+  const ex: MbtiType = "INTJ";
+  const ext = stack(ex);
   return [
     {
       id: "front-title",
-      suit: "front", suitLabel: "Start here", n: 1, of: 3,
+      suit: "front", suitLabel: "Start here", n: 1, of: 4,
       title: "Octant",
       subtitle: "how a person is wired, in eight parts",
       lede: "Everyone runs the same eight mental tools. What differs is the order you trust them in — and that order is what this deck lays out.",
@@ -661,19 +670,36 @@ function frontMatter(): Card[] {
     },
     {
       id: "front-elements",
-      suit: "front", suitLabel: "Start here", n: 2, of: 3,
+      suit: "front", suitLabel: "Start here", n: 2, of: 4,
       title: "The eight elements",
       subtitle: "the alphabet every other card is spelled in",
       dense: true,
       lede: "Capital letter names the family — N intuition, S sensing, T thinking, F feeling. Small letter is its attitude, the way it faces: e outward, i inward.",
       chips: [],
       blocks: FN_ORDER.map((fn) => ({ label: fn, text: `${FN_ROLE[fn].toLowerCase()} — wants ${FN_WANTS[fn].toLowerCase()}.` })),
-      footer: "Hue is the family: violet N, amber S, teal T, rose F · filled is conscious, hollow is shadow",
+      footer: "Hues: violet N, amber S, teal T, rose F · filled conscious, hollow shadow · ripple e out, i in",
       art: { kind: "mark", fns: FN_ORDER },
     },
     {
+      id: "front-decode",
+      suit: "front", suitLabel: "Start here", n: 3, of: 4,
+      title: "The four letters",
+      subtitle: "how a code like INTJ picks the seats",
+      dense: true,
+      lede: "Two of the four letters point at your strongest tool, and the rest of the stack follows. Worked here for INTJ — trace your own the same way.",
+      chips: [],
+      blocks: [
+        { label: "I or E", text: `which way the strongest tool faces. ${ex} starts with I: inward.` },
+        { label: "J or P", text: "the tool shown to the world — deciding for J, perceiving for P. Extraverts show their strongest; introverts their second." },
+        { label: "The middle two", text: `the two tools in play. ${ex} shows its decider, so the perceiver leads: ${ext[0]} first, ${ext[1]} second, facing out.` },
+        { label: "The mirror", text: `the next two seats oppose the first two — ${ext[2]} against ${ext[1]}, ${ext[3]} against ${ext[0]}. Seats 5–8 are these four, turned.` },
+      ],
+      footer: `Worked: ${ex} → ${ext.slice(0, 4).map((fn, k) => `${fn} ${SLOT_NAMES[k]}`).join(", ")} · every Wiring card prints all eight`,
+      art: { kind: "decode", letters: ex, fns: ext.slice(0, 4), seats: [...SLOT_NAMES.slice(0, 4)] },
+    },
+    {
       id: "front-key",
-      suit: "front", suitLabel: "Start here", n: 3, of: 3,
+      suit: "front", suitLabel: "Start here", n: 4, of: 4,
       title: "How to read a card",
       subtitle: `${total} cards, ${suits.length} suits`,
       dense: true,
