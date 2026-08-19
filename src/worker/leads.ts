@@ -216,8 +216,8 @@ const unsubscribePage = (message: string) => `<!doctype html><html lang="en"><he
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Octant</title><style>
   body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;
-       font:400 18px/1.6 Georgia,'Times New Roman',serif;color:#1A1714;background:#FDFCFA}
-  main{max-width:26rem;text-align:center}a{color:#6B3BC4}
+       font:400 18px/1.6 Georgia,'Times New Roman',serif;color:#241F19;background:#FDFCFA}
+  main{max-width:26rem;text-align:center}a{color:#4C4899}
 </style></head><body><main><p>${escapeHtml(message)}</p><p><a href="/">Back to Octant</a></p></main></body></html>`;
 
 /* ------------------------------- content ------------------------------- */
@@ -275,10 +275,10 @@ async function unsubscribeLink(env: LeadsEnv, origin: string, email: string, now
 }
 
 const shell = (heading: string, body: string, ctaHref: string, ctaLabel: string, footer: string) => `
-<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1714;max-width:540px">
+<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#241F19;max-width:540px">
   <p style="font:600 20px/1.3 Georgia,serif;margin:0 0 12px">${escapeHtml(heading)}</p>
   <p style="color:#4C463D;margin:0 0 20px">${body}</p>
-  <a href="${ctaHref}" style="display:inline-block;background:#6B3BC4;color:#fff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:500">${escapeHtml(ctaLabel)}</a>
+  <a href="${ctaHref}" style="display:inline-block;background:#4C4899;color:#fff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:500">${escapeHtml(ctaLabel)}</a>
   <p style="color:#4C463D;font-size:13px;margin-top:28px;padding-top:16px;border-top:1px solid #E3DED4">${footer}</p>
 </div>`;
 
@@ -295,7 +295,7 @@ async function explainerMessage(env: LeadsEnv, origin: string, lead: Lead, now: 
   const html = shell(
     heading, bodyText, stripeHref(lead.email), "Start now — $25/user·mo",
     `You're getting this because you asked for it at ${origin}/onramp, and nothing else without asking.` +
-      (unsub ? ` <a href="${unsub}" style="color:#6B3BC4">Unsubscribe</a>` : ""),
+      (unsub ? ` <a href="${unsub}" style="color:#4C4899">Unsubscribe</a>` : ""),
   );
   const text =
     `${heading}\n\n${bodyText.replace(/<[^>]+>/g, "")}\n\nStart now: ${stripeHref(lead.email)}\n` +
@@ -318,7 +318,7 @@ const SEQUENCE: NurtureEntry[] = [
       const unsub = await unsubscribeLink(env, origin, lead.email, now);
       const html = shell(
         copy.heading, copy.body, stripeHref(lead.email), "Start now — $25/user·mo",
-        `You opted in for the occasional note.` + (unsub ? ` <a href="${unsub}" style="color:#6B3BC4">Unsubscribe any time</a>.` : ""),
+        `You opted in for the occasional note.` + (unsub ? ` <a href="${unsub}" style="color:#4C4899">Unsubscribe any time</a>.` : ""),
       );
       const text = `${copy.heading}\n\n${copy.body}\n\nStart now: ${stripeHref(lead.email)}\n` +
         (unsub ? `\nUnsubscribe: ${unsub}\n` : "");
@@ -338,7 +338,7 @@ const SEQUENCE: NurtureEntry[] = [
       const unsub = await unsubscribeLink(env, origin, lead.email, now);
       const html = shell(
         heading, body, stripeHref(lead.email), "Start now — $25/user·mo",
-        `Last note in this sequence.` + (unsub ? ` <a href="${unsub}" style="color:#6B3BC4">Unsubscribe any time</a>.` : ""),
+        `Last note in this sequence.` + (unsub ? ` <a href="${unsub}" style="color:#4C4899">Unsubscribe any time</a>.` : ""),
       );
       const text = `${heading}\n\n${body}\n\nStart now: ${stripeHref(lead.email)}\n` +
         (unsub ? `\nUnsubscribe: ${unsub}\n` : "");

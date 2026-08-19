@@ -18,7 +18,7 @@
  * ------------------------------------------------------------------ */
 
 /** The mark: two squares at 45° making an eight-pointed figure, one centre. */
-export const MARK = (size: number, stroke = "currentColor", accent = "#6B3BC4") => `
+export const MARK = (size: number, stroke = "currentColor", accent = "#4C4899") => `
 <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
   <rect x="14" y="14" width="36" height="36" rx="5" stroke="${stroke}" stroke-width="2.5" opacity=".9"/>
   <rect x="14" y="14" width="36" height="36" rx="5" stroke="${stroke}" stroke-width="2.5" opacity=".45"
@@ -31,9 +31,9 @@ export const FAVICON =
   "data:image/svg+xml," +
   encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">` +
-    `<rect x="14" y="14" width="36" height="36" rx="5" stroke="#6B3BC4" stroke-width="4"/>` +
-    `<rect x="14" y="14" width="36" height="36" rx="5" stroke="#6B3BC4" stroke-width="4" opacity=".5" transform="rotate(45 32 32)"/>` +
-    `<circle cx="32" cy="32" r="7" fill="#6B3BC4"/></svg>`,
+    `<rect x="14" y="14" width="36" height="36" rx="5" stroke="#4C4899" stroke-width="4"/>` +
+    `<rect x="14" y="14" width="36" height="36" rx="5" stroke="#4C4899" stroke-width="4" opacity=".5" transform="rotate(45 32 32)"/>` +
+    `<circle cx="32" cy="32" r="7" fill="#4C4899"/></svg>`,
   );
 
 /** Stripe payment link — Octant Individual, $25 per user / month, quantity adjustable. */
@@ -168,9 +168,9 @@ export function marketingPage(origin: string): Response {
   :root {
     color-scheme: light dark;
     --m-paper:#FDFCFA; --m-surface:#FFFFFF; --m-soft:#F4F1EA;
-    --m-ink:#1A1714; --m-ink2:#4C463D; --m-muted:#6B6459;
-    --m-rule:#E3DED4; --m-accent:#6B3BC4; --m-accent-ink:#4B2A8F;
-    --m-accent-soft:#F0E9FC; --m-on:#fff; --m-rose:#C2477F;
+    --m-ink:#241F19; --m-ink2:#4C463D; --m-muted:#6B6459;
+    --m-rule:#E3DED4; --m-accent:#4C4899; --m-accent-ink:#373474;
+    --m-accent-soft:#ECEBF7; --m-on:#fff; --m-rose:#C2477F;
     --serif:"Newsreader",Georgia,"Times New Roman",serif;
     --sans:"Inter",system-ui,-apple-system,sans-serif;
   }
@@ -178,8 +178,8 @@ export function marketingPage(origin: string): Response {
     :root {
       --m-paper:#141310; --m-surface:#1D1B17; --m-soft:#24211C;
       --m-ink:#EDE9E1; --m-ink2:#B6AFA3; --m-muted:#8E8779;
-      --m-rule:#2E2A24; --m-accent:#C9A0FF; --m-accent-ink:#DCC0FF;
-      --m-accent-soft:#241B33; --m-on:#1A1714; --m-rose:#E487B4;
+      --m-rule:#2E2A24; --m-accent:#A8A6D3; --m-accent-ink:#C6C4E8;
+      --m-accent-soft:#1F2033; --m-on:#241F19; --m-rose:#DAA0A7;
     }
   }
   * { box-sizing: border-box; }

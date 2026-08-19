@@ -109,7 +109,7 @@ export async function notifyOwnerOfApprovedSignup(
 /* Inline styles only — every mail client strips <style>, and half of them
    would mangle anything cleverer. Plain table-free HTML survives best. */
 const signupEmail = (user: User, approve: string, block: string, origin: string) => `
-<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1714;max-width:520px">
+<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#241F19;max-width:520px">
   <p style="font:600 20px/1.3 Georgia,serif;margin:0 0 4px">Somebody is waiting for access</p>
   <p style="color:#4C463D;margin:0 0 20px">They can see nothing until you decide.</p>
 
@@ -118,17 +118,17 @@ const signupEmail = (user: User, approve: string, block: string, origin: string)
     <div style="color:#4C463D;font-size:15px">${escapeHtml(user.email)}</div>
   </div>
 
-  <a href="${approve}" style="display:inline-block;background:#6B3BC4;color:#fff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:500;margin-right:8px">Approve</a>
+  <a href="${approve}" style="display:inline-block;background:#4C4899;color:#fff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:500;margin-right:8px">Approve</a>
   <a href="${block}" style="display:inline-block;background:#fff;color:#AA2A1E;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:500;border:1px solid #E3DED4">Deny</a>
 
   <p style="color:#4C463D;font-size:14px;margin-top:28px;padding-top:16px;border-top:1px solid #E3DED4">
     These links expire in seven days. You can also change anyone's access at any
-    time from <a href="${origin}/admin" style="color:#6B3BC4">${origin}/admin</a>.
+    time from <a href="${origin}/admin" style="color:#4C4899">${origin}/admin</a>.
   </p>
 </div>`;
 
 const approvedSignupEmail = (user: User, block: string, origin: string) => `
-<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1714;max-width:520px">
+<div style="font:400 16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#241F19;max-width:520px">
   <p style="font:600 20px/1.3 Georgia,serif;margin:0 0 4px">Paid, and already in</p>
   <p style="color:#4C463D;margin:0 0 20px">Payment cleared, so their account switched on automatically — nothing for you to approve.</p>
 
@@ -141,6 +141,6 @@ const approvedSignupEmail = (user: User, block: string, origin: string) => `
 
   <p style="color:#4C463D;font-size:14px;margin-top:28px;padding-top:16px;border-top:1px solid #E3DED4">
     This link expires in seven days. You can also change anyone's access at any
-    time from <a href="${origin}/admin" style="color:#6B3BC4">${origin}/admin</a>.
+    time from <a href="${origin}/admin" style="color:#4C4899">${origin}/admin</a>.
   </p>
 </div>`;

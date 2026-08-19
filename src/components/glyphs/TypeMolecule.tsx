@@ -73,7 +73,7 @@ export default function TypeMolecule({ type, size = 64, labels }: {
                 fontFamily="var(--mono)"
                 fontSize={i === 0 ? 24 : 20}
                 fontWeight="600"
-                fill={fn[1] === "e" ? "#1A1714" : "#FDFCFA"}
+                fill={fn[1] === "e" ? "#241F19" : "#FDFCFA"}
               >
                 {fn}
               </text>

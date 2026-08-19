@@ -741,7 +741,7 @@ function frontMatter(): Card[] {
         fn,
         text: `${FN_ROLE[fn].toLowerCase()}, claims ${FN_KEYWORD[fn].toLowerCase()}; wants ${FN_WANTS[fn].toLowerCase()}.`,
       })),
-      footer: "Hues: violet N, amber S, teal T, rose F · filled conscious, hollow shadow · ripple e out, i in",
+      footer: "Indigo N, sienna S, verdigris T, madder F · filled conscious, hollow shadow · ripple e out, i in",
       art: { kind: "mark", fns: FN_ORDER },
     },
     {

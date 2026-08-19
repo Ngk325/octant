@@ -152,7 +152,7 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
    id, so the deck renders byte-identically twice and a diff in the art means a
    diff in the data.
 2. **Derived.** Colour is never decorative — every hue is a function's own hue from
-   `src/engine/palette.ts` (violet intuition, amber sensing, teal thinking, rose
+   `src/engine/palette.ts` (indigo intuition, sienna sensing, verdigris thinking, madder
    feeling; lighter outward, deeper inward). Composition follows the card's
    structure: a Wiring's flow field is aimed by its Lead's family and coloured by
    its own eight slots, a Seat card draws all eight bars with the

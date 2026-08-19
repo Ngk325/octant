@@ -92,20 +92,20 @@
   --surface: #FFFFFF;
   --surface-2: #F6F3EE;
   --sunk: #F1EDE6;
-  --ink: #1A1714;
+  --ink: #241F19;
   --ink-2: #4C463D;
   --muted: #6B6459;
   --rule: #E3DED4;
   --rule-strong: #CFC7B9;
-  --accent: #6B3BC4;
+  --accent: #4C4899;
   --on-accent: #FFFFFF;
-  --accent-soft: #F0E9FC;
-  --accent-ink: #4B2A8F;
-  --warn: #8A5410;
+  --accent-soft: #ECEBF7;
+  --accent-ink: #373474;
+  --warn: #855723;
   --warn-soft: #FBF1E0;
   --danger: #AA2A1E;
-  --shadow: 0 1px 2px rgba(26, 23, 20, .05), 0 8px 24px rgba(26, 23, 20, .06);
-  --shadow-lg: 0 2px 6px rgba(26, 23, 20, .08), 0 24px 60px rgba(26, 23, 20, .12);
+  --shadow: 0 1px 2px rgba(36, 31, 25, .05), 0 8px 24px rgba(36, 31, 25, .06);
+  --shadow-lg: 0 2px 6px rgba(36, 31, 25, .08), 0 24px 60px rgba(36, 31, 25, .12);
 }
 
 /* The dark palette is declared exactly ONCE.
@@ -131,11 +131,11 @@
   --muted: #8E8779;
   --rule: #2E2A24;
   --rule-strong: #423C33;
-  --accent: #C9A0FF;
-  --on-accent: #1A1714;
-  --accent-soft: #241B33;
-  --accent-ink: #DCC0FF;
-  --warn: #E0A455;
+  --accent: #A8A6D3;
+  --on-accent: #241F19;
+  --accent-soft: #1F2033;
+  --accent-ink: #C6C4E8;
+  --warn: #D0AE80;
   --warn-soft: #2A2015;
   --danger: #E87A68;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);

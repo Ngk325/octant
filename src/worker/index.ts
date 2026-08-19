@@ -342,8 +342,8 @@ const signInProblem = (message: string) =>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Octant — sign-in problem</title>
 <style>
-  :root{color-scheme:light dark;--paper:#FDFCFA;--ink:#1A1714;--ink2:#4C463D;--accent:#6B3BC4}
-  @media(prefers-color-scheme:dark){:root{--paper:#141310;--ink:#EDE9E1;--ink2:#B6AFA3;--accent:#C9A0FF}}
+  :root{color-scheme:light dark;--paper:#FDFCFA;--ink:#241F19;--ink2:#4C463D;--accent:#4C4899}
+  @media(prefers-color-scheme:dark){:root{--paper:#141310;--ink:#EDE9E1;--ink2:#B6AFA3;--accent:#A8A6D3}}
   body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--paper);
        color:var(--ink);font:400 19px/1.6 Georgia,'Times New Roman',serif}
   main{max-width:26rem}h1{font-size:30px;margin:0 0 8px}p{color:var(--ink2);margin:0 0 20px}
