@@ -239,15 +239,16 @@ page, not a blank document (`ErrorBoundary`, tested in jsdom).
 
 ## The deck
 
-Seventy-six printed cards plus a matching back, generated from the engine rather
+Seventy-seven printed cards plus a matching back, generated from the engine rather
 than written for it: eight Elements, eight Seats, sixteen Wirings, four Sides,
-four Camps, eight Bonds, sixteen Channels and eight Wheels, with four cards that
-teach the deck its own vocabulary before the suits start — including a decoder
-that walks four letters to a stack. Each card carries a generative composition
-seeded by its own id and coloured from the app's function palette — a Channel's
-bundle crosses or runs parallel according to its ease score, a Side's door stands
-open by exactly as much as that side is reachable, a Wiring bears the seal of its
-own archetypes — and every element the art draws prints its two letters and
+four Camps, eight Bonds, sixteen Channels and eight Wheels, with five cards that
+teach the deck its own vocabulary before the suits start — a frame card that
+says what each suit is for, and a decoder that walks four letters to a stack.
+Each card carries a generative composition seeded by its own id and coloured
+from the app's function palette — a Channel's bundle crosses or runs parallel
+according to its ease score, a Side's door stands open by exactly as much as
+that side is reachable, a Wiring bears the bold seal of its own archetypes
+opposite its name — and every element the art draws prints its two letters and
 ripples with its attitude (crests breaking outward for e, inward for i), because
 four hue families over eight elements means colour alone cannot name one.
 

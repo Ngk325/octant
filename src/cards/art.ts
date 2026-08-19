@@ -340,116 +340,151 @@ function gesture(fn: Fn, cx: number, cy: number, scale: number, r: R, weight = 1
  * from this system and no other: the Prospector's seams fanning from one
  * strike, the Watchman's tower on the horizon, the Keeper's key. All sixteen
  * are original figures keyed to the archetype table in engine/data.ts, drawn
- * in ink with one accent in the Lead's hue, and fully deterministic — no
- * randomness, so the same Wiring stamps the same seal forever.
+ * bold in ink with the Lead's hue as the accent, and fully deterministic —
+ * no randomness, so the same Wiring stamps the same seal forever.
  *
- * It renders as a watermark behind the stack row rather than as a crisp badge
- * beside it: the row is the card's fact and nothing may compete with it, but
- * a crest under the fact gives each of the sixteen a face of its own.
+ * It prints on the card body as a seal opposite the type's name (sealFor,
+ * below), on clean paper rather than in the art band — so it runs at full
+ * strength: solid fills, heavy line, one figure a reader can recall.
  */
-function emblem(t: MbtiType, cx: number, cy: number, s: number, o: number, c: string): string {
+function emblem(t: MbtiType, cx: number, cy: number, s: number, c: string): string {
   const X = (px: number) => cx + px * s;
   const Y = (py: number) => cy + py * s;
-  const w = s * 0.07;
+  const w = s * 0.095;
   const M = (px: number, py: number) => `M${pt(X(px), Y(py))}`;
   const L = (px: number, py: number) => `L${pt(X(px), Y(py))}`;
   const Q = (qx: number, qy: number, px: number, py: number) => `Q${pt(X(qx), Y(qy))} ${pt(X(px), Y(py))}`;
   const st = (d: string, k = 1, ww = 1) =>
-    `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${n(w * ww)}" stroke-opacity="${n(0.34 * o * k)}" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const hu = (d: string, k = 1) =>
-    `<path d="${d}" fill="none" stroke="${c}" stroke-width="${n(w)}" stroke-opacity="${n(0.5 * o * k)}" stroke-linecap="round"/>`;
-  const hueFill = (d: string, k = 1) => `<path d="${d}" fill="${c}" fill-opacity="${n(0.4 * o * k)}"/>`;
-  const hueDot = (px: number, py: number, pr: number) => dot(X(px), Y(py), pr * s, c, 0.45 * o);
-  const inkDot = (px: number, py: number, pr: number) => dot(X(px), Y(py), pr * s, INK, 0.4 * o);
-  const inkRing = (px: number, py: number, pr: number, ww = 1) => ring(X(px), Y(py), pr * s, INK, w * ww, 0.34 * o);
+    `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${n(w * ww)}" stroke-opacity="${n(0.82 * k)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const hu = (d: string, ww = 1) =>
+    `<path d="${d}" fill="none" stroke="${c}" stroke-width="${n(w * ww)}" stroke-opacity="0.9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const hueFill = (d: string, k = 1) => `<path d="${d}" fill="${c}" fill-opacity="${n(0.88 * k)}"/>`;
+  const inkFill = (d: string, k = 1) => `<path d="${d}" fill="${INK}" fill-opacity="${n(0.78 * k)}"/>`;
+  const hueDot = (px: number, py: number, pr: number) => dot(X(px), Y(py), pr * s, c, 0.9);
+  const inkDot = (px: number, py: number, pr: number) => dot(X(px), Y(py), pr * s, INK, 0.8);
+  const inkRing = (px: number, py: number, pr: number, ww = 1) => ring(X(px), Y(py), pr * s, INK, w * ww, 0.8);
   const dia = (px: number, py: number, d: number) => hueFill(M(px, py - d) + L(px + d, py) + L(px, py + d) + L(px - d, py) + "Z");
   const p: string[] = [];
 
   switch (t) {
     case "ENTP": // Prospector — seams fanning open from one strike
-      p.push(st(M(0, 0.8) + L(-0.75, -0.5)), st(M(0, 0.8) + L(-0.15, -0.85)), st(M(0, 0.8) + L(0.6, -0.65)));
-      p.push(hueDot(0, 0.8, 0.08), dia(-0.75, -0.5, 0.11), dia(-0.15, -0.85, 0.11), dia(0.6, -0.65, 0.11));
+      p.push(st(M(0, 0.82) + L(-0.72, -0.5), 1, 1.1), st(M(0, 0.82) + L(-0.12, -0.85), 1, 1.1), st(M(0, 0.82) + L(0.6, -0.62), 1, 1.1));
+      p.push(st(M(-0.28, 0.62) + L(-0.5, 0.78), 0.9, 0.8), st(M(0.26, 0.6) + L(0.46, 0.78), 0.9, 0.8));
+      p.push(hueDot(0, 0.82, 0.11), dia(-0.72, -0.5, 0.16), dia(-0.12, -0.85, 0.16), dia(0.6, -0.62, 0.16));
       break;
     case "INTP": // Cartographer — the compass rose
-      p.push(inkRing(0, 0, 0.85));
-      p.push(st(M(0, -0.8) + L(0.16, -0.16) + L(0.8, 0) + L(0.16, 0.16) + L(0, 0.8) + L(-0.16, 0.16) + L(-0.8, 0) + L(-0.16, -0.16) + "Z"));
-      p.push(hueFill(M(0, -0.8) + L(0.16, -0.16) + L(-0.16, -0.16) + "Z"), inkDot(0, 0, 0.06));
+      p.push(inkRing(0, 0, 0.88, 1.1));
+      p.push(hueFill(M(0, -0.82) + L(0.17, -0.17) + L(0.82, 0) + L(0.17, 0.17) + L(0, 0.82) + L(-0.17, 0.17) + L(-0.82, 0) + L(-0.17, -0.17) + "Z", 0.35));
+      p.push(st(M(0, -0.82) + L(0.17, -0.17) + L(0.82, 0) + L(0.17, 0.17) + L(0, 0.82) + L(-0.17, 0.17) + L(-0.82, 0) + L(-0.17, -0.17) + "Z"));
+      p.push(hueFill(M(0, -0.82) + L(0.17, -0.17) + L(-0.17, -0.17) + "Z"), inkDot(0, 0, 0.08));
       break;
     case "ENTJ": // Closer — the pennant planted on the steps
-      p.push(st(M(-0.85, 0.85) + L(0.85, 0.85)), st(M(-0.45, 0.62) + L(0.45, 0.62)));
-      p.push(st(M(0, 0.62) + L(0, -0.82), 1, 1.2), hueFill(M(0, -0.82) + L(0.68, -0.56) + L(0, -0.3) + "Z"));
+      p.push(st(M(-0.85, 0.85) + L(0.85, 0.85), 1, 1.2), st(M(-0.48, 0.6) + L(0.48, 0.6), 1, 1.1));
+      p.push(st(M(-0.05, 0.6) + L(-0.05, -0.85), 1, 1.3));
+      p.push(hueFill(M(-0.05, -0.85) + L(0.72, -0.56) + L(-0.05, -0.27) + "Z"));
+      p.push(st(M(-0.05, -0.85) + L(0.72, -0.56) + L(-0.05, -0.27), 0.9, 0.7));
       break;
-    case "INTJ": // Watchman — the tower on the horizon, one star out
-      p.push(st(M(-0.9, 0.72) + L(0.9, 0.72)));
-      p.push(st(M(-0.2, 0.72) + L(-0.12, -0.3) + L(0.12, -0.3) + L(0.2, 0.72)), st(M(-0.18, -0.3) + L(0.18, -0.3)));
-      p.push(hu(M(0, -0.88) + L(0, -0.48)), hu(M(-0.2, -0.68) + L(0.2, -0.68)));
+    case "INTJ": // Watchman — the dark tower on the horizon, one star out
+      p.push(st(M(-0.9, 0.75) + L(0.9, 0.75), 1, 1.1));
+      p.push(inkFill(M(-0.24, 0.75) + L(-0.15, -0.2) + L(-0.26, -0.2) + L(-0.26, -0.36) + L(0.26, -0.36) + L(0.26, -0.2) + L(0.15, -0.2) + L(0.24, 0.75) + "Z"));
+      p.push(hu(M(0, -0.9) + L(0, -0.52), 1.1), hu(M(-0.19, -0.71) + L(0.19, -0.71), 1.1));
+      p.push(hueDot(0, -0.71, 0.07));
       break;
     case "ENFP": // Kindler — a young fire, sparks already leaving
-      p.push(hueFill(M(0, 0.7) + Q(-0.5, 0.25, 0, -0.35) + Q(0.4, 0.2, 0, 0.7) + "Z", 0.8));
-      p.push(st(M(-0.4, 0.78) + L(0.4, 0.78)));
-      p.push(hueDot(-0.38, -0.5, 0.06), hueDot(0.12, -0.75, 0.06), hueDot(0.48, -0.42, 0.06));
+      p.push(hueFill(M(0, 0.72) + Q(-0.56, 0.26, 0, -0.38) + Q(0.44, 0.22, 0, 0.72) + "Z"));
+      p.push(st(M(0, 0.72) + Q(-0.56, 0.26, 0, -0.38) + Q(0.44, 0.22, 0, 0.72), 0.9, 0.7));
+      p.push(st(M(-0.45, 0.82) + L(0.45, 0.82), 1, 1.2));
+      p.push(hueDot(-0.42, -0.52, 0.08), hueDot(0.14, -0.78, 0.09), hueDot(0.5, -0.4, 0.07));
       break;
     case "INFP": // Poet — one flame, kept in a lamp
-      p.push(st(M(-0.5, 0.25) + Q(0, 0.95, 0.5, 0.25)), st(M(-0.62, 0.25) + L(0.62, 0.25)));
-      p.push(hueFill(M(0, 0.05) + Q(-0.2, -0.2, 0, -0.5) + Q(0.2, -0.2, 0, 0.05) + "Z"));
+      p.push(st(M(-0.52, 0.2) + Q(0, 0.95, 0.52, 0.2), 1, 1.2), st(M(-0.66, 0.2) + L(0.66, 0.2), 1, 1.1));
+      p.push(hueFill(M(0, 0.02) + Q(-0.24, -0.26, 0, -0.56) + Q(0.24, -0.26, 0, 0.02) + "Z"));
+      p.push(ring(X(0), Y(-0.27), 0.42 * s, c, w * 0.6, 0.4));
       break;
     case "ENFJ": // Shepherd — the crook, the flock alongside
-      p.push(st(M(-0.3, 0.85) + L(-0.3, -0.4), 1, 1.2));
-      p.push(st(M(-0.3, -0.4) + Q(-0.3, -0.85, 0.05, -0.85) + Q(0.35, -0.85, 0.35, -0.55)));
-      p.push(hueDot(0.35, 0.1, 0.07), hueDot(0.62, 0.4, 0.07), hueDot(0.28, 0.6, 0.07));
+      p.push(st(M(-0.32, 0.85) + L(-0.32, -0.38), 1, 1.4));
+      p.push(st(M(-0.32, -0.38) + Q(-0.32, -0.86, 0.06, -0.86) + Q(0.4, -0.86, 0.4, -0.52), 1, 1.4));
+      p.push(hueDot(0.38, 0.12, 0.1), hueDot(0.66, 0.42, 0.1), hueDot(0.3, 0.62, 0.1));
       break;
     case "INFJ": // Seer — the eye, lit from above
-      p.push(st(M(-0.75, 0.1) + Q(0, -0.45, 0.75, 0.1) + Q(0, 0.65, -0.75, 0.1) + "Z"));
-      p.push(hueDot(0, 0.1, 0.14));
-      p.push(st(M(0, -0.55) + L(0, -0.85)), st(M(-0.4, -0.42) + L(-0.58, -0.66)), st(M(0.4, -0.42) + L(0.58, -0.66)));
+      p.push(hueFill(M(-0.78, 0.12) + Q(0, -0.46, 0.78, 0.12) + Q(0, 0.66, -0.78, 0.12) + "Z", 0.25));
+      p.push(st(M(-0.78, 0.12) + Q(0, -0.46, 0.78, 0.12) + Q(0, 0.66, -0.78, 0.12) + "Z", 1, 1.1));
+      p.push(hueDot(0, 0.12, 0.17), inkDot(0, 0.12, 0.07));
+      p.push(st(M(0, -0.56) + L(0, -0.88)), st(M(-0.42, -0.44) + L(-0.6, -0.7)), st(M(0.42, -0.44) + L(0.6, -0.7)));
       break;
     case "ESTP": // Daredevil — the bolt
-      p.push(hueFill(M(0.3, -0.85) + L(-0.35, 0.08) + L(-0.02, 0.08) + L(-0.3, 0.85) + L(0.42, -0.12) + L(0.08, -0.12) + "Z", 0.75));
-      p.push(st(M(0.3, -0.85) + L(-0.35, 0.08) + L(-0.02, 0.08) + L(-0.3, 0.85) + L(0.42, -0.12) + L(0.08, -0.12) + "Z", 0.9));
+      p.push(hueFill(M(0.32, -0.88) + L(-0.38, 0.1) + L(-0.03, 0.1) + L(-0.32, 0.88) + L(0.45, -0.13) + L(0.09, -0.13) + "Z"));
+      p.push(st(M(0.32, -0.88) + L(-0.38, 0.1) + L(-0.03, 0.1) + L(-0.32, 0.88) + L(0.45, -0.13) + L(0.09, -0.13) + "Z", 0.9, 0.8));
       break;
     case "ISTP": // Marksman — the crosshair
-      p.push(inkRing(0, 0, 0.6));
-      p.push(st(M(0, -0.95) + L(0, -0.42)), st(M(0, 0.42) + L(0, 0.95)), st(M(-0.95, 0) + L(-0.42, 0)), st(M(0.42, 0) + L(0.95, 0)));
-      p.push(hueDot(0, 0, 0.09));
+      p.push(inkRing(0, 0, 0.62, 1.2), ring(X(0), Y(0), 0.34 * s, INK, w * 0.6, 0.5));
+      p.push(st(M(0, -0.95) + L(0, -0.42), 1, 1.2), st(M(0, 0.42) + L(0, 0.95), 1, 1.2));
+      p.push(st(M(-0.95, 0) + L(-0.42, 0), 1, 1.2), st(M(0.42, 0) + L(0.95, 0), 1, 1.2));
+      p.push(hueDot(0, 0, 0.12));
       break;
     case "ESTJ": // Foreman — the plumb line off the beam
-      p.push(st(M(-0.55, 0.85) + L(-0.55, -0.62), 1, 1.2), st(M(-0.85, -0.62) + L(0.75, -0.62), 1, 1.2));
-      p.push(st(M(0.35, -0.62) + L(0.35, 0.3), 0.9, 0.8));
-      p.push(hueFill(M(0.25, 0.3) + L(0.45, 0.3) + L(0.35, 0.62) + "Z"));
+      p.push(st(M(-0.55, 0.85) + L(-0.55, -0.6), 1, 1.4), st(M(-0.88, -0.6) + L(0.78, -0.6), 1, 1.4));
+      p.push(st(M(0.36, -0.6) + L(0.36, 0.26), 0.9));
+      p.push(hueFill(M(0.22, 0.26) + L(0.5, 0.26) + L(0.36, 0.68) + "Z"));
       break;
     case "ISTJ": // Keeper — the key
-      p.push(inkRing(0, -0.5, 0.26), st(M(0, -0.24) + L(0, 0.8), 1, 1.2));
-      p.push(st(M(0, 0.8) + L(0.3, 0.8)), st(M(0, 0.56) + L(0.2, 0.56)));
-      p.push(hueDot(0, -0.5, 0.07));
+      p.push(hueFill(M(0, -0.76) + L(0.26, -0.5) + L(0, -0.24) + L(-0.26, -0.5) + "Z", 0.35));
+      p.push(inkRing(0, -0.5, 0.28, 1.3), st(M(0, -0.22) + L(0, 0.82), 1, 1.4));
+      p.push(st(M(0, 0.82) + L(0.34, 0.82), 1, 1.3), st(M(0, 0.56) + L(0.24, 0.56), 1, 1.3));
+      p.push(hueDot(0, -0.5, 0.09));
       break;
     case "ESFP": // Showman — the firework
       for (let k = 0; k < 8; k++) {
-        const a = (k * Math.PI) / 4;
-        const len = k % 2 ? 0.55 : 0.85;
+        const a = (k * Math.PI) / 4 + Math.PI / 8;
+        const len = k % 2 ? 0.6 : 0.9;
         const [x1, y1] = [Math.cos(a) * 0.2, Math.sin(a) * 0.2];
         const [x2, y2] = [Math.cos(a) * len, Math.sin(a) * len];
-        p.push(k % 2 ? st(M(x1, y1) + L(x2, y2)) : hu(M(x1, y1) + L(x2, y2)));
-        if (k % 2 === 0) p.push(hueDot(x2, y2, 0.06));
+        p.push(k % 2 ? st(M(x1, y1) + L(x2, y2), 1, 1.1) : hu(M(x1, y1) + L(x2, y2), 1.1));
+        if (k % 2 === 0) p.push(hueDot(x2, y2, 0.08));
       }
-      p.push(hueDot(0, 0, 0.09));
+      p.push(hueDot(0, 0, 0.12));
       break;
     case "ISFP": // Maker — the leaf
-      p.push(st(M(0, -0.85) + Q(0.62, -0.2, 0, 0.85) + Q(-0.62, -0.2, 0, -0.85) + "Z"));
-      p.push(st(M(0, -0.6) + L(0, 0.6), 0.8));
-      p.push(hu(M(0, -0.1) + L(0.26, -0.3)), hu(M(0, 0.25) + L(-0.26, 0.05)));
+      p.push(hueFill(M(0, -0.85) + Q(0.66, -0.2, 0, 0.85) + Q(-0.66, -0.2, 0, -0.85) + "Z", 0.3));
+      p.push(st(M(0, -0.85) + Q(0.66, -0.2, 0, 0.85) + Q(-0.66, -0.2, 0, -0.85) + "Z", 1, 1.1));
+      p.push(st(M(0, -0.6) + L(0, 0.62), 0.9));
+      p.push(st(M(0, -0.12) + L(0.3, -0.34), 0.8, 0.8), st(M(0, 0.26) + L(-0.3, 0.04), 0.8, 0.8));
       break;
     case "ESFJ": // Host — the bowl, still warm
-      p.push(st(M(-0.62, 0.05) + Q(0, 0.9, 0.62, 0.05)), st(M(-0.72, 0.05) + L(0.72, 0.05)));
-      p.push(hu(M(-0.2, -0.15) + Q(-0.34, -0.4, -0.2, -0.65)), hu(M(0.2, -0.1) + Q(0.06, -0.35, 0.2, -0.6)));
+      p.push(hueFill(M(-0.64, 0.08) + Q(0, 0.95, 0.64, 0.08) + "Z", 0.35));
+      p.push(st(M(-0.64, 0.08) + Q(0, 0.95, 0.64, 0.08), 1, 1.2), st(M(-0.76, 0.08) + L(0.76, 0.08), 1, 1.2));
+      p.push(hu(M(-0.22, -0.14) + Q(-0.38, -0.42, -0.22, -0.7), 1.1), hu(M(0.22, -0.1) + Q(0.06, -0.38, 0.22, -0.66), 1.1));
       break;
     case "ISFJ": // Custodian — the house, kept
-      p.push(st(M(-0.8, -0.02) + L(0, -0.72) + L(0.8, -0.02), 1, 1.1));
-      p.push(st(M(-0.58, -0.02) + L(-0.58, 0.82) + L(0.58, 0.82) + L(0.58, -0.02)));
-      p.push(st(M(-0.12, 0.82) + L(-0.12, 0.4) + L(0.12, 0.4) + L(0.12, 0.82), 0.9, 0.8));
-      p.push(hueFill(M(0.2, 0.22) + L(0.4, 0.22) + L(0.4, 0.42) + L(0.2, 0.42) + "Z"));
+      p.push(st(M(-0.82, -0.02) + L(0, -0.74) + L(0.82, -0.02), 1, 1.4));
+      p.push(st(M(-0.58, -0.06) + L(-0.58, 0.84) + L(0.58, 0.84) + L(0.58, -0.06), 1, 1.1));
+      p.push(st(M(-0.14, 0.84) + L(-0.14, 0.38) + L(0.14, 0.38) + L(0.14, 0.84), 0.9));
+      p.push(hueFill(M(0.22, 0.2) + L(0.44, 0.2) + L(0.44, 0.44) + L(0.22, 0.44) + "Z"));
       break;
   }
   return `<g class="emblem">${p.join("")}</g>`;
+}
+
+/**
+ * The seal a Wiring card prints opposite its own name: the archetype emblem
+ * inside a ring, as a standalone SVG for the card body rather than the art
+ * band — the band's paper wash would mute it, and a seal is meant to be read.
+ */
+export function sealFor(t: MbtiType, lead: Fn): string {
+  const body = ring(30, 30, 28, INK, 1.3, 0.75) + emblem(t, 30, 30, 21, hue(lead));
+  return `<svg class="seal" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${body}</svg>`;
+}
+
+/**
+ * One element's mark as a standalone SVG, for the card body: the same named,
+ * rippled disc every art panel draws, at key size — printed beside each row
+ * of the alphabet card so the mark system and the words teach each other.
+ * The viewBox is exactly the ripple's own extent (crest tip at 1.5r).
+ * Classed "keymark", not "mark" — the proof sheets already use .mark for
+ * their crop marks, and a shared class would style these black.
+ */
+export function markFor(fn: Fn): string {
+  return `<svg class="keymark" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${fnMark(fn, 15, 15, 10)}</svg>`;
 }
 
 /* ---------------------------- generators ---------------------------- */
@@ -480,12 +515,13 @@ function descent(fns: Fn[], r: R, density = 26): string {
  * The stack is the whole point of a Wiring card, so it is drawn as eight named
  * marks in slot order rather than as a decorative crescent — filled for the
  * four conscious slots, hollow for the four in shadow, numbered to match the
- * slot strip printed directly beneath it. On the band's right flank, in its
- * own sealed ring, the emblem of the card's own archetypes — the row stays
- * the fact, the crest gives each of the sixteen a face. The field is held
- * well back: it carries the Lead's character, and nothing may compete.
+ * slot strip printed directly beneath it, centred across the band. The
+ * archetype seal does not live up here: it prints on the card body, opposite
+ * the type's name (sealFor), where the paper wash cannot mute it. The field
+ * is held well back: it carries the Lead's character, and nothing may
+ * compete with the row.
  */
-function circuit(fns: Fn[], t: MbtiType, r: R): string {
+function circuit(fns: Fn[], r: R): string {
   const lead = fns[0];
   const out: string[] = [ground(hue(lead), r)];
 
@@ -513,18 +549,11 @@ function circuit(fns: Fn[], t: MbtiType, r: R): string {
     out.push(line(curve(pts), hue(f), front ? r.between(0.4, 0.9) : r.between(0.3, 0.6), front ? r.between(0.16, 0.3) : r.between(0.08, 0.16)));
   }
 
-  // The archetype seal: its own ring on the band's right flank, clear of the
-  // row — a first draft drew it as a watermark behind the marks, and the
-  // marks (rightly) won: nothing of the crest survived but slivers.
-  out.push(ring(262, 48, 21.5, INK, 0.6, 0.35));
-  out.push(emblem(t, 262, 48, 17, 1.3, hue(lead)));
-
-  // The row, compressed a step to leave the seal its flank. Inset so the end
-  // marks clear the trim by 6mm even if the guillotine wanders — the art
-  // bleeds, the data printed on it must not.
-  const R0 = 11;
+  // The row. Inset so the end marks clear the trim by 6mm even if the
+  // guillotine wanders — the art bleeds, the data printed on it must not.
+  const R0 = 12;
   const x0 = 26 + R0;
-  const gap = 27;
+  const gap = (ART_W - x0 * 2) / 7;
   const y = 49;
   out.push(line(`M${pt(x0, y)}L${pt(x0 + gap * 7, y)}`, INK, 0.5, 0.25));
   for (let i = 0; i < 8; i++) {
@@ -897,7 +926,7 @@ export function artFor(id: string, spec: ArtSpec): string {
   const r = rng(id);
   let body: string;
   switch (spec.kind) {
-    case "circuit": body = circuit(spec.fns, spec.t, r); break;
+    case "circuit": body = circuit(spec.fns, r); break;
     case "element": body = element(spec.fn, r); break;
     case "decode": body = decode(spec.letters, spec.fns, spec.seats, r); break;
     case "seat": body = seat(spec.depth, r); break;

@@ -4,7 +4,7 @@ import { DOM_AUX, RECIPROCAL, REL_NAME, REL_SCORE, SLOT_NAMES, SLOT_TAGS, TYPES,
 import { correlation } from "../src/engine/empirical";
 import { REL, relation } from "../src/engine/core";
 import { FN_COLOR } from "../src/engine/palette";
-import { ART_W, LABEL_MIN, artFor, backArt } from "../src/cards/art";
+import { ART_W, LABEL_MIN, artFor, backArt, markFor, sealFor } from "../src/cards/art";
 import { bondFacts, deck, deckSuits, fit, sparkFacts, type Card, type Suit } from "../src/cards/deck";
 import { sides } from "../src/engine/sides";
 import { CARD_PAGE, TRIM, cardHtml, cardsDocument, sheetsDocument } from "../src/cards/render";
@@ -26,7 +26,7 @@ const byId = (id: string) => CARDS.find((c) => c.id === id)!;
 
 /** What each suit must contain, and why that is the number. */
 const EXPECTED: Record<Suit, number> = {
-  front: 4,     // what this is, the alphabet, the letter decoder, how to read a card
+  front: 5,     // what this is, the frame, the alphabet, the letter decoder, how to read a card
   type: 16,     // the sixteen (lead, support) pairs
   function: 8,  // the eight information elements
   attitude: 8,  // the eight seats an element can occupy
@@ -38,9 +38,15 @@ const EXPECTED: Record<Suit, number> = {
 };
 
 describe("deck shape", () => {
-  it("is seventy-two cards in eight suits, plus four of front matter", () => {
-    expect(CARDS).toHaveLength(76);
+  it("is seventy-two cards in eight suits, plus five of front matter", () => {
+    expect(CARDS).toHaveLength(77);
     expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(72);
+  });
+
+  it("opens with the five teaching cards, in teaching order", () => {
+    expect(CARDS.slice(0, 5).map((c) => c.id)).toEqual([
+      "front-title", "front-frame", "front-elements", "front-decode", "front-key",
+    ]);
   });
 
   it("has exactly the suit sizes the model implies", () => {
@@ -102,8 +108,12 @@ describe("card copy", () => {
       const body = c.blocks.reduce((n, b) => n + b.label.length + b.text.length, 0);
       // Front-matter cards set their own budget: .card.front drops dd to 5.7pt
       // and carries no chip row, so they hold more than a suit card at the same
-      // height. Both numbers come from the print probe, not from taste.
-      expect(body, `${c.id} blocks`).toBeLessThanOrEqual(c.suit === "front" && !c.dense ? 440 : c.dense ? 460 : c.suit === "bond" ? 400 : c.suit === "type" ? 470 : 380);
+      // height. The alphabet card runs higher still — its eight key rows sit
+      // beside their discs and were sized against the probe directly. All
+      // numbers come from the print probe, not from taste.
+      const cap = c.id === "front-elements" ? 800
+        : c.suit === "front" && !c.dense ? 440 : c.dense ? 460 : c.suit === "bond" ? 400 : c.suit === "type" ? 470 : 380;
+      expect(body, `${c.id} blocks`).toBeLessThanOrEqual(cap);
     }
   });
 
@@ -471,16 +481,16 @@ describe("art", () => {
     expect(wiring.match(/class="rip i"/g)!.length).toBeGreaterThanOrEqual(4);
   });
 
-  /* Each Wiring carries the emblem of its own archetypes — sixteen original
-     figures, keyed to the ARCHETYPE table, no two alike. */
-  it("stamps a distinct archetype emblem on each of the sixteen Wirings", () => {
-    const emblems = TYPES.map((t) => {
-      const svg = artFor(`type-${t}`, byId(`type-${t}`).art);
-      const m = svg.match(/<g class="emblem">[\s\S]*?<\/g>/);
-      expect(m, t).toBeTruthy();
-      return m![0];
-    });
-    expect(new Set(emblems).size).toBe(TYPES.length);
+  /* Each Wiring carries the seal of its own archetypes — sixteen original
+     figures, keyed to the ARCHETYPE table, no two alike — printed on the card
+     body opposite the type's name rather than in the washed art band. */
+  it("stamps a distinct archetype seal on each of the sixteen Wirings", () => {
+    const seals = TYPES.map((t) => sealFor(t, stack(t)[0]));
+    expect(new Set(seals).size).toBe(TYPES.length);
+    for (const s of seals) {
+      expect(s).toContain('class="emblem"');
+      expect(s).not.toMatch(/NaN|Infinity|undefined/);
+    }
   });
 
   /* The art bleeds off all four edges; the text printed on it must not. Every
@@ -521,7 +531,7 @@ describe("print geometry", () => {
   it("sets the single-card page to the bleed size, one card per page", () => {
     const doc = cardsDocument(CARDS);
     expect(doc).toContain(`@page{size:${CARD_PAGE.w}mm ${CARD_PAGE.h}mm;margin:0;}`);
-    expect(doc.match(/<article class="card/g)).toHaveLength(76);
+    expect(doc.match(/<article class="card/g)).toHaveLength(77);
   });
 
   it("lays the proof sheets out nine to an A4 page, with crop marks", () => {
@@ -530,6 +540,18 @@ describe("print geometry", () => {
     expect(doc.match(/class="sheet"/g)).toHaveLength(Math.ceil(CARDS.length / 9));
     expect(doc).toContain('class="mark v"');
     expect(doc).toContain('class="mark h"');
+  });
+
+  /* The seal prints on Wiring cards only, opposite the type's name; the
+     alphabet card keys each of its eight rows with that element's own mark. */
+  it("seats the seal on Wirings and the key marks on the alphabet card", () => {
+    expect(cardHtml(byId("type-ENTP"))).toContain('class="seal"');
+    expect(cardHtml(byId("function-Ne"))).not.toContain('class="seal"');
+    expect(cardHtml(byId("front-key"))).not.toContain('class="seal"');
+    const alphabet = cardHtml(byId("front-elements"));
+    expect(alphabet.match(/class="keymark"/g)).toHaveLength(8);
+    expect(markFor("Ne")).toContain('class="rip e"');
+    expect(markFor("Ni")).toContain('class="rip i"');
   });
 
   /* dt uppercases its label as chrome, which set "Ne" as "NE" on the very

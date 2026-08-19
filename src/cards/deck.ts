@@ -13,7 +13,7 @@ import { correlation } from "../engine/empirical";
 /* ------------------------------------------------------------------ *
  * THE DECK
  *
- * Seventy-six cards, and none of them carries a fact the engine does not.
+ * Seventy-seven cards, and none of them carries a fact the engine does not.
  * Everything a card says is read off the engine that already renders /type,
  * /pair and /lexicon — the stacks, the relation codes, the ease ramp, the
  * Octagram wheels — so a card cannot disagree with the app it came from.
@@ -44,8 +44,9 @@ export type ArtSpec =
   | { kind: "bond"; fns: Fn[] }
   | { kind: "mesh"; fns: [Fn, Fn, Fn, Fn] };
 
-/** A labelled paragraph on the lower half of a card. */
-export interface CardBlock { label: string; text: string }
+/** A labelled paragraph on the lower half of a card. `fn` prints that element's
+ * own mark — the named, rippled disc — beside the row as a key. */
+export interface CardBlock { label: string; text: string; fn?: Fn }
 
 /** A small coloured tag. `note` turns the row into a labelled strip rather than loose pills. */
 export interface Chip { text: string; fn?: Fn; dim?: boolean; note?: string }
@@ -623,17 +624,19 @@ function wheelCards(): Card[] {
 }
 
 /**
- * The four cards someone opening the box reads first, in this order:
- * what this is, the alphabet it is written in, how four letters pick a
- * stack, and how to read one card.
+ * The five cards someone opening the box reads first, in this order:
+ * what this is, the frame the suits hang on, the alphabet it is written
+ * in, how four letters pick a stack, and how to read one card.
  *
  * The first build opened with "computed from sixteen (lead, support) pairs and
  * three involutions on eight elements" — true, and useless to anyone who has
  * not already read the app. A deck has to teach its own vocabulary from a
  * standing start, so nothing on these cards uses a term the cards
- * themselves have not defined. The decoder is the third, not the last,
- * because it answers the first question anyone arriving with "I'm an INTJ"
- * actually has — how those letters become the row every Wiring card draws.
+ * themselves have not defined. The frame card is the contents page with a
+ * reason attached: not just which suits exist, but what question each one
+ * answers and why the order matters. The decoder sits fourth because it
+ * answers the first question anyone arriving with "I'm an INTJ" actually
+ * has — how those letters become the row every Wiring card draws.
  */
 function frontMatter(): Card[] {
   const suits = deckSuits();
@@ -646,7 +649,7 @@ function frontMatter(): Card[] {
   return [
     {
       id: "front-title",
-      suit: "front", suitLabel: "Start here", n: 1, of: 4,
+      suit: "front", suitLabel: "Start here", n: 1, of: 5,
       title: "Octant",
       subtitle: "how a person is wired, in eight parts",
       lede: "Everyone runs the same eight mental tools. What differs is the order you trust them in — and that order is what this deck lays out.",
@@ -669,20 +672,49 @@ function frontMatter(): Card[] {
       art: { kind: "mark", fns: FN_ORDER },
     },
     {
+      id: "front-frame",
+      suit: "front", suitLabel: "Start here", n: 2, of: 5,
+      title: "The frame",
+      subtitle: "what each suit is, and why it matters",
+      dense: true,
+      lede: "Each suit answers the question the suit before it raises.",
+      chips: [],
+      blocks: [
+        { label: "Elements", text: "the eight tools every mind runs." },
+        { label: "Seats", text: "the fixed order, 1–8 — why one tool feels different in different hands." },
+        { label: "Wirings", text: "tool meets seat: sixteen types. Yours is home base." },
+        { label: "Sides", text: "one wiring, four modes: default, rest, argument, last resort." },
+        { label: "Camps", text: "types that value the same four tools." },
+        { label: "Bonds & Channels", text: "two people: which tools answer each other, at what ease." },
+        { label: "Wheels", text: "what a pairing is for, over years." },
+      ],
+      footer: "One mind first — Elements to Sides — then the group and pair suits: Camps to Wheels",
+      art: { kind: "mark", fns: FN_ORDER },
+    },
+    {
       id: "front-elements",
-      suit: "front", suitLabel: "Start here", n: 2, of: 4,
+      suit: "front", suitLabel: "Start here", n: 3, of: 5,
       title: "The eight elements",
       subtitle: "the alphabet every other card is spelled in",
       dense: true,
-      lede: "Capital letter names the family — N intuition, S sensing, T thinking, F feeling. Small letter is its attitude, the way it faces: e outward, i inward.",
+      lede: "Capital is the family, small the direction it faces.",
       chips: [],
-      blocks: FN_ORDER.map((fn) => ({ label: fn, text: `${FN_ROLE[fn].toLowerCase()} — wants ${FN_WANTS[fn].toLowerCase()}.` })),
+      // Each row keys itself: the element's own mark on the left, then the
+      // full name, what it does, and what it claims authority over. "Wants"
+      // lives on the element's own suit card — a key row holds two lines
+      // beside its disc, and the full name earns its place by spelling out
+      // what the capital and small letters mean, row by row.
+      blocks: FN_ORDER.map((fn) => ({
+        label: fn,
+        fn,
+        text: `${FN_FULL[fn]} — ${FN_ROLE[fn].toLowerCase()}, claims ${FN_KEYWORD[fn].toLowerCase()}.`,
+      })),
       footer: "Hues: violet N, amber S, teal T, rose F · filled conscious, hollow shadow · ripple e out, i in",
       art: { kind: "mark", fns: FN_ORDER },
     },
     {
       id: "front-decode",
-      suit: "front", suitLabel: "Start here", n: 3, of: 4,
+      suit: "front", suitLabel: "Start here", n: 4, of: 5,
       title: "The four letters",
       subtitle: "how a code like INTJ picks the seats",
       dense: true,
@@ -699,7 +731,7 @@ function frontMatter(): Card[] {
     },
     {
       id: "front-key",
-      suit: "front", suitLabel: "Start here", n: 4, of: 4,
+      suit: "front", suitLabel: "Start here", n: 5, of: 5,
       title: "How to read a card",
       subtitle: `${total} cards, ${suits.length} suits`,
       dense: true,

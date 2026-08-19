@@ -1,6 +1,6 @@
 # The deck
 
-Seventy-six printed cards — seventy-two in eight suits, plus four that teach the
+Seventy-seven printed cards — seventy-two in eight suits, plus five that teach the
 deck its own vocabulary — generated from the same engine that renders `/type`,
 `/pair` and `/matrix`, with a matching card back. A card cannot disagree with the
 app, because no card carries a fact of its own: the stacks, the relation codes, the
@@ -37,15 +37,17 @@ titled by the same name the Wiring strip prints under each element, the Lead car
 says its Power is what the Wirings print as the Superpower, and the Dread card
 says its Hate is the Kryptonite.
 
-Four cards sit in front of the suits, because a deck has to teach its own
-vocabulary from a standing start: **Octant** (what this is, in eight parts), **The
-eight elements** (the alphabet, with the letter system explained), **The four
-letters** (the decoder: how a code like INTJ picks the seats, worked from
-`stack()` so it cannot disagree with the engine), and **How to read a card**
-(the anatomy and the suit list). Nothing on those four uses a term the cards
-themselves have not defined. The decoder answers the first question anyone
-arriving with "I'm an INTJ" actually has — the app's own `LettersToStack`
-walkthrough, condensed to card size.
+Five cards sit in front of the suits, because a deck has to teach its own
+vocabulary from a standing start: **Octant** (what this is, in eight parts),
+**The frame** (the contents page with a reason attached — what question each
+suit answers and why the order matters), **The eight elements** (the alphabet:
+each row keyed by the element's own mark, with its full name and what it
+claims), **The four letters** (the decoder: how a code like INTJ picks the
+seats, worked from `stack()` so it cannot disagree with the engine), and
+**How to read a card** (the anatomy and the suit list). Nothing on those five
+uses a term the cards themselves have not defined. The decoder answers the
+first question anyone arriving with "I'm an INTJ" actually has — the app's own
+`LettersToStack` walkthrough, condensed to card size.
 
 ## Bonds
 
@@ -162,12 +164,16 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
 
 Each Wiring also bears the **seal of its own archetypes** — sixteen original
 figures keyed to the `ARCHETYPE` table (the Prospector's seams fanning from one
-strike, the Watchman's tower on the horizon, the Keeper's key…), drawn in ink
-with one accent in the Lead's hue, in a ring on the band's right flank. They are
-this system's own imagery, not borrowed icons; a test asserts all sixteen are
-distinct. A first draft drew the seal as a watermark behind the stack row, and
-the row (rightly) won — nothing survived but slivers, so the seal got a flank of
-its own instead.
+strike, the Watchman's dark tower on the horizon, the Keeper's key…), drawn
+bold in ink with the Lead's hue as the accent, inside a ring. They are this
+system's own imagery, not borrowed icons; a test asserts all sixteen are
+distinct. The seal prints on the **card body**, opposite the type's name under
+the head rule — two earlier drafts sat it in the art band, first as a watermark
+behind the stack row (the row won; nothing survived but slivers) and then on
+the band's flank (where the paper wash muted it). On clean paper it runs at
+full strength, which is what a seal is for. The alphabet card uses the same
+trick in miniature: each of its eight rows carries that element's own mark
+(`markFor`) as a key, so the disc system and the words teach each other.
 
 ### What the art may not say
 
@@ -212,7 +218,7 @@ the build downloads none.
 
 Three files come out of `dist-cards/`:
 
-- **`octant-cards.pdf`** — one card per page at the bleed size, 76 pages. This is
+- **`octant-cards.pdf`** — one card per page at the bleed size, 77 pages. This is
   the file a print-on-demand house wants (MakePlayingCards, Printer Studio and
   similar all take 2.72 × 3.71in with bleed).
 - **`octant-sheets.pdf`** — 9 A4 pages, nine cards to a page at trim size with

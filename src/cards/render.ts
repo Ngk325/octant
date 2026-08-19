@@ -1,4 +1,4 @@
-import { artFor, backArt } from "./art";
+import { artFor, backArt, markFor, sealFor } from "./art";
 import type { Card, Chip } from "./deck";
 import { FN_COLOR } from "../engine/palette";
 
@@ -103,12 +103,29 @@ dd{font-size:6.5pt;line-height:1.22;color:var(--ink2);}
 .card.dense .blocks .b{margin-top:1.05mm;}
 /* A Wiring runs four blocks where every other suit runs three; it pays for the
    fourth with tighter leading, not smaller type. */
-.card.type .blocks .b{margin-top:.7mm;}
+.card.type .blocks .b{margin-top:.6mm;}
 .card.type .lede{margin-top:1mm;}
-.card.type .strip{margin-top:1.2mm;}
+.card.type .strip{margin-top:1mm;}
 .card.dense dt{display:inline;margin:0;}
 .card.dense dt::after{content:" · ";letter-spacing:0;}
 .card.dense dd{display:inline;}
+/* The archetype seal sits opposite the type's name, under the head rule —
+   in the body, on clean paper, because the art band's wash would mute it. */
+.trow{display:flex;justify-content:space-between;align-items:flex-start;gap:1.2mm;}
+.trow .tt{min-width:0;}
+svg.seal{flex:none;width:9mm;height:9mm;margin-top:.2mm;}
+/* Key rows: the element's own mark beside its line, so the disc system and
+   the words teach each other. 4.7mm keeps the two letters at the 4.5pt floor. */
+.blocks .b.key{display:flex;align-items:center;gap:1.1mm;}
+.card.front.dense .blocks .b.key{margin-top:.2mm;}
+.card.front.dense .blocks:has(.b.key){padding-top:.8mm;}
+/* Two text lines beside a disc must not outgrow the disc. The line box is
+   set on the wrapper: its inherited 6.5pt strut, not the 5.35pt text, was
+   what decided each line's height. */
+.card.front.dense .b.key .kt{font-size:5.35pt;line-height:1.12;}
+.card.front.dense .b.key dt,.card.front.dense .b.key dd{line-height:inherit;}
+.b.key svg.keymark{flex:none;width:4.7mm;height:4.7mm;}
+.b.key .kt{min-width:0;}
 .card.front h1{font-size:18pt;}
 .card.front .lede{font-size:7pt;}
 .card.front dd{font-size:5.7pt;line-height:1.22;}
@@ -153,17 +170,26 @@ function stripHtml(chips: Chip[]): string {
 export function cardHtml(card: Card): string {
   const isStrip = card.chips.some((c) => c.note);
   const wide = card.title.length > 13;
+  // A Wiring's title row carries the archetype seal opposite the type's name.
+  const seal = card.art.kind === "circuit" ? sealFor(card.art.t, card.art.fns[0]) : "";
+  const titleBlock = seal
+    ? `<div class="trow"><div class="tt"><h1>${esc(card.title)}</h1><p class="sub">${esc(card.subtitle)}</p></div>${seal}</div>`
+    : `<h1>${esc(card.title)}</h1><p class="sub">${esc(card.subtitle)}</p>`;
   return (
     `<article class="card ${card.suit}${wide ? " wide" : ""}${card.dense ? " dense" : ""}" data-id="${esc(card.id)}">` +
     `<div class="artwrap">${artFor(card.id, card.art)}</div>` +
     `<div class="body">` +
     `<div class="head"><span>${esc(card.suitLabel)}</span><span>${card.n} / ${card.of}</span></div>` +
-    `<h1>${esc(card.title)}</h1>` +
-    `<p class="sub">${esc(card.subtitle)}</p>` +
+    titleBlock +
     `<p class="lede">${esc(card.lede)}</p>` +
     (card.chips.length ? (isStrip ? stripHtml(card.chips) : `<ul class="chips">${card.chips.map(chipHtml).join("")}</ul>`) : "") +
     `<dl class="blocks">` +
-    card.blocks.map((b) => `<div class="b"><dt>${dtHtml(b.label)}</dt><dd>${esc(b.text)}</dd></div>`).join("") +
+    card.blocks.map((b) => {
+      const inner = `<dt>${dtHtml(b.label)}</dt><dd>${esc(b.text)}</dd>`;
+      return b.fn
+        ? `<div class="b key">${markFor(b.fn)}<div class="kt">${inner}</div></div>`
+        : `<div class="b">${inner}</div>`;
+    }).join("") +
     `</dl>` +
     `<p class="foot">${esc(card.footer)}</p>` +
     `</div></article>`
