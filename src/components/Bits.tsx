@@ -54,15 +54,44 @@ export function Score({ value, caption }: { value: number; caption: string }) {
 }
 
 /** A function name in its own colour, used inline in prose. */
-export function FnTag({ fn, size, children }: {
+export function FnTag({ fn, size, disc, shadow, children }: {
   fn: string;
   /** Font size override, e.g. "var(--t-lg)" where the tag is a heading. */
   size?: string;
+  /**
+   * Lead with the deck's disc, sized to the text: a dot in the element's
+   * hue with four crests on the diagonals, breaking outward for e and
+   * inward for i — the attitude readable before the letters are.
+   */
+  disc?: boolean;
+  /** With `disc`: hollow ring instead of a filled dot — the element runs in shadow here. */
+  shadow?: boolean;
   children?: ReactNode;
 }) {
   const p = usePalette();
+  const c = p.fn(fn as never);
+  const out = fn[1] === "e";
   return (
-    <b className="mono" style={{ color: p.fn(fn as never), fontWeight: 500, fontSize: size }}>
+    <b className="mono" style={{ color: c, fontWeight: 500, fontSize: size, whiteSpace: "nowrap" }}>
+      {disc && (
+        <svg
+          width="0.95em" height="0.95em" viewBox="0 0 20 20" aria-hidden="true"
+          style={{ verticalAlign: "-0.1em", marginRight: "0.22em" }}
+        >
+          {[45, 135, 225, 315].map((deg) => (
+            /* one crest per diagonal; at text size the crest IS the ripple */
+            <path
+              key={deg}
+              d={out ? "M 8.4 3.6 L 10 1.2 L 11.6 3.6 Z" : "M 8.4 1.4 L 10 4 L 11.6 1.4 Z"}
+              transform={`rotate(${deg} 10 10)`}
+              fill={c} fillOpacity="0.6"
+            />
+          ))}
+          {shadow
+            ? <circle cx="10" cy="10" r="4.6" fill="none" stroke={c} strokeWidth="1.7" />
+            : <circle cx="10" cy="10" r="5.4" fill={c} />}
+        </svg>
+      )}
       {children ?? fn}
     </b>
   );

@@ -315,7 +315,7 @@ function TypeDrilldown({
             return (
               <Panel key={key}>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--s3)" }}>
-                  <SideDoor side={key} fn={side.gateway.fn} />
+                  <SideDoor side={key} gate={side.gateway.egoSlot} />
                   <div>
                     <h4 style={{ margin: 0, display: "flex", alignItems: "center", gap: 6 }}>
                       <span style={{ lineHeight: 1 }} aria-hidden="true">{DOOR_EMOJI[key]}</span> {side.name}

@@ -8,6 +8,7 @@ import Figure from "../components/Figure";
 import Term from "../components/Term";
 import { Panel, Row, FnTag } from "../components/Bits";
 import FourSidesDiagram from "../components/FourSidesDiagram";
+import DoorRow from "../components/DoorRow";
 import GatewayPath from "../components/GatewayPath";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 
@@ -70,6 +71,20 @@ export default function Sides() {
         }
       >
         <FourSidesDiagram type={type} />
+      </Figure>
+
+      <Figure
+        label="Four doors, compared."
+        caption={
+          <>
+            Access is a comparison: open, ajar, cracked, barred. Each lintel names the seat of
+            your own stack that opens that side.
+          </>
+        }
+      >
+        <div className="cluster" style={{ justifyContent: "center" }}>
+          <DoorRow type={type} />
+        </div>
       </Figure>
 
       <Figure

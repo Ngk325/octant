@@ -2,6 +2,7 @@ import { stack, type MbtiType } from "../engine/core";
 import { ops } from "../engine/ops";
 import { SLOT_NAMES, SLOT_TAGS, FN_FULL, type Fn } from "../engine/data";
 import { SLOT_PLAIN } from "../engine/plain";
+import { FnDiscMark } from "./glyphs/FnDisc";
 import { usePalette } from "./Theme";
 
 /**
@@ -78,7 +79,7 @@ export default function WiringSchematic({ type, showCorrespondence }: {
             />
           ))}
           <text x="0" y={H - 6} fill="var(--muted)" fontSize="14">
-            1↔5 · 2↔6 · 3↔7 · 4↔8 — each shadow slot is its ego slot&apos;s element, facing the other way
+            1↔5 · 2↔6 · 3↔7 · 4↔8 — each shadow seat holds its ego seat&apos;s tool, facing the other way
           </text>
         </g>
       )}
@@ -95,7 +96,7 @@ export default function WiringSchematic({ type, showCorrespondence }: {
           <g key={fn}>
             {i < 7 && (
               <line
-                x1={RAIL} y1={y + 13} x2={RAIL} y2={y + ROW - 13}
+                x1={RAIL} y1={y + 18} x2={RAIL} y2={y + ROW - 18}
                 stroke={i === 3 ? "var(--rule-strong)" : col}
                 strokeOpacity={i === 3 ? 1 : shadow ? 0.3 : 0.45}
                 strokeWidth={i === 3 ? 1.5 : 2}
@@ -114,23 +115,16 @@ export default function WiringSchematic({ type, showCorrespondence }: {
               {SLOT_TAGS[i]}
             </text>
 
-            {/* node */}
-            <circle cx={RAIL} cy={y} r={shadow ? 7 : 10} fill={col} opacity={shadow ? 0.55 : 1} />
-            {!shadow && <circle cx={RAIL} cy={y} r="15" fill="none" stroke={col} strokeOpacity="0.35" strokeWidth="2" />}
+            {/* node — the deck's mark: letters in the disc, filled while
+                conscious, hollow once the stack crosses into shadow, ripples
+                breaking outward for e and inward for i. */}
+            <FnDiscMark fn={fn} cx={RAIL} cy={y} r={14} solid={!shadow} />
 
-            {/* function + meaning */}
-            <text
-              x={RAIL + 30} y={y - 2}
-              fill={col} fontSize="17" fontWeight="600"
-              fontFamily="'IBM Plex Mono', monospace"
-              opacity={shadow ? 0.85 : 1}
-            >
-              {fn}
-            </text>
-            <text x={RAIL + 74} y={y - 2} fill={shadow ? "var(--muted)" : "var(--ink)"} fontSize="15">
+            {/* meaning — the disc itself carries the two letters now */}
+            <text x={RAIL + 34} y={y - 2} fill={shadow ? "var(--muted)" : "var(--ink)"} fontSize="15">
               {FN_FULL[fn]}
             </text>
-            <text x={RAIL + 30} y={y + 19} fill="var(--muted)" fontSize="14">
+            <text x={RAIL + 34} y={y + 19} fill="var(--muted)" fontSize="14">
               {shortPlain(SLOT_PLAIN[SLOT_NAMES[i]])}
             </text>
 

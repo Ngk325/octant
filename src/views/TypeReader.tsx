@@ -30,6 +30,7 @@ import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
 import FourSidesDiagram from "../components/FourSidesDiagram";
+import DoorRow from "../components/DoorRow";
 import AnimalStack from "../components/AnimalStack";
 import OctagramWheel from "../components/OctagramWheel";
 import ThemeSeasons from "../components/ThemeSeasons";
@@ -44,6 +45,7 @@ import GatewayPath from "../components/GatewayPath";
 import SaviorDemonGrid from "../components/SaviorDemonGrid";
 import RelationLanding from "../components/RelationLanding";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
+import ArchetypeSeal from "../components/glyphs/ArchetypeSeal";
 import FnIcon from "../components/glyphs/FnIcon";
 
 /* ==================================================================== *
@@ -208,6 +210,10 @@ export default function TypeReader() {
       <div style={{ display: "flex", alignItems: "center", gap: "var(--s5)", flexWrap: "wrap" }}>
         <TypeMolecule type={t} size={96} />
         <h1 style={{ margin: 0 }}>{t}</h1>
+        {/* the archetype seal stands opposite the name, exactly like the card */}
+        <span style={{ marginLeft: "auto" }}>
+          <ArchetypeSeal type={t} size={84} />
+        </span>
       </div>
       <p className="lede">{typePlain(t, st[0], st[1], st[3])}</p>
 
@@ -388,6 +394,20 @@ export default function TypeReader() {
         }
       >
         <FourSidesDiagram type={t} />
+      </Figure>
+
+      <Figure
+        label="Four doors, compared."
+        caption={
+          <>
+            Access is a comparison: open, ajar, cracked, barred. Each lintel names the seat of
+            your own stack that opens that side.
+          </>
+        }
+      >
+        <div className="cluster" style={{ justifyContent: "center" }}>
+          <DoorRow type={t} />
+        </div>
       </Figure>
 
       <Figure

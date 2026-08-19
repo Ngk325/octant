@@ -19,6 +19,7 @@ import FnIcon from "../components/glyphs/FnIcon";
 import SelfTribeCone from "../components/glyphs/SelfTribeCone";
 import AnimalGlyph from "../components/glyphs/AnimalGlyph";
 import SideDoor from "../components/glyphs/SideDoor";
+import SeatFigure from "../components/glyphs/SeatFigure";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 import LettersToStack from "../components/LettersToStack";
 import FourSidesDiagram from "../components/FourSidesDiagram";
@@ -176,8 +177,8 @@ export const STAGES: Stage[] = [
         <>
           <Explain big plain={CONCEPT_PLAIN.stack}>
             <p>
-              The eight-slot stack is generated, not listed. Given a dominant and an auxiliary,
-              the other six slots follow by applying the three moves — so sixteen pairs
+              The eight-seat stack is generated, not listed. Given a dominant and an auxiliary,
+              the other six seats follow by applying the three moves — so sixteen pairs
               produce sixteen complete stacks with no lookup table.
             </p>
           </Explain>
@@ -192,13 +193,13 @@ export const STAGES: Stage[] = [
             label="Read top to bottom."
             caption={
               <>
-                Strongest at the top, weakest at the bottom. Slots 1–4 feel like &ldquo;me&rdquo;;
-                slots 5–8 feel like things that happen to you. Everything else in this course is
+                Strongest at the top, weakest at the bottom. Seats 1–4 feel like &ldquo;me&rdquo;;
+                seats 5–8 feel like things that happen to you. Everything else in this course is
                 about those eight rows.
               </>
             }
           >
-            <WiringSchematic type={t} />
+            <WiringSchematic type={t} showCorrespondence />
           </Figure>
 
           <h3>How four letters become that order</h3>
@@ -223,8 +224,8 @@ export const STAGES: Stage[] = [
               <>
                 Every type in this app carries this mark: its four ego functions as beads,
                 biggest first. Once you can read one molecule you can read all sixteen at a
-                glance — the size says the rank, the colour says the function, a ring means it
-                faces outward and a core means inward.
+                glance — the size says the rank, the colour says the function, and the ripples
+                say which way it faces: crests breaking outward for e, inward for i.
               </>
             }
           >
@@ -296,11 +297,18 @@ export const STAGES: Stage[] = [
             plain="The bottom four still run. They just do not feel like you doing something — they feel like something happening to you. This is where worry, cynicism, blind spots and your worst behaviour live."
           >
             <p>
-              The shadow block. Each shadow slot is the attitude-flip of its ego counterpart:
+              The shadow block. Each shadow seat is the attitude-flip of its ego counterpart:
               the Doubt is the Lead&rsquo;s function in the opposite attitude, and so on down.
               They are not lesser functions, they are the same functions running unsupervised.
             </p>
           </Explain>
+
+          <Figure
+            label="Seat 5, located."
+            caption="The Doubt is seat 1's twin: the same tool, facing the other way. Every shadow seat pairs off across the divide like this — 1 with 5, 2 with 6, 3 with 7, 4 with 8."
+          >
+            <SeatFigure depth={4} />
+          </Figure>
 
           <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
             {SLOT_NAMES.slice(4).map((name, i) => (
@@ -416,20 +424,20 @@ export const STAGES: Stage[] = [
           </Figure>
 
           <Figure
-            label="Four doors, one keystone each."
+            label="Four doors, one gateway seat each."
             caption={
               <>
-                Every side is entered through one function of your own ego stack — the bead in
-                each keystone. The ego stands open; the subconscious is ajar behind insecurity;
-                the unconscious closed behind worry; the superego barred, and best left so until
-                the others are developed.
+                Every side is entered through one seat of your own stack — named on each
+                door&rsquo;s lintel. The ego stands open; the subconscious is ajar behind
+                insecurity; the unconscious cracked behind worry; the superego barred, and best
+                left so until the others are developed.
               </>
             }
           >
             <div className="cluster" style={{ gap: "var(--s5)", alignItems: "flex-end", justifyContent: "center" }}>
               {SIDE_ORDER.map((k) => (
                 <div key={k} style={{ textAlign: "center" }}>
-                  <SideDoor side={k} fn={s[k].gateway.fn} />
+                  <SideDoor side={k} gate={s[k].gateway.egoSlot} />
                   <span className="small muted">{s[k].name}</span>
                 </div>
               ))}
