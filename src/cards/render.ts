@@ -72,7 +72,6 @@ function cardCss(): string {
   font-family:${SANS};font-size:5.1pt;letter-spacing:.16em;text-transform:uppercase;
   color:var(--muted);border-bottom:.24mm solid var(--rule);padding-bottom:.7mm;margin-bottom:1.5mm;}
 h1{font-size:14pt;line-height:1.02;font-weight:600;letter-spacing:-.01em;}
-.card.wide h1{font-size:11.4pt;}
 .sub{font-family:${SANS};font-size:5.7pt;line-height:1.25;color:var(--ink2);
   margin-top:.8mm;letter-spacing:.005em;}
 .lede{font-size:7pt;line-height:1.29;margin-top:1.3mm;color:var(--ink);}
@@ -102,6 +101,13 @@ dd{font-size:6.5pt;line-height:1.22;color:var(--ink2);}
 .card.front .lede{font-size:7pt;}
 .card.front dd{font-size:5.7pt;line-height:1.22;}
 .card.front .blocks .b{margin-top:1mm;}
+/* A dense front card is an eight-item list — the two longest faces in the deck.
+   They get their own step down, and the wide rule comes last so a long title
+   never keeps the 18pt front size and wraps the list off the card. */
+.card.front.dense dt,.card.front.dense dd{font-size:5.35pt;line-height:1.2;}
+.card.front.dense .blocks .b{margin-top:.72mm;}
+.card.front.dense .lede{font-size:6.4pt;}
+.card.wide h1{font-size:11.4pt;}
 `;
 }
 

@@ -3,7 +3,7 @@ import { alpha, stack } from "../src/engine/core";
 import { RECIPROCAL, REL_NAME, REL_SCORE, SLOT_NAMES, TYPES, type Fn, type RelCode } from "../src/engine/data";
 import { REL, relation } from "../src/engine/core";
 import { FN_COLOR } from "../src/engine/palette";
-import { artFor } from "../src/cards/art";
+import { ART_W, LABEL_MIN, artFor } from "../src/cards/art";
 import { deck, deckSuits, fit, type Card, type Suit } from "../src/cards/deck";
 import { CARD_PAGE, TRIM, cardHtml, cardsDocument, sheetsDocument } from "../src/cards/render";
 
@@ -24,20 +24,21 @@ const byId = (id: string) => CARDS.find((c) => c.id === id)!;
 
 /** What each suit must contain, and why that is the number. */
 const EXPECTED: Record<Suit, number> = {
-  front: 2,
+  front: 3,     // what this is, the alphabet, how to read a card
   type: 16,     // the sixteen (lead, support) pairs
   function: 8,  // the eight information elements
   attitude: 8,  // the eight slots an element can occupy
   quadra: 4,    // four value camps
   side: 4,      // four sides of one mind
+  bond: 4,      // the four axis pairings — omega has exactly four orbits on eight elements
   relation: 16, // sixteen intertype codes
   wheel: 8,     // eight Octagram wheels
 };
 
 describe("deck shape", () => {
-  it("is sixty-four cards in seven suits, plus two of front matter", () => {
-    expect(CARDS).toHaveLength(66);
-    expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(64);
+  it("is sixty-eight cards in eight suits, plus three of front matter", () => {
+    expect(CARDS).toHaveLength(71);
+    expect(CARDS.filter((c) => c.suit !== "front")).toHaveLength(68);
   });
 
   it("has exactly the suit sizes the model implies", () => {
@@ -64,7 +65,7 @@ describe("deck shape", () => {
 
   it("agrees with deckSuits(), which the key card prints", () => {
     const total = deckSuits().reduce((n, s) => n + s.count, 0);
-    expect(total).toBe(64);
+    expect(total).toBe(68);
     for (const s of deckSuits()) expect(s.count, s.label).toBe(EXPECTED[s.suit]);
   });
 });
@@ -77,9 +78,9 @@ describe("card copy", () => {
         expect(value, `${c.id}.${field}`).not.toMatch(/undefined|NaN|\[object|\$\{/);
       }
       expect(c.blocks.length, c.id).toBeGreaterThanOrEqual(2);
-      // Three blocks on a playing card; the key card runs its seven suits as a
-      // dense list instead, which is why it declares `dense`.
-      expect(c.blocks.length, c.id).toBeLessThanOrEqual(c.dense ? 7 : 3);
+      // Three blocks on a playing card. The front-matter list cards run their
+      // eight items as a dense list instead, which is why they declare `dense`.
+      expect(c.blocks.length, c.id).toBeLessThanOrEqual(c.dense ? 8 : 3);
       for (const b of c.blocks) {
         expect(b.label, c.id).toBeTruthy();
         expect(b.text, c.id).toBeTruthy();
@@ -96,7 +97,10 @@ describe("card copy", () => {
       expect(c.lede.length, `${c.id} lede`).toBeLessThanOrEqual(155);
       expect(c.footer.length, `${c.id} footer`).toBeLessThanOrEqual(96);
       const body = c.blocks.reduce((n, b) => n + b.label.length + b.text.length, 0);
-      expect(body, `${c.id} blocks`).toBeLessThanOrEqual(c.dense ? 460 : 380);
+      // Front-matter cards set their own budget: .card.front drops dd to 5.7pt
+      // and carries no chip row, so they hold more than a suit card at the same
+      // height. Both numbers come from the print probe, not from taste.
+      expect(body, `${c.id} blocks`).toBeLessThanOrEqual(c.suit === "front" && !c.dense ? 440 : c.dense ? 460 : c.suit === "bond" ? 400 : 380);
     }
   });
 
@@ -228,6 +232,54 @@ describe("art", () => {
     for (const fn of stack("ENTP")) expect(svg, fn).toContain(FN_COLOR.light[fn]);
     expect(FNS).toHaveLength(8);
   });
+
+  /* Colour cannot say which element a circle is: four hue families over eight
+     elements means every hue appears twice, and someone opening the box has no
+     key yet. So a drawn element is always a named one. */
+  it("names every element it draws, on every card that draws one", () => {
+    for (const c of CARDS) {
+      const spec = c.art;
+      const drawn: Fn[] =
+        spec.kind === "element" ? [spec.fn]
+        : spec.kind === "seat" ? []
+        : "fns" in spec ? [...new Set(spec.fns)]
+        : [];
+      if (spec.kind === "element") continue; // the title of the card is the name
+      const svg = artFor(c.id, spec);
+      const named = new Set((svg.match(/>(N[ei]|S[ei]|T[ei]|F[ei])</g) ?? []).map((m) => m.slice(1, -1)));
+      for (const fn of drawn) expect(named.has(fn), `${c.id} draws ${fn} without naming it`).toBe(true);
+    }
+  });
+
+  /* A Seat is type-agnostic: which element occupies slot 3 is exactly what
+     varies across the sixteen Wirings. The first build sketched a function
+     inside each bar, picked by (i * 3 + depth) % 8, which asserted a mapping
+     that does not exist. */
+  it("names no element at all on a Seat card", () => {
+    for (const c of CARDS.filter((x) => x.suit === "attitude")) {
+      const svg = artFor(c.id, c.art);
+      expect(svg.match(/>(N[ei]|S[ei]|T[ei]|F[ei])</g), c.id).toBeNull();
+      for (const hex of Object.values(FN_COLOR.light)) expect(svg, `${c.id} used ${hex}`).not.toContain(hex);
+    }
+  });
+
+  /* The art bleeds off all four edges; the text printed on it must not. Every
+     label sits between 6mm from the page edge and the line where render.ts
+     starts washing the art back to paper. Both numbers in art units. */
+  it("keeps every label inside the safe window", () => {
+    const TOP = 26, BOTTOM = 74;
+    for (const c of CARDS) {
+      for (const m of artFor(c.id, c.art).matchAll(/<text x="([-\d.]+)" y="([-\d.]+)" font-size="([\d.]+)"/g)) {
+        const [x, y, size] = [Number(m[1]), Number(m[2]), Number(m[3])];
+        expect(y - size / 2, `${c.id} label top`).toBeGreaterThanOrEqual(TOP - 1);
+        expect(y + size / 2, `${c.id} label bottom`).toBeLessThanOrEqual(BOTTOM);
+        expect(x, `${c.id} label x`).toBeGreaterThan(14);
+        expect(x, `${c.id} label x`).toBeLessThan(ART_W - 14);
+        // 4.5pt is the deck's chrome floor; one art unit is 0.653pt.
+        expect(size, `${c.id} label size`).toBeGreaterThanOrEqual(LABEL_MIN);
+      }
+    }
+  });
 });
 
 describe("print geometry", () => {
@@ -240,7 +292,7 @@ describe("print geometry", () => {
   it("sets the single-card page to the bleed size, one card per page", () => {
     const doc = cardsDocument(CARDS);
     expect(doc).toContain(`@page{size:${CARD_PAGE.w}mm ${CARD_PAGE.h}mm;margin:0;}`);
-    expect(doc.match(/<article class="card/g)).toHaveLength(66);
+    expect(doc.match(/<article class="card/g)).toHaveLength(71);
   });
 
   it("lays the proof sheets out nine to an A4 page, with crop marks", () => {

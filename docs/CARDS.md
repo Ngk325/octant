@@ -1,10 +1,10 @@
 # The deck
 
-Sixty-six printed cards — sixty-four in seven suits, plus a title card and a key —
-generated from the same engine that renders `/type`, `/pair` and `/matrix`. A card
-cannot disagree with the app, because no card carries a fact of its own: the stacks,
-the relation codes, the ease scores, the Octagram wheels and the four sides are all
-read off `src/engine/` at build time.
+Seventy-one printed cards — sixty-eight in eight suits, plus three that teach the
+deck its own vocabulary — generated from the same engine that renders `/type`,
+`/pair` and `/matrix`. A card cannot disagree with the app, because no card carries
+a fact of its own: the stacks, the relation codes, the ease scores, the Octagram
+wheels and the four sides are all read off `src/engine/` at build time.
 
 ```sh
 npm run cards         # → dist-cards/ (two PDFs, two HTML files)
@@ -13,18 +13,50 @@ npm run cards:html    # HTML only, no browser needed
 
 ## What is in it
 
+Suits run easiest first, so the deck can be read in print order from a standing
+start: the alphabet, then the seats it sits in, then the sixteen orders it comes in.
+
 | Suit | Cards | What one card is |
 |---|---:|---|
-| **Wirings** | 16 | One type: its stack in slot order, superpower, kryptonite, and who it rests with. |
 | **Elements** | 8 | One information element: what it claims authority over, what it sounds like out loud, what it looks like starved. |
 | **Seats** | 8 | One of the eight slots, by the attitude it carries — Power, Responsibility, Innocence, Fear, Worry, Cynicism, Blindspot, Hate. |
+| **Wirings** | 16 | One type: its stack in slot order, superpower, kryptonite, and who it rests with. |
 | **Camps** | 4 | One quadra: its four shared elements, its members, what it values and what it does not. |
 | **Sides** | 4 | One of the four sides of the mind: its gateway, what blocks it, what opens it, what it produces. |
+| **Bonds** | 4 | One high-compatibility pairing, stated by element rather than by type. |
 | **Channels** | 16 | One intertype relation: its ease score, a worked example in both directions, and where it sits on the ramp. |
 | **Wheels** | 8 | One Octagram wheel: its dyad, its origin, its living virtue, its deadly sin and its two poles. |
 
-Sixty-four is not a target that was worked back from — it is what the model has.
+Sixty-eight is not a target that was worked back from — it is what the model has.
 `tests/cards.test.ts` asserts each suit's size against the structure that produces it.
+
+Three cards sit in front of the suits, because a deck has to teach its own
+vocabulary from a standing start: **Octant** (what this is, in eight parts), **The
+eight elements** (the alphabet, with the letter system explained), and **How to
+read a card** (the anatomy and the suit list). Nothing on those three uses a term
+the cards themselves have not defined.
+
+## Bonds
+
+Every other pair surface in this app names four-letter types. That is the wrong
+altitude for "who works well with whom", because the answer is not about types: it
+is about which element answers which.
+
+`bondFacts()` sweeps all 240 ordered cross-type pairs, groups them by the two
+Leads, and reads the mean ease straight off `ease()`. The sweep says:
+
+| Lead pairing | Mean ease | Example |
+|---|---:|---|
+| **Axis opposite** (`omega`) | **93** | Ne · Si, Se · Ni, Te · Fi, Ti · Fe |
+| Same element | 64 | Ne · Ne |
+| Attitude flip (`alpha`) | 54 | Ne · Ni |
+| Element swap (`beta`) | 40 | Ne · Se |
+
+The four axis pairings are 29 points clear of the field and are the only ones that
+produce Counterpart and Near fit. Each gets a card, and every number printed on it
+is recomputed from the engine — `tests/cards.test.ts` re-derives the whole sweep
+and fails if a card and the engine ever disagree. Because the claim is about
+elements, it holds for any two types that carry them.
 
 ## Derived, with two exceptions
 
@@ -55,6 +87,38 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
    Channel's bundle runs parallel or crosses according to its ease score and
    carries a bar of exactly that length, a Side's door stands open by exactly as
    much as that side is reachable.
+3. **Named.** Every element the art draws prints its two letters. Colour alone
+   cannot identify one — four hue families over eight elements means each hue
+   appears twice, and someone opening the box has not been given a key yet.
+   `fnMark()` is the single mark the whole deck is built from: filled for a
+   conscious element, hollow for one in shadow, legible either way.
+
+### What the art may not say
+
+A card that is type-agnostic may not carry an element, in its marks or in its
+colour. Two cards were breaking that rule and are fixed:
+
+- A **Seat** card drew a function's gesture inside each of its eight bars, chosen
+  by `(i * 3 + depth) % 8`. That put a different element in slot 3 on every card
+  and asserted a slot-to-element mapping which does not exist — which element sits
+  in a seat is exactly what varies across the sixteen Wirings. The bars now carry
+  their number and their awareness and nothing else, and a test asserts that a Seat
+  card names no element and uses no function hue.
+- A **Side** card took its tint from `sides("ENTP")` — one type's stack colouring a
+  card about a position every type has. Both it and the Seat card are now inked.
+
+A **Wheel** drew `fns[i % 4]` around eight star points, naming each of its four
+shared elements twice at unrelated positions. It now names four, once each.
+
+### Fitting the band
+
+The readable strip of a card is 300 x 46 art units — wide and short. Rings do not
+fit in it: the first build's eight-element ring and four-element rosette both ran
+off the top edge and faded into the paper wash at the bottom. Compositions use the
+width instead — rows, columns and pairs — and every label sits inside
+`[SAFE_TOP, SAFE_BOTTOM]`, which is 6mm from the page edge down to the line where
+`render.ts` starts washing the art back to paper. A test parses every `<text>` the
+art emits and checks its box against that window and against the 4.5pt floor.
 
 Everything is SVG, so it stays vector all the way into the PDF and prints at the
 press's resolution rather than at ours. There are no image files in this repo and

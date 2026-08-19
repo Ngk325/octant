@@ -1,4 +1,4 @@
-import { catalysts, complements, ease, quadra, relation, stack, type MbtiType, type Quadra } from "../engine/core";
+import { catalysts, complements, ease, omega, quadra, relation, stack, type MbtiType, type Quadra } from "../engine/core";
 import {
   ARCHETYPE, BEHAVIOURAL, FN_FULL, FN_LONG, FN_SHADOW, GROUP, INTERACTION_STYLE,
   REL_DEF, REL_NAME, REL_SCORE, RECIPROCAL, SLOT_COST, SLOT_EFFECT, SLOT_NAMES, SLOT_TAGS,
@@ -24,7 +24,7 @@ import { powersOf } from "../engine/powers";
  * is asserted card-by-card in tests/cards.test.ts.
  * ------------------------------------------------------------------ */
 
-export type Suit = "type" | "function" | "attitude" | "quadra" | "side" | "relation" | "wheel" | "front";
+export type Suit = "type" | "function" | "attitude" | "quadra" | "side" | "bond" | "relation" | "wheel" | "front";
 
 /** What the art generator draws behind the text. Every variant is seeded by the card id. */
 export type ArtSpec =
@@ -32,10 +32,11 @@ export type ArtSpec =
   | { kind: "element"; fn: Fn }
   | { kind: "seat"; depth: number; fn: Fn | null }
   | { kind: "rosette"; fns: Fn[] }
-  | { kind: "door"; openness: number; fns: Fn[] }
+  | { kind: "door"; openness: number }
   | { kind: "channel"; score: number; fns: Fn[] }
   | { kind: "star"; fns: Fn[] }
-  | { kind: "mark"; fns: Fn[] };
+  | { kind: "mark"; fns: Fn[] }
+  | { kind: "bond"; fns: Fn[] };
 
 /** A labelled paragraph on the lower half of a card. */
 export interface CardBlock { label: string; text: string }
@@ -66,13 +67,14 @@ export interface Card {
 
 /** AUTHORED: what each suit is for, printed on the key card and nowhere else. */
 const SUIT_ABOUT: Record<Exclude<Suit, "front">, string> = {
-  type: "one (lead, support) pair each.",
-  function: "the alphabet — four in front, four behind.",
-  attitude: "the eight seats an element can sit in.",
-  quadra: "four types who want the same things.",
-  side: "a type is the first of the four.",
-  relation: "twelve symmetric, four not.",
-  wheel: "a dyad, its virtue and its sin.",
+  function: "one mental tool each. Start here.",
+  attitude: "the eight seats, most conscious first.",
+  type: "the sixteen orders they come in. Find yours.",
+  quadra: "types who trust the same four tools.",
+  side: "the four modes one person runs in.",
+  bond: "the pairings that work, by element.",
+  relation: "the sixteen ways two types meet, scored.",
+  wheel: "the long arc — what a pair is for.",
 };
 
 /** AUTHORED: per-side copy, because the engine writes its side text per type and a card is not. */
@@ -231,7 +233,7 @@ function attitudeCards(): Card[] {
       { label: "Running it yourself costs", text: sentence(fit(SLOT_COST[slot], 104)) },
       { label: "Its shadow twin", text: seatTwin(i) },
     ],
-    footer: `${slot} · ${SLOT_TAGS[i]}`,
+    footer: "Any of the eight elements can sit in this seat — your type says which",
     art: { kind: "seat", depth: i, fn: null },
   }));
 }
@@ -282,7 +284,106 @@ function sideCards(): Card[] {
         { label: "Produces", text: copy.produces },
       ],
       footer: `Stands to the ego as ${REL_NAME[side.relationToEgo]} · slots ${side.slots.map((sl) => slotIndex(sl.egoSlot) + 1).join("·")}`,
-      art: { kind: "door", openness: SIDE_OPENNESS[key], fns: side.slots.map((sl) => sl.fn) },
+      art: { kind: "door", openness: SIDE_OPENNESS[key] },
+    };
+  });
+}
+
+/* ------------------------------- bonds ------------------------------- */
+
+/**
+ * BONDS — the high-compatibility pairings, stated by element rather than by type.
+ *
+ * Every other pair surface in this app names four-letter types. That is the
+ * wrong altitude for the question "who works well with whom", because the
+ * answer is not about types at all: it is about which element answers which.
+ * `omega` — flip both the element and the attitude — is the axis opposite, and
+ * pairing an element with its axis opposite is the single strongest signal in
+ * the whole model.
+ *
+ * Nothing here is asserted. `bondFacts()` sweeps all 240 ordered cross-type
+ * pairs, groups them by (lead, lead), and reads the mean ease and the relation
+ * names straight off the engine, so the numbers a Bond card prints are the
+ * numbers /matrix would print. The sweep says: the four axis pairings average
+ * 93 of 100 and produce only Counterpart and Near fit, while same-lead averages
+ * 64, attitude-flip 54 and element-swap 40. tests/cards.test.ts re-derives all
+ * of it and fails if a card and the engine ever disagree.
+ */
+export interface BondFacts {
+  a: Fn;
+  b: Fn;
+  /** Mean ease across every ordered pair of types whose Leads are these two. */
+  mean: number;
+  /** The relations these two Leads actually produce, best first. */
+  rels: RelCode[];
+  /** How far above the next-best class of lead pairing this one sits. */
+  overNext: number;
+}
+
+/** The four axis pairings, with their ease read off the engine. */
+export function bondFacts(): BondFacts[] {
+  const cell = new Map<string, number[]>();
+  for (const a of TYPES) {
+    for (const b of TYPES) {
+      if (a === b) continue;
+      const k = `${stack(a)[0]}|${stack(b)[0]}`;
+      (cell.get(k) ?? cell.set(k, []).get(k)!).push(ease(a, b));
+    }
+  }
+  const meanOf = (k: string) => {
+    const xs = cell.get(k)!;
+    return xs.reduce((s, x) => s + x, 0) / xs.length;
+  };
+  // The best pairing class that is NOT the axis opposite, so a card can say how
+  // much daylight there is rather than just claiming the top spot.
+  const next = Math.max(
+    ...[...cell.keys()].filter((k) => {
+      const [f, g] = k.split("|") as [Fn, Fn];
+      return omega[f] !== g;
+    }).map(meanOf),
+  );
+
+  const done = new Set<Fn>();
+  const out: BondFacts[] = [];
+  for (const a of FN_ORDER) {
+    const b = omega[a];
+    if (done.has(a)) continue;
+    done.add(a).add(b);
+    const rels = [...new Set(
+      TYPES.flatMap((x) => TYPES.filter((y) => x !== y && stack(x)[0] === a && stack(y)[0] === b).map((y) => relation(x, y))),
+    )].sort((p, q) => REL_SCORE[q] - REL_SCORE[p]);
+    out.push({ a, b, mean: meanOf(`${a}|${b}`), rels, overNext: meanOf(`${a}|${b}`) - next });
+  }
+  return out;
+}
+
+function bondCards(): Card[] {
+  const facts = bondFacts();
+  return facts.map((f, i) => {
+    const { a, b } = f;
+    return {
+      id: `bond-${a}-${b}`,
+      suit: "bond" as const, suitLabel: "Bond", n: i + 1, of: facts.length,
+      title: `${a} · ${b}`,
+      subtitle: `${FN_FULL[a]} and ${FN_FULL[b]}`,
+      lede: `Each of these two is exactly what the other does not do, so the pair covers ground neither reaches alone. The strongest pairing in the model.`,
+      // Two chips, not three: the ease number is already in the footer, and a
+      // third pill tipped the longest pairings onto a second chip row, which the
+      // print probe measured as an overrun on Te·Fi and Ni·Se.
+      chips: [
+        { text: FN_WANTS[a].toLowerCase(), note: `${a} wants`, fn: a },
+        { text: FN_WANTS[b].toLowerCase(), note: `${b} wants`, fn: b },
+      ],
+      blocks: [
+        { label: `${a} brings`, text: sentence(fit(FN_KEYWORD_GLOSS[a], 44)) },
+        { label: `${b} brings`, text: sentence(fit(FN_KEYWORD_GLOSS[b], 44)) },
+        {
+          label: "Why it works",
+          text: `Whoever leads ${a} carries ${b} in the Cave — the seat they fear being bad at — and the reverse. Each raises what the other skipped.`,
+        },
+      ],
+      footer: `As Leads these two meet only as ${join(f.rels.map((c) => REL_NAME[c]))} · mean ease ${Math.round(f.mean)}, ${Math.round(f.overNext)} clear of the field`,
+      art: { kind: "bond", fns: [a, b] },
     };
   });
 }
@@ -319,7 +420,7 @@ function relationCards(): Card[] {
         { label: "Reading it", text: symmetric ? "Symmetric: whatever you feel here, they are feeling too." : "Asymmetric: these are not the same seat, and the quieter chair notices less." },
       ],
       footer: `One of ${symmetric ? "twelve symmetric" : "four asymmetric"} channels · 16 of 256 cells`,
-      art: { kind: "channel", score: REL_SCORE[code], fns: [...stack(a).slice(0, 2), ...stack(b).slice(0, 2)] },
+      art: { kind: "channel", score: REL_SCORE[code], fns: [stack(a)[0], stack(b)[0]] },
     };
   });
 }
@@ -342,33 +443,66 @@ function wheelCards(): Card[] {
   }));
 }
 
+/**
+ * The three cards someone opening the box reads first, in this order:
+ * what this is, the alphabet it is written in, and how to read one card.
+ *
+ * The first build opened with "computed from sixteen (lead, support) pairs and
+ * three involutions on eight elements" — true, and useless to anyone who has
+ * not already read the app. A deck has to teach its own vocabulary from a
+ * standing start, so nothing on these three cards uses a term the cards
+ * themselves have not defined.
+ */
 function frontMatter(): Card[] {
   const suits = deckSuits();
+  const total = suits.reduce((s, x) => s + x.count, 0);
   return [
     {
       id: "front-title",
-      suit: "front", suitLabel: "Octant", n: 1, of: 2,
+      suit: "front", suitLabel: "Start here", n: 1, of: 3,
       title: "Octant",
-      subtitle: "sixty-four cards, derived",
-      lede: "Every card here is computed from sixteen (lead, support) pairs and three involutions on eight elements. Nothing is stored; it is worked out.",
-      chips: suits.map((s) => ({ text: `${s.count} ${s.label}` })),
+      subtitle: "how a person is wired, in eight parts",
+      lede: "Everyone runs the same eight mental tools. What differs is the order you trust them in — and that order is what this deck lays out.",
+      chips: [],
       blocks: [
-        { label: "How to read it", text: "Start with an Element, find the Seat it sits in, then the Wiring that puts it there. Channels take two people; Wheels are the long arc." },
-        { label: "What it is not", text: "Not a test, not a verdict. A wiring is not a ceiling, and every card describes a range rather than a person." },
+        {
+          label: "The eight tools",
+          text: "Four take the world in — Ne, Ni, Se, Si. Four decide about it — Te, Ti, Fe, Fi. The next card names them.",
+        },
+        {
+          label: "The eight seats",
+          text: "They sit in a fixed order. The first four you use knowingly; the last four run in the background. Which tool sits where is your type, one of sixteen.",
+        },
+        {
+          label: "Where to start",
+          text: "Elements, then your own Wiring. Bonds and Channels take two people. This is not a test and not a verdict.",
+        },
       ],
-      footer: "octant · read the wiring",
+      footer: `${total} cards · octant · read the wiring`,
+      art: { kind: "mark", fns: FN_ORDER },
+    },
+    {
+      id: "front-elements",
+      suit: "front", suitLabel: "Start here", n: 2, of: 3,
+      title: "The eight elements",
+      subtitle: "the alphabet every other card is spelled in",
+      dense: true,
+      lede: "Capital letter names the tool — N intuition, S sensing, T thinking, F feeling. Small letter is the direction: e outward, i inward.",
+      chips: [],
+      blocks: FN_ORDER.map((fn) => ({ label: fn, text: `${FN_ROLE[fn].toLowerCase()}, after ${FN_WANTS[fn].toLowerCase()}.` })),
+      footer: "Hue is the family: violet N, amber S, teal T, rose F · filled is knowing, hollow is shadow",
       art: { kind: "mark", fns: FN_ORDER },
     },
     {
       id: "front-key",
-      suit: "front", suitLabel: "Octant", n: 2, of: 2,
-      title: "The seven suits",
-      subtitle: "what each one is for",
+      suit: "front", suitLabel: "Start here", n: 3, of: 3,
+      title: "How to read a card",
+      subtitle: `${total} cards, ${suits.length} suits`,
       dense: true,
-      lede: "Colour carries the element: violet intuition, amber sensing, teal thinking, rose feeling. Lighter is outward, deeper inward.",
+      lede: "Every card draws the fact it states, names each element in it, then says it in one plain sentence before the detail.",
       chips: [],
       blocks: suits.map((s) => ({ label: `${s.label} — ${s.count}`, text: SUIT_ABOUT[s.suit] })),
-      footer: "64 cards in seven suits, plus these two",
+      footer: "Suits run in this order, easiest first · a card names every element it draws",
       art: { kind: "mark", fns: FN_ORDER },
     },
   ];
@@ -384,8 +518,8 @@ const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 /** The seven playing suits, in deck order, with their sizes — derived from the deck itself. */
 export function deckSuits(): { suit: Exclude<Suit, "front">; label: string; count: number }[] {
-  const order: Exclude<Suit, "front">[] = ["type", "function", "attitude", "quadra", "side", "relation", "wheel"];
-  const built = [...typeCards(), ...functionCards(), ...attitudeCards(), ...quadraCards(), ...sideCards(), ...relationCards(), ...wheelCards()];
+  const order: Exclude<Suit, "front">[] = ["function", "attitude", "type", "quadra", "side", "bond", "relation", "wheel"];
+  const built = [...typeCards(), ...functionCards(), ...attitudeCards(), ...quadraCards(), ...sideCards(), ...bondCards(), ...relationCards(), ...wheelCards()];
   return order.map((suit) => {
     const cards = built.filter((c) => c.suit === suit);
     return { suit, label: `${cards[0].suitLabel}s`, count: cards.length };
@@ -396,11 +530,12 @@ export function deckSuits(): { suit: Exclude<Suit, "front">; label: string; coun
 export function deck(): Card[] {
   return [
     ...frontMatter(),
-    ...typeCards(),
     ...functionCards(),
     ...attitudeCards(),
+    ...typeCards(),
     ...quadraCards(),
     ...sideCards(),
+    ...bondCards(),
     ...relationCards(),
     ...wheelCards(),
   ];
