@@ -20,14 +20,24 @@ import { join } from "node:path";
 const SRC = join(__dirname, "..", "src");
 
 /**
- * The single exemption: the translation surface exists to name other
- * systems, so a reader arriving with someone else's vocabulary can find
- * their footing. It is an allowlist of one file, not a policy — the type
- * reader, lexicon, curriculum and assistant primer all stay banned, and
- * anything that wants to show a translation imports from here rather than
- * repeating a name locally.
+ * Two exemptions, and they are exemptions rather than a softening of the
+ * rule. Everything else — the type reader, the lexicon, the curriculum,
+ * the marketing page and the assistant primer — stays banned, and
+ * anything wanting to show a translation imports from the translation
+ * surface rather than repeating a name locally.
+ *
+ *   engine/translation.ts — exists to name other systems so a reader
+ *   arriving with someone else's vocabulary can find their footing.
+ *
+ *   worker/compare.ts — the comparison layer (owner's call, 2026-08).
+ *   "How is this different from the one I already know" is the question
+ *   every visitor arrives with, and the rest of the site deliberately
+ *   never uses the words they would search. Confining that to one module
+ *   is what keeps it from leaking into the main narrative: these pages
+ *   name MBTI, Socionics and the Big Five, and every other public
+ *   surface still may not.
  */
-const ALLOWED = new Set(["engine/translation.ts"]);
+const ALLOWED = new Set(["engine/translation.ts", "worker/compare.ts"]);
 
 /**
  * `OPS` is matched case-sensitively with word boundaries on purpose. That
@@ -71,11 +81,16 @@ describe("nothing that ships names another system or author", () => {
     expect(FILES.length).toBeGreaterThan(20);
   });
 
-  it("exempts exactly one file, and it exists", () => {
+  it("exempts exactly these two files, and both exist", () => {
     // A shrinking scan is the failure mode to catch: if the allowlist ever
     // grows quietly, the guard stops guarding without any test going red.
-    expect([...ALLOWED]).toEqual(["engine/translation.ts"]);
-    expect(readFileSync(join(SRC, "engine/translation.ts"), "utf8").length).toBeGreaterThan(0);
+    // Adding a file here has to be a deliberate edit to this line, which is
+    // the point -- the comparison layer was added in 2026-08 by exactly that
+    // route rather than by the ban quietly ceasing to bite.
+    expect([...ALLOWED]).toEqual(["engine/translation.ts", "worker/compare.ts"]);
+    for (const rel of ALLOWED) {
+      expect(readFileSync(join(SRC, rel), "utf8").length, rel).toBeGreaterThan(0);
+    }
   });
 
   it.each(FILES.map((f) => [f.slice(SRC.length + 1), f] as const))(
