@@ -88,9 +88,10 @@ describe("card copy", () => {
       // The grid card carries the 256-cell table where blocks would sit.
       expect(c.blocks.length, c.id).toBeGreaterThanOrEqual(c.matrix ? 0 : 2);
       // Three blocks on a playing card — four on a Wiring, whose fourth is the
-      // four-sides pull line. The front-matter list cards run their eight items
-      // as a dense list instead, which is why they declare `dense`.
-      expect(c.blocks.length, c.id).toBeLessThanOrEqual(c.dense ? 8 : c.suit === "type" ? 4 : 3);
+      // four-sides pull line. Front-matter cards are lists by nature (the
+      // alphabet's eight rows, the frame's seven suits) whether they run
+      // dense or stacked.
+      expect(c.blocks.length, c.id).toBeLessThanOrEqual(c.dense || c.suit === "front" ? 8 : c.suit === "type" ? 4 : 3);
       for (const b of c.blocks) {
         expect(b.label, c.id).toBeTruthy();
         expect(b.text, c.id).toBeTruthy();
@@ -113,7 +114,7 @@ describe("card copy", () => {
       // beside their discs and were sized against the probe directly. All
       // numbers come from the print probe, not from taste.
       const cap = c.id === "front-elements" ? 800
-        : c.suit === "front" && !c.dense ? 440 : c.dense ? 460 : c.suit === "bond" ? 400 : c.suit === "type" ? 470 : 380;
+        : c.suit === "front" ? 470 : c.dense ? 460 : c.suit === "bond" ? 400 : c.suit === "type" ? 470 : 380;
       expect(body, `${c.id} blocks`).toBeLessThanOrEqual(cap);
     }
   });
@@ -321,7 +322,9 @@ describe("what the cards claim is what the engine says", () => {
   it("prints the engine's own four sides on every Wiring card", () => {
     for (const t of TYPES) {
       const text = byId(`type-${t}`).blocks[3].text;
-      const m = text.match(/^(\w+) ego · (\w+) subconscious · (\w+) unconscious · (\w+) superego$/);
+      //  : the pairs are glued with non-breaking spaces so print never
+      // splits a type from its side.
+      const m = text.match(/^(\w+) ego · (\w+) subconscious · (\w+) unconscious · (\w+) superego$/);
       expect(m, t).toBeTruthy();
       const [, egoT, sub, unc, sup] = m!;
       expect(egoT).toBe(t);

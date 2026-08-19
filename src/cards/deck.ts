@@ -263,7 +263,9 @@ function typeCards(): Card[] {
           // Standoff's (superego) — derived from the same involutions as the
           // relation table, asserted in tests/cards.test.ts. This is the line
           // that lets a reader pull the door cards the Side suit points at.
-          text: `${t} ego · ${sideType(t, "DU")} subconscious · ${sideType(t, "EX")} unconscious · ${sideType(t, "SE")} superego`,
+          // Non-breaking spaces inside each pair: a line may break at the
+          // middots, never between a type and its side.
+          text: `${t} ego · ${sideType(t, "DU")} subconscious · ${sideType(t, "EX")} unconscious · ${sideType(t, "SE")} superego`,
         },
       ],
       footer: `Camp ${quadra(t)} · ${w.origin} wheel of the ${w.temple} temple · virtue ${virtue}, vice ${vice}`,
@@ -703,18 +705,19 @@ function frontMatter(): Card[] {
     {
       id: "front-frame",
       suit: "front", suitLabel: "Start here", n: 2, of: 5,
-      title: "The frame",
+      title: "Eight suits, one frame",
       subtitle: "what each suit is, and why it matters",
-      dense: true,
-      lede: "Each suit answers the question the suit before it raises.",
+      // Not dense: a contents page earns one row per suit, name over its own
+      // line, rather than a run-in list — the run-in draft read as a wall.
+      lede: "Every suit answers the one before it.",
       chips: [],
       blocks: [
         { label: "Elements", text: "the eight tools every mind runs." },
-        { label: "Seats", text: "the fixed order, 1–8 — why one tool feels different in different hands." },
-        { label: "Wirings", text: "tool meets seat: sixteen types. Yours is home base." },
+        { label: "Seats", text: "the fixed order — the seat changes the tool." },
+        { label: "Wirings", text: "sixteen types — tool meets seat. Find yours." },
         { label: "Sides", text: "one wiring, four modes: default, rest, argument, last resort." },
         { label: "Camps", text: "types that value the same four tools." },
-        { label: "Bonds & Channels", text: "two people: which tools answer each other, at what ease." },
+        { label: "Bonds & Channels", text: "two people: which tools answer, at what ease." },
         { label: "Wheels", text: "what a pairing is for, over years." },
       ],
       footer: "One mind first — Elements to Sides — then the group and pair suits: Camps to Wheels",
@@ -746,8 +749,8 @@ function frontMatter(): Card[] {
       suit: "front", suitLabel: "Start here", n: 4, of: 5,
       title: "The four letters",
       subtitle: "how a code like INTJ picks the seats",
-      dense: true,
-      lede: "Two of the four letters point at your strongest tool, and the rest of the stack follows. Worked here for INTJ — trace your own the same way.",
+      // Not dense: each step is a heading over its own line of reasoning.
+      lede: "Two letters point at your strongest tool; the rest follows. Worked for INTJ.",
       chips: [],
       blocks: [
         { label: "I or E", text: `which way the strongest tool faces. ${ex} starts with I: inward.` },

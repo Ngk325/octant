@@ -119,11 +119,15 @@ svg.seal{flex:none;width:9mm;height:9mm;margin-top:.2mm;}
 .blocks .b.key{display:flex;align-items:center;gap:1.1mm;}
 .card.front.dense .blocks .b.key{margin-top:.2mm;}
 .card.front.dense .blocks:has(.b.key){padding-top:.8mm;}
-/* Two text lines beside a disc must not outgrow the disc. The line box is
-   set on the wrapper: its inherited 6.5pt strut, not the 5.35pt text, was
-   what decided each line's height. */
+/* A key row stacks: the element's full name as a small-caps line, its
+   detail on the line below — a run-in draft wrapped mid-phrase and read as
+   a wall. The line box is set on the wrapper: its inherited 6.5pt strut,
+   not the small text, was what decided each line's height. */
 .card.front.dense .b.key .kt{font-size:5.35pt;line-height:1.12;}
-.card.front.dense .b.key dt,.card.front.dense .b.key dd{line-height:inherit;}
+.card.front.dense .b.key dt{display:block;font-size:4.5pt;letter-spacing:.12em;
+  line-height:inherit;margin:0 0 .25mm;}
+.card.front.dense .b.key dt::after{content:none;}
+.card.front.dense .b.key dd{display:block;line-height:inherit;}
 .b.key svg.keymark{flex:none;width:4.7mm;height:4.7mm;}
 .b.key .kt{min-width:0;}
 /* The 256-cell grid, print twin of /matrix. Column heads run vertical —
@@ -142,7 +146,7 @@ table.gridm{border-collapse:collapse;table-layout:fixed;width:100%;margin-top:1.
 .card.front h1{font-size:18pt;}
 .card.front .lede{font-size:7pt;}
 .card.front dd{font-size:5.7pt;line-height:1.22;}
-.card.front .blocks .b{margin-top:1mm;}
+.card.front .blocks .b{margin-top:.8mm;}
 /* A dense front card is an eight-item list — the two longest faces in the deck.
    They get their own step down, and the wide rule comes last so a long title
    never keeps the 18pt front size and wraps the list off the card. */

@@ -41,10 +41,11 @@ says its Hate is the Kryptonite.
 
 Five cards sit in front of the suits, because a deck has to teach its own
 vocabulary from a standing start: **Octant** (what this is, in eight parts),
-**The frame** (the contents page with a reason attached — what question each
-suit answers and why the order matters), **The eight elements** (the alphabet:
-each row keyed by the element's own mark, with its full name and what it
-claims), **The four letters** (the decoder: how a code like INTJ picks the
+**Eight suits, one frame** (the contents page with a reason attached — what
+question each suit answers and why the order matters, one suit per row),
+**The eight elements** (the alphabet: each row keyed by the element's own
+mark, its full name over its detail line),
+**The four letters** (the decoder: how a code like INTJ picks the
 seats, worked from `stack()` so it cannot disagree with the engine), and
 **How to read a card** (the anatomy and the suit list). Nothing on those five
 uses a term the cards themselves have not defined. The decoder answers the

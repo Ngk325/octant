@@ -594,7 +594,9 @@ function seat(depth: number, r: R): string {
   const bw = gapW * 0.54;
   const floor = SAFE_BOTTOM - 16;
   const xAt = (i: number) => 26 + gapW * (i + 0.5);
-  const hAt = (i: number) => 28 - i * 2.8;
+  // Bar heights top out at 22, not 28: the caption line owns the band's top
+  // strip, and the first draft's tallest bars ran up into its text.
+  const hAt = (i: number) => 22 - i * 2.2;
   // Seats i and i+4 hold one tool facing opposite ways — the twin the arc points at.
   const twin = depth < 4 ? depth + 4 : depth - 4;
 
@@ -618,13 +620,11 @@ function seat(depth: number, r: R): string {
   out.push(label(26 + gapW * 2, floor + 14, "CONSCIOUS", 7, INK, { weight: 700, o: depth < 4 ? 0.62 : 0.32, spread: 0.12 }));
   out.push(label(26 + gapW * 6, floor + 14, "SHADOW", 7, INK, { weight: 700, o: depth < 4 ? 0.32 : 0.62, spread: 0.12 }));
   const [ax, bx] = [xAt(depth), xAt(twin)];
-  out.push(line(`M${pt(ax, floor - hAt(depth) - 2)}Q${pt((ax + bx) / 2, SAFE_TOP + 8)} ${pt(bx, floor - hAt(twin) - 2)}`, INK, 0.55, 0.5));
-  // "Turned" alone read as a riddle; say the fact in full — over a paper
-  // halo, because on the Lead and Support cards the tallest bars reach the
-  // caption line and were striking through its first word.
-  const mid = (ax + bx) / 2;
-  out.push(`<rect x="${n(mid - 71)}" y="${n(SAFE_TOP - 0.5)}" width="142" height="9" fill="${PAPER}" fill-opacity="0.88"/>`);
-  out.push(label(mid, SAFE_TOP + 4, "SAME TOOL, FACING THE OTHER WAY", 7, INK, { weight: 600, o: 0.55, spread: 0.06 }));
+  out.push(line(`M${pt(ax, floor - hAt(depth) - 2)}Q${pt((ax + bx) / 2, SAFE_TOP + 10)} ${pt(bx, floor - hAt(twin) - 2)}`, INK, 0.55, 0.5));
+  // "Turned" alone read as a riddle; say the fact in full. The caption owns
+  // the top strip outright — bars stop at 34 and the arc crests under it —
+  // so it never sits over the drawing it explains.
+  out.push(label((ax + bx) / 2, SAFE_TOP + 4, "SAME TOOL, FACING THE OTHER WAY", 7, INK, { weight: 600, o: 0.55, spread: 0.06 }));
   return out.join("");
 }
 
