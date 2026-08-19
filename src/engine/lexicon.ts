@@ -344,7 +344,7 @@ const CONCEPTS: Draft[] = [
     short: "The two types whose Lead is your Doubt. Stimulating rather than restful.",
     definition:
       "Your Doubt is your Lead's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Doubt.",
-    inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Damper and False fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
+    inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Damper and Loose fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
     seeAlso: ["complement", "nemesis", "rel-ex", "rel-mg"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
     short: "A 0–100 modelling score for how one type experiences another. Directional.",

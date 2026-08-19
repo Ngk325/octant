@@ -79,9 +79,10 @@ describe("card copy", () => {
         expect(value, `${c.id}.${field}`).not.toMatch(/undefined|NaN|\[object|\$\{/);
       }
       expect(c.blocks.length, c.id).toBeGreaterThanOrEqual(2);
-      // Three blocks on a playing card. The front-matter list cards run their
-      // eight items as a dense list instead, which is why they declare `dense`.
-      expect(c.blocks.length, c.id).toBeLessThanOrEqual(c.dense ? 8 : 3);
+      // Three blocks on a playing card — four on a Wiring, whose fourth is the
+      // four-sides pull line. The front-matter list cards run their eight items
+      // as a dense list instead, which is why they declare `dense`.
+      expect(c.blocks.length, c.id).toBeLessThanOrEqual(c.dense ? 8 : c.suit === "type" ? 4 : 3);
       for (const b of c.blocks) {
         expect(b.label, c.id).toBeTruthy();
         expect(b.text, c.id).toBeTruthy();
@@ -101,7 +102,7 @@ describe("card copy", () => {
       // Front-matter cards set their own budget: .card.front drops dd to 5.7pt
       // and carries no chip row, so they hold more than a suit card at the same
       // height. Both numbers come from the print probe, not from taste.
-      expect(body, `${c.id} blocks`).toBeLessThanOrEqual(c.suit === "front" && !c.dense ? 440 : c.dense ? 460 : c.suit === "bond" ? 400 : 380);
+      expect(body, `${c.id} blocks`).toBeLessThanOrEqual(c.suit === "front" && !c.dense ? 440 : c.dense ? 460 : c.suit === "bond" ? 400 : c.suit === "type" ? 470 : 380);
     }
   });
 
@@ -274,6 +275,28 @@ describe("what the cards claim is what the engine says", () => {
     // Hate is the Kryptonite. powersOf() reads exactly these two slots.
     expect(byId("attitude-lead").lede).toContain("Superpower");
     expect(byId("attitude-dread").lede).toContain("Kryptonite");
+  });
+
+  /**
+   * The Wiring's four-sides line is the deck's lookup for the Side suit's pull
+   * rule: subconscious = the Counterpart's Wiring, unconscious = the Damper's,
+   * superego = the Standoff's. Assert each printed type stands in exactly that
+   * relation — and that it really is the type whose (lead, support) pair the
+   * side's own stack starts with.
+   */
+  it("prints the engine's own four sides on every Wiring card", () => {
+    for (const t of TYPES) {
+      const text = byId(`type-${t}`).blocks[3].text;
+      const m = text.match(/^(\w+) ego · (\w+) subconscious · (\w+) unconscious · (\w+) superego$/);
+      expect(m, t).toBeTruthy();
+      const [, egoT, sub, unc, sup] = m!;
+      expect(egoT).toBe(t);
+      expect(relation(t, sub as (typeof TYPES)[number]), `${t} sub`).toBe("DU");
+      expect(relation(t, unc as (typeof TYPES)[number]), `${t} unc`).toBe("EX");
+      expect(relation(t, sup as (typeof TYPES)[number]), `${t} sup`).toBe("SE");
+      // The subconscious stack opens with the Counterpart's own (lead, support).
+      expect([stack(t)[3], stack(t)[2]], `${t} sub stack`).toEqual(stack(sub as (typeof TYPES)[number]).slice(0, 2));
+    }
   });
 
   it("names the Counterpart and the Spark in the order complements() returns them", () => {

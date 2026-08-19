@@ -36,7 +36,7 @@ export type ArtSpec =
   | { kind: "element"; fn: Fn }
   | { kind: "seat"; depth: number; fn: Fn | null }
   | { kind: "rosette"; fns: Fn[] }
-  | { kind: "door"; openness: number }
+  | { kind: "door"; index: number; gate: SlotName }
   | { kind: "channel"; score: number; fns: Fn[] }
   | { kind: "star"; fns: Fn[] }
   | { kind: "mark"; fns: Fn[] }
@@ -135,8 +135,6 @@ const REL_TRANSLATE: [RegExp, string][] = [
 export const deckify = (text: string): string =>
   REL_TRANSLATE.reduce((t, [from, to]) => t.replace(from, to), text);
 
-const SIDE_OPENNESS: Record<SideKey, number> = { ego: 1, subconscious: 0.55, unconscious: 0.25, superego: 0 };
-
 /** The eight slots, in stack order, with the attitude each one carries. */
 const slotIndex = (s: SlotName) => SLOT_NAMES.indexOf(s);
 
@@ -209,6 +207,9 @@ export function fit(text: string, max: number): string {
   return /[.!?]$/.test(head) ? head : `${head}.`;
 }
 
+/** The type whose Wiring one of this type's sides runs, by its relation code. */
+const sideType = (t: MbtiType, code: RelCode): MbtiType => TYPES.find((p) => relation(t, p) === code)!;
+
 const join = (xs: string[]) => xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`;
 
 /* ------------------------------- suits ------------------------------- */
@@ -225,22 +226,31 @@ function typeCards(): Card[] {
       suit: "type", suitLabel: "Wiring", n: i + 1, of: TYPES.length,
       title: t,
       subtitle: ARCHETYPE[t].join(" · "),
-      lede: `${INTERACTION_STYLE[t]} the room, and is in it for ${b.motivation.toLowerCase()}.`,
+      lede: `${INTERACTION_STYLE[t]} the room, in it for ${b.motivation.toLowerCase()}.`,
       chips: st.map((fn, k) => ({ text: fn, note: SLOT_NAMES[k], fn, dim: k > 3 })),
       blocks: [
         {
           label: "Superpower",
-          text: `${superpower.fn} — ${superpower.role.toLowerCase()}, after ${superpower.wants.toLowerCase()}. ${st[1]} aims it before it overreaches.`,
+          text: `${superpower.fn} — ${superpower.role.toLowerCase()}, after ${superpower.wants.toLowerCase()}. ${st[1]} aims it.`,
         },
         {
           label: "Kryptonite",
-          text: `${kryptonite.fn} from the shadow — ${lower(fit(FN_SHADOW[kryptonite.fn], 78))} First move under strain: ${b.stressResponse.toLowerCase()}.`,
+          text: `${kryptonite.fn} from the shadow — ${lower(fit(FN_SHADOW[kryptonite.fn], 60))}`,
         },
         {
           label: "Company",
           // complements() returns [Counterpart, Spark] in that order — asserted in
           // tests/cards.test.ts, since this line names them positionally.
           text: `Rests with ${complements(t)[0]}, your Counterpart, and ${complements(t)[1]}, your Spark. Sharpens against ${join(catalysts(t))}.`,
+        },
+        {
+          label: "Your four sides — pull those Wirings",
+          // The four sides of this type ARE four types: its own (ego), its
+          // Counterpart's (subconscious), its Damper's (unconscious) and its
+          // Standoff's (superego) — derived from the same involutions as the
+          // relation table, asserted in tests/cards.test.ts. This is the line
+          // that lets a reader pull the door cards the Side suit points at.
+          text: `${t} ego · ${sideType(t, "DU")} subconscious · ${sideType(t, "EX")} unconscious · ${sideType(t, "SE")} superego`,
         },
       ],
       footer: `Camp ${quadra(t)} · ${w.origin} wheel of the ${w.temple} temple · virtue ${virtue}, vice ${vice}`,
@@ -353,8 +363,11 @@ function sideCards(): Card[] {
         { label: "Opens with", text: copy.opens },
         { label: "Produces", text: copy.produces },
       ],
-      footer: `Its Channel to the ego: ${REL_NAME[side.relationToEgo]} · runs your seats ${side.slots.map((sl) => slotIndex(sl.egoSlot) + 1).join("·")}`,
-      art: { kind: "door", openness: SIDE_OPENNESS[key] },
+      // The pull rule: each side runs the Wiring of a type the reader can find.
+      // The ego is the Twin (your own card); the others are named, per type, in
+      // the Wiring suit's "Your four sides" block — so the loop closes both ways.
+      footer: `This side runs your ${REL_NAME[side.relationToEgo]}'s Wiring — pull that card · your seats ${side.slots.map((sl) => slotIndex(sl.egoSlot) + 1).join("·")}`,
+      art: { kind: "door", index: i, gate: side.gateway.egoSlot },
     };
   });
 }

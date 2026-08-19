@@ -386,36 +386,46 @@ function element(fn: Fn, r: R): string {
 }
 
 /**
- * Seats: eight positions, this one filled, bar height falling with awareness.
+ * Seats: eight bars falling with awareness, split into conscious and shadow,
+ * with an arc from this seat to its twin across the divide — the same fact the
+ * card's third block states, drawn.
  *
- * DELIBERATELY ELEMENT-FREE. The first version sketched a function's gesture
- * inside each bar, picked by `(i * 3 + depth) % 8` — which drew a different
- * element in slot 3 on every card and so asserted a slot-to-element mapping
- * that does not exist. A seat is type-agnostic: which element sits in it is
- * exactly the thing that varies across the sixteen Wirings. So the bars carry
- * their number and their awareness and nothing more.
+ * DELIBERATELY ELEMENT-FREE: which element sits in a seat is exactly the thing
+ * that varies across the sixteen Wirings, so the bars carry their number and
+ * their awareness and nothing more, and the tint is ink rather than a hue.
  */
 function seat(depth: number, r: R): string {
-  // Tinted with ink, not with a function hue. The first build used Si's amber
-  // for the conscious seats and Ni's violet for the shadow ones, which reads as
-  // an element claim on a card whose whole point is that no element is implied.
   const out: string[] = [ground(INK, r)];
   const gapW = (ART_W - 52) / 8;
   const bw = gapW * 0.54;
-  const floor = SAFE_BOTTOM - 14;
+  const floor = SAFE_BOTTOM - 16;
+  const xAt = (i: number) => 26 + gapW * (i + 0.5);
+  const hAt = (i: number) => 28 - i * 2.8;
+  // Seats i and i+4 hold one tool facing opposite ways — the twin the arc points at.
+  const twin = depth < 4 ? depth + 4 : depth - 4;
 
   for (let i = 0; i < 8; i++) {
-    const x = 26 + gapW * (i + 0.5);
+    const x = xAt(i);
     const here = i === depth;
-    // Height is how much awareness the seat carries: slot 1 the most, slot 8 the least.
-    const h = 30 - i * 3;
+    const isTwin = i === twin;
+    const h = hAt(i);
     const top = floor - h;
     out.push(
-      `<rect x="${n(x - bw / 2)}" y="${n(top)}" width="${n(bw)}" height="${n(h)}" fill="${here ? INK : PAPER}" fill-opacity="${here ? 0.85 : 0.7}" stroke="${INK}" stroke-width="${here ? 0.9 : 0.5}" stroke-opacity="${here ? 0.9 : 0.3}"/>`,
+      `<rect x="${n(x - bw / 2)}" y="${n(top)}" width="${n(bw)}" height="${n(h)}" fill="${here ? INK : PAPER}" fill-opacity="${here ? 0.85 : 0.7}" stroke="${INK}" stroke-width="${here ? 0.9 : isTwin ? 0.8 : 0.5}" stroke-opacity="${here ? 0.9 : isTwin ? 0.75 : 0.3}"${isTwin ? ' stroke-dasharray="1.6 1.2"' : ""}/>`,
     );
     out.push(label(x, floor + 7, String(i + 1), 8, INK, { weight: here ? 700 : 600, o: here ? 0.85 : 0.3 }));
   }
   out.push(line(`M${pt(18, floor)}L${pt(ART_W - 18, floor)}`, INK, 0.6, 0.45));
+
+  // The conscious/shadow divide sits under the baseline, leaving the whole top
+  // band to the twin arc — the first draft printed both up there and they fought.
+  const split = 26 + gapW * 4;
+  out.push(line(`M${pt(split, SAFE_TOP + 18)}L${pt(split, floor + 11)}`, INK, 0.5, 0.3));
+  out.push(label(26 + gapW * 2, floor + 14, "CONSCIOUS", 7, INK, { weight: 700, o: depth < 4 ? 0.62 : 0.32, spread: 0.12 }));
+  out.push(label(26 + gapW * 6, floor + 14, "SHADOW", 7, INK, { weight: 700, o: depth < 4 ? 0.32 : 0.62, spread: 0.12 }));
+  const [ax, bx] = [xAt(depth), xAt(twin)];
+  out.push(line(`M${pt(ax, floor - hAt(depth) - 2)}Q${pt((ax + bx) / 2, SAFE_TOP + 8)} ${pt(bx, floor - hAt(twin) - 2)}`, INK, 0.55, 0.5));
+  out.push(label((ax + bx) / 2, SAFE_TOP + 4, "SAME TOOL, TURNED", 7, INK, { weight: 600, o: 0.55, spread: 0.08 }));
   return out.join("");
 }
 
@@ -445,58 +455,50 @@ function rosette(fns: Fn[], r: R): string {
 }
 
 /**
- * Sides: a door, open by exactly as much as that side is reachable, with the
- * four slots that stand behind it named by ROLE rather than by element — a Side
- * card is about a position in the mind, and the element filling it changes with
- * every type.
+ * Sides: all four doors of the mind in a row — ego open, subconscious ajar,
+ * unconscious cracked, superego barred — with this card's door in focus and
+ * its gateway seat named on the lintel. Drawing the whole row on every card
+ * is the point: access is a comparison, and one door alone cannot show it.
+ * Type-agnostic like the Seat cards: the gate is named as a SEAT, never as an
+ * element, because which element stands in a gate changes with every type.
  */
-function door(openness: number, r: R): string {
-  // Ink, not a hue: which elements fill these four slots is different for every
-  // one of the sixteen types, so no element may colour the card.
+function door(index: number, gate: string, r: R): string {
   const out: string[] = [ground(INK, r)];
-  const cx = ART_W / 2;
-  // Sized to the safe window, not to the card: frame, leaf and label all sit
-  // between SAFE_TOP and SAFE_BOTTOM. The first build drew a 62-unit door from
-  // CY, which put its lintel 1.6mm from the page edge and its caption three
-  // quarters of the way into the paper wash.
-  const dw = 44, dh = 24;
-  const x0 = cx - dw / 2, y0 = SAFE_TOP + 8;
+  // Display openness per side — the same values SIDE_OPENNESS feeds the deck.
+  const OPEN = [1, 0.55, 0.25, 0];
+  const NAMES = ["EGO", "SUBCONSCIOUS", "UNCONSCIOUS", "SUPEREGO"];
+  const gapW = (ART_W - 60) / 4;
+  const dw = 26, dh = 24;
+  const y0 = SAFE_TOP + 11;
 
-  out.push(`<rect x="${n(x0 - 8)}" y="${n(y0 - 8)}" width="${n(dw + 16)}" height="${n(dh + 8)}" fill="none" stroke="${INK}" stroke-width="1.7" stroke-opacity="0.75"/>`);
-  const leafW = dw * (1 - openness);
-  if (leafW > 0.5) {
-    out.push(`<rect x="${n(x0)}" y="${n(y0)}" width="${n(leafW)}" height="${n(dh)}" fill="${PAPER}" fill-opacity="0.96" stroke="${INK}" stroke-width="1.1" stroke-opacity="0.8"/>`);
-    for (let i = 0; i < 4; i++) {
-      const yy = y0 + 5 + (i * (dh - 10)) / 3;
-      out.push(line(`M${pt(x0 + 3.5, yy)}L${pt(x0 + leafW - 3.5, yy)}`, INK, 0.4, 0.3));
-    }
-    if (leafW > 10) out.push(dot(x0 + leafW - 6, CY + 4, 1.7, INK, 0.7));
-  }
-  if (openness === 0) {
-    for (let i = 0; i < 3; i++) {
-      const yy = y0 + 6 + i * 8.5;
-      out.push(line(`M${pt(x0 - 13, yy + r.jitter(2))}L${pt(x0 + dw + 13, yy + r.jitter(2))}`, INK, 2.6, 0.85));
-    }
-  }
-  // Light on the floor, proportional to the gap — it falls down the card.
-  if (openness > 0) {
-    const spill = 40 + openness * 90;
-    out.push(
-      `<path d="M${pt(x0 + leafW, y0 + dh)}L${pt(x0 + dw, y0 + dh)}L${pt(cx + spill, ART_H)}L${pt(cx - spill * 0.5, ART_H)}Z" fill="${INK}" fill-opacity="${n(0.04 + openness * 0.05)}"/>`,
-    );
-  }
-  // The four slots behind the door, named by the position they occupy.
-  // The four slots standing behind this door, by position — a Side card is about
-  // a place in the mind, and which element fills it changes with every type.
-  const slotY = y0 + dh / 2;
   for (let i = 0; i < 4; i++) {
-    const x = 44 + i * ((ART_W - 88) / 3);
-    if (Math.abs(x - cx) < dw / 2 + 13) continue;
-    out.push(dot(x, slotY, 10, PAPER, 0.95));
-    out.push(ring(x, slotY, 10, INK, 0.6, 0.5));
-    out.push(label(x, slotY, String(i + 1), 10, INK, { weight: 700, o: 0.75 }));
+    const cx = 30 + gapW * (i + 0.5);
+    const x0 = cx - dw / 2;
+    const here = i === index;
+    const openness = OPEN[i];
+    out.push(`<rect x="${n(x0 - 4)}" y="${n(y0 - 4)}" width="${n(dw + 8)}" height="${n(dh + 4)}" fill="none" stroke="${INK}" stroke-width="${here ? 1.6 : 0.7}" stroke-opacity="${here ? 0.85 : 0.4}"/>`);
+    const leafW = dw * (1 - openness);
+    if (leafW > 0.5) {
+      out.push(`<rect x="${n(x0)}" y="${n(y0)}" width="${n(leafW)}" height="${n(dh)}" fill="${PAPER}" fill-opacity="0.96" stroke="${INK}" stroke-width="${here ? 0.9 : 0.5}" stroke-opacity="${here ? 0.8 : 0.4}"/>`);
+      if (leafW > 8) out.push(dot(x0 + leafW - 3.5, y0 + dh / 2, 1.2, INK, here ? 0.7 : 0.4));
+    }
+    if (openness === 0) {
+      for (let k = 0; k < 3; k++) {
+        const yy = y0 + 4 + k * 8;
+        out.push(line(`M${pt(x0 - 7, yy)}L${pt(x0 + dw + 7, yy)}`, INK, here ? 2.2 : 1.4, here ? 0.85 : 0.45));
+      }
+    }
+    // Light on the floor, only where the focused door stands open.
+    if (openness > 0 && here) {
+      out.push(`<path d="M${pt(x0 + leafW, y0 + dh)}L${pt(x0 + dw, y0 + dh)}L${pt(cx + 30 + openness * 60, ART_H)}L${pt(cx - 20, ART_H)}Z" fill="${INK}" fill-opacity="${n(0.03 + openness * 0.04)}"/>`);
+    }
+    // Only the focused door carries its name — four full side names in one row
+    // collide at this size. The numbers match the suit's own 1/4..4/4 headers.
+    out.push(label(cx, y0 + dh + 7.5, here ? NAMES[i] : String(i + 1), here ? 7.6 : 8, INK, { weight: here ? 700 : 600, o: here ? 0.8 : 0.35, spread: 0.02 }));
   }
-  out.push(label(cx, SAFE_BOTTOM - 6, openness === 1 ? "OPEN" : openness === 0 ? "BARRED" : "OPENS FROM INSIDE", 7.5, INK, { weight: 700, o: 0.62, spread: 0.12 }));
+  // The gateway, over the focused door: which SEAT opens this side.
+  const fx = 30 + gapW * (index + 0.5);
+  out.push(label(Math.min(Math.max(fx, 66), ART_W - 66), SAFE_TOP + 3.5, `GATE: THE ${gate.toUpperCase()}`, 7.5, INK, { weight: 700, o: 0.7, spread: 0.1 }));
   return out.join("");
 }
 
@@ -709,7 +711,7 @@ export function artFor(id: string, spec: ArtSpec): string {
     case "element": body = element(spec.fn, r); break;
     case "seat": body = seat(spec.depth, r); break;
     case "rosette": body = rosette(spec.fns, r); break;
-    case "door": body = door(spec.openness, r); break;
+    case "door": body = door(spec.index, spec.gate, r); break;
     case "channel": body = channel(spec.score, spec.fns, r); break;
     case "star": body = star(spec.fns, r); break;
     case "mark": body = mark(spec.fns, r); break;

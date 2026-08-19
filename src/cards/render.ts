@@ -80,9 +80,13 @@ h1{font-size:14pt;line-height:1.02;font-weight:600;letter-spacing:-.01em;}
   border:.2mm solid currentColor;border-radius:.7mm;color:var(--muted);white-space:nowrap;}
 .chip.dim{opacity:.55;border-style:dashed;}
 .strip{display:flex;gap:.5mm;margin-top:1.6mm;list-style:none;}
-.strip li{flex:1 1 0;text-align:center;border-top:.5mm solid currentColor;padding-top:.6mm;color:var(--muted);}
-.strip .n{display:block;font-family:${SANS};font-size:3.9pt;letter-spacing:.02em;
-  color:var(--muted);line-height:1;margin-bottom:.4mm;}
+/* Cells size to their labels (flex-basis auto), so "Blind spot" holds one line
+   instead of stacking — and the label runs at the deck's 4.5pt chrome floor,
+   which its first printing quietly undercut at 3.9pt. */
+.strip li{flex:1 1 auto;text-align:center;border-top:.5mm solid currentColor;
+  padding:.6mm .5mm 0;color:var(--muted);}
+.strip .n{display:block;font-family:${SANS};font-size:4.5pt;letter-spacing:.01em;
+  white-space:nowrap;color:var(--muted);line-height:1;margin-bottom:.4mm;}
 .strip .f{display:block;font-family:${SANS};font-size:6pt;font-weight:600;line-height:1;color:currentColor;}
 .strip li.dim{border-top-style:dotted;border-top-width:.3mm;opacity:.6;}
 .blocks{padding-top:1.4mm;}
@@ -94,6 +98,11 @@ dd{font-size:6.5pt;line-height:1.22;color:var(--ink2);}
 .foot{font-family:${SANS};font-size:4.5pt;line-height:1.25;color:var(--muted);
   border-top:.24mm solid var(--rule);padding-top:.9mm;margin-top:auto;}
 .card.dense .blocks .b{margin-top:1.05mm;}
+/* A Wiring runs four blocks where every other suit runs three; it pays for the
+   fourth with tighter leading, not smaller type. */
+.card.type .blocks .b{margin-top:.7mm;}
+.card.type .lede{margin-top:1mm;}
+.card.type .strip{margin-top:1.2mm;}
 .card.dense dt{display:inline;margin:0;}
 .card.dense dt::after{content:" · ";letter-spacing:0;}
 .card.dense dd{display:inline;}

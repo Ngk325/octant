@@ -114,7 +114,7 @@ export const frictions = (t: MbtiType): MbtiType[] =>
 
 /**
  * The two types whose Lead is your Doubt function.
- * Always resolves to your Damper and False fit partners, because both are
+ * Always resolves to your Damper and Loose fit partners, because both are
  * built from alpha(dominant) -- which is exactly slot 5. Where Complements supply
  * the function you FEAR, Catalysts supply the one you are consciously reaching
  * for and reflexively arguing with: stimulating rather than restful.

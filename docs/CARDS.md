@@ -80,6 +80,26 @@ printed on any Bond card is recomputed from the engine; `tests/cards.test.ts`
 re-derives both sweeps and fails if a card and the engine ever disagree. Because
 the claims are about elements, they hold for any two types that carry them.
 
+## The pull loop
+
+The Side and Wiring suits close a loop on purpose. Each Side card's footer says
+whose Wiring that side runs — the ego runs your Twin's (your own), the
+subconscious your Counterpart's, the unconscious your Damper's, the superego
+your Standoff's — and every Wiring card's fourth block names those four types
+for its own type ("ENTP ego · ISFJ subconscious · INTJ unconscious · ESFP
+superego"), so a reader holding any type card can pull the three Wirings its
+doors open onto. The mapping is derived from the same involutions as the
+relation table and asserted per type in `tests/cards.test.ts`, including that
+each side's own stack opens with the named type's (lead, support) pair.
+
+## Renamed: Loose fit
+
+The MG relation (socionics' Mirage) printed as **False fit**, which reads as a
+warning on the fourth-easiest relation in the ramp (ease 80: relaxing,
+unserious, good for rest). It is now **Loose fit** — parallel to Near fit,
+which shares the Lead half of a Counterpart where Loose fit shares only the
+Support half — renamed across the whole app, not just the deck.
+
 ## Derived, with declared exceptions
 
 Four tables in `src/cards/deck.ts` are authored in some sense, and each is
@@ -117,10 +137,12 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
    `src/engine/palette.ts` (violet intuition, amber sensing, teal thinking, rose
    feeling; lighter outward, deeper inward). Composition follows the card's
    structure: a Wiring's flow field is aimed by its Lead's family and coloured by
-   its own eight slots, a Seat's bar height is how conscious that slot is, a
+   its own eight slots, a Seat card draws all eight bars with the
+   conscious/shadow divide and an arc to its twin seat ("same tool, turned"), a
    Channel's bundle runs parallel or crosses according to its ease score and
-   carries a bar of exactly that length, a Side's door stands open by exactly as
-   much as that side is reachable.
+   carries a bar of exactly that length, and a Side card draws all four doors of
+   the mind — ego open, subconscious ajar, unconscious cracked, superego barred —
+   with its own door in focus and the gateway seat named on the lintel.
 3. **Named.** Every element the art draws prints its two letters. Colour alone
    cannot identify one — four hue families over eight elements means each hue
    appears twice, and someone opening the box has not been given a key yet.

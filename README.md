@@ -81,7 +81,7 @@ Two derived fields that the original workbook conflated into one:
 - **Counterpart** — Counterpart + Spark. Supplies your **Cave**, the function you fear. Restful.
 - **Catalyst** — the two types whose Lead is your **Doubt**. Supplies the function you are
   consciously reaching for and reflexively arguing with. Stimulating, slightly abrasive.
-  Structurally this always resolves to your Damper and False-fit partners.
+  Structurally this always resolves to your Damper and Loose-fit partners.
 
 An ENTP wants convergence, but convergence is introverted intuition, and that is the Doubt —
 which is why INTJ and INFJ feel compelling rather than comfortable, and why the old
