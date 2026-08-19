@@ -3,313 +3,312 @@
 <head>
 <meta charset="utf-8">
 <title>Octant — partner rate card</title>
+<!--FONTS-->
 <style>
 /* ------------------------------------------------------------------ *
- * The private half of the partner conversation, sized to be read in
- * one sitting. Print-only: a single light palette, no dark theme --
- * a dark ground would be wasteful on paper and unreadable in a
- * forwarded email preview.
+ * THE PARTNER RATE CARD.
+ *
+ * Print-only, so one light palette and no dark theme: a dark ground
+ * wastes toner and reads badly in a forwarded mail preview.
+ *
+ * Two typographic rules do most of the work here. Money is set in the
+ * SERIF, large -- a rate card is about figures, and figures set in a
+ * monospace at 9pt read like a terminal dump rather than a price. And
+ * violet appears on the figures and almost nowhere else, so it still
+ * means something by the second page.
  * ------------------------------------------------------------------ */
-@page { size: A4; margin: 13mm 13mm 11mm; }
+@page { size:A4; margin:16mm 15mm 12mm; }
 
 :root {
-  --ink:#1A1714; --ink2:#413B33; --muted:#6B6459;
-  --rule:#DFD9CE; --rule-strong:#C4BCAC;
-  --accent:#5B32A8; --accent-soft:#F2ECFB;
-  --warn:#7A4A0E; --warn-soft:#FBF3E3;
-  /* Local stacks only -- no webfont fetch. A rate card is emailed and printed,
-     so it must render identically without a network, and whatever is used gets
-     embedded into the PDF at generation time. Charter is the print serif here;
-     Georgia takes precedence where it exists. */
-  --serif:Georgia,"Bitstream Charter","Liberation Serif","Times New Roman",serif;
-  --sans:"Helvetica Neue",Helvetica,"Liberation Sans",Arial,sans-serif;
-  --mono:"SF Mono","DejaVu Sans Mono","Liberation Mono",Menlo,monospace;
+  --ink:#17130F; --ink2:#4A443B; --muted:#8A8377;
+  --rule:#E8E3D9; --rule-mid:#CFC8BA;
+  --accent:#5B32A8; --accent-soft:#F5F0FD;
+  --serif:"Newsreader",Georgia,"Bitstream Charter","Liberation Serif",serif;
+  --sans:"Inter","Helvetica Neue",Helvetica,"Liberation Sans",Arial,sans-serif;
 }
 * { box-sizing:border-box; }
 html,body { margin:0; padding:0; background:#fff; }
 body {
-  color:var(--ink); font:400 9.1pt/1.42 var(--sans);
+  color:var(--ink); font:400 9.4pt/1.48 var(--sans);
   -webkit-print-color-adjust:exact; print-color-adjust:exact;
 }
-.page { padding:0; }
-.page + .page { break-before:page; }
+.sheet + .sheet { break-before:page; }
 
-/* masthead */
-header { display:flex; align-items:flex-start; gap:10px; padding-bottom:9px;
-         border-bottom:1.5px solid var(--ink); margin-bottom:13px; }
-header svg { flex:0 0 auto; margin-top:1px; }
-.brandblock { flex:1 1 auto; }
-.brandname { font:500 15pt/1 var(--serif); letter-spacing:-.01em; }
-.docname { font-family:var(--mono); font-size:7.4pt; font-weight:500; letter-spacing:.13em;
-           text-transform:uppercase; color:var(--accent); margin-top:3px; }
-.stamp { text-align:right; font-family:var(--mono); font-size:7.2pt; line-height:1.5;
-         color:var(--muted); flex:0 0 auto; }
-.stamp b { color:var(--ink); font-weight:600; display:block; }
+/* ---- masthead ---------------------------------------------------- */
+.top { display:flex; align-items:flex-end; gap:12px; padding-bottom:10px;
+       border-bottom:1px solid var(--ink); margin-bottom:14px; }
+.top svg { flex:0 0 auto; }
+.wordmark { flex:1 1 auto; font:500 17pt/1 var(--serif); letter-spacing:-.012em; }
+.meta { flex:0 0 auto; text-align:right; font-size:7.6pt; line-height:1.65; color:var(--muted); }
+.meta b { display:block; color:var(--ink); font-weight:600; }
 
-.conf { background:var(--warn-soft); border-left:2.5px solid var(--warn);
-        padding:6px 10px; font-size:8.4pt; line-height:1.45; margin-bottom:13px; }
-.conf b { font-weight:600; }
+/* ---- type -------------------------------------------------------- */
+.lede { font:400 12pt/1.48 var(--serif); color:var(--ink2); margin:0 0 18px; max-width:52em; }
+.lede b { color:var(--ink); font-weight:500; }
+h2 { font:500 13pt/1.2 var(--serif); margin:0 0 3px; letter-spacing:-.008em; }
+.kicker { font-size:7.4pt; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
+          color:var(--muted); margin:0 0 5px; }
+.sub { font-size:9.4pt; color:var(--muted); margin:0 0 14px; }
+p { margin:0 0 8px; } p:last-child { margin-bottom:0; }
+.band { margin-top:10px; }
 
-h2 { font:500 11.4pt/1.2 var(--serif); margin:12px 0 5px; letter-spacing:-.005em; }
-h2:first-of-type { margin-top:0; }
-.sec-k { font-family:var(--mono); font-size:7pt; font-weight:500; letter-spacing:.13em;
-         text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
-p { margin:0 0 7px; max-width:none; }
-p:last-child { margin-bottom:0; }
-.lede { color:var(--ink2); font-size:9.3pt; }
+/* ---- the anchor -------------------------------------------------- */
+.anchor { display:flex; align-items:baseline; gap:13px; padding:14px 0 16px;
+          border-top:1px solid var(--rule-mid); border-bottom:1px solid var(--rule-mid);
+          margin-bottom:26px; }
+.anchor .fig { font:500 27pt/1 var(--serif); color:var(--accent); letter-spacing:-.02em; }
+.anchor .unit { font:400 10.5pt/1.35 var(--sans); color:var(--ink); }
+.anchor .say { flex:1 1 auto; font-size:9pt; line-height:1.55; color:var(--muted);
+               padding-left:18px; border-left:1px solid var(--rule); max-width:24em; }
 
-table { width:100%; border-collapse:collapse; margin:5px 0 4px; }
-th,td { text-align:left; vertical-align:top; padding:4.5px 8px 4.5px 0;
-        border-bottom:.75px solid var(--rule); }
-th { font-family:var(--mono); font-size:6.9pt; font-weight:500; letter-spacing:.1em;
-     text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--rule-strong);
-     padding-bottom:4px; }
-td:last-child, th:last-child { padding-right:0; }
-tr:last-child td { border-bottom:none; }
-.shape { font-weight:600; white-space:nowrap; }
-.shape small { display:block; font-weight:400; font-size:7.6pt; color:var(--muted);
-               margin-top:2px; letter-spacing:.01em; }
-.rate { font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:500;
-        color:var(--accent); white-space:nowrap; }
-.money { font-family:var(--mono); font-variant-numeric:tabular-nums; font-weight:500; }
-td.terms { font-size:8.6pt; color:var(--ink2); }
+/* ---- the four shapes --------------------------------------------- */
+.shapes { display:grid; grid-template-columns:1fr 1fr; gap:0 26px; }
+.sh { padding:15px 0 16px; border-top:1px solid var(--rule); }
+.sh:nth-child(1), .sh:nth-child(2) { border-top:1px solid var(--rule-mid); }
+.sh-h { display:flex; align-items:baseline; gap:8px; margin-bottom:3px; }
+.sh-l { font:500 12pt/1 var(--serif); color:var(--accent); }
+.sh-n { font:500 12pt/1 var(--serif); color:var(--ink); letter-spacing:-.005em; }
+.sh-ax { font-size:7.7pt; letter-spacing:.02em; color:var(--muted); margin-bottom:9px; }
+.sh-p { font:500 14.5pt/1.25 var(--serif); color:var(--accent); letter-spacing:-.01em;
+        margin-bottom:3px; }
+.sh-p .sm { font-size:11pt; }
+.sh-alt { font:400 9.3pt/1.45 var(--sans); color:var(--ink); margin-bottom:6px; }
+.sh-alt b { font-weight:600; }
+.sh-t { font-size:8.7pt; line-height:1.5; color:var(--ink2); }
 
-.anchor { display:flex; align-items:baseline; gap:10px; background:var(--accent-soft);
-          padding:8px 11px; margin-bottom:4px; }
-.anchor .v { font-family:var(--mono); font-size:13pt; font-weight:600; color:var(--accent);
-             font-variant-numeric:tabular-nums; }
-.anchor .k { font-size:9pt; color:var(--ink2); }
+/* ---- rate list (time) -------------------------------------------- */
+.rates { border-top:1px solid var(--rule-mid); }
+.rate { display:flex; align-items:baseline; gap:14px; padding:5.4px 0;
+        border-bottom:1px solid var(--rule); }
+.rate:last-child { border-bottom:none; }
+.rate .what { flex:1 1 auto; font-size:9.7pt; }
+.rate .what small { display:block; font-size:8.4pt; color:var(--muted); margin-top:1px; }
+.rate .amt { flex:0 0 auto; font:500 13pt/1 var(--serif); color:var(--accent);
+             letter-spacing:-.01em; text-align:right; }
+.rate .amt em { font-style:normal; font-size:9pt; color:var(--muted); }
 
-.note { border-left:2px solid var(--rule-strong); padding:2px 0 2px 9px; margin:8px 0;
-        font-size:8.6pt; color:var(--ink2); }
-.note b { color:var(--ink); font-weight:600; }
-.hard { border-left-color:var(--warn); background:var(--warn-soft); padding:7px 10px; color:var(--ink); }
+/* ---- two-up ------------------------------------------------------ */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+.two h3 { font:600 9.6pt/1.35 var(--sans); margin:0 0 5px; }
+.two p { font-size:9pt; line-height:1.55; color:var(--ink2); }
+.two .col { border-top:1px solid var(--rule-mid); padding-top:11px; }
 
-ul { margin:4px 0 7px; padding-left:15px; }
-li { margin-bottom:3px; font-size:8.9pt; color:var(--ink2); }
-li:last-child { margin-bottom:0; }
-li b { color:var(--ink); font-weight:600; }
+/* ---- lists ------------------------------------------------------- */
+ol.ask { margin:0; padding:0; list-style:none; counter-reset:a;
+         display:grid; grid-template-columns:1fr 1fr; gap:0 24px; }
+ol.ask li { counter-increment:a; display:grid; grid-template-columns:20px 1fr;
+            padding:6.5px 0; border-bottom:1px solid var(--rule); font-size:9.5pt;
+            line-height:1.55; color:var(--ink2); }
+ol.ask li:nth-child(1), ol.ask li:nth-child(2) { border-top:1px solid var(--rule); }
+ol.ask li:nth-last-child(-n+2) { border-bottom:none; }
+ol.ask li::before { content:counter(a); font:500 9.5pt/1.6 var(--serif); color:var(--accent); }
+ol.ask b { color:var(--ink); font-weight:600; }
 
-.two { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.opt { border-top:1.5px solid var(--rule-strong); padding-top:7px; }
-.opt h3 { font:600 9pt/1.3 var(--sans); margin:0 0 4px; }
-.opt p { font-size:8.6pt; color:var(--ink2); }
+ul.terms { margin:0; padding:0; list-style:none; }
+ul.terms.split { display:grid; grid-template-columns:1fr 1fr; gap:0 24px; }
+ul.terms li { position:relative; padding:0 0 7px 14px; font-size:9.2pt; line-height:1.55;
+              color:var(--ink2); }
+ul.terms li:last-child { padding-bottom:0; }
+ul.terms li::before { content:""; position:absolute; left:0; top:.62em;
+                      width:4px; height:4px; background:var(--accent); }
+ul.terms b { color:var(--ink); font-weight:600; }
 
-.ask { border:1px solid var(--rule-strong); padding:9px 11px; margin-top:4px; }
-.ask ol { margin:0; padding-left:15px; }
-.ask li { font-size:9pt; }
+/* ---- the one hard term ------------------------------------------- */
+.hard { background:var(--accent-soft); border-left:2px solid var(--accent);
+        padding:10px 13px; margin-top:11px; font-size:9.2pt; line-height:1.55; }
+.hard b { font-weight:600; }
 
-footer { margin-top:16px; padding-top:7px; border-top:.75px solid var(--rule);
-         display:flex; justify-content:space-between; gap:14px;
-         font-family:var(--mono); font-size:6.9pt; color:var(--muted); line-height:1.5; }
+.closing { border-top:1px solid var(--rule-mid); margin-top:15px; padding-top:11px; }
+.closing p { font:400 10pt/1.45 var(--serif); color:var(--ink2); max-width:46em; }
+.closing .mail { font-family:var(--sans); font-size:9.8pt; font-weight:600; color:var(--accent); white-space:nowrap; }
+
+.foot { margin-top:auto; padding-top:11px; border-top:1px solid var(--rule);
+        display:flex; justify-content:space-between; font-size:7.4pt; color:var(--muted); }
+.sheet { display:flex; flex-direction:column; min-height:250mm; }
+  .sheet > * { min-width:0; }
 </style>
 </head>
 <body>
 
-<!-- ============================ PAGE 1 ============================ -->
-<section class="page">
-  <header>
-    <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#1A1714" stroke-width="2.5" opacity=".9"/>
-      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#1A1714" stroke-width="2.5" opacity=".4" transform="rotate(45 32 32)"/>
-      <circle cx="32" cy="32" r="5.5" fill="#5B32A8"/>
+<!-- ========================== SHEET 1 ========================== -->
+<section class="sheet">
+  <div class="top">
+    <svg width="27" height="27" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#17130F" stroke-width="2.4" opacity=".92"/>
+      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#17130F" stroke-width="2.4" opacity=".38" transform="rotate(45 32 32)"/>
+      <circle cx="32" cy="32" r="5.4" fill="#5B32A8"/>
     </svg>
-    <div class="brandblock">
-      <div class="brandname">Octant</div>
-      <div class="docname">Partner rate card</div>
+    <div class="wordmark">Octant</div>
+    <div class="meta">
+      <b>Partner rate card</b>
+      Confidential &middot; not for onward distribution<br>
+      Rates fixed until 18 October 2026
     </div>
-    <div class="stamp">
-      <b>Fixed until 18 October 2026</b>
-      Issued 19 August 2026<br>
-      Stratfield Partners LLC
-    </div>
-  </header>
-
-  <div class="conf">
-    <b>Confidential.</b> These rates are not published anywhere. The public partner page carries
-    the four shapes and no numbers, on purpose. Please don&rsquo;t forward this beyond the people
-    deciding.
   </div>
 
   <p class="lede">
-    You&rsquo;ve seen the shapes. This is what they cost, what each commits you to, and what we
-    need to turn any of them into a real quote. Nothing here moves before the date above.
+    You&rsquo;ve seen the four shapes. <b>This is what they cost</b>, what each one commits you to,
+    and the four answers we need to turn any of them into a real quote. Nothing here moves before
+    the date above.
   </p>
 
-  <div class="sec-k">The anchor</div>
+  <p class="kicker">Standalone, for reference</p>
   <div class="anchor">
-    <span class="v">$25</span>
-    <span class="k">per user / month &mdash; Octant standalone, everything included, cancel anytime.
-    Every rate below is a stated relationship to this one, and it is the price your client would
-    pay without you.</span>
+    <span class="fig">$25</span>
+    <span class="unit">per user<br>per month</span>
+    <span class="say">Octant on its own &mdash; everything included, cancel anytime. This is what
+    your client pays without you, and every rate below is a stated relationship to it.</span>
   </div>
 
   <h2>The four shapes, priced</h2>
-  <table>
-    <thead>
-      <tr><th style="width:20%">Shape</th><th style="width:47%">What you pay</th><th style="width:33%">Commitment</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="shape">A &middot; Referral<small>Octant brand<br>Octant invoices<br>no build</small></td>
-        <td>You <b>receive</b> <span class="rate">25%</span> of recurring revenue for as long as
-            that client stays &mdash; <span class="money">$6.25</span> per seat / month at list.</td>
-        <td class="terms">None. No minimum, no notice period, no support obligation. The lightest
-            way to test whether the fit is real.</td>
-      </tr>
-      <tr>
-        <td class="shape">B &middot; Bundled seats<small>Octant brand<br>you invoice<br>no build</small></td>
-        <td><span class="rate">$18</span> per seat / month &mdash; minimum 10 seats, monthly.<br>
-            <span class="rate">$15</span> per seat / month &mdash; minimum 25 seats, annual.</td>
-        <td class="terms">Monthly tier cancels on 30 days&rsquo; notice. You carry first-line
-            support. Seat minimums exist so this isn&rsquo;t a one-seat discount door.</td>
-      </tr>
-      <tr>
-        <td class="shape">C &middot; Embedded<small>both brands<br>you invoice<br>scoped build</small></td>
-        <td><span class="rate">$12,000&ndash;20,000</span> one-time integration, scoped before
-            anyone commits.<br>Then <span class="rate">$750</span> / month platform fee
-            + <span class="rate">$12</span> per seat / month.</td>
-        <td class="terms">Annual term from go-live. The platform fee is the uptime and support
-            obligation an embed creates, priced separately from usage.</td>
-      </tr>
-      <tr>
-        <td class="shape">D &middot; White-label<small>your brand<br>you invoice<br>scoped build</small></td>
-        <td><span class="rate">$36,000</span> / year floor, including 250 seats; then
-            <span class="rate">$10</span> per seat / month.<br>
-            <b>Or</b> <span class="rate">20%</span> of attributable revenue, against that same
-            annual floor as a minimum.</td>
-        <td class="terms">Annual, with the floor payable regardless of seats used. Highest number
-            here because it removes our ability to build a name from your clients at all.</td>
-      </tr>
-    </tbody>
-  </table>
+  <p class="sub">Brand the client sees &middot; who invoices &middot; engineering required.</p>
 
-  <div class="note">
-    <b>The build fee in C and D is a range because the range is honest.</b> It covers an
-    authenticated handoff from your identity system and an embed surface built to your case. We
-    scope against your actual stack and quote a fixed figure before you commit; advisory hours
-    during that build sit inside the fee and are never billed twice.
+  <div class="shapes">
+    <div class="sh">
+      <div class="sh-h"><span class="sh-l">A</span><span class="sh-n">Referral</span></div>
+      <div class="sh-ax">Octant brand &middot; Octant invoices &middot; no build</div>
+      <div class="sh-p">You receive 25%</div>
+      <div class="sh-alt">of recurring revenue &mdash; <b>$6.25</b> per seat / month at list.</div>
+      <div class="sh-t">No minimum, no notice period, no support obligation. The lightest way to
+      test whether the fit is real.</div>
+    </div>
+
+    <div class="sh">
+      <div class="sh-h"><span class="sh-l">B</span><span class="sh-n">Bundled seats</span></div>
+      <div class="sh-ax">Octant brand &middot; you invoice &middot; no build</div>
+      <div class="sh-p">$18 <span class="sm">per seat / month</span></div>
+      <div class="sh-alt">minimum 10 seats, monthly &mdash; or <b>$15</b> at 25 seats, annual.</div>
+      <div class="sh-t">Monthly tier cancels on 30 days&rsquo; notice. You carry first-line
+      support. The seat minimum is there so this isn&rsquo;t a one-seat discount door.</div>
+    </div>
+
+    <div class="sh">
+      <div class="sh-h"><span class="sh-l">C</span><span class="sh-n">Embedded</span></div>
+      <div class="sh-ax">both brands &middot; you invoice &middot; scoped build</div>
+      <div class="sh-p">$12&ndash;20k <span class="sm">one-time build</span></div>
+      <div class="sh-alt">then <b>$750</b> / month platform fee + <b>$12</b> per seat / month.</div>
+      <div class="sh-t">Annual from go-live. The platform fee is the uptime and support obligation
+      an embed creates, priced apart from usage.</div>
+    </div>
+
+    <div class="sh">
+      <div class="sh-h"><span class="sh-l">D</span><span class="sh-n">White-label</span></div>
+      <div class="sh-ax">your brand &middot; you invoice &middot; scoped build</div>
+      <div class="sh-p">$36k <span class="sm">per year, floor</span></div>
+      <div class="sh-alt">includes 250 seats, then <b>$10</b> per seat / month &mdash; or
+      <b>20%</b> of attributable revenue against the same floor.</div>
+      <div class="sh-t">Annual, floor payable regardless of seats used. The highest number here
+      because it removes our ability to build a name from your clients at all.</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <p class="kicker">On the build fee in C and D</p>
+    <p style="font-size:9.3pt;line-height:1.55;color:var(--ink2);max-width:60em">
+      It is a range because the range is honest. It covers an authenticated handoff from your
+      identity system and an embed surface built to your case. We scope against your actual stack
+      and quote a fixed figure before you commit to anything &mdash; and advisory hours during
+      that build sit inside the fee, never billed twice.
+    </p>
+  </div>
+
+  <div class="foot"><span>Octant &middot; partner rate card &middot; confidential</span><span>1 / 2</span></div>
+</section>
+
+<!-- ========================== SHEET 2 ========================== -->
+<section class="sheet">
+  <div class="top">
+    <svg width="27" height="27" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#17130F" stroke-width="2.4" opacity=".92"/>
+      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#17130F" stroke-width="2.4" opacity=".38" transform="rotate(45 32 32)"/>
+      <circle cx="32" cy="32" r="5.4" fill="#5B32A8"/>
+    </svg>
+    <div class="wordmark">Octant</div>
+    <div class="meta">
+      <b>Partner rate card</b>
+      Confidential &middot; continued
+    </div>
   </div>
 
   <h2>Our time</h2>
-  <p class="lede" style="font-size:9.2pt">
-    Priced separately from the software, always, so neither one hides inside the other.
-  </p>
-  <table>
-    <thead><tr><th style="width:67%">Engagement</th><th style="width:33%">Rate</th></tr></thead>
-    <tbody>
-      <tr><td>Single session, 90 minutes, live and recorded</td><td class="rate">$450</td></tr>
-      <tr><td>Block of six sessions, used within six months</td><td class="rate">$2,400 <span style="color:var(--muted);font-weight:400">($400 each)</span></td></tr>
-      <tr><td>Monthly retainer &mdash; see below</td><td class="rate">$3,000 / month</td></tr>
-      <tr><td>Facilitated workshop, your team or your client&rsquo;s, full day</td><td class="rate">$3,500 <span style="color:var(--muted);font-weight:400">+ travel</span></td></tr>
-      <tr><td>Advisory during a Shape C or D build</td><td class="rate">In the build fee</td></tr>
-    </tbody>
-  </table>
-  <ul>
-    <li><b>The retainer includes</b> four hours of live time per month, async questions answered
-        inside two business days, and first look at anything you build on top before it ships.</li>
-    <li><b>Three-month minimum</b>, monthly thereafter.</li>
-    <li><b>Unused retainer hours roll forward one month and no further</b> &mdash; stated here so
-        it isn&rsquo;t a surprise on an invoice.</li>
+  <p class="sub">Priced separately from the software, always, so neither hides inside the other.</p>
+  <div class="rates">
+    <div class="rate">
+      <span class="what">Single session, 90 minutes &mdash; live, and recorded for you to keep</span>
+      <span class="amt">$450</span>
+    </div>
+    <div class="rate">
+      <span class="what">Block of six sessions, used within six months</span>
+      <span class="amt">$2,400 <em>&middot; $400 each</em></span>
+    </div>
+    <div class="rate">
+      <span class="what">Monthly retainer<small>Four live hours a month, async inside two business days, first look at anything you build on top</small></span>
+      <span class="amt">$3,000 <em>/ month</em></span>
+    </div>
+    <div class="rate">
+      <span class="what">Facilitated workshop, full day &mdash; your team or your client&rsquo;s</span>
+      <span class="amt">$3,500 <em>+ travel</em></span>
+    </div>
+    <div class="rate">
+      <span class="what">Advisory during a Shape C or D build</span>
+      <span class="amt"><em>in the build fee</em></span>
+    </div>
+  </div>
+  <ul class="terms" style="margin-top:10px">
+    <li>Retainer runs a <b>three-month minimum</b>, monthly thereafter, and <b>unused hours roll
+    forward one month and no further</b> &mdash; said here so it is not a surprise on an invoice.</li>
   </ul>
 
-  <footer>
-    <span>Octant &mdash; partner rate card &middot; confidential</span>
-    <span>Page 1 of 2</span>
-  </footer>
-</section>
-
-<!-- ============================ PAGE 2 ============================ -->
-<section class="page">
-  <header>
-    <svg width="26" height="26" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#1A1714" stroke-width="2.5" opacity=".9"/>
-      <rect x="14" y="14" width="36" height="36" rx="5" stroke="#1A1714" stroke-width="2.5" opacity=".4" transform="rotate(45 32 32)"/>
-      <circle cx="32" cy="32" r="5.5" fill="#5B32A8"/>
-    </svg>
-    <div class="brandblock">
-      <div class="brandname">Octant</div>
-      <div class="docname">Partner rate card &middot; continued</div>
-    </div>
-    <div class="stamp">
-      <b>Fixed until 18 October 2026</b>
-      Confidential
-    </div>
-  </header>
-
-  <h2 style="margin-top:0">Recorded lessons</h2>
-  <p class="lede" style="font-size:9.2pt">
-    Recording converts a recurring cost &mdash; our hours, every time a new person needs the model
-    &mdash; into a one-time cost plus a durable asset. The only real question is who funds it and
-    what they get for it.
-  </p>
-  <div class="two">
-    <div class="opt">
-      <h3>Option 1 &mdash; Octant funds it</h3>
-      <p>Videos sit behind the standard wall and are included with every seat under any shape, at
-      no extra cost to you. Our consultancy hours fall toward zero as the library fills.</p>
-      <p><b>Timeline is ours to set and is not currently committed.</b></p>
-    </div>
-    <div class="opt">
-      <h3>Option 2 &mdash; You fund it</h3>
-      <p>A course-length set runs <span class="money">$8,000&ndash;15,000</span> to produce,
-      depending on length and how much is bespoke to your context.</p>
-      <p>In exchange: <b>category exclusivity for twelve months</b> &mdash; no other partner in
-      your vertical &mdash; and your framing baked into the material rather than bolted on after.</p>
+  <div class="band">
+    <h2>Recorded lessons</h2>
+    <p class="sub">Turning our hours, spent again for every new person, into a one-time cost plus a
+    durable asset.</p>
+    <div class="two">
+      <div class="col">
+        <h3>We fund it</h3>
+        <p>Videos sit behind the standard wall, included with every seat under any shape at no
+        extra cost to you. <b>Timeline is ours to set and is not currently committed.</b></p>
+      </div>
+      <div class="col">
+        <h3>You fund it &mdash; $8&ndash;15k</h3>
+        <p>Depending on length and how bespoke it is. In exchange: <b>category exclusivity for
+        twelve months</b> &mdash; no other partner in your vertical &mdash; and your framing baked
+        into the material rather than bolted on after.</p>
+      </div>
     </div>
   </div>
-  <div class="note">
-    Option 2 is the one worth thinking about if your offering&rsquo;s real bottleneck is that your
-    clients need to <b>understand</b> the model, not just consult it.
-  </div>
 
-  <h2>What we need to quote you</h2>
-  <p class="lede" style="font-size:9.2pt">
-    Four answers turn everything above into a single number with your name on it.
-  </p>
-  <div class="ask">
-    <ol>
-      <li><b>Which shape</b> &mdash; A, B, C or D. If none cuts in the right place, say so; a
-      fifth shape is available.</li>
-      <li><b>Roughly how many people</b> would hold a seat in year one, and whether that is your
-      staff, your clients, or both.</li>
-      <li><b>Who your client thinks they are buying from</b> at renewal. That single answer
-      separates A from B, C and D more cleanly than any feature comparison.</li>
-      <li><b>When you would want to launch.</b> A and B need nothing built; C and D need a scoping
-      conversation before a date means anything.</li>
+  <div class="band">
+    <h2>What we need to quote you</h2>
+    <p class="sub">Four answers turn everything here into one number with your name on it.</p>
+    <ol class="ask">
+      <li><span><b>Which shape</b> &mdash; A, B, C or D. If none cuts in the right place for what you are building, say so; a fifth shape is available.</span></li>
+      <li><span><b>Roughly how many people</b> would hold a seat in year one, and whether that is your staff, your clients, or both.</span></li>
+      <li><span><b>Who your client thinks they are buying from</b> at renewal &mdash; the one answer that separates A from B, C and D.</span></li>
+      <li><span><b>When you would want to launch.</b> A and B need nothing built; C and D need a scoping conversation before a date means anything.</span></li>
     </ol>
   </div>
 
-  <h2>Terms that apply to all four</h2>
-  <ul>
-    <li><b>Everything on both pages is fixed until 18 October 2026.</b> If a number changes after
-    that, you get the changed number before you are asked to decide anything.</li>
-    <li><b>Invoicing</b> is monthly or annually in advance depending on the tier; annual tiers are
-    invoiced once, at the start of the term.</li>
-    <li><b>Seat counts are trued up quarterly</b> under B, C and D. You are never billed for a
-    seat before it exists.</li>
-    <li><b>The engine, the course, the lexicon and the assistant are included</b> under every
-    shape. There are no feature gates and no per-report fees at any tier.</li>
-  </ul>
-  <div class="note hard">
-    <b>One term that is not negotiable at any price.</b> Octant is not a validated psychometric
-    instrument and does not claim to be. It must not be used as a hiring, selection, promotion or
-    termination instrument, and any integration will say so where users can see it. We would
-    rather lose the deal than have this one bend &mdash; it is the same reason the product ships
-    the survey evidence that disagrees with it.
+  <div class="band">
+    <h2>Before you reply</h2>
+    <p class="sub">Seat counts are trued up quarterly under B, C and D, and invoicing runs in
+    advance by tier &mdash; you are never billed for a seat before it exists. The engine, course,
+    lexicon and assistant are included under every shape; there are no feature gates at any tier.</p>
+    <div class="hard">
+      <b>One term that is not negotiable at any price.</b> Octant is not a validated psychometric
+      instrument and does not claim to be. It must not be used as a hiring, selection, promotion or
+      termination instrument, and any integration will say so where users can see it. We would
+      rather lose the deal than bend this one.
+    </div>
   </div>
 
-  <h2>Next step</h2>
-  <p class="lede" style="font-size:9.3pt">
-    Reply with those four answers &mdash; or just the first two &mdash; and you get a fixed quote
-    and a draft agreement back. For Shape C or D the reply is a scoping call before a number; we
-    don&rsquo;t quote a build we haven&rsquo;t sized. <b>nick@stratfieldpartners.com</b>
-  </p>
+  <div class="closing">
+    <p>Reply with those four answers &mdash; or just the first two &mdash; and a fixed quote and
+    draft agreement come back. For Shape C or D, a scoping call first.
+    <span class="mail">nick@stratfieldpartners.com</span></p>
+  </div>
 
-  <footer>
-    <span>Octant is built and operated by Stratfield Partners LLC &middot; confidential, not for onward distribution</span>
-    <span>Page 2 of 2</span>
-  </footer>
+  <div class="foot"><span>Octant is built and operated by Stratfield Partners LLC</span><span>2 / 2</span></div>
 </section>
 
 </body>
