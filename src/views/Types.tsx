@@ -8,6 +8,7 @@ import { usePublishContext } from "../chat/ChatContext";
 import Explain from "../components/Explain";
 import { FnTag, Tile } from "../components/Bits";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
+import ArchetypeSeal from "../components/glyphs/ArchetypeSeal";
 
 type SortBy = "quadra" | "temperament" | "alpha";
 
@@ -36,7 +37,7 @@ export default function Types() {
 
       <div className="cluster" style={{ margin: "var(--s5) 0 var(--s6)" }}>
         <span className="small muted">Group by</span>
-        {([["quadra", "Quadra"], ["temperament", "Temperament"], ["alpha", "Nothing"]] as const).map(
+        {([["quadra", "Camp"], ["temperament", "Temperament"], ["alpha", "Nothing"]] as const).map(
           ([v, label]) => (
             <button type="button"
               key={v}
@@ -69,11 +70,15 @@ export default function Types() {
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--s3)" }}>
                     <TypeMolecule type={t} size={52} />
                     <b className="mono" style={{ fontSize: "var(--t-lg)" }}>{t}</b>
-                    <i
-                      className="dot"
-                      style={{ background: p.quadra(quadra(t)), marginLeft: "auto" }}
-                      title={`${quadra(t)} quadra`}
-                    />
+                    {/* the seal opposite the name, like the card; the camp dot rides along */}
+                    <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+                      <ArchetypeSeal type={t} size={40} />
+                      <i
+                        className="dot"
+                        style={{ background: p.quadra(quadra(t)) }}
+                        title={`${quadra(t)} quadra`}
+                      />
+                    </span>
                   </div>
 
                   {/* One epithet on a tile — there are three, but a grid of

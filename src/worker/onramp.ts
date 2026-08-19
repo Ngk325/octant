@@ -413,8 +413,8 @@ const STYLE = `
   :root {
     color-scheme: light dark;
     --paper:#FDFCFA; --surface:#FFFFFF; --soft:#F4F1EA;
-    --ink:#1A1714; --ink2:#4C463D; --muted:#6B6459; --rule:#E3DED4;
-    --accent:#6B3BC4; --accent-ink:#4B2A8F; --accent-soft:#F0E9FC; --on:#fff;
+    --ink:#241F19; --ink2:#4C463D; --muted:#6B6459; --rule:#E3DED4;
+    --accent:#4C4899; --accent-ink:#373474; --accent-soft:#ECEBF7; --on:#fff;
     --serif:"Newsreader",Georgia,"Times New Roman",serif;
     --sans:"Inter",system-ui,-apple-system,sans-serif;
   }
@@ -422,7 +422,7 @@ const STYLE = `
     :root {
       --paper:#141310; --surface:#1D1B17; --soft:#24211C;
       --ink:#EDE9E1; --ink2:#B6AFA3; --muted:#8E8779; --rule:#2E2A24;
-      --accent:#C9A0FF; --accent-ink:#DCC0FF; --accent-soft:#241B33; --on:#1A1714;
+      --accent:#A8A6D3; --accent-ink:#C6C4E8; --accent-soft:#1F2033; --on:#241F19;
     }
   }
   * { box-sizing: border-box; }

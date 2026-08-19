@@ -4,7 +4,9 @@ import {
   type Fn, type SlotName, type RelCode, REL_NAME,
   INTERACTION_STYLE, GROUP,
 } from "../engine/data";
-import { TYPES, REL, ease, gate, type MbtiType, type Quadra } from "../engine/core";
+import { TYPES, REL, ease, gate, stack, type MbtiType, type Quadra } from "../engine/core";
+import { bondFacts, sparkFacts } from "../engine/bonds";
+import { AxisBondFigure, SparkMeshFigure } from "./BondFigure";
 import TypeMolecule from "./glyphs/TypeMolecule";
 import DivergingEase from "./DivergingEase";
 import CoinSet from "./CoinSet";
@@ -13,13 +15,14 @@ import OctagramMap from "./OctagramMap";
 import OctagramWheel from "./OctagramWheel";
 import ThemeSeasons from "./ThemeSeasons";
 import { wheelOf } from "../engine/octagram";
-import { sides, SIDE_ORDER, type SideKey } from "../engine/sides";
+import type { SideKey } from "../engine/sides";
 import { ops, type Animal, ANIMAL_LABEL } from "../engine/ops";
 import FnIcon from "./glyphs/FnIcon";
 import AttitudeMark from "./glyphs/AttitudeMark";
 import SelfTribeCone from "./glyphs/SelfTribeCone";
 import AnimalGlyph from "./glyphs/AnimalGlyph";
-import SideDoor from "./glyphs/SideDoor";
+import DoorRow from "./DoorRow";
+import SeatFigure from "./glyphs/SeatFigure";
 import InvolutionTable from "./InvolutionTable";
 import ArchetypeGrid from "./ArchetypeGrid";
 import QuadraFunctionGrid from "./QuadraFunctionGrid";
@@ -56,19 +59,32 @@ const Plain = ({ children }: { children: ReactNode }) => (
 
 /** Figures for specific entries, by id. */
 export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
-  /* The 2×2 the archetype entries describe one cell at a time. */
+  /* Each seat entry gets the deck's seat figure — the seat located among
+     the eight, its twin arced across the divide — then the 2×2 the
+     archetype entries describe one cell at a time. */
   ...Object.fromEntries(
-    (["hero", "parent", "child", "inferior"] as const).map((id) => [
+    (["hero", "parent", "child", "inferior"] as const).map((id, depth) => [
       id,
-      (e: Entry) => <Plain><ArchetypeGrid highlight={e.term as SlotName} /></Plain>,
+      (e: Entry) => (
+        <Plain>
+          <SeatFigure depth={depth} />
+          <ArchetypeGrid highlight={e.term as SlotName} />
+        </Plain>
+      ),
     ]),
   ),
-  /* Shadow slots highlight their ego mirror — the grid names the mirror in-cell. */
+  /* Shadow seats: their own bar in the figure; the grid highlights their
+     ego mirror and names the mirror in-cell. */
   ...Object.fromEntries(
     ([["nemesis", "Lead"], ["critic", "Support"], ["trickster", "Delight"], ["demon", "Cave"]] as const)
-      .map(([id, mirror]) => [
+      .map(([id, mirror], depth) => [
         id,
-        () => <Plain><ArchetypeGrid highlight={mirror as SlotName} /></Plain>,
+        () => (
+          <Plain>
+            <SeatFigure depth={depth + 4} />
+            <ArchetypeGrid highlight={mirror as SlotName} />
+          </Plain>
+        ),
       ]),
   ),
   /* Quadras highlight their own row of the value-club grid. */
@@ -119,6 +135,34 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
     );
   },
 
+  /* The Bond layer: one worked figure each, read off engine/bonds.ts so the
+     example cannot drift from the facts the entries state. */
+  bond: () => {
+    const f = bondFacts()[0];
+    return (
+      <div style={{ margin: "var(--s3) 0" }}>
+        <AxisBondFigure a={f.a} b={f.b} />
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          Worked example — the {f.a}·{f.b} axis, mean ease {Math.round(f.mean)}. There are four
+          of these; /bonds shows them all.
+        </p>
+      </div>
+    );
+  },
+  "spark-mesh": () => {
+    const f = sparkFacts()[0];
+    const fns = [...stack(f.outward[0]).slice(0, 2), ...stack(f.outward[1]).slice(0, 2)] as [Fn, Fn, Fn, Fn];
+    return (
+      <div style={{ margin: "var(--s3) 0" }}>
+        <SparkMeshFigure fns={fns} />
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          Worked example — the {f.quadra} Camp&rsquo;s mesh, realised by {f.outward.join(" · ")}{" "}
+          and {f.inward.join(" · ")}. One mesh per Camp; /bonds shows all four.
+        </p>
+      </div>
+    );
+  },
+
   savior: () => <Worked><SaviorDemonGrid type="ENTP" /></Worked>,
 
   /* Same grid as `savior` — the Flinches are its right-hand column, not a
@@ -149,7 +193,7 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
       id,
       () => (
         <Worked>
-          <SideDoorRow type="ENTP" emphasis={id === "four-sides" ? undefined : id as SideKey} />
+          <DoorRow type="ENTP" emphasis={id === "four-sides" ? undefined : id as SideKey} />
           <div style={{ marginTop: "var(--s3)" }}><GatewayPath type="ENTP" /></div>
         </Worked>
       ),
@@ -249,24 +293,6 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
   ),
 
 };
-
-/**
- * The four doors of one type in a row, dimming all but the emphasised one.
- * Local composition, not a glyph — SideDoor stays single-purpose.
- */
-function SideDoorRow({ type, emphasis }: { type: MbtiType; emphasis?: SideKey }) {
-  const s = sides(type);
-  return (
-    <div className="cluster" style={{ gap: "var(--s4)", alignItems: "flex-end" }}>
-      {SIDE_ORDER.map((k) => (
-        <div key={k} style={{ textAlign: "center", opacity: emphasis && emphasis !== k ? 0.45 : 1 }}>
-          <SideDoor side={k} fn={s[k].gateway.fn} />
-          <span className="small muted">{s[k].name}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 /**
  * The first ordered pair that actually exhibits a relation, searched rather

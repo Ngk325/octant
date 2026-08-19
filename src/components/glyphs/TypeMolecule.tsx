@@ -1,7 +1,8 @@
 import { stack, type MbtiType } from "../../engine/core";
 import { SLOT_NAMES } from "../../engine/data";
 import { usePalette } from "../Theme";
-import { RANK_RATIO } from "./geometry";
+import { Ripple } from "./FnDisc";
+import { RANK_RATIO, outward } from "./geometry";
 
 /**
  * A type drawn as a molecule: its four ego functions as beads, sized by
@@ -57,11 +58,12 @@ export default function TypeMolecule({ type, size = 64, labels }: {
         const { x, y } = POS[i];
         return (
           <g key={fn}>
+            {/* the deck's ripple carries the attitude: crests break outward
+                for e, back into the bead for i. (The old marks — a glow ring
+                for e, a pale core for i — read as hollowness, and hollow
+                means SHADOW in this design language, never intraverted.) */}
+            <Ripple hue={p.fn(fn)} cx={x} cy={y} r={r} out={outward(fn)} />
             <circle cx={x} cy={y} r={r} fill={p.fn(fn)} />
-            {/* extraverted beads glow outward; intraverted carry a core */}
-            {fn[1] === "e"
-              ? <circle cx={x} cy={y} r={r + 3} fill="none" stroke={p.fn(fn)} strokeOpacity=".35" strokeWidth="2" />
-              : <circle cx={x} cy={y} r={r * 0.35} fill="var(--canvas)" opacity=".55" />}
             {showLabels && i < 2 && (
               /* Fixed inks, not vars: extraverted beads are the LIGHT palette
                  variant in both themes (dark text holds), intraverted the deep
@@ -73,7 +75,7 @@ export default function TypeMolecule({ type, size = 64, labels }: {
                 fontFamily="var(--mono)"
                 fontSize={i === 0 ? 24 : 20}
                 fontWeight="600"
-                fill={fn[1] === "e" ? "#1A1714" : "#FDFCFA"}
+                fill={fn[1] === "e" ? "#241F19" : "#FDFCFA"}
               >
                 {fn}
               </text>

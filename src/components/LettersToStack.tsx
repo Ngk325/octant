@@ -23,48 +23,49 @@ export default function LettersToStack({ type }: { type: MbtiType }) {
   const lastLetter = type[3] === "J" ? "Judger" : "Perceiver";
   const heroKind = isObserver(hero) ? "perceiving" : "judging";
 
+  /* Step wording after the deck's decoder card (front-decode in
+     src/cards/deck.ts): each step one heading, one line of reasoning. */
   const steps = [
     {
       letter: type[0],
-      title: `${type[0]} — which way the strongest function faces`,
-      body: `You are ${attitude === "intraverted" ? "an Intravert" : "an Extravert"}, so your strongest function is ${attitude}.`,
+      title: `${type[0]} — which way the strongest tool faces`,
+      body: `You are ${attitude === "intraverted" ? "an Intravert" : "an Extravert"}: your strongest tool faces ${attitude === "intraverted" ? "inward" : "outward"}.`,
     },
     {
       letter: type[3],
-      title: `${type[3]} — which kind it is`,
+      title: `${type[3]} — the tool shown to the world`,
       /* The two cases are genuinely different, and collapsing them makes the
-         extravert version circular. The last letter always describes the
-         function you turn OUTWARD. For an Extravert that is the strongest
-         function itself, so the letter names it directly. For an Intravert the
-         outward function is only the second, so the letter names the second and
-         the strongest is the other kind. */
+         extravert version circular. The last letter always names the tool
+         turned OUTWARD — deciding for J, perceiving for P. An Extravert
+         shows their strongest, so the letter names it directly; an Intravert
+         shows only their second, so the strongest is the other kind. */
       body: attitude === "extraverted"
-        ? `The last letter describes the function you turn outward — and since you lead outwardly, ` +
-          `that is your strongest one. You are a ${lastLetter}, so your strongest function is ` +
+        ? `The last letter names the tool you show the world — deciding for J, perceiving for P — and an ` +
+          `Extravert shows their strongest. You are a ${lastLetter}, so your strongest tool is ` +
           `${heroKind}, and step 1 already said it faces outward.`
-        : `The last letter describes the function you turn outward, which is not the one you lead with. ` +
-          `You are a ${lastLetter}, so the function you show the world is ` +
-          `${type[3] === "J" ? "a judging one" : "a perceiving one"} — but that is your second. Your ` +
-          `strongest sits behind it, faces inward, and is the other kind: ${heroKind}.`,
-      result: `Your strongest function is ${hero}.`,
+        : `The last letter names the tool you show the world — deciding for J, perceiving for P — and an ` +
+          `Intravert shows their second, not their strongest. You are a ${lastLetter}, so the tool the ` +
+          `world sees is ${type[3] === "J" ? "a judging one" : "a perceiving one"}; your strongest sits ` +
+          `behind it, faces inward, and is the other kind: ${heroKind}.`,
+      result: `Your strongest tool is ${hero}.`,
       fn: hero,
     },
     {
       letter: type[1] + type[2],
-      title: `${type[1]}${type[2]} — which two you use`,
+      title: `${type[1]}${type[2]} — the two tools in play`,
       body:
-        `The middle letters name your perceiving and judging preferences. The one that is not your ` +
-        `strongest becomes your second, and it faces the other way — ` +
+        `The middle letters name your perceiver and your decider. The one that is not your ` +
+        `strongest is your second, and it faces the other way — ` +
         `${isExtraverted(hero) ? "outward first, inward second" : "inward first, outward second"}.`,
-      result: `Your second function is ${parent}.`,
+      result: `Your second tool is ${parent}.`,
       fn: parent,
     },
     {
       letter: "↕",
-      title: "The bottom two are the opposites of the top two",
+      title: "The mirror — the bottom two oppose the top two",
       body:
-        `Your weakest function is the exact opposite of your strongest — other kind, other direction. ` +
-        `Your third is the opposite of your second, on the same principle.`,
+        `Your weakest tool is the exact opposite of your strongest — other kind, other direction — ` +
+        `and your third opposes your second the same way. Seats 5–8 are these four, turned.`,
       result: `Third is ${child}; weakest is ${inferior}.`,
       fn: inferior,
     },

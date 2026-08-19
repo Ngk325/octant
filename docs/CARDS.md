@@ -120,7 +120,7 @@ Support half — renamed across the whole app, not just the deck.
 
 ## Derived, with declared exceptions
 
-Four tables in `src/cards/deck.ts` are authored in some sense, and each is
+Three tables in `src/cards/deck.ts` are authored in some sense, and each is
 declared in place:
 
 - `SUIT_ABOUT` — one line per suit, printed on the key card only.
@@ -132,12 +132,13 @@ declared in place:
   and neither says what the seat *is*. The first printing opened every Seat card
   with its cross-side mapping instead, which leant on four Side names the deck
   had not defined yet; the mapping now lives in the footer.
-- `REL_TRANSLATE` — a vocabulary map, not new claims. The engine's relation copy
-  speaks the app's lexicon ("mobilising function", "base channel"); the deck
-  teaches none of those words, so its quotes pass through this map into the
-  deck's own seat names (Delight, Blind spot, Lead, Support). Every equivalence
-  in it is structural and asserted in `tests/cards.test.ts` — the "mobilising
-  function" a Spark feeds *is* the Delight seat, for all sixteen types.
+
+A fourth table, `REL_TRANSLATE`, existed to translate the engine's old lexicon
+vocabulary ("mobilising function", "base channel") into the deck's seat names.
+The platform backport retired it: the engine's relation copy now says Delight,
+Blind spot and "Leads/Supports share an axis" natively, the deck quotes
+`REL_DEF` unmediated, and the structural equivalences behind that language are
+still asserted per type in `tests/cards.test.ts`.
 
 Everything else is composed from engine tables. Where a field is longer than 63mm
 of card can hold, `fit()` keeps whole sentences — falling back to whole clauses,
@@ -152,7 +153,7 @@ One generative composition per card, in `src/cards/art.ts`. Two rules:
    id, so the deck renders byte-identically twice and a diff in the art means a
    diff in the data.
 2. **Derived.** Colour is never decorative — every hue is a function's own hue from
-   `src/engine/palette.ts` (violet intuition, amber sensing, teal thinking, rose
+   `src/engine/palette.ts` (indigo intuition, sienna sensing, verdigris thinking, madder
    feeling; lighter outward, deeper inward). Composition follows the card's
    structure: a Wiring's flow field is aimed by its Lead's family and coloured by
    its own eight slots, a Seat card draws all eight bars with the

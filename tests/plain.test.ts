@@ -25,8 +25,9 @@ describe("plain language coverage", () => {
        "Flinches" were used constantly across the app and even quoted inside
        `savior`'s own definition, but never had an entry of their own — the
        curriculum's link to them (`demon-fn`) pointed at an id that did not
-       exist. */
-    expect(ENTRIES).toHaveLength(101);
+       exist. 101 -> 103 with the Bond layer backported from the print deck:
+       `bond` and `spark-mesh`, the element-level pairing surface at /bonds. */
+    expect(ENTRIES).toHaveLength(103);
     for (const e of ENTRIES) expect(PLAIN_BY_ID[e.id], e.id).toBeTruthy();
   });
 

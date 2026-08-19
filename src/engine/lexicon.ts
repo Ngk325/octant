@@ -344,8 +344,20 @@ const CONCEPTS: Draft[] = [
     short: "The two types whose Lead is your Doubt. Stimulating rather than restful.",
     definition:
       "Your Doubt is your Lead's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Doubt.",
-    inSystem: "Derived as the two types whose dominant equals your slot 5. This always resolves to your Damper and Loose fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
+    inSystem: "Derived as the two types whose dominant equals your seat 5. This always resolves to your Damper and Loose fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
     seeAlso: ["complement", "nemesis", "rel-ex", "rel-mg"] }),
+  E({ id: "bond", term: "Bond", category: "Concept",
+    short: "An element-level pairing: a Lead and the tool that answers it across the axis.",
+    definition:
+      "Compatibility stated at the altitude it actually lives at: which element answers which, with the four letters stripped away. The strongest shape is the axis bond — Lead meets Lead across the axis, so each partner is effortlessly good at exactly what the other fears being bad at. Sweeping all 240 ordered pairs of distinct types, the four axis pairings average 93 of 100 ease, far above every other class of Lead pairing, and realise only the Counterpart and Near fit relations.",
+    inSystem: "Derived in engine/bonds.ts by sweep, never asserted: bondFacts() groups every ordered type pair by its two Leads and reads the means off the ease table. Born as the print deck's Bond suit; taught at /bonds.",
+    seeAlso: ["spark-mesh", "complement", "rel-du", "rel-qi", "inferior"] }),
+  E({ id: "spark-mesh", term: "Spark mesh", category: "Concept",
+    short: "Lead answered by Support, crosswise, on both axes at once — the Spark relation's mechanism.",
+    definition:
+      "The other pairing shape that works: instead of Lead meeting Lead, each person's Lead is answered by the other's SUPPORT, and the two crossings hold at once. Each Camp's two axes admit exactly one such mesh, realised twice — once with both Leads facing outward, once with both facing in. Both crossings at once is exactly the Spark relation, ease 92 in both directions; one crossing alone is exactly Upstream (54) or Downstream (48). Where an axis bond rests, a mesh runs — each feeds the other's Delight, and it tires if never stepped out of.",
+    inSystem: "Derived in engine/bonds.ts: sparkFacts() reads the one mesh per Camp off the engine, and the sweep asserting the equivalence (both crossings ⇔ Spark) runs in the test suite. Taught at /bonds.",
+    seeAlso: ["bond", "rel-ac", "rel-br", "rel-be", "quadra"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
     short: "A 0–100 modelling score for how one type experiences another. Directional.",
     definition:
@@ -356,17 +368,17 @@ const CONCEPTS: Draft[] = [
     short: "Holding the two growth readings unreconciled, because they disagree.",
     definition:
       "One reading runs an eight-function stack across all four letters and puts the weak point at the Cave; the exchange overlay tracks two letters across four orientations and marks Delight and Cave together. They therefore locate a type's weak point in different places and prescribe different growth. Fusing them produces incoherence, so this system carries both and lets the divergence stand as content.",
-    inSystem: "The wiring schematic marks the Cave as its own region and the demon-animal loop as a wider open circuit. They are in different slots.",
+    inSystem: "The wiring schematic marks the Cave as its own region and the demon-animal loop as a wider open circuit. They are in different seats.",
     seeAlso: ["inferior", "demon-animal", "savior"] }),
   E({ id: "savior", term: "Anchor", category: "Concept",
     short: "The two functions a type actually uses well — one observer, one decider.",
     definition:
-      "The anchor pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary current. The attitude-flipped counterparts are the flinches. Named from the other side of a relation, the same two pairs get two more names: someone whose leading function lands on your anchor is your mobilising function, and someone whose leading function lands on your flinch is your vulnerable function.",
+      "The anchor pair is the type's dominant and auxiliary, one perceiving and one judging, always in opposite attitudes. Their combination gives the primary current. The attitude-flipped counterparts are the flinches. Named from the other side of a relation, the same two pairs get two more names: someone whose leading function lands on your anchor is feeding your Delight, and someone whose leading function lands on your flinch is pressing your Blind spot.",
     seeAlso: ["flinch", "demon-animal", "animal", "dual-lighting", "rel-ac", "rel-sr", "rel-sv"] }),
   E({ id: "flinch", term: "Flinch", category: "Concept",
     short: "The two functions a type distrusts and defends — one observer, one decider, opposite the Anchors.",
     definition:
-      "The flinch pair is the anchor pair with both attitudes flipped — the same two positions, one perceiving and one judging, always landing on Delight and Cave. Nervous and performative where the anchors are obvious and easy: criticism of a flinch lands hard, criticism of an anchor shrugs off. Together the two flinches form the last current. Named from the other side of a relation, someone whose leading function lands on your flinch is your vulnerable function.",
+      "The flinch pair is the anchor pair with both attitudes flipped — the same two positions, one perceiving and one judging, always landing on Delight and Cave. Nervous and performative where the anchors are obvious and easy: criticism of a flinch lands hard, criticism of an anchor shrugs off. Together the two flinches form the last current. Named from the other side of a relation, someone whose leading function lands on your flinch is pressing your Blind spot.",
     inSystem: "Shown as the right-hand column of the exchange overlay's grid, opposite the Anchors.",
     seeAlso: ["savior", "demon-animal", "child", "inferior", "rel-sr", "rel-sv"] }),
   E({ id: "demon-animal", term: "Last current", category: "Concept",
@@ -394,7 +406,7 @@ const CONCEPTS: Draft[] = [
       "Positions a type's eight information elements into four blocks. Every relation in this system is a statement about how two stack maps line up — which of my functions lands on which of yours.",
     seeAlso: ["relation", "quadra", "rel-du"] }),
   E({ id: "quadra", term: "Quadra", category: "Concept",
-    short: "One of four groups of types sharing the same four ego functions, and so the same values.",
+    short: "A Camp: one of four groups of types sharing the same four ego functions, and so the same values.",
     definition:
       "Alpha, Beta, Gamma and Delta. Types within a quadra find each other's priorities self-evident because they are literally running the same four elements. Quadra membership is the single most efficient predictor of whether a group will argue about goals or only about methods.",
     seeAlso: ["alpha", "beta", "gamma", "delta"] }),
@@ -432,7 +444,7 @@ const CONCEPTS: Draft[] = [
   E({ id: "subconscious", term: "Subconscious", category: "Concept",
     short: "Your ego stack reversed. The person you wish you were, and your Counterpart.",
     definition:
-      "Take your four ego slots and read them backwards: your Cave becomes its Lead, your Lead becomes its Cave. The resulting type is your Counterpart, which is why being around one feels like being handed a version of yourself you cannot reach alone. The gateway is the Cave, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
+      "Take your four ego seats and read them backwards: your Cave becomes its Lead, your Lead becomes its Cave. The resulting type is your Counterpart, which is why being around one feels like being handed a version of yourself you cannot reach alone. The gateway is the Cave, so the way in is through your largest insecurity — you have to be visibly bad at the thing you most want to be good at. Developed, it produces humility and something the material calls happiness; undeveloped, it stays an aspiration you talk about rather than a place you go.",
     inSystem: "fourSides(t)[1]. Derived by omega — flip both attitude and element on the dominant and auxiliary. relation(t, subconscious) is always DU.",
     seeAlso: ["four-sides", "inferior", "rel-du", "unconscious", "subconscious-development"] }),
 
@@ -552,21 +564,21 @@ const CONCEPTS: Draft[] = [
 /* ══════════════════════════════ RELATIONS ══════════════════════════════ */
 const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
   DU: "The lowest-friction pairing available. Your Cave is their Lead and their Cave is yours, so each covers the other's fear without effort or resentment. Counterpart pairs often report that nothing in particular is happening and that it is restful anyway.",
-  AC: "Fast to warm and genuinely energising, because each feeds the other's mobilising function. Sustained without breaks it becomes tiring in a way neither party can quite name.",
-  HD: "Shares the Counterpart's base channel but not its creative one. Comfortable and slightly incomplete: fine until the half you do not share is the half the situation needs.",
-  MG: "Shares the Counterpart's creative channel only. Relaxing, playful and slightly unserious — good company, poor co-execution.",
+  AC: "Fast to warm and genuinely energising, because each feeds the other's Delight. Sustained without breaks it becomes tiring in a way neither party can quite name.",
+  HD: "The Leads share an axis, as a Counterpart's do; the Supports do not. Comfortable and slightly incomplete: fine until the half you do not share is the half the situation needs.",
+  MG: "Only the Supports share an axis. Relaxing, playful and slightly unserious — good company, poor co-execution.",
   ID: "Instant mutual legibility and perfectly shared blind spots. Nobody covers the gap, and neither party can see that there is one.",
   MI: "The same two functions in opposite order. Complete agreement about what matters, permanent argument about sequence and emphasis.",
   KD: "The same leading function, different second. You perceive the world identically and then do incompatible things with it, which is more disorienting than outright disagreement.",
   BU: "The same second function. Easy to work alongside and oddly hard to get close to; the shared ground is instrumental rather than personal.",
-  BR: "Their leading function lands on your mobilising function. You find them compelling and they do not quite return it — not rejection, just an asymmetry in the wiring.",
-  BE: "Your leading function lands on their mobilising function. They orbit you more than you orbit them, which is worth spending deliberately rather than assuming it is mutual.",
-  SR: "Their leading function lands on your vulnerable function. Casual remarks arrive as verdicts, and they genuinely cannot see it happening.",
-  SV: "Your leading function lands on their vulnerable function. You can flatten them without noticing; go gentler than feels necessary.",
-  QI: "The same elements, every position rearranged. You look alike from outside and arrive by routes that do not translate, so agreement is usually coincidence.",
-  EX: "The same functions with every attitude flipped. A constant near-miss on intent: the words match and the meaning does not.",
+  BR: "Their leading function lands on your Delight. You find them compelling and they do not quite return it — not rejection, just an asymmetry in the wiring.",
+  BE: "Your leading function lands on their Delight. They orbit you more than you orbit them, which is worth spending deliberately rather than assuming it is mutual.",
+  SR: "Their leading function lands on your Blind spot. Casual remarks arrive as verdicts, and they genuinely cannot see it happening.",
+  SV: "Your leading function lands on their Blind spot. You can flatten them without noticing; go gentler than feels necessary.",
+  QI: "The same four letters, every position rearranged. You look alike from outside and arrive by routes that do not translate, so agreement is usually coincidence.",
+  EX: "The same four letters, every attitude flipped. A constant near-miss on intent: the words match and the meaning does not.",
   SE: "Your ego block lands on their super-ego block — the positions they are conscious of being bad at. You are effortlessly demonstrating the exact competence they feel judged for lacking, and they are doing the same to you. At distance this reads as impressive and intriguing; in sustained contact it reads as a standing rebuke neither of you intended.",
-  CF: "Their leading function lands on your most defended weakness and yours on theirs. Maximum friction, and usually mutual bafflement about why.",
+  CF: "Their leading function lands on your Blind spot and yours on theirs. Maximum friction, and usually mutual bafflement about why.",
 };
 /**
  * One real sentence per relation, matching the density of every other
@@ -579,21 +591,21 @@ const RELATION_EXTRA: Partial<Record<RelCode, string>> = {
  */
 const RELATION_SHORT: Record<RelCode, string> = {
   DU: "Your weak functions are their strong ones, and the reverse — the lowest-friction pairing there is.",
-  AC: "Each of you feeds the other's mobilising function — fast to warm, tiring without breaks.",
-  HD: "Shares your Counterpart's base channel but not the creative one — comfortable, and slightly incomplete.",
-  MG: "Shares your Counterpart's creative channel only — relaxing and playful, poor for joint execution.",
+  AC: "Each of you feeds the other's Delight — fast to warm, tiring without breaks.",
+  HD: "Your Leads share an axis, as a Counterpart's do — comfortable, and slightly incomplete.",
+  MG: "Only your Supports share an axis — relaxing and playful, poor for joint execution.",
   ID: "The same wiring. Instant mutual understanding, and blind spots neither of you can see.",
   MI: "The same two functions, opposite order — agreement on what matters, friction over sequence.",
   KD: "The same leading function, a different second — you see alike and then diverge.",
   BU: "The same second function, different leads — easy to work alongside, harder to get close to.",
-  BR: "Their leading function lands on your mobilising function — you find them compelling, and it is not quite returned.",
-  BE: "Your leading function lands on their mobilising function — they orbit you more than you orbit them.",
-  SR: "Their leading function lands on your vulnerable function — casual remarks land as verdicts.",
-  SV: "Your leading function lands on their vulnerable function — you can flatten them without noticing.",
+  BR: "Their leading function lands on your Delight — you find them compelling, and it is not quite returned.",
+  BE: "Your leading function lands on their Delight — they orbit you more than you orbit them.",
+  SR: "Their leading function lands on your Blind spot — casual remarks land as verdicts.",
+  SV: "Your leading function lands on their Blind spot — you can flatten them without noticing.",
   QI: "The same elements, every position rearranged — you look alike and arrive by different routes.",
   EX: "The same functions, every attitude flipped — a constant near-miss between what's said and meant.",
   SE: "Your ego lands on their superego, and the reverse — impressive at a distance, a rebuke up close.",
-  CF: "Their leading function lands on your most defended weakness, and the reverse — maximum friction.",
+  CF: "Their leading function lands on your Blind spot, and the reverse — maximum friction.",
 };
 
 const RELATIONS: Draft[] = (Object.keys(REL_NAME) as RelCode[]).map((c) => {

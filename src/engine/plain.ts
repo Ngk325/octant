@@ -132,11 +132,11 @@ export const COIN_PLAIN: string[] = [
 /** Concepts that need saying plainly before anything else makes sense. */
 export const CONCEPT_PLAIN: Record<string, string> = {
   function:
-    "A 'function' is just a habit of mind — one particular way of taking in the world or making " +
-    "up your mind about it. There are eight. Everyone has all eight. What differs is the order.",
+    "A 'function' is one of your eight mental tools — a habit of mind for taking in the world or " +
+    "making up your mind about it. Everyone runs all eight. What differs is the order.",
   stack:
-    "Your 'stack' is those eight habits in your personal order of strength. The top one is " +
-    "effortless. The bottom one barely runs. The order is what a type actually is.",
+    "Your 'stack' is those eight tools in your personal order of strength, each tool in its seat. " +
+    "The top one is effortless. The bottom one barely runs. The order is what a type actually is.",
   ego:
     "Your top four are the ones you experience as 'me'. The bottom four run too, but they feel " +
     "like something happening to you rather than something you are doing.",
@@ -160,13 +160,19 @@ export const CONCEPT_PLAIN: Record<string, string> = {
     "Ease runs in two directions and they are not always the same number. Reading someone is not the " +
     "same experience as being read by them.",
   quadra:
-    "Four clubs of four types that share the same four favourite habits of mind. Inside a club, the " +
-    "unspoken rules match and nobody has to explain themselves.",
+    "A Camp: four types that trust the same four tools. Inside a Camp the unspoken rules match, " +
+    "and nobody has to explain themselves.",
   complement:
     "The two types who are good at exactly what you are afraid of. Being around them is restful.",
   catalyst:
     "The two types who lead with the thing you are consciously reaching for. Being around them is " +
     "stimulating and slightly annoying, which is the point.",
+  bond:
+    "A pairing of two tools, not two people: a strongest tool and the one that answers it. Any two " +
+    "people carrying those two tools up top get the benefit, whatever their four letters are.",
+  "spark-mesh":
+    "A pairing where each person's strongest tool is answered by the other's second. It runs where " +
+    "a bond rests — energising rather than restful, and it tires if never stepped out of.",
 
   /* --- the Octagram layer. Written to be readable cold, because the source
      material for this part is genuinely difficult and nobody should need the
@@ -274,11 +280,13 @@ export const PLAIN_BY_ID: Record<string, string> = {
   /* concepts */
   complement: CONCEPT_PLAIN.complement,
   catalyst: CONCEPT_PLAIN.catalyst,
+  bond: CONCEPT_PLAIN.bond,
+  "spark-mesh": CONCEPT_PLAIN["spark-mesh"],
   ease: CONCEPT_PLAIN.ease,
   /* This used to gloss DUALITY — "the relief of being around someone who is
      effortlessly good at the thing you are afraid of" — which is a different
      concept entirely from the entry it was attached to. */
-  "dual-lighting": "This app carries two accounts of where you grow, and they disagree about one slot. Rather than split the difference and print a number neither account would recognise, it shows you both and says which is which.",
+  "dual-lighting": "This app carries two accounts of where you grow, and they disagree about one seat. Rather than split the difference and print a number neither account would recognise, it shows you both and says which is which.",
   savior: CONCEPT_PLAIN.savior,
   flinch: CONCEPT_PLAIN.demon,
   "demon-animal": "The current you use least. You can do it — it just costs you, so you avoid it and then resent needing it.",

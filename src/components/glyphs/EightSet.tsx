@@ -1,4 +1,5 @@
 import type { Fn } from "../../engine/data";
+import { FnTag } from "../Bits";
 import FnIcon from "./FnIcon";
 
 /** The four families, outward member first — the order FN_FULL itself uses. */
@@ -31,7 +32,8 @@ function Row({ fns, label, size }: { fns: Fn[]; label: string; size: number }) {
       {fns.map((fn) => (
         <div key={fn} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--s1)" }}>
           <FnIcon fn={fn} size={size} />
-          <span className="mono small">{fn}</span>
+          {/* the deck's disc leads the name: attitude readable before the letters */}
+          <span className="small"><FnTag fn={fn} disc /></span>
         </div>
       ))}
     </div>

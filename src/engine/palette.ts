@@ -10,7 +10,8 @@ export type Theme = "light" | "dark";
  * tests/palette.test.ts, so nothing here can drift back into the
  * decorative-but-illegible range the first build shipped with.
  *
- * Hue families: N = violet, S = amber/brown, T = teal, F = rose.
+ * Hue families — natural colorants, not wheel picks: N = indigo, S = sienna,
+ * T = verdigris, F = madder.
  * Extraverted reads lighter; intraverted reads deeper.
  * ------------------------------------------------------------------ */
 
@@ -25,32 +26,32 @@ export const CANVAS: Record<Theme, string> = {
  */
 export const FN_COLOR: Record<Theme, Record<Fn, string>> = {
   light: {
-    Ne: "#6B3BC4", Ni: "#4B2A8F",
-    Se: "#8A5410", Si: "#6A4416",
-    Te: "#0D6560", Ti: "#0A4A4E",
-    Fe: "#AE3355", Fi: "#8A2543",
+    Ne: "#4C4899", Ni: "#373474",
+    Se: "#855723", Si: "#694521",
+    Te: "#326758", Ti: "#244C43",
+    Fe: "#983E4A", Fi: "#762E37",
   },
   dark: {
-    Ne: "#C9A0FF", Ni: "#9B7BE0",
-    Se: "#FFC15E", Si: "#D19A5C",
-    Te: "#5FE0D6", Ti: "#49B3AE",
-    Fe: "#FF8FB0", Fi: "#E06A8E",
+    Ne: "#A8A6D3", Ni: "#8986BB",
+    Se: "#D0AE80", Si: "#B9946A",
+    Te: "#81BBA8", Ti: "#67A290",
+    Fe: "#DAA0A7", Fi: "#C18189",
   },
 };
 
 /** Low-alpha versions of FN_COLOR, for fills and halos rather than text. */
 export const FN_GLOW: Record<Theme, Record<Fn, string>> = {
   light: {
-    Ne: "rgba(107,59,196,.20)", Ni: "rgba(75,42,143,.18)",
-    Se: "rgba(138,84,16,.20)", Si: "rgba(106,68,22,.18)",
-    Te: "rgba(13,101,96,.20)", Ti: "rgba(10,74,78,.18)",
-    Fe: "rgba(174,51,85,.20)", Fi: "rgba(138,37,67,.18)",
+    Ne: "rgba(76,72,153,.20)", Ni: "rgba(55,52,116,.18)",
+    Se: "rgba(133,87,35,.20)", Si: "rgba(105,69,33,.18)",
+    Te: "rgba(50,103,88,.20)", Ti: "rgba(36,76,67,.18)",
+    Fe: "rgba(152,62,74,.20)", Fi: "rgba(118,46,55,.18)",
   },
   dark: {
-    Ne: "rgba(201,160,255,.45)", Ni: "rgba(155,123,224,.38)",
-    Se: "rgba(255,193,94,.45)", Si: "rgba(209,154,92,.38)",
-    Te: "rgba(95,224,214,.45)", Ti: "rgba(73,179,174,.38)",
-    Fe: "rgba(255,143,176,.45)", Fi: "rgba(224,106,142,.38)",
+    Ne: "rgba(168,166,211,.45)", Ni: "rgba(137,134,187,.38)",
+    Se: "rgba(208,174,128,.45)", Si: "rgba(185,148,106,.38)",
+    Te: "rgba(129,187,168,.45)", Ti: "rgba(103,162,144,.38)",
+    Fe: "rgba(218,160,167,.45)", Fi: "rgba(193,129,137,.38)",
   },
 };
 

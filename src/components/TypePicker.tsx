@@ -1,6 +1,7 @@
 import { TYPES, quadra, type MbtiType } from "../engine/core";
 import { ARCHETYPE } from "../engine/data";
 import { usePalette } from "./Theme";
+import ArchetypeSeal from "./glyphs/ArchetypeSeal";
 
 /**
  * A labelled type selector.
@@ -23,6 +24,7 @@ export default function TypePicker({
     <label className="field">
       <span>{label}</span>
       <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <ArchetypeSeal type={value} size={28} />
         <i className="dot" style={{ background: p.quadra(quadra(value)) }} title={`${quadra(value)} camp`} />
         <select value={value} onChange={(e) => onChange(e.target.value as MbtiType)}>
           {TYPES.map((t) => (

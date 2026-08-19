@@ -30,6 +30,7 @@ import { usePalette } from "../components/Theme";
 import { usePublishContext } from "../chat/ChatContext";
 import WiringSchematic from "../components/WiringSchematic";
 import FourSidesDiagram from "../components/FourSidesDiagram";
+import DoorRow from "../components/DoorRow";
 import AnimalStack from "../components/AnimalStack";
 import OctagramWheel from "../components/OctagramWheel";
 import ThemeSeasons from "../components/ThemeSeasons";
@@ -44,6 +45,7 @@ import GatewayPath from "../components/GatewayPath";
 import SaviorDemonGrid from "../components/SaviorDemonGrid";
 import RelationLanding from "../components/RelationLanding";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
+import ArchetypeSeal from "../components/glyphs/ArchetypeSeal";
 import FnIcon from "../components/glyphs/FnIcon";
 
 /* ==================================================================== *
@@ -78,7 +80,7 @@ import FnIcon from "../components/glyphs/FnIcon";
    page mixed h2s and h3s in this row, which advertised "Your switches" and
    "Your theme" as peers of "Growth". */
 const SECTIONS = [
-  ["slots", "The eight slots"],
+  ["slots", "The eight seats"],
   ["powers", "Superpowers & kryptonite"],
   ["sides", "Four sides of the mind"],
   ["exchange", "The exchange overlay"],
@@ -201,13 +203,17 @@ export default function TypeReader() {
         <TypePicker label="Read" value={t} onChange={(x) => nav(`/type/${x}`)} />
         <span className="chip">
           <i className="dot" style={{ background: p.quadra(quadra(t)) }} />
-          <Term>{quadra(t)}</Term> quadra
+          <Term>{quadra(t)}</Term> Camp
         </span>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "var(--s5)", flexWrap: "wrap" }}>
         <TypeMolecule type={t} size={96} />
         <h1 style={{ margin: 0 }}>{t}</h1>
+        {/* the archetype seal stands opposite the name, exactly like the card */}
+        <span style={{ marginLeft: "auto" }}>
+          <ArchetypeSeal type={t} size={84} />
+        </span>
       </div>
       <p className="lede">{typePlain(t, st[0], st[1], st[3])}</p>
 
@@ -237,7 +243,7 @@ export default function TypeReader() {
           The page this replaced opened on Superpowers & kryptonite, whose own
           copy had to say "the eight-slot stack BELOW already carries" — a
           forward reference in the page's first sentence. */}
-      <h2 id="slots" className="sec">The eight slots</h2>
+      <h2 id="slots" className="sec">The eight seats</h2>
 
       <Explain
         big
@@ -264,7 +270,7 @@ export default function TypeReader() {
           <>
             Two regions are marked, because this model carries two readings of the same stack: one
             puts the growth point at the <b>Cave</b> alone, the other marks <b>Delight</b>{" "}
-            <i>and</i> <b>Cave</b> as its flinches. They agree on slot 4 and disagree about slot 3,
+            <i>and</i> <b>Cave</b> as its flinches. They agree on seat 4 and disagree about seat 3,
             which the first treats as a delight and the second treats as neglected. Neither is
             corrected into the other — Growth below shows the two side by side. The dashed arcs pair
             each ego slot with its shadow mirror: same capacity, facing the other way.
@@ -279,8 +285,8 @@ export default function TypeReader() {
           draws. */}
       <div className="grid g2" style={{ alignItems: "start" }}>
         {[
-          { label: "The ego block — slots 1–4, “me”", slots: [0, 1, 2, 3] },
-          { label: "The shadow block — slots 5–8, “what happens to me”", slots: [4, 5, 6, 7] },
+          { label: "The ego block — seats 1–4, “me”", slots: [0, 1, 2, 3] },
+          { label: "The shadow block — seats 5–8, “what happens to me”", slots: [4, 5, 6, 7] },
         ].map(({ label, slots }) => (
           <div key={label} className="stack-v">
             <h3 style={{ margin: "var(--s2) 0 0" }}>{label}</h3>
@@ -312,8 +318,8 @@ export default function TypeReader() {
       </div>
 
       {/* ------------------------------------------------ powers
-          Second, not first: this is one question asked of slot 1 and one asked
-          of slot 8, both of which now exist on the page before it runs. */}
+          Second, not first: this is one question asked of seat 1 and one asked
+          of seat 8, both of which now exist on the page before it runs. */}
       <h2 id="powers" className="sec">Superpowers &amp; kryptonite</h2>
 
       <Explain
@@ -355,7 +361,7 @@ export default function TypeReader() {
 
       <Explain
         big
-        plain="You are not one type — you are four. Split those eight slots into groups of four and each group is itself one of the sixteen. You move between them all day."
+        plain="You are not one type — you are four. Split those eight seats into groups of four and each group is itself one of the sixteen. You move between them all day."
       >
         <p>
           The four sides are derived from the same three moves that generate the relation table.
@@ -388,6 +394,20 @@ export default function TypeReader() {
         }
       >
         <FourSidesDiagram type={t} />
+      </Figure>
+
+      <Figure
+        label="Four doors, compared."
+        caption={
+          <>
+            Access is a comparison: open, ajar, cracked, barred. Each lintel names the seat of
+            your own stack that opens that side.
+          </>
+        }
+      >
+        <div className="cluster" style={{ justifyContent: "center" }}>
+          <DoorRow type={t} />
+        </div>
       </Figure>
 
       <Figure

@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReactNode } from "react";
 import { TYPES, stack } from "../src/engine/core";
-import { SLOT_NAMES, type Fn } from "../src/engine/data";
+import { ARCHETYPE, SLOT_NAMES, type Fn } from "../src/engine/data";
 import { SIDE_ORDER, sides } from "../src/engine/sides";
 import { type Animal, ANIMAL_LABEL } from "../src/engine/ops";
 import { ThemeProvider } from "../src/components/Theme";
@@ -13,6 +13,9 @@ import SelfTribeCone from "../src/components/glyphs/SelfTribeCone";
 import AnimalGlyph from "../src/components/glyphs/AnimalGlyph";
 import DerivationTree from "../src/components/glyphs/DerivationTree";
 import SideDoor from "../src/components/glyphs/SideDoor";
+import FnDisc from "../src/components/glyphs/FnDisc";
+import SeatFigure from "../src/components/glyphs/SeatFigure";
+import ArchetypeSeal from "../src/components/glyphs/ArchetypeSeal";
 import EightSet from "../src/components/glyphs/EightSet";
 import AttitudeMark from "../src/components/glyphs/AttitudeMark";
 import Agency from "../src/components/glyphs/Agency";
@@ -123,24 +126,110 @@ describe("DerivationTree", () => {
 });
 
 describe("SideDoor", () => {
-  it("renders all four doors of every type, keyed to the real gateway", () => {
+  it("renders all four doors of every type, the gateway named as a seat on the lintel", () => {
     for (const t of TYPES) {
       const s = sides(t);
       for (const k of SIDE_ORDER) {
-        const html = draw(<SideDoor side={k} fn={s[k].gateway.fn} />);
+        const html = draw(<SideDoor side={k} gate={s[k].gateway.egoSlot} />);
         expectAccessible(html);
-        expect(html).toContain(`keystone ${s[k].gateway.fn}`);
+        expect(html).toContain(`gate: the ${s[k].gateway.egoSlot}`);
+        expect(html).toContain(`>${s[k].gateway.egoSlot.toUpperCase()}<`);
       }
+    }
+  });
+
+  it("stands each door on its own rung of the openness ladder", () => {
+    const s = sides("ENTP");
+    const RUNG = { ego: "open", subconscious: "ajar", unconscious: "cracked", superego: "barred" } as const;
+    for (const k of SIDE_ORDER) {
+      const html = draw(<SideDoor side={k} gate={s[k].gateway.egoSlot} />);
+      expect(html, k).toContain(`>${RUNG[k]}<`);
+    }
+  });
+
+  it("never names an element — the gate is a seat, which holds for all sixteen types", () => {
+    const s = sides("ENTP");
+    for (const k of SIDE_ORDER) {
+      const html = draw(<SideDoor side={k} gate={s[k].gateway.egoSlot} />);
+      for (const fn of FNS) expect(html, `${k} carries no ${fn}`).not.toContain(`>${fn}<`);
     }
   });
 
   it("only the superego is barred", () => {
     const s = sides("ENTP");
     for (const k of SIDE_ORDER) {
-      const html = draw(<SideDoor side={k} fn={s[k].gateway.fn} />);
+      const html = draw(<SideDoor side={k} gate={s[k].gateway.egoSlot} />);
       if (k === "superego") expect(html, k).toContain("var(--danger)");
       else expect(html, `${k} carries no danger styling`).not.toContain("var(--danger)");
     }
+  });
+});
+
+describe("FnDisc", () => {
+  it("names every element inside its disc and reads the attitude into the label", () => {
+    for (const fn of FNS) {
+      const html = draw(<FnDisc fn={fn} />);
+      expectAccessible(html);
+      expect(html).toContain(`>${fn}<`);
+      expect(html).toContain(outward(fn) ? "facing out" : "facing in");
+    }
+  });
+
+  it("filled means conscious, hollow means shadow — and says so", () => {
+    const solid = draw(<FnDisc fn="Ne" />);
+    const hollow = draw(<FnDisc fn="Ne" solid={false} />);
+    expect(solid).not.toContain("in shadow");
+    expect(hollow).toContain("in shadow");
+    // the hollow disc is a ring: its rim is a stroke, not a fill
+    expect(hollow).toContain('fill="none"');
+  });
+
+  it("draws four crests per disc, breaking outward for e and inward for i", () => {
+    for (const fn of FNS) {
+      const html = draw(<FnDisc fn={fn} />);
+      // each of the four diagonals carries an arc and a crest triangle
+      expect((html.match(/fill-opacity="0.55"/g) ?? []).length, fn).toBe(4);
+    }
+  });
+});
+
+describe("SeatFigure", () => {
+  it("locates each of the eight seats and arcs to its twin", () => {
+    for (let depth = 0; depth < 8; depth++) {
+      const html = draw(<SeatFigure depth={depth} />);
+      expectAccessible(html);
+      const twin = depth < 4 ? depth + 4 : depth - 4;
+      expect(html).toContain(`Seat ${depth + 1} of 8`);
+      expect(html).toContain(`seat ${twin + 1}`);
+      expect(html).toContain("SAME TOOL, FACING THE OTHER WAY");
+      expect(html).toContain("CONSCIOUS");
+      expect(html).toContain("SHADOW");
+    }
+  });
+
+  it("is element-free, like the card: ink only, no hues", () => {
+    const html = draw(<SeatFigure depth={2} />);
+    for (const fn of FNS) expect(html).not.toContain(`>${fn}<`);
+    expect(html).not.toMatch(/#[0-9A-F]{6}/i);
+  });
+});
+
+describe("ArchetypeSeal", () => {
+  it("stamps all sixteen, each named for its own archetype", () => {
+    for (const t of TYPES) {
+      const html = draw(<ArchetypeSeal type={t} />);
+      expectAccessible(html);
+      expect(html).toContain(ARCHETYPE[t][0]);
+    }
+  });
+
+  it("is deterministic — the same Wiring stamps the same seal forever", () => {
+    expect(draw(<ArchetypeSeal type="ISTJ" />)).toBe(draw(<ArchetypeSeal type="ISTJ" />));
+  });
+
+  it("no two seals are the same figure", () => {
+    const seen = new Set(TYPES.map((t) => draw(<ArchetypeSeal type={t} />)));
+    expect(seen.size).toBe(16);
   });
 });
 
@@ -181,7 +270,10 @@ describe("the whole set respects the 14px floor", () => {
       ...ANIMALS.map((a) => draw(<AnimalGlyph animal={a} />)),
       draw(<TypeMolecule type="ISFJ" size={64} />),
       draw(<DerivationTree />),
-      draw(<SideDoor side="unconscious" fn="Ni" />),
+      draw(<SideDoor side="unconscious" gate="Doubt" />),
+      ...FNS.map((fn) => draw(<FnDisc fn={fn} />)),
+      ...[0, 3, 4, 7].map((d) => draw(<SeatFigure depth={d} />)),
+      ...TYPES.map((t) => draw(<ArchetypeSeal type={t} />)),
       draw(<EightSet />),
       draw(<AttitudeMark />),
       draw(<Agency />),

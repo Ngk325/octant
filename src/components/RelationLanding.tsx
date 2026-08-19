@@ -1,5 +1,6 @@
 import { stack, type MbtiType } from "../engine/core";
 import { DOM_AUX, SLOT_NAMES } from "../engine/data";
+import { FnDiscMark } from "./glyphs/FnDisc";
 import { usePalette } from "./Theme";
 
 /**
@@ -88,12 +89,8 @@ export default function RelationLanding({ a, b }: { a: MbtiType; b: MbtiType }) 
             <text x={COL_A.x + 22} y={midY(i) + 5} fill={i < 4 ? "var(--ink)" : "var(--muted)"} fontSize="15">
               {SLOT_NAMES[i]}
             </text>
-            <text
-              x={COL_A.x + COL_A.w} y={midY(i) + 5} textAnchor="end"
-              fill={p.fn(fn)} fontSize="16" fontWeight="600" fontFamily="var(--mono)"
-            >
-              {fn}
-            </text>
+            {/* the deck's mark: named disc, filled while conscious, hollow in shadow */}
+            <FnDiscMark fn={fn} cx={COL_A.x + COL_A.w - 8} cy={midY(i)} r={14} solid={i < 4} />
           </g>
         );
       })}
@@ -103,12 +100,7 @@ export default function RelationLanding({ a, b }: { a: MbtiType; b: MbtiType }) 
         const isSource = i < 2;
         return (
           <g key={`b${i}`} opacity={isSource ? 1 : 0.45}>
-            <text
-              x={COL_B.x} y={midY(i) + 5}
-              fill={p.fn(fn)} fontSize="16" fontWeight={isSource ? 700 : 500} fontFamily="var(--mono)"
-            >
-              {fn}
-            </text>
+            <FnDiscMark fn={fn} cx={COL_B.x + 14} cy={midY(i)} r={14} solid={i < 4} />
             <text x={COL_B.x + 44} y={midY(i) + 5} fill={isSource ? "var(--ink)" : "var(--muted)"} fontSize="15">
               {SLOT_NAMES[i]}
             </text>

@@ -501,7 +501,7 @@ async function mailTranscript(env: ChatLogEnv, threadId: string, rec: ChatLogRec
   ].join("\n");
 
   const html = `
-<div style="font:400 15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1714;max-width:640px">
+<div style="font:400 15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#241F19;max-width:640px">
   <p style="font:600 19px/1.3 Georgia,serif;margin:0 0 12px">${escapeHtml(title)}</p>
   <div style="border:1px solid #E3DED4;border-radius:8px;padding:12px 16px;margin-bottom:20px;color:#4C463D;font-size:14px">
     <b>Who:</b> ${escapeHtml(who)} &middot; <b>Started:</b> ${when(rec.started)} &middot;
@@ -514,7 +514,7 @@ async function mailTranscript(env: ChatLogEnv, threadId: string, rec: ChatLogRec
   </div>
   ${rec.turns.map((t) => `
   <div style="margin-bottom:14px">
-    <div style="font-weight:600;font-size:13px;color:${t.role === "user" ? "#4B2A8F" : "#6B6459"}">
+    <div style="font-weight:600;font-size:13px;color:${t.role === "user" ? "#373474" : "#6B6459"}">
       ${t.role === "user" ? "USER" : "OCTANT"} · ${when(t.at)}
     </div>
     <div style="white-space:pre-wrap">${escapeHtml(t.text)}</div>

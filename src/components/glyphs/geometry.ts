@@ -9,7 +9,7 @@
  *   1. Original geometry only — circles, wedges, arrows, layers,
  *      beams. Nothing traced, no clip-art, no emoji.
  *   2. The app's palette, never the community's. Hue families are
- *      N=violet, S=amber, T=teal, F=rose (engine/palette.ts), WCAG-AA
+ *      N=indigo, S=sienna, T=verdigris, F=madder (engine/palette.ts), WCAG-AA
  *      asserted. Semantic colour via usePalette() hex; chrome via CSS
  *      custom properties.
  *   3. Attitude is motion. Extraverted = outward (rays, fans, arrows

@@ -164,10 +164,10 @@ const page = (title: string, body: string, ok: boolean, extra = "", status = ok 
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Octant — ${escapeHtml(title)}</title>
 <style>
-  :root{color-scheme:light dark;--paper:#FDFCFA;--ink:#1A1714;--ink2:#4C463D;--rule:#E3DED4;
-        --accent:#6B3BC4;--on:#fff;--bad:#AA2A1E;--surface:#fff}
+  :root{color-scheme:light dark;--paper:#FDFCFA;--ink:#241F19;--ink2:#4C463D;--rule:#E3DED4;
+        --accent:#4C4899;--on:#fff;--bad:#AA2A1E;--surface:#fff}
   @media(prefers-color-scheme:dark){:root{--paper:#141310;--ink:#EDE9E1;--ink2:#B6AFA3;--rule:#2E2A24;
-        --accent:#C9A0FF;--on:#1A1714;--bad:#E87A68;--surface:#1D1B17}}
+        --accent:#A8A6D3;--on:#241F19;--bad:#E87A68;--surface:#1D1B17}}
   body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--paper);
        color:var(--ink);font:400 19px/1.6 Georgia,'Times New Roman',serif}
   main{max-width:26rem}h1{font-size:30px;margin:0 0 8px}p{color:var(--ink2);margin:0}

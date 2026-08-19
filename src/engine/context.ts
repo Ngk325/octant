@@ -3,6 +3,7 @@ import {
 } from "./core";
 import { ops, coins, type CalcResult } from "./ops";
 import { sides, SIDE_ORDER, DREAD_TELLS, DREAD_DEESCALATE } from "./sides";
+import { bondFacts, sparkFacts } from "./bonds";
 import { wheelOf, templeOf } from "./octagram";
 import { playbook } from "./playbook";
 import { FN_ROLE, FN_WANTS, FN_SAYS, FN_SATISFACTION, FN_PRACTICE } from "./functions";
@@ -84,6 +85,7 @@ export type ChatContext =
   | { kind: "learn"; stage: number; title: string; slug?: string; exampleType?: MbtiType }
   | { kind: "type"; type: MbtiType }
   | { kind: "sides"; type: MbtiType }
+  | { kind: "bonds" }
   | { kind: "pair"; a: MbtiType; b: MbtiType }
   | { kind: "network"; members: { name: string; type: MbtiType }[] }
   | { kind: "matrix" }
@@ -310,6 +312,8 @@ when a picture genuinely carries the point):
 - {{figure:involution-table FN}} — alpha/beta/omega for the eight functions (FN optional).
 - {{figure:quadra-grid QUADRA}} — the four quadras' valued functions (QUADRA optional).
 - {{figure:octagram-map TYPE}} — the full eight-wheel ring (TYPE optional highlight).
+- {{figure:bond FN}} — the axis bond: FN and the element that answers it, supplying both ways.
+- {{figure:spark-mesh QUADRA}} — that Camp's crosswise mesh: Leads answered by Supports.
 - {{figure:molecule TYPE}} — the type's identity glyph: four beads sized Lead to Cave.
 - {{figure:fn-icon FN}} — one function's pictorial icon (e.g. Ne branching, Fi plumb line).
 - {{figure:animal ANIMAL}} — Play, Blast, Consume or Sleep as its arrow signature.
@@ -347,6 +351,24 @@ export function contextBlock(ctx: ChatContext): string {
         "",
         ...sideGuideFacts(ctx.type),
       ].join("\n");
+    case "bonds": {
+      const axis = bondFacts();
+      const sparks = sparkFacts();
+      return [
+        "The reader is on the Bonds page — element-level compatibility, stated by tool rather " +
+        "than by type. Two shapes of pairing:",
+        "",
+        `Axis bonds (Lead meets Lead across the axis): ${axis.map((f) => `${f.a}·${f.b}`).join(", ")} — ` +
+        `mean ease ${Math.round(axis[0].mean)} of 100 across all realising type pairs, ` +
+        `${Math.round(axis[0].overNext)} above every other class of Lead pairing. These realise only ` +
+        "the Counterpart and Near fit relations.",
+        "",
+        `Spark meshes (each Lead answered by the other's Support, crosswise): one per Camp — ${sparks
+          .map((f) => `${f.quadra}: ${f.obs.join("·")} × ${f.dec.join("·")} (${f.outward.join("+")}, ${f.inward.join("+")})`)
+          .join("; ")}. Both crossings at once is exactly the Spark relation, ease ${sparks[0].ease} both ` +
+        "ways; one crossing alone is Upstream (54) or Downstream (48).",
+      ].join("\n");
+    }
     case "pair":
       return [
         `The reader is looking at the pair page for ${ctx.a} and ${ctx.b}.`, "",
@@ -448,6 +470,13 @@ export function suggestedPrompts(ctx: ChatContext): string[] {
         "Someone I know is superego-dominant right now — what do I actually do?",
         `What does developing ${ctx.type}'s superego on purpose look like, safely?`,
         `How does ${ctx.type}'s Dread show up differently from someone else's?`,
+      ];
+    case "bonds":
+      return [
+        "Which bond do my partner and I actually have, if any?",
+        "Why is an axis bond restful while a spark mesh is energising?",
+        "What happens in a pairing with only half a mesh?",
+        "How do I use this without knowing someone's type?",
       ];
     case "pair":
       return [

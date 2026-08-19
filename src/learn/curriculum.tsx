@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import { stack, quadra, TYPES, REL, ease } from "../engine/core";
+import { stack, quadra, omega, TYPES, REL, ease } from "../engine/core";
+import { bondFacts, sparkFacts } from "../engine/bonds";
 import { ops, ANIMAL_LABEL, DEMON_MARKERS } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { powersOf } from "../engine/powers";
@@ -19,6 +20,7 @@ import FnIcon from "../components/glyphs/FnIcon";
 import SelfTribeCone from "../components/glyphs/SelfTribeCone";
 import AnimalGlyph from "../components/glyphs/AnimalGlyph";
 import SideDoor from "../components/glyphs/SideDoor";
+import SeatFigure from "../components/glyphs/SeatFigure";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 import LettersToStack from "../components/LettersToStack";
 import FourSidesDiagram from "../components/FourSidesDiagram";
@@ -26,7 +28,8 @@ import AnimalStack from "../components/AnimalStack";
 import OctagramMap from "../components/OctagramMap";
 import OctagramWheel from "../components/OctagramWheel";
 import ThemeSeasons from "../components/ThemeSeasons";
-import { Panel, Row } from "../components/Bits";
+import { Panel, Row, FnTag } from "../components/Bits";
+import { AxisBondFigure, SparkMeshFigure } from "../components/BondFigure";
 import Term from "../components/Term";
 import QuadraFunctionGrid from "../components/QuadraFunctionGrid";
 import RelationLanding from "../components/RelationLanding";
@@ -35,7 +38,7 @@ import DivergingEase from "../components/DivergingEase";
 /* ------------------------------------------------------------------ *
  * The course.
  *
- * Thirteen stages, each one assuming only what the previous ones taught. The
+ * Sixteen stages, each one assuming only what the previous ones taught. The
  * rule for every stage: a plain-language explanation you could give to
  * someone in a pub comes first, the machinery goes inside "the exact
  * mechanics", and there is always something on screen to look at.
@@ -176,8 +179,8 @@ export const STAGES: Stage[] = [
         <>
           <Explain big plain={CONCEPT_PLAIN.stack}>
             <p>
-              The eight-slot stack is generated, not listed. Given a dominant and an auxiliary,
-              the other six slots follow by applying the three moves — so sixteen pairs
+              The eight-seat stack is generated, not listed. Given a dominant and an auxiliary,
+              the other six seats follow by applying the three moves — so sixteen pairs
               produce sixteen complete stacks with no lookup table.
             </p>
           </Explain>
@@ -192,13 +195,13 @@ export const STAGES: Stage[] = [
             label="Read top to bottom."
             caption={
               <>
-                Strongest at the top, weakest at the bottom. Slots 1–4 feel like &ldquo;me&rdquo;;
-                slots 5–8 feel like things that happen to you. Everything else in this course is
+                Strongest at the top, weakest at the bottom. Seats 1–4 feel like &ldquo;me&rdquo;;
+                seats 5–8 feel like things that happen to you. Everything else in this course is
                 about those eight rows.
               </>
             }
           >
-            <WiringSchematic type={t} />
+            <WiringSchematic type={t} showCorrespondence />
           </Figure>
 
           <h3>How four letters become that order</h3>
@@ -223,8 +226,8 @@ export const STAGES: Stage[] = [
               <>
                 Every type in this app carries this mark: its four ego functions as beads,
                 biggest first. Once you can read one molecule you can read all sixteen at a
-                glance — the size says the rank, the colour says the function, a ring means it
-                faces outward and a core means inward.
+                glance — the size says the rank, the colour says the function, and the ripples
+                say which way it faces: crests breaking outward for e, inward for i.
               </>
             }
           >
@@ -296,11 +299,18 @@ export const STAGES: Stage[] = [
             plain="The bottom four still run. They just do not feel like you doing something — they feel like something happening to you. This is where worry, cynicism, blind spots and your worst behaviour live."
           >
             <p>
-              The shadow block. Each shadow slot is the attitude-flip of its ego counterpart:
+              The shadow block. Each shadow seat is the attitude-flip of its ego counterpart:
               the Doubt is the Lead&rsquo;s function in the opposite attitude, and so on down.
               They are not lesser functions, they are the same functions running unsupervised.
             </p>
           </Explain>
+
+          <Figure
+            label="Seat 5, located."
+            caption="The Doubt is seat 1's twin: the same tool, facing the other way. Every shadow seat pairs off across the divide like this — 1 with 5, 2 with 6, 3 with 7, 4 with 8."
+          >
+            <SeatFigure depth={4} />
+          </Figure>
 
           <div className="grid g2" style={{ marginTop: "var(--s5)" }}>
             {SLOT_NAMES.slice(4).map((name, i) => (
@@ -328,7 +338,7 @@ export const STAGES: Stage[] = [
   {
     slug: "powers",
     title: "Superpower and kryptonite",
-    blurb: "The same two slots from the last two stages — Lead and Dread — asked one question each.",
+    blurb: "The same two seats from the last two stages — Lead and Dread — asked one question each.",
     body: (t) => {
       const { superpower, kryptonite } = powersOf(t);
       return (
@@ -381,14 +391,14 @@ export const STAGES: Stage[] = [
   {
     slug: "four-sides",
     title: "Four sides of the mind",
-    blurb: "Those eight slots are really four types. You are all four of them.",
+    blurb: "Those eight seats are really four types. You are all four of them.",
     body: (t) => {
       const s = sides(t);
       return (
         <>
           <Explain
             big
-            plain="Split those eight slots into four groups of four, and each group is itself one of the sixteen types. So you are not one type. You are four, and you move between them."
+            plain="Split those eight seats into four groups of four, and each group is itself one of the sixteen types. So you are not one type. You are four, and you move between them."
           >
             <p>
               The four sides. The subconscious is the ego stack reversed; the
@@ -416,20 +426,20 @@ export const STAGES: Stage[] = [
           </Figure>
 
           <Figure
-            label="Four doors, one keystone each."
+            label="Four doors, one gateway seat each."
             caption={
               <>
-                Every side is entered through one function of your own ego stack — the bead in
-                each keystone. The ego stands open; the subconscious is ajar behind insecurity;
-                the unconscious closed behind worry; the superego barred, and best left so until
-                the others are developed.
+                Every side is entered through one seat of your own stack — named on each
+                door&rsquo;s lintel. The ego stands open; the subconscious is ajar behind
+                insecurity; the unconscious cracked behind worry; the superego barred, and best
+                left so until the others are developed.
               </>
             }
           >
             <div className="cluster" style={{ gap: "var(--s5)", alignItems: "flex-end", justifyContent: "center" }}>
               {SIDE_ORDER.map((k) => (
                 <div key={k} style={{ textAlign: "center" }}>
-                  <SideDoor side={k} fn={s[k].gateway.fn} />
+                  <SideDoor side={k} gate={s[k].gateway.egoSlot} />
                   <span className="small muted">{s[k].name}</span>
                 </div>
               ))}
@@ -683,6 +693,69 @@ export const STAGES: Stage[] = [
       </>
     ),
     check: "Why can a relationship feel easy to one person and like hard work to the other?",
+  },
+
+  {
+    slug: "bonds",
+    title: "The pairings that work",
+    blurb: "Strip the four letters away and only eight pairings are left — four bonds, four meshes.",
+    body: (t) => {
+      const lead = stack(t)[0];
+      const partner = omega[lead];
+      const spark = sparkFacts().find((f) => f.quadra === quadra(t))!;
+      const meshFns = [...stack(spark.outward[0]).slice(0, 2), ...stack(spark.outward[1]).slice(0, 2)] as [Fn, Fn, Fn, Fn];
+      return (
+        <>
+          <Explain
+            big
+            plain="Who works well with whom is not really about types. It is about which tool answers which — and there are only eight pairings of tools that work. Everything the last stage scored well is one of them, wearing four letters."
+          >
+            <p>
+              Sweep all 240 ordered pairs of distinct types and group them by which two Leads
+              meet: the four axis pairings — Lead meets Lead across an axis — average{" "}
+              {Math.round(bondFacts()[0].mean)} of 100, far above every other class. The other
+              shape that works runs crosswise: each Lead answered by the other person&rsquo;s
+              Support, which is exactly the Spark relation, and exactly one such mesh exists per
+              Camp.
+            </p>
+          </Explain>
+
+          <Figure
+            label="Your Lead's own bond."
+            caption={
+              <>
+                Your Lead is <FnTag fn={lead} disc />, so the tool that answers it is{" "}
+                <FnTag fn={partner} disc /> — each is exactly what the other does not do.
+                Whoever leads {lead} carries {partner} in the Cave, and the reverse: each
+                raises what the other skipped. This holds for anyone who leads {lead},
+                whatever their other letters.
+              </>
+            }
+          >
+            <AxisBondFigure a={lead} b={partner} />
+          </Figure>
+
+          <Figure
+            label="Your Camp's one mesh."
+            caption={
+              <>
+                Lead does not meet Lead here — the lines cross: each Lead is answered by the{" "}
+                <i>other</i> side&rsquo;s Support. Both crossings at once is the Spark relation
+                (ease {spark.ease} both ways); one crossing alone tilts the pair into Upstream
+                or Downstream. A Counterpart rests; a Spark runs.
+              </>
+            }
+          >
+            <SparkMeshFigure fns={meshFns} />
+          </Figure>
+
+          <p>
+            <Link to="/bonds" className="btn">All eight, with the numbers →</Link>
+          </p>
+        </>
+      );
+    },
+    check: "Your best pairings share one mechanism. Is it your Lead being answered — and by what?",
   },
 
   {
@@ -964,7 +1037,7 @@ export const STAGES: Stage[] = [
 
           <h3>Two: performing — what it costs to run someone else&rsquo;s function</h3>
           <p>
-            Every function you have is already sitting at one of your own eight slots. Performing
+            Every function you have is already sitting at one of your own eight seats. Performing
             one that sits near the top costs almost nothing, because it is already close to who
             you are. Performing one near the bottom is a real, measurable strain.
           </p>
@@ -1007,7 +1080,7 @@ export const STAGES: Stage[] = [
       );
     },
     check:
-      "Name a function you can already perform even though it isn't your own Lead. Which of your own eight slots does it sit in — and what would it actually cost to keep running it for a whole day?",
+      "Name a function you can already perform even though it isn't your own Lead. Which of your own eight seats does it sit in — and what would it actually cost to keep running it for a whole day?",
   },
 ];
 

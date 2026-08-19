@@ -7,6 +7,7 @@ import EightSet from "../components/glyphs/EightSet";
 import AttitudeMark from "../components/glyphs/AttitudeMark";
 import Agency from "../components/glyphs/Agency";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
+import ArchetypeSeal from "../components/glyphs/ArchetypeSeal";
 import StackOrder from "../components/StackOrder";
 import RelationLanding from "../components/RelationLanding";
 import DivergingEase from "../components/DivergingEase";
@@ -64,11 +65,14 @@ function screens(): Screen[] {
       idea: "Sixteen four-letter codes are precise, but forgettable. So every type carries a few names too — not a box, just a way in.",
       figure: (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--s3)" }}>
-          <TypeMolecule type={EXAMPLE} size={96} />
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--s5)" }}>
+            <TypeMolecule type={EXAMPLE} size={96} />
+            <ArchetypeSeal type={EXAMPLE} size={96} />
+          </div>
           <p className="lede" style={{ margin: 0, textAlign: "center" }}>{ARCHETYPE[EXAMPLE].join(" · ")}</p>
         </div>
       ),
-      unlock: "Three ways to picture the same wiring, not three different people.",
+      unlock: "Three ways to picture the same wiring, not three different people — and the first name has a seal of its own.",
     },
     {
       idea: "When two people meet, each one's strongest move lands somewhere specific in the other's order — sometimes gently, sometimes not.",

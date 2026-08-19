@@ -5,7 +5,8 @@ import { correlation } from "../src/engine/empirical";
 import { REL, relation } from "../src/engine/core";
 import { FN_COLOR } from "../src/engine/palette";
 import { ART_W, LABEL_MIN, artFor, backArt, markFor, sealFor } from "../src/cards/art";
-import { bondFacts, deck, deckSuits, fit, sparkFacts, type Card, type Suit } from "../src/cards/deck";
+import { deck, deckSuits, fit, type Card, type Suit } from "../src/cards/deck";
+import { bondFacts, sparkFacts } from "../src/engine/bonds";
 import { sides } from "../src/engine/sides";
 import { CARD_PAGE, TRIM, cardHtml, cardsDocument, sheetsDocument } from "../src/cards/render";
 
@@ -353,10 +354,10 @@ describe("what the cards claim is what the engine says", () => {
     expect(correlation(TYPES)).toBeLessThan(0); // the counterweight counters
   });
 
-  /* The engine's relation copy speaks the app's lexicon ("mobilising
-     function", "base channel"); the deck translates it into its own seat
-     names via REL_TRANSLATE. If a new engine string brings new jargon, this
-     fails before the press does. */
+  /* The engine's relation copy adopted the deck's seat names in the
+     platform backport, so the deck quotes REL_DEF directly. If a new engine
+     string reintroduces the old lexicon jargon, this fails before the press
+     does. */
   it("prints no lexicon vocabulary the deck never teaches", () => {
     for (const c of CARDS) {
       const all = [c.title, c.subtitle, c.lede, c.footer, ...c.blocks.flatMap((b) => [b.label, b.text]), ...c.chips.map((x) => x.text)].join(" ");
@@ -364,7 +365,7 @@ describe("what the cards claim is what the engine says", () => {
     }
   });
 
-  it("holds the seat equivalences REL_TRANSLATE prints", () => {
+  it("holds the seat equivalences the relation copy prints", () => {
     for (const t of TYPES) {
       const st = stack(t);
       // "Mobilising function" is the Delight: in Spark/Upstream/Downstream the

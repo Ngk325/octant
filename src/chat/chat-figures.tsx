@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
-import { TYPES, ease, type MbtiType, type Quadra } from "../engine/core";
+import { TYPES, ease, omega, stack, type MbtiType, type Quadra } from "../engine/core";
+import { sparkFacts } from "../engine/bonds";
+import { AxisBondFigure, SparkMeshFigure } from "../components/BondFigure";
 import type { Fn } from "../engine/data";
 import { ops } from "../engine/ops";
 import { wheelOf } from "../engine/octagram";
@@ -91,6 +93,15 @@ const FIGURES: Record<string, (args: string[]) => ReactNode | null> = {
   "octagram-map": ([t]) =>
     t === undefined ? <Scroll minWidth={480}><OctagramMap /></Scroll>
       : isType(t) ? <Scroll minWidth={480}><OctagramMap highlight={asType(t)} /></Scroll> : null,
+
+  /* The Bond layer — element-level pairing, from engine/bonds.ts. */
+  bond: ([f]) => (isFn(f) ? <AxisBondFigure a={asFn(f)} b={omega[asFn(f)]} /> : null),
+  "spark-mesh": ([q]) => {
+    if (!isQuadra(q)) return null;
+    const f = sparkFacts().find((x) => x.quadra === asQuadra(q))!;
+    const fns = [...stack(f.outward[0]).slice(0, 2), ...stack(f.outward[1]).slice(0, 2)] as [Fn, Fn, Fn, Fn];
+    return <SparkMeshFigure fns={fns} />;
+  },
 
   /* The glyph language. */
   molecule: ([t]) => (isType(t) ? <TypeMolecule type={asType(t)} size={96} /> : null),
