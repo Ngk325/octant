@@ -200,7 +200,12 @@ export const SITE_CSS = `  :root {
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--m-rule);
   }
-  .top-inner { display:flex; align-items:center; gap:24px; padding:14px 0; }
+  /* Longhand, deliberately: this element is class="wrap top-inner", and a
+     padding shorthand here has the same specificity as .wrap's and wins by
+     order -- which silently zeroed the 24px side padding and ran the masthead
+     flush to both screen edges at every width. */
+  .top-inner { display:flex; align-items:center; gap:24px;
+               padding-top:14px; padding-bottom:14px; }
   .brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;
            font-size:22px; font-weight:500; letter-spacing:-0.02em; }
   nav.mnav { margin-left:auto; display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
@@ -219,11 +224,71 @@ export const SITE_CSS = `  :root {
   .btn:hover { border-color:var(--m-muted); }
   @media (max-width:640px){ .hide-sm { display:none; } }
 
+  /* ---- the compact menu ------------------------------------------- *
+   * CSS only, on purpose. The CSP pins script-src to 'self' plus three
+   * named sha256 hashes (headers.ts), so a menu built on JS would mean a
+   * fourth pinned hash for a disclosure widget the platform already
+   * provides. <details>/<summary> is focusable and toggles on Enter and
+   * Space with no script at all.
+   *
+   * Below the breakpoint the inline links are hidden and reappear stacked
+   * in the panel -- they are never simply removed, which is what the old
+   * hide-sm nav did: Product, Who it's for and Partners were display:none
+   * on a phone with nothing to open in their place.
+   * ------------------------------------------------------------------ */
+  .mmenu { display:none; position:static; }
+  .mmenu > summary {
+    display:flex; align-items:center; justify-content:center;
+    width:44px; height:44px; margin-left:4px; border-radius:8px;
+    color:var(--m-ink); cursor:pointer; list-style:none;
+    border:1px solid var(--m-rule); background:var(--m-surface);
+  }
+  .mmenu > summary::-webkit-details-marker { display:none; }
+  .mmenu > summary::marker { content:""; }
+  .mmenu > summary:hover { border-color:var(--m-muted); }
+  .mmenu > summary:focus-visible { outline:2px solid var(--m-accent); outline-offset:2px; }
+  /* The bars become an X while open, so the control reports its own state. */
+  .mmenu[open] > summary .bar-t { transform:translateY(6px) rotate(45deg); }
+  .mmenu[open] > summary .bar-b { transform:translateY(-6px) rotate(-45deg); }
+  .mmenu[open] > summary .bar-m { opacity:0; }
+  .mmenu > summary svg path { transform-origin:center; transition:transform .18s ease, opacity .18s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .mmenu > summary svg path { transition:none; }
+  }
+  .mmenu-panel {
+    position:absolute; left:0; right:0; top:100%;
+    display:flex; flex-direction:column;
+    background:var(--m-paper); border-bottom:1px solid var(--m-rule);
+    box-shadow:0 12px 28px rgba(26,23,20,.10);
+    max-height:calc(100vh - 68px); overflow-y:auto;
+    padding:8px 0 12px;
+  }
+  .mmenu-panel a {
+    font-family:var(--sans); font-size:17px; font-weight:500; color:var(--m-ink);
+    text-decoration:none; padding:14px 24px; min-height:48px;
+    display:flex; align-items:center; border-bottom:1px solid var(--m-rule);
+  }
+  .mmenu-panel a:last-child { border-bottom:none; }
+  .mmenu-panel a:hover { background:var(--m-soft); }
+
+  /* One breakpoint for the swap. Six items need more room than 640px. */
+  @media (max-width:860px){
+    nav.mnav a:not(.btn) { display:none; }
+    .mmenu { display:block; }
+  }
+
+  /* Longhand: this is class="wrap hero", so a padding shorthand would beat
+     .wrap's side gutters by order and run the hero flush to both edges. */
   .hero { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
-          gap:48px; align-items:center; padding:72px 0 56px; }
+          gap:48px; align-items:center; padding-top:72px; padding-bottom:56px; }
   @media (max-width:900px){ .hero { grid-template-columns:minmax(0,1fr); padding-top:48px; } }
   .hero .lede { font-size:22px; color:var(--m-ink2); }
   .cta-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; align-items:center; }
+  @media (max-width:560px){
+    /* Side-by-side buttons below ~560px leave a target too narrow to hit
+       cleanly, and the labels wrap mid-phrase. Stack them full width. */
+    .cta-row .btn { flex:1 1 100%; text-align:center; padding:14px 22px; }
+  }
   .cta-note { font-family:var(--sans); font-size:14px; color:var(--m-muted); flex-basis:100%; }
   .art { background:var(--m-surface); border:1px solid var(--m-rule); border-radius:14px;
          padding:20px; box-shadow:0 1px 2px rgba(26,23,20,.05), 0 12px 32px rgba(26,23,20,.06); }
@@ -309,20 +374,38 @@ export function siteHead(o: {
 /** The sticky masthead. On the front page the section links are bare anchors. */
 export function siteHeader(home: boolean): string {
   const at = home ? "" : "/";
+  const links = [
+    [`${at}#product`, "Product"],
+    [`${at}#uses`, "Who it&rsquo;s for"],
+    [`${at}#pricing`, "Pricing"],
+    ["/partners", "Partners"],
+    ["/signin", "Sign in"],
+  ];
+  const inline = links.map(([h, t]) => `<a href="${h}">${t}</a>`).join("\n      ");
+  const stacked = links.map(([h, t]) => `<a href="${h}">${t}</a>`).join("\n        ");
   return `<header class="top">
   <div class="wrap top-inner">
     <a class="brand" href="/">${MARK(30)} Octant</a>
     <nav class="mnav" aria-label="Site">
-      <a href="${at}#product" class="hide-sm">Product</a>
-      <a href="${at}#uses" class="hide-sm">Who it&rsquo;s for</a>
-      <a href="${at}#pricing">Pricing</a>
-      <a href="/partners"${home ? ' class="hide-sm"' : ""}>Partners</a>
-      <a href="/signin">Sign in</a>
+      ${inline}
       <a class="btn primary" href="${home ? "#pricing" : "/#pricing"}">Get started</a>
     </nav>
+    <details class="mmenu">
+      <summary aria-label="Open menu" title="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path class="bar-t" d="M3 6h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="bar-m" d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="bar-b" d="M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </summary>
+      <nav class="mmenu-panel" aria-label="Site, compact">
+        ${stacked}
+      </nav>
+    </details>
   </div>
 </header>`;
 }
+
 
 /** The footer, including the standing legal notice both pages carry. */
 export function siteFooter(home: boolean): string {
