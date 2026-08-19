@@ -31,7 +31,14 @@ export default function Home() {
       {/* Navigation is TILES — the whole card is the link, and each card has
           exactly one heading. The first build had a muted eyebrow AND an h3
           per card, with only the h3 text clickable, plus a separate button
-          row naming the same three destinations twenty pixels above. */}
+          row naming the same three destinations twenty pixels above.
+
+          The groups follow the deck's reading ladder (the frame card):
+          one mind first — elements, seats, wirings, sides — then what
+          happens between minds: camps, bonds, channels. */}
+      <p className="small muted" style={{ margin: "0 0 var(--s3)", letterSpacing: "0.04em" }}>
+        WAYS IN
+      </p>
       <div className="grid g-auto">
         <Tile to="/learn">
           <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
@@ -59,7 +66,12 @@ export default function Home() {
             someone else instead of eight statements they'd have to answer about themselves.
           </p>
         </Tile>
+      </div>
 
+      <p className="small muted" style={{ margin: "var(--s5) 0 var(--s3)", letterSpacing: "0.04em" }}>
+        ONE MIND
+      </p>
+      <div className="grid g-auto">
         <Tile to="/type/ENTP">
           <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
             <TypeMolecule type="ENTP" size={40} />
@@ -68,6 +80,34 @@ export default function Home() {
           <p className="small" style={{ margin: 0 }}>
             The eight seats, all four sides of the mind, the exchange overlay, the growth gate and who
             you fit with — with the plain reading on top of each.
+          </p>
+        </Tile>
+
+        <Tile to="/sides">
+          <h3 style={{ margin: "0 0 var(--s2)" }}>Four sides →</h3>
+          <p className="small" style={{ margin: 0 }}>
+            You are four types, not one. The field guide to each — how to tell you&rsquo;re in
+            it, how to enter on purpose, and what happens if you never do.
+          </p>
+        </Tile>
+
+        <Tile to="/types">
+          <h3 style={{ margin: "0 0 var(--s2)" }}>All sixteen →</h3>
+          <p className="small" style={{ margin: 0 }}>
+            Every wiring at a glance, grouped by quadra or temperament.
+          </p>
+        </Tile>
+      </div>
+
+      <p className="small muted" style={{ margin: "var(--s5) 0 var(--s3)", letterSpacing: "0.04em" }}>
+        THEN TWO, AND A ROOM
+      </p>
+      <div className="grid g-auto">
+        <Tile to="/bonds">
+          <h3 style={{ margin: "0 0 var(--s2)" }}>Bonds →</h3>
+          <p className="small" style={{ margin: 0 }}>
+            The eight pairings that work, by element rather than by type — four axis bonds,
+            four spark meshes, every number recomputed from the engine.
           </p>
         </Tile>
 
@@ -83,10 +123,11 @@ export default function Home() {
           </p>
         </Tile>
 
-        <Tile to="/types">
-          <h3 style={{ margin: "0 0 var(--s2)" }}>All sixteen →</h3>
+        <Tile to="/network">
+          <h3 style={{ margin: "0 0 var(--s2)" }}>A group →</h3>
           <p className="small" style={{ margin: 0 }}>
-            Every wiring at a glance, grouped by quadra or temperament.
+            A team as a weighted graph: who is struggling, who quietly holds the room together,
+            and what one more person would change.
           </p>
         </Tile>
       </div>
