@@ -5,7 +5,8 @@ import { correlation } from "../src/engine/empirical";
 import { REL, relation } from "../src/engine/core";
 import { FN_COLOR } from "../src/engine/palette";
 import { ART_W, LABEL_MIN, artFor, backArt, markFor, sealFor } from "../src/cards/art";
-import { bondFacts, deck, deckSuits, fit, sparkFacts, type Card, type Suit } from "../src/cards/deck";
+import { deck, deckSuits, fit, type Card, type Suit } from "../src/cards/deck";
+import { bondFacts, sparkFacts } from "../src/engine/bonds";
 import { sides } from "../src/engine/sides";
 import { CARD_PAGE, TRIM, cardHtml, cardsDocument, sheetsDocument } from "../src/cards/render";
 

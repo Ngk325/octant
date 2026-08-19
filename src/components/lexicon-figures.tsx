@@ -4,7 +4,9 @@ import {
   type Fn, type SlotName, type RelCode, REL_NAME,
   INTERACTION_STYLE, GROUP,
 } from "../engine/data";
-import { TYPES, REL, ease, gate, type MbtiType, type Quadra } from "../engine/core";
+import { TYPES, REL, ease, gate, stack, type MbtiType, type Quadra } from "../engine/core";
+import { bondFacts, sparkFacts } from "../engine/bonds";
+import { AxisBondFigure, SparkMeshFigure } from "./BondFigure";
 import TypeMolecule from "./glyphs/TypeMolecule";
 import DivergingEase from "./DivergingEase";
 import CoinSet from "./CoinSet";
@@ -128,6 +130,34 @@ export const LEX_FIGURES: Record<string, (e: Entry) => ReactNode> = {
           One pairing, read from each side. Four of the sixteen relations differ by
           direction like this, so a single compatibility number would hide the most
           useful thing about them.
+        </p>
+      </div>
+    );
+  },
+
+  /* The Bond layer: one worked figure each, read off engine/bonds.ts so the
+     example cannot drift from the facts the entries state. */
+  bond: () => {
+    const f = bondFacts()[0];
+    return (
+      <div style={{ margin: "var(--s3) 0" }}>
+        <AxisBondFigure a={f.a} b={f.b} />
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          Worked example — the {f.a}·{f.b} axis, mean ease {Math.round(f.mean)}. There are four
+          of these; /bonds shows them all.
+        </p>
+      </div>
+    );
+  },
+  "spark-mesh": () => {
+    const f = sparkFacts()[0];
+    const fns = [...stack(f.outward[0]).slice(0, 2), ...stack(f.outward[1]).slice(0, 2)] as [Fn, Fn, Fn, Fn];
+    return (
+      <div style={{ margin: "var(--s3) 0" }}>
+        <SparkMeshFigure fns={fns} />
+        <p className="small muted" style={{ margin: "var(--s2) 0 0" }}>
+          Worked example — the {f.quadra} Camp&rsquo;s mesh, realised by {f.outward.join(" · ")}{" "}
+          and {f.inward.join(" · ")}. One mesh per Camp; /bonds shows all four.
         </p>
       </div>
     );

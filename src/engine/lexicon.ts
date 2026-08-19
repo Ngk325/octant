@@ -346,6 +346,18 @@ const CONCEPTS: Draft[] = [
       "Your Doubt is your Lead's attitude-flip — the perspective you already generate internally, as worry, and reflexively argue with. The two types who lead with it hand you that perspective from outside, fully formed and unapologetic. The effect is energising and slightly abrasive: you want what they have and resist it at the same time. An ENTP wants convergence, but convergence is Ni, and Ni is the Doubt.",
     inSystem: "Derived as the two types whose dominant equals your seat 5. This always resolves to your Damper and Loose fit partners. It is what the original workbook's 'Sidekicks' column was reaching for.",
     seeAlso: ["complement", "nemesis", "rel-ex", "rel-mg"] }),
+  E({ id: "bond", term: "Bond", category: "Concept",
+    short: "An element-level pairing: a Lead and the tool that answers it across the axis.",
+    definition:
+      "Compatibility stated at the altitude it actually lives at: which element answers which, with the four letters stripped away. The strongest shape is the axis bond — Lead meets Lead across the axis, so each partner is effortlessly good at exactly what the other fears being bad at. Sweeping all 240 ordered pairs of distinct types, the four axis pairings average 93 of 100 ease, far above every other class of Lead pairing, and realise only the Counterpart and Near fit relations.",
+    inSystem: "Derived in engine/bonds.ts by sweep, never asserted: bondFacts() groups every ordered type pair by its two Leads and reads the means off the ease table. Born as the print deck's Bond suit; taught at /bonds.",
+    seeAlso: ["spark-mesh", "complement", "rel-du", "rel-qi", "inferior"] }),
+  E({ id: "spark-mesh", term: "Spark mesh", category: "Concept",
+    short: "Lead answered by Support, crosswise, on both axes at once — the Spark relation's mechanism.",
+    definition:
+      "The other pairing shape that works: instead of Lead meeting Lead, each person's Lead is answered by the other's SUPPORT, and the two crossings hold at once. Each Camp's two axes admit exactly one such mesh, realised twice — once with both Leads facing outward, once with both facing in. Both crossings at once is exactly the Spark relation, ease 92 in both directions; one crossing alone is exactly Upstream (54) or Downstream (48). Where an axis bond rests, a mesh runs — each feeds the other's Delight, and it tires if never stepped out of.",
+    inSystem: "Derived in engine/bonds.ts: sparkFacts() reads the one mesh per Camp off the engine, and the sweep asserting the equivalence (both crossings ⇔ Spark) runs in the test suite. Taught at /bonds.",
+    seeAlso: ["bond", "rel-ac", "rel-br", "rel-be", "quadra"] }),
   E({ id: "ease", term: "Ease", category: "Concept",
     short: "A 0–100 modelling score for how one type experiences another. Directional.",
     definition:

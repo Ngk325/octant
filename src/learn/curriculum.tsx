@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import { stack, quadra, TYPES, REL, ease } from "../engine/core";
+import { stack, quadra, omega, TYPES, REL, ease } from "../engine/core";
+import { bondFacts, sparkFacts } from "../engine/bonds";
 import { ops, ANIMAL_LABEL, DEMON_MARKERS } from "../engine/ops";
 import { sides, SIDE_ORDER } from "../engine/sides";
 import { powersOf } from "../engine/powers";
@@ -27,7 +28,8 @@ import AnimalStack from "../components/AnimalStack";
 import OctagramMap from "../components/OctagramMap";
 import OctagramWheel from "../components/OctagramWheel";
 import ThemeSeasons from "../components/ThemeSeasons";
-import { Panel, Row } from "../components/Bits";
+import { Panel, Row, FnTag } from "../components/Bits";
+import { AxisBondFigure, SparkMeshFigure } from "../components/BondFigure";
 import Term from "../components/Term";
 import QuadraFunctionGrid from "../components/QuadraFunctionGrid";
 import RelationLanding from "../components/RelationLanding";
@@ -36,7 +38,7 @@ import DivergingEase from "../components/DivergingEase";
 /* ------------------------------------------------------------------ *
  * The course.
  *
- * Thirteen stages, each one assuming only what the previous ones taught. The
+ * Sixteen stages, each one assuming only what the previous ones taught. The
  * rule for every stage: a plain-language explanation you could give to
  * someone in a pub comes first, the machinery goes inside "the exact
  * mechanics", and there is always something on screen to look at.
@@ -691,6 +693,69 @@ export const STAGES: Stage[] = [
       </>
     ),
     check: "Why can a relationship feel easy to one person and like hard work to the other?",
+  },
+
+  {
+    slug: "bonds",
+    title: "The pairings that work",
+    blurb: "Strip the four letters away and only eight pairings are left — four bonds, four meshes.",
+    body: (t) => {
+      const lead = stack(t)[0];
+      const partner = omega[lead];
+      const spark = sparkFacts().find((f) => f.quadra === quadra(t))!;
+      const meshFns = [...stack(spark.outward[0]).slice(0, 2), ...stack(spark.outward[1]).slice(0, 2)] as [Fn, Fn, Fn, Fn];
+      return (
+        <>
+          <Explain
+            big
+            plain="Who works well with whom is not really about types. It is about which tool answers which — and there are only eight pairings of tools that work. Everything the last stage scored well is one of them, wearing four letters."
+          >
+            <p>
+              Sweep all 240 ordered pairs of distinct types and group them by which two Leads
+              meet: the four axis pairings — Lead meets Lead across an axis — average{" "}
+              {Math.round(bondFacts()[0].mean)} of 100, far above every other class. The other
+              shape that works runs crosswise: each Lead answered by the other person&rsquo;s
+              Support, which is exactly the Spark relation, and exactly one such mesh exists per
+              Camp.
+            </p>
+          </Explain>
+
+          <Figure
+            label="Your Lead's own bond."
+            caption={
+              <>
+                Your Lead is <FnTag fn={lead} disc />, so the tool that answers it is{" "}
+                <FnTag fn={partner} disc /> — each is exactly what the other does not do.
+                Whoever leads {lead} carries {partner} in the Cave, and the reverse: each
+                raises what the other skipped. This holds for anyone who leads {lead},
+                whatever their other letters.
+              </>
+            }
+          >
+            <AxisBondFigure a={lead} b={partner} />
+          </Figure>
+
+          <Figure
+            label="Your Camp's one mesh."
+            caption={
+              <>
+                Lead does not meet Lead here — the lines cross: each Lead is answered by the{" "}
+                <i>other</i> side&rsquo;s Support. Both crossings at once is the Spark relation
+                (ease {spark.ease} both ways); one crossing alone tilts the pair into Upstream
+                or Downstream. A Counterpart rests; a Spark runs.
+              </>
+            }
+          >
+            <SparkMeshFigure fns={meshFns} />
+          </Figure>
+
+          <p>
+            <Link to="/bonds" className="btn">All eight, with the numbers →</Link>
+          </p>
+        </>
+      );
+    },
+    check: "Your best pairings share one mechanism. Is it your Lead being answered — and by what?",
   },
 
   {

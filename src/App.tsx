@@ -6,6 +6,7 @@ import Learn from "./views/Learn";
 import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
 import Sides from "./views/Sides";
+import Bonds from "./views/Bonds";
 import PairReader from "./views/PairReader";
 import Calculator from "./views/Calculator";
 import Read from "./views/Read";
@@ -27,6 +28,7 @@ const TABS: [string, string][] = [
   ["/types", "All sixteen"],
   ["/type/ENTP", "A type"],
   ["/sides", "Four sides"],
+  ["/bonds", "Bonds"],
   ["/pair/ENTP/INFJ", "A pair"],
   ["/network", "A group"],
   ["/matrix", "Matrix"],
@@ -187,6 +189,7 @@ export default function App() {
             <Route path="/type/:type" element={<TypeReader />} />
             <Route path="/sides" element={<Sides />} />
             <Route path="/sides/:type" element={<Sides />} />
+            <Route path="/bonds" element={<Bonds />} />
             <Route path="/pair/:a/:b" element={<PairReader />} />
             <Route path="/network" element={<Network />} />
             <Route path="/matrix" element={<Matrix />} />

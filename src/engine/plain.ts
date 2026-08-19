@@ -167,6 +167,12 @@ export const CONCEPT_PLAIN: Record<string, string> = {
   catalyst:
     "The two types who lead with the thing you are consciously reaching for. Being around them is " +
     "stimulating and slightly annoying, which is the point.",
+  bond:
+    "A pairing of two tools, not two people: a strongest tool and the one that answers it. Any two " +
+    "people carrying those two tools up top get the benefit, whatever their four letters are.",
+  "spark-mesh":
+    "A pairing where each person's strongest tool is answered by the other's second. It runs where " +
+    "a bond rests — energising rather than restful, and it tires if never stepped out of.",
 
   /* --- the Octagram layer. Written to be readable cold, because the source
      material for this part is genuinely difficult and nobody should need the
@@ -274,6 +280,8 @@ export const PLAIN_BY_ID: Record<string, string> = {
   /* concepts */
   complement: CONCEPT_PLAIN.complement,
   catalyst: CONCEPT_PLAIN.catalyst,
+  bond: CONCEPT_PLAIN.bond,
+  "spark-mesh": CONCEPT_PLAIN["spark-mesh"],
   ease: CONCEPT_PLAIN.ease,
   /* This used to gloss DUALITY — "the relief of being around someone who is
      effortlessly good at the thing you are afraid of" — which is a different

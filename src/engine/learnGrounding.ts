@@ -1,4 +1,4 @@
-import { stack } from "./core";
+import { omega, stack } from "./core";
 import { powersOf } from "./powers";
 import { sides } from "./sides";
 import { SLOT_NAMES, type MbtiType } from "./data";
@@ -44,6 +44,7 @@ const TOPIC: Record<string, string> = {
   exchange: `${CONCEPT_PLAIN.savior} ${CONCEPT_PLAIN.demon} ${CONCEPT_PLAIN.animal}`,
   quadras: CONCEPT_PLAIN.quadra,
   relations: `${CONCEPT_PLAIN.ease} ${CONCEPT_PLAIN.directional}`,
+  bonds: `${CONCEPT_PLAIN.bond} ${CONCEPT_PLAIN["spark-mesh"]}`,
   groups:
     "Once you can score any two people in both directions, a group is just that many pairwise " +
     "numbers — which turns vague questions like who is struggling, or who is quietly holding a " +
@@ -78,6 +79,9 @@ function workedExample(slug: string, t: MbtiType): string | null {
       const { superpower, kryptonite } = powersOf(t);
       return `Worked example — ${powersPlain(t, superpower.fn, kryptonite.fn)}`;
     }
+    case "bonds":
+      return `Worked example — ${t} leads ${st[0]}, so its axis bond partner is whoever leads ` +
+        `${omega[st[0]]}: each is effortlessly good at the thing the other carries in the Cave.`;
     case "four-sides":
     case "growth": {
       const s = sides(t);
