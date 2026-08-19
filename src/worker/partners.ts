@@ -40,7 +40,9 @@ const DESCRIPTION =
 
 /** Rules this page adds on top of SITE_CSS. Nothing here overrides a shared rule. */
 const PARTNERS_CSS = `
-  .p-hero { padding:64px 0 40px; max-width:760px; }
+  /* Longhand, same reason as .hero in SITE_CSS: this element is
+     class="wrap p-hero" and a shorthand here zeroes .wrap's gutters. */
+  .p-hero { padding-top:64px; padding-bottom:40px; max-width:760px; }
   .p-hero .lede { font-size:21px; color:var(--m-ink2); }
 
   .axis-table { width:100%; border-collapse:collapse; margin-top:28px;
