@@ -4,6 +4,7 @@ import {
   type AuthEnv,
 } from "./auth";
 import { marketingPage } from "./marketing";
+import { partnersPage } from "./partners";
 import {
   startGoogleSignIn, completeGoogleSignIn, googleConfigured, safeReturn,
   type GoogleEnv,
@@ -160,15 +161,17 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   if (leadsPublic) return leadsPublic;
 
   // 5. The wall. Returns a response for everyone not signed in and approved —
-  //    with ONE carve-out: an anonymous GET of the front page gets the public
-  //    marketing page instead of a 401. Only the 401 (no session at all) is
-  //    softened, only for "/", and only for GET; a pending or blocked person
-  //    (403) still sees their status page, and no app markup or asset is ever
-  //    in the marketing response. The wall itself is untouched.
+  //    with TWO carve-outs, the public pages: an anonymous GET of "/" gets the
+  //    marketing page instead of a 401, and "/partners" gets the partner page.
+  //    Only the 401 (no session at all) is softened, only for those two exact
+  //    paths, and only for GET; a pending or blocked person (403) still sees
+  //    their status page, and no app markup or asset is ever in either
+  //    response. The wall itself is untouched.
   const blocked = await requireAuth(request, env, now);
   if (blocked) {
-    if (url.pathname === "/" && request.method === "GET" && blocked.status === 401) {
-      return marketingPage(url.origin);
+    if (request.method === "GET" && blocked.status === 401) {
+      if (url.pathname === "/") return marketingPage(url.origin);
+      if (url.pathname === "/partners") return partnersPage(url.origin);
     }
     return blocked;
   }

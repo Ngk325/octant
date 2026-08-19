@@ -143,29 +143,23 @@ const DESCRIPTION =
   "For coaches, teams, and anyone who takes their relationships seriously.";
 
 /** The complete public landing page. */
-export function marketingPage(origin: string): Response {
-  const html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${TITLE}</title>
-<meta name="description" content="${DESCRIPTION}">
-<link rel="canonical" href="${origin}/">
-<link rel="icon" href="${FAVICON}">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#FDFCFA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141310" media="(prefers-color-scheme: dark)">
-<meta property="og:type" content="website">
-<meta property="og:title" content="${TITLE}">
-<meta property="og:description" content="${DESCRIPTION}">
-<meta property="og:url" content="${origin}/">
-<meta property="og:site_name" content="Octant">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="${TITLE}">
-<meta name="twitter:description" content="${DESCRIPTION}">
-<style>
-  :root {
+
+/* ------------------------------------------------------------------ *
+ * THE SHARED CHROME.
+ *
+ * Extracted when a second public page (/partners) appeared, because the
+ * alternative was a second copy of 120 lines of CSS that would drift
+ * away from this one. Both public pages are complete, self-contained
+ * documents with no reference to the app bundle — that property is what
+ * lets them be served ahead of the wall, and it is asserted per page in
+ * tests/marketing.test.ts and tests/partners.test.ts.
+ *
+ * `home` threads through the nav builders because the front page's links
+ * are in-page anchors and every other page has to reach them through /.
+ * ------------------------------------------------------------------ */
+
+/** Every rule both public pages share. Page-specific rules are appended per page. */
+export const SITE_CSS = `  :root {
     color-scheme: light dark;
     --m-paper:#FDFCFA; --m-surface:#FFFFFF; --m-soft:#F4F1EA;
     --m-ink:#1A1714; --m-ink2:#4C463D; --m-muted:#6B6459;
@@ -283,24 +277,90 @@ export function marketingPage(origin: string): Response {
   .foot a { color:var(--m-muted); text-decoration:none; }
   .foot a:hover { color:var(--m-ink); }
   .legal { margin-top:20px; font-family:var(--sans); font-size:13.5px; color:var(--m-muted);
-           max-width:80ch; line-height:1.6; }
-</style>
-</head>
-<body>
+           max-width:80ch; line-height:1.6; }`;
 
-<header class="top">
+/** The <head> contents, minus the <style> block. */
+export function siteHead(o: {
+  title: string;
+  description: string;
+  origin: string;
+  path: string;
+}): string {
+  const url = `${o.origin}${o.path}`;
+  return `<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${o.title}</title>
+<meta name="description" content="${o.description}">
+<link rel="canonical" href="${url}">
+<link rel="icon" href="${FAVICON}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FDFCFA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141310" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${o.title}">
+<meta property="og:description" content="${o.description}">
+<meta property="og:url" content="${url}">
+<meta property="og:site_name" content="Octant">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${o.title}">
+<meta name="twitter:description" content="${o.description}">`;
+}
+
+/** The sticky masthead. On the front page the section links are bare anchors. */
+export function siteHeader(home: boolean): string {
+  const at = home ? "" : "/";
+  return `<header class="top">
   <div class="wrap top-inner">
     <a class="brand" href="/">${MARK(30)} Octant</a>
     <nav class="mnav" aria-label="Site">
-      <a href="#product" class="hide-sm">Product</a>
-      <a href="#uses" class="hide-sm">Who it&rsquo;s for</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#about" class="hide-sm">About</a>
+      <a href="${at}#product" class="hide-sm">Product</a>
+      <a href="${at}#uses" class="hide-sm">Who it&rsquo;s for</a>
+      <a href="${at}#pricing">Pricing</a>
+      <a href="/partners"${home ? ' class="hide-sm"' : ""}>Partners</a>
       <a href="/signin">Sign in</a>
-      <a class="btn primary" href="#pricing">Get started</a>
+      <a class="btn primary" href="${home ? "#pricing" : "/#pricing"}">Get started</a>
     </nav>
   </div>
-</header>
+</header>`;
+}
+
+/** The footer, including the standing legal notice both pages carry. */
+export function siteFooter(home: boolean): string {
+  const at = home ? "" : "/";
+  return `<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span class="brand">${MARK(22)} Octant</span>
+      <nav aria-label="Footer">
+        <a href="${at}#product">Product</a>
+        <a href="${at}#uses">Who it&rsquo;s for</a>
+        <a href="${at}#pricing">Pricing</a>
+        <a href="${at}#about">About</a>
+        <a href="/partners">Partners</a>
+        <a href="/signin">Sign in</a>
+      </nav>
+    </div>
+    <p class="legal">
+      \u00a9 ${new Date().getFullYear()} Stratfield Partners LLC. All rights reserved. Octant is an
+      educational and self-development instrument. It is not a medical, psychological or
+      psychiatric assessment, does not provide diagnoses or treatment, and must not be used as
+      the basis for employment, credit, insurance or other consequential decisions about any
+      person.
+    </p>
+  </div>
+</footer>`;
+}
+
+export function marketingPage(origin: string): Response {
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+${siteHead({ title: TITLE, description: DESCRIPTION, origin, path: "/" })}
+<style>${SITE_CSS}</style>
+</head>
+<body>
+
+${siteHeader(true)}
 
 <main>
   <div class="wrap hero">
@@ -551,27 +611,7 @@ export function marketingPage(origin: string): Response {
   </section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <div class="foot">
-      <span class="brand">${MARK(22)} Octant</span>
-      <nav aria-label="Footer">
-        <a href="#product">Product</a>
-        <a href="#uses">Who it&rsquo;s for</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#about">About</a>
-        <a href="/signin">Sign in</a>
-      </nav>
-    </div>
-    <p class="legal">
-      © ${new Date().getFullYear()} Stratfield Partners LLC. All rights reserved. Octant is an
-      educational and self-development instrument. It is not a medical, psychological or
-      psychiatric assessment, does not provide diagnoses or treatment, and must not be used as
-      the basis for employment, credit, insurance or other consequential decisions about any
-      person.
-    </p>
-  </div>
-</footer>
+${siteFooter(true)}
 
 </body>
 </html>`;

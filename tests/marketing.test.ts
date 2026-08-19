@@ -48,7 +48,9 @@ describe("the public front door", () => {
     expect(html).not.toContain("/api/chat");
   });
 
-  it("softens ONLY the front page — every other anonymous path still hits the wall", async () => {
+  it("softens only the two public pages — every other anonymous path still hits the wall", async () => {
+    // "/" here, "/partners" in tests/partners.test.ts. Nothing else.
+    expect((await get("/partners")).status).toBe(200);
     expect((await get("/type/ENTP")).status).toBe(401);
     expect((await get("/matrix")).status).toBe(401);
     expect((await get("/index.html")).status).toBe(401);
