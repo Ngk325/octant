@@ -254,6 +254,16 @@ ad-hoc `<>&` strip where `escapeHtml` exists. Examined and found sound (delibera
 findings): Stripe webhook verification, session HMAC discipline, admin owner-gating,
 export-token digest comparison, the codeId identity fix.
 
+**Deployment configuration (observation, unverified beyond the bot's own label).** During
+this review, pushing the docs-only review branch to GitHub triggered a Cloudflare Workers
+build that the `cloudflare-workers-and-pages` bot reported as "Deployment successful" for
+the **`typology` service, `production` environment** (bot comment on PR #56, commit
+`2360f798`). If Workers Builds is genuinely configured to deploy production from every
+branch push — rather than previewing non-default branches — any pushed branch changes the
+live site with no gate. The Cloudflare dashboard configuration could not be inspected from
+this environment; **verify the Builds branch configuration before treating this as a
+finding, and fix it before anything else if confirmed.**
+
 **Docs drift.** QA-REVIEW's gates all stale within three weeks (§2); its secrets-scan
 item 12 now false-positives on every clean build (Admin UI help copy legitimately contains
 `AUTH_SECRET`/`ACCESS_CODES` as strings — scope the grep to value shapes); five of its
