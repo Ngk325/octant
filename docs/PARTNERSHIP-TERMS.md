@@ -1,7 +1,7 @@
 # Octant — partnership raw materials
 
 **Prepared for a partner evaluating whether Octant fits inside their offering.**
-Terms in this document are fixed and will not move before **18 October 2026**. If a number
+Terms in this document are fixed and will not move before **31 December 2026**. If a number
 changes after that, you will get the changed number before you are asked to decide anything.
 
 This is not a proposal. It is the raw material: what Octant does, what it costs, what the
@@ -203,7 +203,7 @@ need to understand the model, not just consult it.
 
 ## 7 · What is fixed and what is genuinely open
 
-**Fixed until 18 October 2026:** every price in §3, §4, §5 and §6. The four shapes and their
+**Fixed until 31 December 2026:** every price in §3, §4, §5 and §6. The four shapes and their
 three axes. The engine, its outputs and the honesty posture in §1.
 
 **Genuinely open, and named as open rather than presented as settled:**
