@@ -17,6 +17,9 @@
  *     seriously — are exactly the ones who have heard that critique.
  * ------------------------------------------------------------------ */
 
+import { ease, relation } from "../engine/core";
+import { REL_DEF, REL_NAME, type MbtiType } from "../engine/data";
+
 /** The mark: two squares at 45° making an eight-pointed figure, one centre. */
 export const MARK = (size: number, stroke = "currentColor", accent = "#4C4899") => `
 <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
@@ -134,11 +137,32 @@ const GLYPH_SELF = `
   <circle cx="64" cy="50" r="4.6" fill="var(--m-si)"/>
 </svg>`;
 
-/* The hero shows an actual reading rather than an illustration of one. Both
- * scores are ease() output for this pair and both descriptions are that
- * relation's own REL_DEF gloss, so the panel cannot drift away from what the
- * app would say on /pair/ENTP/INFP. It is HTML and not SVG on purpose: the
- * text reflows on a phone, stays selectable and is read out in order. */
+/* The hero shows an actual reading rather than an illustration of one. Each
+ * row is computed from the engine at render time — the score from ease(), the
+ * name from REL_NAME, the gloss from that relation's own REL_DEF — so the
+ * panel cannot drift away from what the app says on /pair/ENTP/INFP. It is
+ * HTML and not SVG on purpose: the text reflows on a phone, stays selectable
+ * and is read out in order. */
+
+/** One direction of the worked example: how `target` experiences `partner`. */
+function heroDir(target: MbtiType, partner: MbtiType): string {
+  const code = relation(target, partner);
+  const score = ease(target, partner);
+  const def = REL_DEF[code];
+  // One line per direction: drop the categorical opening sentence
+  // ("Asymmetric correction[, reversed].") and keep the vivid one.
+  const gloss = def.slice(def.indexOf(". ") + 2);
+  return `<div class="dir">
+    <div class="dir-head">
+      <span class="mono way">${target} &rarr; ${partner}</span>
+      <span class="rel">${REL_NAME[code]}</span>
+      <span class="mono val">${score}</span>
+    </div>
+    <div class="meter" aria-hidden="true"><span style="width:${score}%"></span></div>
+    <p>${gloss}</p>
+  </div>`;
+}
+
 const HERO_READING = `
 <div class="reading" role="figure" aria-label="A worked reading of the ENTP and INFP pair, scored in both directions">
   <div class="reading-top">
@@ -147,25 +171,9 @@ const HERO_READING = `
     <span class="mono rpair">ENTP &middot; INFP</span>
   </div>
 
-  <div class="dir">
-    <div class="dir-head">
-      <span class="mono way">ENTP &rarr; INFP</span>
-      <span class="rel">Examined</span>
-      <span class="mono val">44</span>
-    </div>
-    <div class="meter" aria-hidden="true"><span style="width:44%"></span></div>
-    <p>Your leading function lands on their Blind spot; you can flatten them without noticing.</p>
-  </div>
+  ${heroDir("ENTP", "INFP")}
 
-  <div class="dir">
-    <div class="dir-head">
-      <span class="mono way">INFP &rarr; ENTP</span>
-      <span class="rel">Examiner</span>
-      <span class="mono val">34</span>
-    </div>
-    <div class="meter" aria-hidden="true"><span style="width:34%"></span></div>
-    <p>Their leading function lands on your Blind spot; their casual remarks land as verdicts.</p>
-  </div>
+  ${heroDir("INFP", "ENTP")}
 
   <p class="reading-foot">
     Same two people. Ten points apart, and only one of them can feel it.
@@ -593,7 +601,7 @@ ${siteHeader(true)}
       <div class="cta-row">
         <a class="btn primary" href="/onramp">Take the two-minute read</a>
         <a class="btn" href="#pricing">Pricing &mdash; $25/user&middot;mo</a>
-        <span class="cta-note">Free, no account. Eight either-or questions, no scoring you can fail.</span>
+        <span class="cta-note">Free, no account &mdash; a two-minute teaser: two of the eight questions, no scoring you can fail.</span>
       </div>
     </div>
 
@@ -712,8 +720,9 @@ ${siteHeader(true)}
           <span class="glyph">${GLYPH_SELF}</span>
           <span class="route-body">
             <span class="route-t">Yourself</span>
-            <span class="route-d">Eight either-or questions find your pattern. Then the four sides,
-            the fear your life is quietly organised around, and the door your growth goes through.</span>
+            <span class="route-d">Two either-or questions preview your pattern, free; the full
+            instrument&rsquo;s eight find it. Then the four sides, the fear your life is quietly
+            organised around, and the door your growth goes through.</span>
           </span>
           <span class="route-go mono">Free &rarr;</span>
         </a>

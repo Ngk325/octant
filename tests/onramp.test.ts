@@ -82,6 +82,29 @@ describe("GET /onramp", () => {
     expect(html).toContain(STRIPE_LINK);
   });
 
+  it("the email step is titled by what it sends — the explainer, not a reading it doesn't deliver", async () => {
+    const html = await (await get("/onramp?step=10")).text();
+    expect(html).toContain("Get your two-minute explainer.");
+    expect(html).not.toContain("See your directional reading");
+  });
+
+  it("guards the narrowing headline at both boundaries — no coins and invalid coins", async () => {
+    // No coins answered: field is all 16, so "one of about 16 of the
+    // sixteen" would negate itself. Invalid values: field is 0, so
+    // "0 of the sixteen" is nonsense. Both render the honest fallback.
+    for (const qs of ["", "&q0=garbage&q4=nonsense"]) {
+      for (const step of [8, 11]) {
+        const html = await (await get(`/onramp?step=${step}${qs}`)).text();
+        expect(html).not.toContain("about 16 of the sixteen");
+        expect(html).not.toContain("0 of the sixteen");
+        expect(html).toContain("one of the sixteen");
+      }
+    }
+    // A genuine partial answer still shows its genuinely narrowed count.
+    const narrowed = await (await get("/onramp?step=11&q0=Observer&q4=Sensing")).text();
+    expect(narrowed).toMatch(/one of about \d+ of the sixteen/);
+  });
+
   it("the email step never pre-checks the marketing opt-in", async () => {
     const html = await (await get("/onramp?step=10")).text();
     expect(html).not.toMatch(/name="optin"[^>]*checked/);
@@ -245,6 +268,78 @@ describe("lead capture and analytics wiring at the done step", () => {
       new Request(`https://octant.example/onramp?step=11&email=jane@example.com&_s=${encodeURIComponent(s)}`), env,
     );
     expect(LEADS.store.size).toBe(0);
+  });
+
+  it("refuses the same start token replayed with a second address — 4xx and no send", async () => {
+    // The replay this closes: one honestly-earned token, then a loop of
+    // step=11 requests with different email= values — previously unlimited
+    // Octant-branded emails to arbitrary addresses on one token.
+    const { LEADS, env } = withLeadsAndAnalytics();
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    const s = await startToken(env);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS + 1000);
+
+    const first = await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&_s=${encodeURIComponent(s)}`), env,
+    );
+    expect(first.status).toBe(200);
+    expect(LEADS.store.has("lead:jane@example.com")).toBe(true);
+
+    let sends = 0;
+    vi.stubGlobal("fetch", async () => { sends++; return new Response("{}", { status: 200 }); });
+    const replay = await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=mallory@example.com&_s=${encodeURIComponent(s)}`), env,
+    );
+    expect(replay.status).toBe(403);
+    expect(LEADS.store.has("lead:mallory@example.com")).toBe(false);
+    expect(sends).toBe(0);
+  });
+
+  it("rate-limits capture attempts per connecting IP when the binding exists", async () => {
+    const { LEADS, env: base } = withLeadsAndAnalytics();
+    let allowed = true;
+    const keys: string[] = [];
+    const env = {
+      ...base,
+      ONRAMP_LIMITER: { limit: async ({ key }: { key: string }) => { keys.push(key); return { success: allowed }; } },
+    } as unknown as Env;
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    const s = await startToken(env);
+    vi.setSystemTime(NOW + MIN_COMPLETION_MS + 1000);
+
+    // Browsing the funnel never consumes the limiter — only capture does.
+    await worker.fetch(new Request("https://octant.example/onramp?step=4"), env);
+    expect(keys).toHaveLength(0);
+
+    allowed = false;
+    let sends = 0;
+    vi.stubGlobal("fetch", async () => { sends++; return new Response("{}", { status: 200 }); });
+    const limited = await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&_s=${encodeURIComponent(s)}`, {
+        headers: { "cf-connecting-ip": "203.0.113.9" },
+      }),
+      env,
+    );
+    expect(limited.status).toBe(429);
+    expect(keys).toEqual(["203.0.113.9"]);
+    expect(LEADS.store.size).toBe(0);
+    expect(sends).toBe(0);
+
+    // With headroom the same walk completes normally.
+    allowed = true;
+    vi.stubGlobal("fetch", async () => new Response("{}", { status: 200 }));
+    const ok = await worker.fetch(
+      new Request(`https://octant.example/onramp?step=11&email=jane@example.com&_s=${encodeURIComponent(s)}`, {
+        headers: { "cf-connecting-ip": "203.0.113.9" },
+      }),
+      env,
+    );
+    expect(ok.status).toBe(200);
+    expect(LEADS.store.has("lead:jane@example.com")).toBe(true);
   });
 
   it("preserves every friction pick, not just the first, through capture", async () => {

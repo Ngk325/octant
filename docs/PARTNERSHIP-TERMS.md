@@ -32,7 +32,7 @@ what happens *between* them.
 | A group | A weighted directed graph: average ease, the hardest single edge, composition, who carries what |
 | The whole space | All 256 ordered pairs, colour-scaled, every cell a link into the pair reader |
 
-**Supporting surfaces:** a thirteen-stage course from "what is a cognitive function" through to
+**Supporting surfaces:** a fifteen-stage course from "what is a cognitive function" through to
 reading and borrowing another pattern's wiring · a 103-term lexicon where every term is defined
 *and pairable* · a context-grounded assistant on every screen · a 78-card printed deck generated
 from the same engine.
@@ -44,7 +44,9 @@ from the same engine.
   and no stored matrix. The structural tables cannot drift apart, because they are computed.
 - The numbers and words hung on that structure are **authored**, not derived. The distinction is
   documented in the codebase rather than blurred.
-- Ease scores are 0–100 and directional. A→B and B→A are different numbers, always.
+- Ease scores are 0–100 and directional, read separately from each side. For the four
+  asymmetric relations the two directions are different numbers — 64 of the 240 ordered
+  cross-type pairs; the rest score the same both ways, and the reading still differs.
 
 **Validation, stated honestly**
 
