@@ -2,12 +2,20 @@
 /**
  * Prints the private partner rate card to PDF.
  *
- *   node scripts/build-rate-card.mjs             → dist-partner/octant-partner-rate-card.pdf
+ *   node scripts/build-rate-card.mjs             → dist-partner/ and public/
  *   node scripts/build-rate-card.mjs --no-fonts  → local stacks, for an offline build
  *
  * The public partner page lives in the Worker (src/worker/partners.ts) and
  * carries no numbers on purpose. This is the other half: the rates, sent
  * after an enquiry and before an engagement.
+ *
+ * TWO outputs, deliberately. dist-partner/ is the working copy, gitignored
+ * alongside the staged HTML and the font cache. public/ is the DEPLOYED copy
+ * and is committed, because src/worker/enquiry.ts attaches it to every
+ * partner enquiry and there is no Chromium in a Worker to print it on
+ * demand. After changing docs/partner-rate-card.html: run this, then commit
+ * public/octant-partner-rate-card.pdf and
+ * docs/partner-rate-card.source.sha256 with it.
  *
  * Two things this script does beyond printing, both because the first
  * version of this document failed silently at each of them:
@@ -25,7 +33,8 @@
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { createHash } from "node:crypto";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -33,6 +42,24 @@ const SRC = join(ROOT, "docs", "partner-rate-card.html");
 const OUT = join(ROOT, "dist-partner");
 const CACHE = join(OUT, "fonts.css");
 const DEST = join(OUT, "octant-partner-rate-card.pdf");
+/**
+ * The DEPLOYED copy. Vite copies public/ into dist/ verbatim, and
+ * src/worker/enquiry.ts reads this file back out of the asset binding to
+ * attach it to a partner enquiry. Written here rather than copied by hand
+ * because a rate card that is stale in the one place it actually gets sent
+ * from is worse than no rate card: the numbers would be wrong and nobody
+ * would know. tests/rate-card.test.ts fails if this file falls behind
+ * docs/partner-rate-card.html.
+ */
+const PUBLIC_DEST = join(ROOT, "public", "octant-partner-rate-card.pdf");
+/**
+ * The hash of the HTML this PDF was built from. A committed binary cannot be
+ * diffed and cannot be grepped -- its text lives in compressed streams -- so
+ * there is no cheap way to ask the PDF itself whether it is current. This is
+ * that answer, written next to the source it describes.
+ */
+const SOURCE_HASH = join(ROOT, "docs", "partner-rate-card.source.sha256");
+const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 const MAX_PAGES = 2;
 const NO_FONTS = process.argv.includes("--no-fonts");
 
@@ -173,3 +200,8 @@ if (pages !== MAX_PAGES) {
   );
   process.exit(1);
 }
+
+mkdirSync(dirname(PUBLIC_DEST), { recursive: true });
+writeFileSync(PUBLIC_DEST, bytes);
+writeFileSync(SOURCE_HASH, `${sha256(readFileSync(SRC))}\n`);
+console.log(`  → ${relative(ROOT, PUBLIC_DEST)}  (commit this; it is what enquiry.ts sends)`);

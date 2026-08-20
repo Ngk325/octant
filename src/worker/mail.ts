@@ -19,6 +19,20 @@ export interface MailMessage {
   subject: string;
   html: string;
   text: string;
+  /**
+   * Resend's own field name, snake_case, because the whole message object is
+   * spread straight into the request body below. Set it where the useful
+   * reply address is not the sender — the partner rate card goes out from the
+   * Octant sender but a reply belongs in the owner's inbox, and the owner's
+   * copy of an enquiry should reply to the enquirer.
+   */
+  reply_to?: string;
+  /**
+   * Base64 attachments, Resend's shape. Only the partner rate card uses this
+   * (enquiry.ts); everything else this Worker sends is body-only, and should
+   * stay that way — an attachment costs deliverability, so it needs a reason.
+   */
+  attachments?: { filename: string; content: string }[];
 }
 
 const RESEND_ENDPOINT = "https://api.resend.com/emails";

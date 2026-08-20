@@ -22,6 +22,9 @@ import { handleOnramp, type OnrampEnv } from "./onramp";
 import { handleStripeWebhook, type StripeEnv } from "./stripe";
 import { handleLeadsPublic, sendQueuedNurture } from "./leads";
 import {
+  handleEnquiryAction, handlePartnerEnquiry, issueEnquiryToken, type PartnerEnquiryEnv,
+} from "./enquiry";
+import {
   exportPreflight, handleExport, hasExportToken, isExportPath, withExportCors,
   type ExportEnv,
 } from "./export";
@@ -39,7 +42,9 @@ import {
  * ever invoking this file, and none of the below runs. tests/auth.test.ts
  * asserts that value for exactly this reason.
  */
-export interface Env extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, OnrampEnv, StripeEnv, ExportEnv {
+export interface Env
+  extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, OnrampEnv, StripeEnv, ExportEnv,
+    PartnerEnquiryEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
   /**
    * Absolute origin used to build the unsubscribe link in cron-driven
@@ -105,6 +110,14 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
     return (await handleAdmin(request, env, { owner: false }, now))!;
   }
 
+  // 3a. The same shape again, for the other decision the owner makes from a
+  //     phone: releasing the partner rate card. Public for the same reason —
+  //     the signature IS the authorisation — and just as narrow: a leaked
+  //     link can send the card to the one address it already names, which is
+  //     an address that already asked for it.
+  const enquiryAction = await handleEnquiryAction(request, env, url, now);
+  if (enquiryAction) return enquiryAction;
+
   // 4. The sign-in page, at its own public route so the front door can link
   //    to it. Someone already signed in is sent home instead.
   if (url.pathname === "/signin" && request.method === "GET") {
@@ -161,6 +174,17 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   const leadsPublic = await handleLeadsPublic(request, env, now);
   if (leadsPublic) return leadsPublic;
 
+  // 4f. The partner enquiry form's POST target. Public by necessity — the
+  //     page it posts from is itself public, and a partner has no session to
+  //     present. Nothing here reads or writes anything a signed-in user owns,
+  //     and nothing confidential leaves: it records one enquiry, acknowledges
+  //     it, and puts the decision in front of the owner (item 3a above). What
+  //     stands in for a session is the signed form token, the same seal/unseal
+  //     shape /onramp uses to keep its email step from being an open mail
+  //     relay — see enquiry.ts for the full reasoning.
+  const enquiry = await handlePartnerEnquiry(request, env, url, now, ctx);
+  if (enquiry) return enquiry;
+
   // 5. The wall. Returns a response for everyone not signed in and approved —
   //    with a carve-out for the public pages: an anonymous GET of one of them
   //    gets that page instead of a 401. Only the 401 (no session at all) is
@@ -173,7 +197,12 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
   if (blocked) {
     if (request.method === "GET" && blocked.status === 401) {
       if (url.pathname === "/") return marketingPage(url.origin);
-      if (url.pathname === "/partners") return partnersPage(url.origin);
+      if (url.pathname === "/partners") {
+        return partnersPage(url.origin, {
+          token: await issueEnquiryToken(env, now),
+          sent: url.searchParams.get("sent"),
+        });
+      }
       if (url.pathname === "/compare") return comparePage(url.origin);
       if (url.pathname.startsWith("/compare/")) {
         const page = comparisonPage(url.origin, url.pathname.slice("/compare/".length));
