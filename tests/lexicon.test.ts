@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TYPES, quadra, gate, stack, type MbtiType } from "../src/engine/core";
 import { ops, coins, ANIMAL_LABEL, type Animal } from "../src/engine/ops";
-import { GROUP, INTERACTION_STYLE, DOM_AUX, REL_NAME, RECIPROCAL, type RelCode } from "../src/engine/data";
+import { GROUP, INTERACTION_STYLE, DOM_AUX, REL_NAME, REL_FRAME, RECIPROCAL, type RelCode } from "../src/engine/data";
 import { ENTRIES, BY_ID, pairTerms, type Entry } from "../src/engine/lexicon";
 
 /* ------------------------------------------------------------------ *
@@ -211,6 +211,20 @@ describe("the lexicon is internally sound", () => {
       const id = `rel-${c.toLowerCase()}`;
       const reciprocalId = `rel-${RECIPROCAL[c].toLowerCase()}`;
       expect(entry(id).seeAlso, `${id} names its reciprocal ${reciprocalId}`).toContain(reciprocalId);
+    }
+  });
+
+  /* The playbook's opening frames shipped for months with the six retired
+     working names — "Identity.", "Activity.", "Mirror.", "Business.",
+     "Super-Ego.", "Conflict." — two lines above the shipped names on the
+     same pair page. Each frame must open with the relation's one shipped
+     name, so a rename can never again leave the frame behind. */
+  it("every REL_FRAME opens with the relation's shipped REL_NAME", () => {
+    for (const c of Object.keys(REL_NAME) as RelCode[]) {
+      expect(
+        REL_FRAME[c].startsWith(`${REL_NAME[c]}.`),
+        `REL_FRAME.${c} opens with "${REL_NAME[c]}." — got "${REL_FRAME[c].slice(0, 40)}…"`,
+      ).toBe(true);
     }
   });
 

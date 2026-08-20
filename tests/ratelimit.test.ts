@@ -128,7 +128,7 @@ describe("CHAT_LIMITER", () => {
 });
 
 describe("the deployed config", () => {
-  it("declares both limiters and the hourly sweep", () => {
+  it("declares all three limiters and the hourly sweep", () => {
     const raw = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
     const config = JSON.parse(
       raw
@@ -140,7 +140,7 @@ describe("the deployed config", () => {
       triggers?: { crons?: string[] };
     };
     const names = (config.ratelimits ?? []).map((r) => r.name).sort();
-    expect(names).toEqual(["CHAT_LIMITER", "LOGIN_LIMITER"]);
+    expect(names).toEqual(["CHAT_LIMITER", "LOGIN_LIMITER", "ONRAMP_LIMITER"]);
     for (const r of config.ratelimits ?? []) expect([10, 60]).toContain(r.simple.period);
     expect(config.triggers?.crons?.length).toBe(1);
   });
