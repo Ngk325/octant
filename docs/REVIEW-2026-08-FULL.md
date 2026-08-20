@@ -57,27 +57,27 @@ test** (UPGRADE-PLAN, P0-2).
 |---|---|---|
 | Marketing & positioning | 6.5 | Sharp wedge, real funnel — flagship example is wrong, best free proof unlinked |
 | Copy & voice | 7 | Doctrine enforced by tests; renames half-landed, register cracks at the edges |
-| Display & UI | [PENDING-VISUAL] | |
-| Branding & identity | [PENDING-VISUAL] | |
-| Illustrations & diagrams | [PENDING-VISUAL] | |
-| Flow | [PENDING-VISUAL] | |
+| Display & UI | 7.5 | Rigorous parity and containment; tall pages unnavigable, masthead token bug |
+| Branding & identity | 7.5 | One coherent system wearing an unfinished, three-times-drifting brand |
+| Illustrations & diagrams | 8 | The strongest perspective — a real grammar, derived figures; its own floor breached on phones |
+| Flow | 6.5 | Core loop honors the promise in the UI; the funnel and the cross-surface links leak |
 | Supporting (a11y · perf · security · docs) | 7.5 | Floor far above typical; systemic dt/dd + contrast misses; bundle unwatched |
 | Content integrity | 7.5 | Engine claims verify exactly; prose counts drift everywhere |
 
-**Top 10 findings across all perspectives** (full detail in the sections cited):
+**Top findings across all perspectives** (full detail in the sections cited):
 
 1. **MKT-1 (P0)** Hero worked example: directions swapped vs engine, app, and own /read page — §5
-2. **MKT-2 (P1)** Paying customers hit a sign-in gate that says they must wait for owner approval — §5
-3. **MKT-3 (P1)** Hero promises "eight questions, free"; /onramp delivers two behind an email gate titled "See your directional reading" that shows no reading — §5
-4. **MKT-4 (P1)** The 136 public engine-derived /read pages — the best free proof — are linked from nowhere — §5
-5. **COP-2 (P1)** Every pair page opens with the old relation name ("Conflict.") two lines above the shipped name ("Headwind") — §6
-6. **SUP-1 (P1)** Onramp lead token is replayable: one token can direct Octant-branded mail at arbitrary addresses — §8
-7. **INT-2 (P1)** The documented brand palette (DESIGN-SYSTEM/BRIEF) ships nowhere in the app — §7
-8. **INT-1 (P1)** Partner terms overclaim "different numbers, always" — false for 73% of pairs — §7
-9. **INT-3 (P1)** Course stage count wrong in three documents (13/14 vs 15 shipped) — §7
-10. **SUP-5/6 (P2)** No skip link; silent SPA navigation; chat replies never announced — systemic AT gaps — §8
-
-[PENDING-VISUAL: top-10 to be re-ranked once display/branding/illustrations/flow findings land]
+2. **FLO-1 (P1)** The onboarding climax teaches "it almost never lands the same way" over a symmetric pair reading 80 \| 80 — the same disease as MKT-1, at the newcomer's teaching moment — §12
+3. **MKT-2 + FLO-3 (P1)** Paying customers hit a "wait for owner approval" gate; on a code-only deployment a codeless payer cannot get in at all — §5, §12
+4. **MKT-3 + FLO-2 (P1)** "Eight questions, free" delivers two, behind an email gate titled "See your directional reading" that shows none — and degrades to "16 of the sixteen" at the boundaries (FLO-4) — §5, §12
+5. **MKT-4 (P1)** The 136 public engine-derived /read pages — the best free proof — are linked from nowhere — §5
+6. **DIS-1 + FLO-5/6 (P1)** The tall pages have no persistent wayfinding, and the practitioner journey (type → pair → network) is not walkable by links — §9, §12
+7. **COP-2 (P1)** Every pair page opens with the old relation name ("Conflict.") two lines above the shipped name ("Headwind") — §6
+8. **SUP-1 (P1)** Onramp lead token is replayable: one token can direct Octant-branded mail at arbitrary addresses — §8
+9. **ILL-1 (P1)** The illustration doctrine's own 14 px floor is breached on phones (the enforcement wrapper exists and isn't applied); its #1-ranked missing figure is still a table (ILL-2) — §11
+10. **INT-2 + BRD-6 + ILL-12 (P1)** The documented brand palette ships nowhere, and the design handoff doc has drifted from the shipped components in both directions — §7, §10, §11
+11. **BRD-1/2/4 (P1)** The mark is absent from every signed-in screen, reads as a settings glyph, and the app ships no favicon and no og:image — §10
+12. **INT-1/3 (P1)** Partner terms overclaim "different numbers, always" (false for 73% of pairs); the course stage count is wrong in three documents — §7
 
 ---
 
@@ -122,7 +122,7 @@ table's omissions surfaced by the walk (live `/bonds`, `/guide`, and the whole s
 Page-height census (desktop, light, full page): lexicon term pages ≈ **35,100 px** (~39
 viewport-screens), lexicon index ≈ 33,900 px, type pages ≈ **16,860 px** (~19 screens),
 sides ≈ 7,000 px, signed-out home 5,281 px, matrix 5,067 px, pair ≈ 4,500 px. Density and
-wayfinding on the three tallest surfaces are assessed in §9 [PENDING-VISUAL].
+wayfinding on the three tallest surfaces are assessed in §9 (DIS-1) and §12 (FLO-5).
 
 ---
 
@@ -352,13 +352,57 @@ terse Unicode glyphs (?, ☾, ⏻, ≡) outside the product's own glyph language
 canonical logo lockup (wordmark re-set live, shifts by viewport); BRD-12 (P3) no exported
 brand-asset source a partner can fetch.
 
-## 11 · Illustrations & diagrams — score [PENDING-VISUAL]
+## 11 · Illustrations & diagrams — score 8/10
 
-[PENDING-VISUAL-ILLUSTRATIONS]
+**The strongest single perspective in the product.** A real grammar (hue=element,
+size=rank at exactly 1/.78/.56/.42 in TypeMolecule, vertical=order, opacity=shadow,
+direction=attitude) honored across ~30 components; every named figure derived from the
+engine, never authored per-type; both themes hold by construction. **RelationLanding** —
+two stacks facing each other, each reader's top functions carried into the other's eight
+seats, landings lit, each side keeping its own directional number — is "the 256-relation
+engine made legible in one picture" and the figure to build everything else around
+(alongside MutualLanding and the quadra grid the doctrine already calls its best).
 
-## 12 · Flow — score [PENDING-VISUAL]
+**Findings:**
 
-[PENDING-VISUAL-FLOW]
+| ID | Sev | Finding |
+|---|---|---|
+| ILL-1 | **P1** | **The doctrine's own 14 px SVG floor is breached on phones across core diagrams.** `Figure.tsx` exists precisely to enforce it (minWidth = viewBox width so figures pan instead of shrinking), but OctagramWheel ships with no minWidth wrapper at `TypeReader.tsx:658` and `curriculum.tsx:881` (mobile crops confirm sub-floor labels), and several figures' minWidth is below their viewBox width. The rule is a stated acceptance criterion; the enforcement mechanism exists and isn't applied. |
+| ILL-2 | P1 | **The product's #1-ranked missing figure is still a table.** DESIGN-SYSTEM §5 calls the three involutions "the single most load-bearing claim in the product… deserves a figure: three operations as three visual transformations on one bead." Shipped: `InvolutionTable.tsx` — a CSS grid of mono text tags, whose own comment concedes it. |
+| ILL-3 | P2 | Data-rich SVGs collapse to one flat `aria-label` sentence for AT (WiringSchematic's eight seats, RelationLanding's arrows, MutualLanding's whole structure) while the codebase's own better pattern (NetworkRing's sr-only per-edge list) sits unused beside them (= SUP a11y finding, figure-side). |
+| ILL-4 | P2 | **OctagramWheel draws its least-certain claim at full confidence.** The two drift poles are, by the app's own "Where this app stops" panel, the least-settled part of the model — and §14's gap says the drawing should carry that. All arms render at equal weight and full-opacity labels; the opacity=certainty channel exists in the grammar and goes unused exactly where it's needed. |
+| ILL-5 | P2 | ThemeSeasons is a 2×2 of text cards; §15's requested pure-geometry seasons (sprouting strata / full fan / falling beads / bare lattice) are absent. |
+| ILL-6 | P2 | The four currents never *show* energy-vs-information — AnimalGlyph draws flow direction only; the distinction that is the whole point is a text chip (§9's stated gap, confirmed). |
+| ILL-7 | P2 | Camps: `QuadraFunctionGrid` is `role="table"`; adjacency — the thing §10 says the figure exists to show — is derivable but not drawn. |
+| ILL-8 | P2 | Four sides shows the re-sort as four finished cards; §6's gap ("eight beads being dealt into four hands — the mechanism, not the result") stands. |
+| ILL-9 | P2 | **NetworkRing is O(n²) and the only group view** — a known hairball above ~6 people, while partners embed for 8–12-person teams; and the demo seeds only 3 people, so the flagship surface never shows a real room. |
+| ILL-10 | P3 | SideDoor's openness ladder barely reads: open/ajar/cracked differ by a leaf position and a 2.6 px dot at ~76 px rendered size; only "barred" is legible. |
+| ILL-11 | P3 | WiringSchematic's emotional gradient (the thing §3 says makes the stack land) is carried only by opacity + a background band. |
+| ILL-12 | P3 | **DESIGN-SYSTEM.md has drifted from the shipped components in both directions**: §1's "never drawn as a set" gap is already solved (`EightSet.tsx`, live in Welcome/Learn) and §2's DerivationTree ships — while the doc's palette ships nowhere (INT-2). A designer working from this brief would redo built work in unshipped colors. |
+
+## 12 · Flow — score 6.5/10
+
+**Strongest thing:** the practitioner core loop honors the central promise *in the UI* —
+verified interactively: eight answers resolve to "Your type ISTJ · 1 of 16 left · 4 of 4
+deciding answered," ranked closest fits as links, an honest "Not an error." note when a
+confirming coin disagrees, and a "Read it →" handoff. `/network` hands off cleanly to both
+`/pair` and `/type`; the 15-stage course is paced plain-first with per-stage self-checks.
+
+**Findings:**
+
+| ID | Sev | Finding |
+|---|---|---|
+| FLO-1 | **P1** | **The onboarding climax disproves its own lesson.** Welcome step 8 — the screen that hands the newcomer the both-directions thesis — headlines "it almost never lands the same way for both people" over a hard-coded ENTP↔INFJ figure reading **80 \| 80** (`Welcome.tsx:83-92`; verified: `ease()` = 80 both ways, relation MG, symmetric). Doubly wrong: the example shows no asymmetry, and "almost never the same" overstates reality (73% of pairs are identical both ways). One of the four asymmetric relations was available. |
+| FLO-2 | P1 | The onramp email gate promises "your directional reading," delivers a field-count + paywall (= MKT-3, journey-side: the payoff step is the funnel's single largest leak). |
+| FLO-3 | P1 | The payer's landing (= MKT-2, journey-side): on a code-only deployment a codeless payer *cannot get in at all* — preapproval is keyed to Google sign-in, and the gate renders no Google button and no paid-path copy. |
+| FLO-4 | P2 | **Onramp headline degrades to nonsense at boundaries**: "Your pattern is one of about **16 of the sixteen**" (no coins answered — the captured screenshot literally shows it) and "**0 of the sixteen**" (invalid coin values; confirmed by curl). `onramp.ts:222,384`. |
+| FLO-5 | P2 | Type page's section nav is a one-time chip row (= DIS-1, journey-side: a practitioner 10–14k px deep in Growth or Octagram cannot jump or return). |
+| FLO-6 | P2 | **Type → pair → network is broken at both links.** The type page's only `/pair` links are chips ~14k px down and it never links `/network` at all (grep-confirmed); the pair page is a lateral dead-end — no link up to either person's full type, none out to a group (`PairReader.tsx:59-62,240`). The practitioner journey the marketing sells is not walkable by links. |
+| FLO-7 | P2 | The course rail never scrolls the "you are here" pill into view — on stage 15 the rail still shows stages 1–5 (`Learn.tsx:72-83`; screenshot confirms "Stage 15 of 15" beside a rail parked at the start). |
+| FLO-8 | P2 | At the calculator result — the newcomer's highest-intent moment — the assistant's suggested questions are hard-coded ENTP/INFJ/INFP, not the type just computed (`context.ts:458` has no calculator case; the rail header says "Reading: calculator · ISTJ" while suggesting ENTP questions). |
+| FLO-9 | P2 | Learn stage 1 front-loads ~3,600 px of foundation (five subsections + diagrams) before the learner has any momentum — the heaviest stage is the first. |
+| FLO-10 | P3 | Onboarding-done lives only in localStorage — returning signed-in users on a new device/browser replay the 8-screen gate (`App.tsx:182`). |
+| FLO-11 | P3 | Cross-reference: when MKT-1 is fixed, verify the signed-in Home band and the assistant's default prompts, which use the same ENTP/INFP example. (Note: the Home diagram is currently **correct** — it computes `asymmetricPair()` live, which is precisely the derived-vs-authored contrast the P0-2 rule generalizes.) |
 
 ---
 
@@ -380,8 +424,11 @@ Protected from well-meaning churn, with the evidence that earned each its place:
    (run_worker_first with the cost stated; walls that fail closed).
 6. **The deck** — 78 cards generated from the same engine, tests asserting suit sizes and
    re-deriving all 256 grid cells. A physical brand asset competitors cannot fake.
-7. **The MutualLanding diagram** (both-directions landing figure) — the thesis in one
-   picture, used on home and pair pages. [PENDING-VISUAL: §11 confirms/expands]
+7. **RelationLanding and MutualLanding** — the both-directions thesis made legible in one
+   picture; §11 names RelationLanding "the diagram to build everything else around,"
+   alongside the quadra grid the doctrine already calls its best. Note that the signed-in
+   Home's use of this figure computes its example live (`asymmetricPair()`), which is why
+   it is correct while the hand-coded marketing hero is wrong — the P0-2 rule, illustrated.
 8. **The dev-runs-the-real-Worker architecture** (`devApi()`) — the reason this review
    could verify signed-out behaviour honestly on localhost.
 
@@ -393,8 +440,64 @@ Protected from well-meaning churn, with the evidence that earned each its place:
   `axe-results.json`, engine-sweep outputs, the four per-perspective audit JSONs.
 - First execution of `ACCEPTANCE-PROTOCOL.md` — recorded at its foot.
 
-[PENDING-VISUAL: final screenshot-manifest cross-check in §15 self-QA]
+**Curated asset manifest** — every file in `docs/review-assets/`, with the finding(s) it
+evidences (all are downscaled/quantized copies; originals in the session evidence set):
+
+| File | Evidences |
+|---|---|
+| `home-signedout-desktop-light.png` / `-dark.png` | MKT-1 (hero swap), MKT-5/8/10, §10 identity assessment, dark parity |
+| `home-app-desktop-light.png` | MKT-1 counter-evidence (app diagram correct), MKT-11, BRD-1, DIS-2/7, FLO-11, §13.7 |
+| `signin-desktop-light.png` | MKT-2, FLO-3 (no Google button, owner-approval copy) |
+| `read-pair-desktop-light.png` | MKT-1 (34/44 attribution), MKT-4 (the unlinked proof surface) |
+| `flow-calc-after-8.png` | §7 claim 4 (narrowing UI), §12 strongest-thing, FLO-8 (hard-coded prompts) |
+| `mkt-onramp-1/-2/-11-desktop-light.png` | MKT-3, FLO-2, FLO-4 ("16 of the sixteen" visible on -11) |
+| `mkt-partners-desktop-light.png` | §5 partner materials, BRD-1 (mark on marketing), MKT-12 context |
+| `type-entp-desktop-light.png` / `-mobile-light.png` | §4 density census, DIS-1, ILL-1/4/5/8/11, FLO-5/6 |
+| `type-entp-gpath.png` / `gpath-dark.png` | DIS-4 (AA fail both themes) |
+| `type-mob-top.png` | DIS-8 (launcher occlusion), DIS-9 (icon targets) |
+| `types-desktop-light.png` | BRD-1/9 (bare wordmark; alignment drift) |
+| `mast-closed-1400.png` | DIS-3 (two-row masthead, 111 px vs 64 px token) |
+| `mast-1440-railopen.png` / `mast-1680-railopen.png` | DIS-2 (tabs hidden at default; wrapping at 1680) |
+| `matrix-desktop-light.png` | DIS-10, §4 walk record |
+| `network-desktop-light.png` / `-mobile-light.png` | ILL-9 (3-person seed; ring form) |
+| `pair-entp-infp-desktop-light.png` / `pair-enfp-istj-desktop-light.png` | COP-2 (frame-vs-name), FLO-6 (lateral dead-end), DIS-11 |
+| `sides-intp-desktop-light.png` | §4 census, DIS-4 (gateway path), ILL-10 (SideDoor states) |
+| `welcome-8-desktop-light.png` | FLO-1 (80 \| 80 under the asymmetry headline) |
+| `learn-functions-desktop-light.png` | FLO-9 (stage-1 front-load) |
+| `learn-borrowed-wiring-desktop-light.png` | FLO-7 (rail parked at 1–5 on stage 15) |
+| `learn-octagram-mobile-light.png` | ILL-1 (14 px floor breach on the wheel) |
 
 ## 15 · Self-QA of this review
 
-[PENDING: completed after visual sections merge]
+Run against the review's own evidence rules before delivery:
+
+- **Every finding has evidence** — pass. Each finding cites file:line, a command run this
+  session, or a screenshot; the curated set is cross-mapped in §14's manifest table
+  (forward check: every filename cited in a finding exists in `review-assets/`; reverse
+  check: every archived file appears in the manifest with its findings).
+- **Every load-bearing number was reproduced this session** — pass. Gates (§2), engine
+  sweeps (§7's 14-claim table), page heights, axe counts. The only quoted-not-reproduced
+  numbers are QA-REVIEW's 2026-08-01 gates, cited explicitly *as that document's claims*
+  because the drift is the finding, and the Cloudflare bot's "production" label (§8),
+  marked as an unverified observation.
+- **Agent findings independently spot-verified** — the P0 (MKT-1) was reproduced end-to-end
+  (engine run + live curl + /read page + app screenshot), and one P1 from each audit was
+  re-verified at source before acceptance (COP-2's REL_FRAME strings, SUP-1's token check,
+  INT-2's palette grep, BRD-4's missing favicon, FLO-1's 80|80 pair, DIS-3 via the
+  auditor's live viewport measurements).
+- **Every plan item carries acceptance criteria and a verification step** — pass;
+  UPGRADE-PLAN's schema makes an item without them unshippable, and the final read-through
+  confirmed no empty cells.
+- **All three audience lenses appear in every perspective** — pass. Marketing/branding
+  carry them in prose; copy, display, illustrations, and flow findings are lens-tagged in
+  the audit records, with the lens-critical items surfaced per-section (newcomer: MKT-10,
+  COP-9/10, DIS-1, FLO-1/2; enthusiast: MKT-5/9, COP-2, DIS-3, ILL-4; partner: MKT-7/12,
+  INT-1, DIS-3, ILL-9). Supporting's security items are lens-neutral by nature.
+- **Scores are each justified in their section** — pass (the illustrations agent reported
+  on a 0–100 scale; normalized to 8/10 here with its rationale intact).
+- **Known limitations, stated rather than papered over**: `wrangler dev` boundary checks
+  and the Resend email path could not run in this sandbox (recorded in the protocol's
+  first-execution notes); all screenshots render fallback typefaces because the sandbox
+  blocks Google Fonts, so no finding rests on letterform appearance; `/admin`'s owner view
+  and the deployed Cloudflare configuration were reviewed statically only; OPS coin
+  persistence was verified by its unit test, not manually.

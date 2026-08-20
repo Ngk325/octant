@@ -169,7 +169,17 @@ Items P2-1…P2-9 are specified for direction A+.
 | P3-9 | Left-align Home's multi-line explanatory prose (keep the centered H1 gesture) (DIS-7) | P3 | S | No multi-line paragraph on Home is centered | Visual diff |
 | P3-10 | Reserve bottom padding for the floating launcher (the `.main:has(.calc-dock)` pattern) so it stops occluding chips/figures on mobile (DIS-8) | P3 | S | Launcher never overlaps interactive or figure content at 390 px | Mobile screenshots of type + lexicon bottoms |
 
-*Flow items from the pending flow audit will extend this phase.* [PENDING-FLOW]
+**Flow** (from REVIEW §12; FLO-2/3 are already covered by P0-4 and P0-6):
+
+| ID | Item | Sev | Eff | Acceptance criteria | Verification |
+|---|---|---|---|---|---|
+| P3-11 | **Fix the onboarding climax.** Welcome step 8 teaches direction-dependence over ENTP↔INFJ, a symmetric pair drawing 80 \| 80; "it almost never lands the same way" also overstates (73% of pairs are identical both ways) (FLO-1) | P1 | S | The step-8 figure shows two different numbers; the copy states asymmetry honestly ("often lands differently" / "for the four asymmetric relations") | Build-time assertion `ease(a,b) !== ease(b,a)` for the chosen example (or compute via `asymmetricPair()` as Home does); visual check `welcome-8` |
+| P3-12 | **Guard the onramp headline at boundaries** — "one of about 16 of the sixteen" (no coins) and "0 of the sixteen" (bad input) both render today (FLO-4) | P2 | S | field.length ∈ {0, 16} renders a sensible fallback, never the self-negating sentence | curl `/onramp?step=11` with no/invalid coins; add worker-test cases |
+| P3-13 | **Make the practitioner journey walkable.** Type page: an onward handoff row near the top ("read this type with someone →", "put them in a group →"); pair page: header chips link to `/type/:a` and `/type/:b`, plus a link out to `/network` (FLO-6) | P2 | S | From `/type/X` one click reaches a pair with X; from `/pair/A/B` one click reaches either full type and `/network` | Link census on both views (grep + click-through); no dead-end surfaces in the type→pair→network loop |
+| P3-14 | **Course rail shows where you are** — scroll the active pill into view; add a progress fill (FLO-7) | P2 | S | On stage 15 the rail visibly shows stage 15 active | Screenshot at stages 1/8/15 |
+| P3-15 | **Calculator-aware assistant prompts** — add the missing `calculator` case so suggestions use the computed type, not hard-coded ENTP/INFJ (FLO-8) | P2 | S | After a result, every suggested prompt names the resolved type or its closest fit | Extend the chat-context test; interactive check |
+| P3-16 | **Pace stage 1.** Move the 8-item "sounds like" catalogue or the derivation tree behind a disclosure so the first stage stops being the heaviest (FLO-9) | P2 | S–M | Stage 1's initial scroll ≤ the course's median stage height | Page-height measurement before/after |
+| P3-17 | Persist onboarding-done server-side (per account, not per browser) so returning users don't replay the gate (FLO-10) | P3 | S | A signed-in user who completed onboarding never sees `/welcome` again on a new device | Fresh-profile signed-in visit lands on Home |
 
 ## P4 — Depth & polish
 
@@ -181,7 +191,7 @@ Items P2-1…P2-9 are specified for direction A+.
 | P4-4 | **Announce SPA navigation** — focus main (tabIndex −1) or aria-live announcer on route change (`App.tsx:66-77`) | P2 | S | Tab-bar navigation announces the new page to AT | Manual AT check + unit test on the effect |
 | P4-5 | **Chat log becomes a log** — `role="log"` on `.rail-log`; verify streaming doesn't spam | P2 | S | Completed replies are announced once | Manual AT check |
 | P4-6 | **Onramp fieldset/legend + landmarks** (axe: landmark-one-main, region; radios unbound to their question) | P2 | S | axe clean on `/onramp`; each step's question is the group's legend | axe pass |
-| P4-7 | **WiringSchematic sr-only seats** — apply the NetworkRing pattern (per-seat list) to the flagship figure | P3 | S | The eight seat assignments reachable by AT | `tests/a11y.test.tsx` extended |
+| P4-7 | **Structured AT fallbacks for the data-rich figures** — apply the NetworkRing sr-only pattern (per-seat / per-arrow lists) to WiringSchematic, RelationLanding, and MutualLanding (SUP a11y + ILL-3) | P3 | S–M | Each figure's data (seats; arrows with source→landing and direction) reachable by AT, not just a one-sentence label | `tests/a11y.test.tsx` extended per figure |
 | P4-8 | **Route-level code-splitting + bundle budget.** `React.lazy` TypeReader/Guide/Matrix/Admin behind existing boundaries; a size assertion so growth is seen (632 KB today, +13%/3wk unwatched) | P2 | M | Initial chunk materially smaller; a test fails if the main chunk exceeds budget | `npm run build` output + the budget test |
 | P4-9 | **Asset cache policy under run_worker_first** (QA-REVIEW AR-2; its "if this ever opens up" trigger has fired) — immutable max-age on `/assets/*` | P3 | S | Fingerprinted assets carry `cache-control: public, max-age=31536000, immutable` | curl -D on an asset; `tests/headers.test.ts` extended |
 | P4-10 | **QA docs truth pass.** Dated gates addendum (or generated table); secrets-scan item 12 re-scoped to value shapes; triage the five still-open QA-REVIEW items | P2 | S | QA-REVIEW (or successor) matches measured reality; the scan passes on a clean build | Run the protocol §1 + §6; item 12 grep → nothing |
@@ -190,7 +200,29 @@ Items P2-1…P2-9 are specified for direction A+.
 | P4-13 | **`escapeHtml` in `signInProblem`** (replace the ad-hoc `<>&` strip, `index.ts:362`) | P3 | S | The one interpolation uses the shared escaper | Code review + existing auth tests |
 | P4-14 | **README + design-doc truth pass.** Route table adds /bonds, /guide (+ the public surface); engine map adds the 5 missing modules; "no stored matrix" clause gets its one-clause caveat; "no emoji" rule scoped to name /guide as the exception; `Learn.tsx:182` comment fixed (INT-4/5/6/8/9) | P2 | S | README describes the app that ships | Re-run the §7 claim table: claims 6, 7, 12 flip to VERIFIED |
 
-*Illustration and display items from the pending audits will extend this phase.* [PENDING-VISUAL]
+**Illustrations** (from REVIEW §11 — ordered by the doctrine's own ranking):
+
+| ID | Item | Sev | Eff | Acceptance criteria | Verification |
+|---|---|---|---|---|---|
+| P4-15 | **Enforce the 14 px SVG floor.** Set every figure's `Figure` minWidth equal to its viewBox width; add the missing wrapper to OctagramWheel (`TypeReader.tsx:658`, `curriculum.tsx:881`) (ILL-1) | P1 | S | No SVG label renders below 14 px at 390 px viewport on any figure; a test walks the figure components asserting minWidth ≥ viewBox width | The new assertion + mobile screenshots of type/learn octagram sections |
+| P4-16 | **Build the three-moves figure** — one bead undergoing flip/swap/turn as three watchable transformations, replacing/augmenting `InvolutionTable`'s text grid (§5's "single most load-bearing claim"; ILL-2) | P1 | M | The involutions are drawn, not tabulated; comprehension test: a reader can say what each move changes without being told | Figure ships on the learn stage + lexicon; design-doc §5 gap marked closed |
+| P4-17 | **OctagramWheel: draw uncertainty as the grammar demands** — drift poles (arms + labels) at ~.5 opacity; virtue/sin axis at full ink (ILL-4) | P2 | S | The least-settled claims visibly carry lower confidence | Visual diff both themes; DESIGN-SYSTEM §14 gap closed |
+| P4-18 | **Seasons as pure geometry** — sprouting strata / full fan / falling beads / bare lattice in the family hues, seated in the ThemeSeasons cards (ILL-5) | P2 | M | The four moods legible without reading the labels | Comprehension spot-check; §15 gap closed |
+| P4-19 | **Currents: draw energy-vs-information** — a second visual channel on AnimalGlyph for kind (ILL-6) | P2 | M | Two of the four glyphs visibly a different *kind* of thing, not a different direction | §9 comprehension test |
+| P4-20 | **Camps get their geometry** — a 2×2/ring where shared-axis camps sit adjacent, shared functions drawn on edges (keep the table as the disclosure) (ILL-7) | P2 | M | A reader can see why two camps feel adjacent and two opposed | §10 comprehension test |
+| P4-21 | **Four sides: draw the re-deal** — the eight ego beads visibly re-dealt into four hands (threads or transition), not four finished cards (ILL-8) | P2 | M | "You are four types, not one" carried by the drawing | §6 comprehension test |
+| P4-22 | **A group form that scales past six** — bundled edges / heat strip / carrier-and-faultline summary promoting only the most-loaded links; seed the demo with a realistic 6-person room (ILL-9) | P2 | L | An 8–12 person group is legible; the demo shows a real room | Screenshot at n=3/6/10; partner-lens check |
+| P4-23 | SideDoor openness ladder made laddered (progressive visible gap) (ILL-10) | P3 | S | The four states distinguishable at 76 px | Side-by-side render |
+| P4-24 | WiringSchematic: a drawn comfort→unease gradient channel (ILL-11) | P3 | S | The emotional gradient is drawn, not implied | Visual diff |
+| P4-25 | **Reconcile DESIGN-SYSTEM.md with shipped reality** — mark §1 (EightSet) and §2 (DerivationTree) built; palette table from `palette.ts` (with P2-4); keep the gap list honest so a designer doesn't redo built work (ILL-12) | P2 | S | Every §3 gap statement matches the shipped components | Doc review against `src/components/` census |
+
+**Display polish** (from REVIEW §9, not already in P3):
+
+| ID | Item | Sev | Eff | Acceptance criteria | Verification |
+|---|---|---|---|---|---|
+| P4-26 | **Heading-outline pass** — h1→h2→h3 without gaps on type/calculator/learn; demote styled non-headings (DIS-6; prerequisite for P3-6's generated TOC) | P2 | S | axe heading-order clean on the protocol's seven pages | axe pass |
+| P4-27 | Icon-button hit area to ~44 px (visual 38 px acceptable) (DIS-9) | P3 | S | All masthead targets ≥ 44 px hit area | DOM measurement |
+| P4-28 | Matrix: sixteen-relations section in a responsive multi-column grid; corner `<th>` gets a visually-hidden label (DIS-10) | P3 | S | Section height roughly halved; axe empty-table-header clean | Page-height measure + axe |
 
 ---
 
@@ -223,4 +255,13 @@ single-exit security architecture; the deck; the MutualLanding diagram; the
 dev-runs-the-real-Worker architecture. Any plan item that would weaken one of these is
 wrong even if it closes a finding.
 
-[PENDING: display/illustrations/flow items merge + final phase ordering pass]
+## Reading order for implementation sessions
+
+Start at P0 (all six-plus-one items are independent; P0-1 is minutes of work). P1 and P2
+can proceed in parallel once P0-2's test infrastructure exists — P1-2/P1-5 want P2-1's
+mark but ship acceptably with the interim assets. P3's vocabulary sweep (P3-1) should land
+before P3's display items only if both touch the same views; otherwise order within P3 is
+free. P4's illustration items are each independent; P4-15 (the 14 px floor) and P4-26
+(heading outline) come first because P3-6's sticky TOC builds on the outline. Every item's
+verification step is designed to run inside `ACCEPTANCE-PROTOCOL.md`'s framework, so each
+implementation PR should end by running the protocol's relevant sections.
