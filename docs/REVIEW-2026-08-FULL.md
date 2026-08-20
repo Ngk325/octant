@@ -272,9 +272,31 @@ nothing, correctly tree-shaken) is diligence noise in src/views.
 
 ---
 
-## 9 · Display & UI — score [PENDING-VISUAL]
+## 9 · Display & UI — score 7.5/10
 
-[PENDING-VISUAL-DISPLAY]
+**Strongest thing:** light/dark parity and responsive containment executed with real
+rigor — every surface converts cleanly to dark (hues re-tuned per theme, no orphaned
+panels) across pages as tall as the 34k-px lexicon index, and there is **measured zero
+horizontal document scroll at 390 px** on matrix/type/lexicon/network/calculator: wide
+artifacts scroll inside their own overflow containers. The mobile collapse (bottom-sheet
+popover, dvh rail, safe-area insets) is thoughtful.
+
+**Findings** (the auditor took live measurements beyond the screenshot set — viewport
+sweeps and an anchor-landing probe):
+
+| ID | Sev | Finding |
+|---|---|---|
+| DIS-1 | **P1** | **The longest reading pages have no persistent wayfinding.** `/type/*` is ~16,860 px desktop (~27,900 px mobile), `/lexicon` ~35k px, `/sides` ~7k — and every in-page nav (type/sides chip nav, lexicon search + 11 filter chips, the learn rail) is placed once at the top and scrolls away. No sticky TOC, no scroll-spy, no back-to-top. The `.persp-bar` sticky pattern already exists to reuse. |
+| DIS-2 | P2 | **On a default signed-in desktop the 12 nav tabs are hidden behind the hamburger** — the chat rail defaults open (`ChatContext.tsx:34-40`), reserving 384 px, which pushes the masthead container below its 1239 px collapse threshold at common laptop widths (1440/1536/1600). A first-run desktop user sees no horizontal navigation at all: four icon glyphs. Every signed-in desktop screenshot confirms it. |
+| DIS-3 | P2 | **Masthead wraps to two rows in a laptop-width band, breaking the `--masthead-h` contract.** The design comment claims tabs collapse "BEFORE it would ever need a second line"; measured with the rail closed, the twelve tabs need ~1430 px but collapse only below 1239 px container width, so at 1300–1500 px viewports the masthead is 111 px tall while every scroll offset derives from the 64 px token — live probe: a deep-linked heading lands at y=80 behind a 111 px masthead. `tests/styles.test.ts` guards the token's *use*, not its *truth*. |
+| DIS-4 | P2 | **Gateway-path step labels fail AA in both themes** — `.gpath-step` ordinals as muted-small text on tinted cards (axe: 6 serious nodes; visually confirmed in light and dark crops). The palette test asserts token-on-canvas pairs, not composed muted-on-tint use. |
+| DIS-5 | P2 | Fonts hotlinked from Google, no self-host — guaranteed FOUT on the load-bearing serif with `display=swap`, third-party runtime dependency, and two extra CSP hosts (= BRD-3/SUP-12; judged from source, not the font-blocked screenshots). |
+| DIS-6 | P2 | Heading levels skip on type/calculator/learn (axe heading-order) — the visual hierarchy is not carried in the document outline, on exactly the tall pages where an outline matters; a correct outline is also the prerequisite for DIS-1's generated TOC. |
+| DIS-7 | P3 | Signed-in Home centers multi-line body prose (4-line centered paragraphs), against every other reading surface and the reading-first doctrine; keep the H1 gesture, left-align the paragraphs. |
+| DIS-8 | P3 | The floating "Ask about this" launcher occludes bottom-edge content on mobile (overlaps the type page's chip rows and a lexicon card's figure); the calculator's `.main:has(.calc-dock)` padding pattern already solves this class of problem. |
+| DIS-9 | P3 | Masthead icon buttons are 38 px with 8 px gaps — above WCAG minimum, under the 44 px comfortable target — and per DIS-2 they are frequently the *entire* desktop nav. |
+| DIS-10 | P3 | Matrix: the sixteen-relations section stacks sixteen full-width cards in one column (~2,000 px of scroll, right half whitespace — a 2–3 column grid halves it); the grid's corner cell is an empty `<th>` (axe: empty-table-header). |
+| DIS-11 | P3 | The `.row` dt/dd-without-`dl` pattern, restated from the display side (semantics behind the visual; fix owned by P4-1). |
 
 ## 10 · Branding & visual identity — score 7.5/10
 
