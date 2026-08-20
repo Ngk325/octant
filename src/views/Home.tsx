@@ -157,7 +157,7 @@ export default function Home() {
         <Tile to="/bonds">
           <span aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: "var(--s2)", marginBottom: "var(--s3)" }}>
             <FnDisc fn="Ne" size={44} />
-            <svg width="26" height="16" viewBox="0 0 26 16" style={{ flex: "0 0 auto" }}>
+            <svg width="26" height="16" viewBox="0 0 26 16" aria-hidden="true" style={{ flex: "0 0 auto" }}>
               <line x1="2" y1="5" x2="21" y2="5" stroke="var(--ink-2)" strokeOpacity="0.55" strokeWidth="1.5" />
               <path d={arrowhead(24, 5, 1, 0, 5)} fill="var(--ink-2)" fillOpacity="0.55" />
               <line x1="5" y1="11" x2="24" y2="11" stroke="var(--ink-2)" strokeOpacity="0.55" strokeWidth="1.5" />
