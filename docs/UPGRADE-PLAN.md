@@ -159,6 +159,16 @@ Items P2-1…P2-9 are specified for direction A+.
 | P3-4 | **Home tiles join the plain-first doctrine.** Rewrite ~6 jargon blurbs or wrap in `Term`; extend the plain-layer jargon test to tile copy (COP-9) | P2 | S | A newcomer's first signed-in screen contains no undefined term-of-art | Extended `tests/plain.test.ts` covers Home tile strings |
 | P3-5 | **Vocabulary hygiene sweep.** "Blindspot"→"Blind spot" at source (delete the deck patch); "Hate" reconsidered or documented; "iNtuition"→"Intuition"; "Intraverted" documented in VOCABULARY or retired; superpower/kryptonite singular + documented (COP-11/12/13) | P3 | S | Every term on a shipped surface appears in VOCABULARY.md; SLOT_TAGS consistent with SLOT_NAMES | `grep Blindspot src/` → none; deck patch removed; VOCABULARY entries exist |
 
+**Display & navigation** (from REVIEW §9):
+
+| ID | Item | Sev | Eff | Acceptance criteria | Verification |
+|---|---|---|---|---|---|
+| P3-6 | **Sticky wayfinding on the tall pages.** Type/sides/lexicon/learn get an in-page nav that docks under the masthead once the top instance scrolls off (reuse the `.persp-bar` sticky pattern), with scroll-spy state and back-to-top (DIS-1) | P1 | M | On `/type/ENTP` at any scroll depth, the section nav is visible and marks the current section; same for lexicon filters | Scripted scroll probe at 25/50/75% depth shows the nav; screenshots in PR |
+| P3-7 | **Desktop nav must survive the chat rail.** Default the rail closed on first desktop visit (launcher invites it), or keep a compact tab set visible independent of rail state (DIS-2) | P1 | S–M | A first-run 1440 px visitor sees horizontal navigation without opening the hamburger | Fresh-profile screenshot at 1440/1536 px shows tabs |
+| P3-8 | **Fix the masthead two-row band.** Tabs need ~1430 px but collapse only below 1239 px container width; at 1300–1500 px the masthead is 111 px against a 64 px token, hiding deep-linked anchors (DIS-3) | P1 | S | Masthead is one row at every viewport ≥ 640 px; deep-linked section headings land fully visible | Viewport sweep 1240–1600 px: `mastheadHeight === 64`; anchor probe lands heading below masthead; extend `tests/styles.test.ts` to assert the collapse threshold ≥ the tab row's measured width |
+| P3-9 | Left-align Home's multi-line explanatory prose (keep the centered H1 gesture) (DIS-7) | P3 | S | No multi-line paragraph on Home is centered | Visual diff |
+| P3-10 | Reserve bottom padding for the floating launcher (the `.main:has(.calc-dock)` pattern) so it stops occluding chips/figures on mobile (DIS-8) | P3 | S | Launcher never overlaps interactive or figure content at 390 px | Mobile screenshots of type + lexicon bottoms |
+
 *Flow items from the pending flow audit will extend this phase.* [PENDING-FLOW]
 
 ## P4 — Depth & polish
