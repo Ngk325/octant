@@ -153,7 +153,7 @@ ${siteHeader(false)}
       <p style="margin-top:32px">
         Sixteen patterns generate 256 ordered pairs, and the structure is derived at runtime
         rather than stored &mdash; there is no matrix to drift out of sync. Alongside it come a
-        thirteen-stage course, a lexicon where every term is defined <em>and pairable</em>, a
+        fifteen-stage course, a lexicon where every term is defined <em>and pairable</em>, a
         grounded assistant on every screen, and a printed 78-card deck generated from the same
         engine.
       </p>
