@@ -2,14 +2,14 @@ import { Link } from "react-router";
 import { TYPES, ease, type MbtiType } from "../engine/core";
 import type { Fn } from "../engine/data";
 import { usePublishContext } from "../chat/ChatContext";
-import { Panel, Tile } from "../components/Bits";
+import { Tile } from "../components/Bits";
 import { STAGES } from "../learn/curriculum";
 import TypeMolecule from "../components/glyphs/TypeMolecule";
 import FnDisc from "../components/glyphs/FnDisc";
 import FnIcon from "../components/glyphs/FnIcon";
 import ArchetypeSeal from "../components/glyphs/ArchetypeSeal";
 import SideDoor from "../components/glyphs/SideDoor";
-import DivergingEase from "../components/DivergingEase";
+import MutualLanding from "../components/MutualLanding";
 import TwoReadings from "../components/TwoReadings";
 import { person, arrowhead } from "../components/glyphs/geometry";
 
@@ -33,35 +33,39 @@ export default function Home() {
 
   return (
     <>
-      <h1 style={{ maxWidth: "16ch" }}>Read the wiring.</h1>
+      {/* The hero reads centred — a landing, not a document. Body copy keeps
+          its measure; it just stops hugging the left rail. */}
+      <div style={{ textAlign: "center" }}>
+        <h1 style={{ maxWidth: "16ch", marginInline: "auto" }}>Read the wiring.</h1>
 
-      <p className="lede">
-        People are not random. Most of what looks like personality is a running order — eight
-        habits of mind, sorted differently in each of us, meshing with each other in ways that are
-        predictable once you can see them. This is a tool for seeing them.
-      </p>
+        <p className="lede" style={{ marginInline: "auto" }}>
+          People are not random. Most of what looks like personality is a running order — eight
+          habits of mind, sorted differently in each of us, meshing with each other in ways that
+          are predictable once you can see them. This is a tool for seeing them.
+        </p>
 
-      {/* The eight habits themselves, before any prose earns them: the deck's
-          named discs, ripples breaking outward for e and inward for i. Each
-          family holds together, so a narrow screen wraps between families
-          rather than through one. */}
-      <div className="cluster" style={{ gap: "var(--s2) var(--s5)", margin: "var(--s5) 0" }}>
-        {FAMILIES.map(([out, inw]) => (
-          <span key={out} style={{ display: "flex", gap: "var(--s2)", flex: "0 0 auto" }}>
-            <FnDisc fn={out} size={46} />
-            <FnDisc fn={inw} size={46} />
-          </span>
-        ))}
+        {/* The eight habits themselves, before any prose earns them: the deck's
+            named discs, ripples breaking outward for e and inward for i. Each
+            family holds together, so a narrow screen wraps between families
+            rather than through one. */}
+        <div className="cluster" style={{ gap: "var(--s2) var(--s5)", margin: "var(--s6) 0", justifyContent: "center" }}>
+          {FAMILIES.map(([out, inw]) => (
+            <span key={out} style={{ display: "flex", gap: "var(--s2)", flex: "0 0 auto" }}>
+              <FnDisc fn={out} size={46} />
+              <FnDisc fn={inw} size={46} />
+            </span>
+          ))}
+        </div>
+
+        <p className="prose" style={{ marginInline: "auto" }}>
+          Everything here is <b>derived</b>. Sixteen wirings produce 256 relationships, both
+          directions of every one, four sides of every mind and a growth path for each — all
+          computed from the same small piece of structure rather than looked up in a table.
+          Nothing can quietly disagree with anything else.
+        </p>
       </div>
 
-      <p className="prose">
-        Everything here is <b>derived</b>. Sixteen wirings produce 256 relationships, both
-        directions of every one, four sides of every mind and a growth path for each — all
-        computed from the same small piece of structure rather than looked up in a table. Nothing
-        can quietly disagree with anything else.
-      </p>
-
-      <h2>Where to go</h2>
+      <h2 style={{ textAlign: "center" }}>Where to go</h2>
 
       {/* Navigation is TILES — the whole card is the link, and each card has
           exactly one heading. The first build had a muted eyebrow AND an h3
@@ -71,10 +75,10 @@ export default function Home() {
           The groups follow the deck's reading ladder (the frame card):
           one mind first — elements, seats, wirings, sides — then what
           happens between minds: camps, bonds, channels. */}
-      <p className="small muted" style={{ margin: "0 0 var(--s3)", letterSpacing: "0.04em" }}>
+      <p className="small muted" style={{ margin: "0 auto var(--s3)", letterSpacing: "0.04em", textAlign: "center" }}>
         WAYS IN
       </p>
-      <div className="grid g-auto">
+      <div className="grid g-auto" style={{ maxWidth: 880, marginInline: "auto" }}>
         <Tile to="/learn">
           <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
             <LadderGlyph />
@@ -111,10 +115,10 @@ export default function Home() {
         </Tile>
       </div>
 
-      <p className="small muted" style={{ margin: "var(--s5) 0 var(--s3)", letterSpacing: "0.04em" }}>
+      <p className="small muted" style={{ margin: "var(--s5) auto var(--s3)", letterSpacing: "0.04em", textAlign: "center" }}>
         ONE MIND
       </p>
-      <div className="grid g-auto">
+      <div className="grid g-auto" style={{ maxWidth: 880, marginInline: "auto" }}>
         <Tile to="/type/ENTP">
           <span aria-hidden="true" style={{ display: "block", marginBottom: "var(--s3)" }}>
             <TypeMolecule type="ENTP" size={40} />
@@ -150,10 +154,10 @@ export default function Home() {
         </Tile>
       </div>
 
-      <p className="small muted" style={{ margin: "var(--s5) 0 var(--s3)", letterSpacing: "0.04em" }}>
+      <p className="small muted" style={{ margin: "var(--s5) auto var(--s3)", letterSpacing: "0.04em", textAlign: "center" }}>
         THEN TWO, AND A ROOM
       </p>
-      <div className="grid g-auto">
+      <div className="grid g-auto" style={{ maxWidth: 880, marginInline: "auto" }}>
         <Tile to="/bonds">
           <span aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: "var(--s2)", marginBottom: "var(--s3)" }}>
             <FnDisc fn="Ne" size={44} />
@@ -196,36 +200,57 @@ export default function Home() {
         </Tile>
       </div>
 
-      <h2>Two things this app insists on</h2>
+      {/* ------------------------------------------------------------ *
+       * The two claims, taught rather than boxed: each gets an open,
+       * centred band — the figure first and full-width, one paragraph
+       * of language under it. No cards; the picture is the container.
+       * ------------------------------------------------------------ */}
+      <h2 style={{ textAlign: "center", marginTop: "var(--s8)" }}>Two things this app insists on</h2>
 
-      <div className="grid g2">
-        <Panel title="Ease runs both ways">
-          <DivergingEase
-            toward={ease(ea, eb)}
-            from={ease(eb, ea)}
-            labels={[`Ease for ${ea}`, `Ease for ${eb}`]}
-          />
-          <p className="small" style={{ marginTop: "var(--s3)" }}>
-            Four of the sixteen relations are asymmetric — a real pair, drawn above. A single
-            compatibility number would hide the single most useful fact about those pairs, so
-            every reading shows both directions and names the asymmetry when there is one.
-          </p>
-        </Panel>
-        <Panel title="Two readings, not blended">
-          {/* the reading grid's own minimum is wider than a phone; it scrolls
-              inside the panel rather than stretching the page */}
-          <div style={{ overflowX: "auto" }}>
-            <div style={{ minWidth: 440 }}>
-              <TwoReadings />
-            </div>
+      <section style={{ margin: "var(--s6) 0 var(--s8)" }}>
+        <p className="small muted" style={{ textAlign: "center", letterSpacing: "0.04em", margin: "0 auto var(--s4)" }}>
+          1 · EASE RUNS BOTH WAYS
+        </p>
+
+        {/* Wider than a phone by necessity — two whole stacks — so it pans
+            inside its own scroll region rather than stretching the page. */}
+        {/* biome-ignore lint/a11y/useSemanticElements: a scroll region is not a form group — fieldset has no place here. */}
+        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: the tabstop IS the point — it is how a keyboard pans the drawing. */}
+        <div style={{ overflowX: "auto" }} tabIndex={0} role="group" aria-label="Diagram: both directions of one meeting">
+          <div style={{ minWidth: 620, maxWidth: 760, marginInline: "auto" }}>
+            <MutualLanding a={ea} b={eb} />
           </div>
-          <p className="small" style={{ marginTop: "var(--s3)" }}>
-            The same stack supports two readings of where a person grows, and they mark a different
-            number of psychic parts. Where they diverge you get both, labelled — not an average that
-            quietly hides the disagreement.
-          </p>
-        </Panel>
-      </div>
+        </div>
+
+        <p style={{ maxWidth: "var(--measure)", marginInline: "auto", textAlign: "center", marginTop: "var(--s4)" }}>
+          When two people meet, each one&rsquo;s strongest tools <b>land somewhere specific</b> in
+          the other&rsquo;s stack — and the two landings are not mirror images. Above, a real
+          pair: where the arrows land high, the meeting is restful; where they land in the
+          shadow, it costs something. That is why {ea} and {eb} walk away from the same
+          conversation carrying different numbers — and why a single compatibility score would
+          be a fiction. Every reading in this app shows both directions.
+        </p>
+      </section>
+
+      <section style={{ margin: "0 0 var(--s7)" }}>
+        <p className="small muted" style={{ textAlign: "center", letterSpacing: "0.04em", margin: "0 auto var(--s4)" }}>
+          2 · TWO READINGS, NOT BLENDED
+        </p>
+
+        {/* biome-ignore lint/a11y/useSemanticElements: a scroll region is not a form group — fieldset has no place here. */}
+        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: the tabstop IS the point — it is how a keyboard pans the drawing. */}
+        <div style={{ overflowX: "auto" }} tabIndex={0} role="group" aria-label="Diagram: the two growth readings, disagreeing">
+          <div style={{ minWidth: 440, maxWidth: 560, marginInline: "auto" }}>
+            <TwoReadings />
+          </div>
+        </div>
+
+        <p style={{ maxWidth: "var(--measure)", marginInline: "auto", textAlign: "center", marginTop: "var(--s4)" }}>
+          The same stack supports two readings of where a person grows, and they mark a
+          different number of psychic parts. Where they diverge you get both, labelled — not an
+          average that quietly hides the disagreement.
+        </p>
+      </section>
 
       <p className="note" style={{ marginTop: "var(--s7)" }}>
         A lens, not a measurement. Typology describes how wiring tends to mesh. It does not
@@ -234,7 +259,7 @@ export default function Home() {
         you have met them.
       </p>
 
-      <p className="small muted">
+      <p className="small muted" style={{ textAlign: "center" }}>
         New here? <Link to="/welcome">Retake the two-minute orientation →</Link>
       </p>
     </>
