@@ -340,6 +340,10 @@ to finish, not restart. C is documented as viable (the doctrine survives any hue
 nothing in the audit argues for paying its cost. The plan's brand fork (UPGRADE-PLAN §Brand
 fork) shows exactly which items change under each direction.
 
+> **Decision (2026-08-20):** the owner reviewed this section and selected **A with the two
+> B-folds**, adding an explicit mandate for *more memorable designs, visuals, and
+> illustrations* — recorded, with what it re-weights, in UPGRADE-PLAN §P2-0.
+
 **Findings:** BRD-1 (P1) mark absent from the entire signed-in app; BRD-2 (P1) the mark
 reads generic and encodes nothing; BRD-3 (P1) type identity hotlinked from Google with no
 self-host — a single external point of failure for the whole brand (`index.html:11`,

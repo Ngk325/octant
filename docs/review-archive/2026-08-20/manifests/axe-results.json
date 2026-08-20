@@ -1,0 +1,188 @@
+[
+  {
+    "route": "/",
+    "slug": "home-signedout",
+    "auth": false,
+    "violations": []
+  },
+  {
+    "route": "/onramp",
+    "slug": "onramp",
+    "auth": false,
+    "violations": [
+      {
+        "id": "landmark-one-main",
+        "impact": "moderate",
+        "help": "Document should have one main landmark",
+        "nodes": [
+          "html"
+        ],
+        "count": 1
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "help": "All page content should be contained by landmarks",
+        "nodes": [
+          "h1",
+          "p"
+        ],
+        "count": 2
+      }
+    ]
+  },
+  {
+    "route": "/",
+    "slug": "home-app",
+    "auth": true,
+    "violations": []
+  },
+  {
+    "route": "/calculator",
+    "slug": "calculator",
+    "auth": true,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "help": "<dt> and <dd> elements must be contained by a <dl>",
+        "nodes": [
+          ".row:nth-child(2) > dt",
+          ".row:nth-child(2) > dd",
+          ".row:nth-child(3) > dt",
+          ".row:nth-child(3) > dd",
+          ".row:nth-child(4) > dt"
+        ],
+        "count": 10
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "help": "Heading levels should only increase by one",
+        "nodes": [
+          "section:nth-child(1) > h3"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  {
+    "route": "/type/ENTP",
+    "slug": "type-entp",
+    "auth": true,
+    "violations": [
+      {
+        "id": "aria-allowed-role",
+        "impact": "minor",
+        "help": "ARIA role should be appropriate for the element",
+        "nodes": [
+          "figure[aria-label=\"Strongest at the top.\"]",
+          "figure[aria-label=\"The best case: ISFJ.\"]"
+        ],
+        "count": 2
+      },
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          ".gpath-step:nth-child(1) > .muted.small",
+          ".gpath-step:nth-child(2) > .muted.small",
+          ".gpath-step:nth-child(3) > .muted.small",
+          ".gpath-step:nth-child(4) > .muted.small",
+          "li:nth-child(4) > div > div > .chip:nth-child(4)"
+        ],
+        "count": 6
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "help": "<dt> and <dd> elements must be contained by a <dl>",
+        "nodes": [
+          ".g2.grid:nth-child(15) > section:nth-child(2) > .stacked.row:nth-child(3) > dt",
+          ".g2.grid:nth-child(15) > section:nth-child(2) > .stacked.row:nth-child(3) > dd",
+          ".g2.grid:nth-child(15) > section:nth-child(2) > .stacked.row:nth-child(4) > dt",
+          ".g2.grid:nth-child(15) > section:nth-child(2) > .stacked.row:nth-child(4) > dd",
+          "section:nth-child(2) > .stacked.row:nth-child(5) > dt"
+        ],
+        "count": 84
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "help": "Heading levels should only increase by one",
+        "nodes": [
+          "div:nth-child(1) > div > h4"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  {
+    "route": "/matrix",
+    "slug": "matrix",
+    "auth": true,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "help": "<dt> and <dd> elements must be contained by a <dl>",
+        "nodes": [
+          ".row.stacked:nth-child(2) > dt",
+          ".row.stacked:nth-child(2) > dd",
+          ".row.stacked:nth-child(3) > dt",
+          ".row.stacked:nth-child(3) > dd",
+          ".row.stacked:nth-child(4) > dt"
+        ],
+        "count": 6
+      },
+      {
+        "id": "empty-table-header",
+        "impact": "minor",
+        "help": "Table header text should not be empty",
+        "nodes": [
+          "thead > tr > th:nth-child(1)"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  {
+    "route": "/learn/functions",
+    "slug": "learn-stage",
+    "auth": true,
+    "violations": [
+      {
+        "id": "aria-allowed-role",
+        "impact": "minor",
+        "help": "ARIA role should be appropriate for the element",
+        "nodes": [
+          "figure[role=\"group\"]"
+        ],
+        "count": 1
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "help": "<dt> and <dd> elements must be contained by a <dl>",
+        "nodes": [
+          "section:nth-child(1) > .row.stacked:nth-child(2) > dt",
+          "section:nth-child(1) > .row.stacked:nth-child(2) > dd",
+          "section:nth-child(1) > .row.stacked:nth-child(3) > dt",
+          "section:nth-child(1) > .row.stacked:nth-child(3) > dd",
+          "section:nth-child(1) > .row.stacked:nth-child(4) > dt"
+        ],
+        "count": 32
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "help": "Heading levels should only increase by one",
+        "nodes": [
+          "section:nth-child(1) > .card-title"
+        ],
+        "count": 1
+      }
+    ]
+  }
+]

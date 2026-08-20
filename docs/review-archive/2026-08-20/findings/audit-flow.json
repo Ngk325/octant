@@ -1,0 +1,138 @@
+{
+ "findings": [
+  {
+   "severity": "P1",
+   "title": "Onramp email gate promises \"your directional reading\" and delivers only a field-count + paywall",
+   "detail": "The public /onramp funnel is the newcomer's 'Take the two-minute read' path from the marketing home (marketing.ts:594). Its email step is titled \"See your directional reading.\" (onramp.ts:359) and trades the reading for an email. But the payoff step renders \"Your pattern is one of about N of the sixteen\" plus a $25/user\u00b7mo Stripe button and a 'Sign in' link (onramp.ts:384-392) \u2014 no direction, no type, no named coins, nothing that reads as 'your reading'. Only 2 of the 8 coins are ever asked (onramp.ts:162-192), so the honest narrowing is weak (I confirmed via curl: both coins answered \u2192 'about 4 of the sixteen'; one coin \u2192 'about 8'). The newcomer surrenders an email at the moment of promised payoff and receives a vague count and a price. That is where the acquisition funnel leaks.",
+   "evidence": "mkt-onramp-11-desktop-light.png (headline 'Your pattern is one of about 16 of the sixteen' + 'Start now \u2014 $25/user\u00b7mo' / 'Sign in'); src/worker/onramp.ts:359 (email step title) vs onramp.ts:384-392 (done payoff); curl /onramp?step=11&q0=Observer&q4=Sensing \u2192 'about 4 of the sixteen'.",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Make the payoff actually a directional read: name the two coin directions the visitor picked in plain language (e.g. 'You take in before you decide, and you trust connections over the concrete thing') before the paywall. Retitle the email step to match what step 11 shows, or move the reading in front of the email so the promised value is delivered, not gated-then-withheld."
+  },
+  {
+   "severity": "P1",
+   "title": "Home promises payers 'straight in'; /signin tells them to 'wait until they approve you' \u2014 and a codeless payer on this deployment cannot get in at all",
+   "detail": "The pricing card on the signed-out home says: \"Payment unlocks your account automatically \u2014 sign in with Google right after and you're straight in\" (marketing.ts:808-809). The Stripe webhook does preapprove the paid email (stripe.ts:141), so 'straight in' is true \u2014 but ONLY via Google, because preapproval is keyed to the Google-verified email. The /signin gate the payer then lands on says the opposite: \"If you sign in with Google you will wait until they approve you\" (auth.ts:459-461), and on this deployment renders NO Google button (Google not configured) \u2014 only an access-code field. So a self-serve payer who followed the home's instructions finds (a) copy that contradicts the promise and (b) no Google door at all, leaving a paid customer stuck at an owner-approval/access-code wall with no self-serve way through.",
+   "evidence": "home-signedout-desktop-light.png (pricing card 'sign in with Google right after and you're straight in'); signin-desktop-light.png (no Google button, only 'Access code'); src/worker/marketing.ts:808-809 vs src/worker/auth.ts:459-461; src/worker/stripe.ts:141 (preapprove keyed to email).",
+   "lenses": [
+    "newcomer",
+    "partner"
+   ],
+   "recommendation": "After Stripe success, route the payer to a page that reflects their preapproved state ('You're in \u2014 sign in to continue') rather than the generic wall, and reconcile the two copies. On any deployment where codes exist but Google is disabled, either hide the Google-dependent 'straight in' promise or ensure a code is auto-issued to payers \u2014 otherwise payment does not equal access."
+  },
+  {
+   "severity": "P1",
+   "title": "The final onboarding screen teaches 'both directions differ' with a pair whose two directions are identical (80 | 80)",
+   "detail": "Welcome step 8 \u2014 the climax that hands the newcomer Octant's core thesis (\"Compatibility runs in two directions,\" the marketing hero) \u2014 has the headline \"it almost never lands the same way for both people. How easy this feels depends on which direction you're asking about.\" The figure beneath it (DivergingEase for the hard-coded ENTP\u2194INFJ example, Welcome.tsx:83-92) shows 80 For INFJ | 80 For ENTP: identical numbers. ENTP\u2194INFJ is a symmetric relation \u2014 only 4 of 16 relations are asymmetric (core.ts:93-95) \u2014 so the app picked one of the twelve symmetric pairs to illustrate asymmetry. The newcomer's last, most-emphasized impression of the whole model is a demonstration that visibly refutes the claim it's making.",
+   "evidence": "welcome-8-desktop-light.png (headline about direction-dependence over a figure reading '80 | 80'); src/views/Welcome.tsx:83-92 (EXAMPLE=ENTP, PARTNER=INFJ; ease(a,b) & ease(b,a)); src/engine/core.ts:93-95 & 100-102 ('Symmetric for twelve of the sixteen').",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "Use one of the four asymmetric pairs for this screen so the two bars actually differ (the whole point of the beat). Or pick an example pair centrally and assert at build time that ease(a,b) !== ease(b,a) for the onboarding pair, so a future example swap can't silently reintroduce a symmetric one."
+  },
+  {
+   "severity": "P2",
+   "title": "Onramp result headline degrades to nonsense at the field-size boundaries ('16 of the sixteen', '0 of the sixteen')",
+   "detail": "The done/interstitial headline is templated as `one of about ${field.length} of the sixteen` (onramp.ts:222 and 384). When the two coins aren't answered (a shared/back/deep link, or the QA capture), field.length = 16 and it reads \"Your pattern is one of about 16 of the sixteen\" \u2014 a self-negating sentence that tells the reader nothing. With invalid coin values it prints \"about 0 of the sixteen\" (confirmed via curl). The captured screenshot of this step literally shows '16 of the sixteen', so this is the state a returning or link-shared visitor can land in.",
+   "evidence": "mkt-onramp-11-desktop-light.png (renders 'about 16 of the sixteen'); curl /onramp?step=11 (no coins) \u2192 '16 of the sixteen', invalid coins \u2192 '0 of the sixteen'; src/worker/onramp.ts:222,384.",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "Guard the template: if field.length is 16 (no narrowing) or 0 (bad input), show a sensible fallback ('We couldn't narrow it from that \u2014 answer both questions' / 'a first cut of the sixteen'), and never emit 'N of the sixteen' when N is 16 or 0."
+  },
+  {
+   "severity": "P2",
+   "title": "The type page's section nav is a one-time chip row, not sticky \u2014 a practitioner deep in a 16,864-px page can't jump sections or get back to top",
+   "detail": "The /type/:type reading is 16,864 px tall (nine h2 sections: seats, top four, bottom four, powers, sides, exchange overlay, growth, octagram, self-report). Its only in-page navigation is SectionNav \u2014 a plain inline chip row rendered once near the top (TypeReader.tsx:239; Section.tsx:29-36) with no sticky positioning and no 'back to top'. The masthead is sticky but only offers the global view tabs, not the current page's sections. So a reader ~10,000-14,000 px down in Growth or the Octagram has no way to jump to another section or return without manually scrolling the entire page back up. This is exactly where a practitioner loses the thread on the deepest surface in the app.",
+   "evidence": "type-entp-desktop-light.png (original 1440\u00d716864); src/components/Section.tsx:29-36 (non-sticky inline nav); src/views/TypeReader.tsx:239 (rendered once, top of page).",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Make the section nav a sticky/floating rail (or a compact 'on this page' dropdown pinned under the masthead) that stays available while scrolling, with the current section highlighted via scroll-spy and a persistent back-to-top control."
+  },
+  {
+   "severity": "P2",
+   "title": "Type page hands off to pairs only via chips buried ~14k px down, and never links to the group/network surface",
+   "detail": "The practitioner path type \u2192 pair \u2192 network depends on the type page pointing onward. Its only /pair links are the complements/catalysts/frictions chips (TypeReader.tsx:868-885 through the Links helper at 988) which live near the very bottom of the 16.8k-px page. There is no link to /network anywhere on the type page (grep confirms only /pair, /sides, and /type/octagram chips). A reader who finishes a type reading and wants 'how does this person sit in a team' has no on-page route to compose a group \u2014 they must fall back to the masthead tabs.",
+   "evidence": "src/views/TypeReader.tsx:868-885 (Links used for complements/catalysts/frictions), :988 (/pair link), no /network match in the file; type-entp-desktop-light.png (chips sit at the page foot).",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Add an explicit 'read this type with someone \u2192 / put them in a group \u2192' handoff row high on the type page (e.g. right under the header or after 'the right way in'), linking to /pair/:type/... and /network prefilled with this type."
+  },
+  {
+   "severity": "P2",
+   "title": "The pair page is a lateral dead-end: no link up to either person's full type, no link out to a group",
+   "detail": "The /pair/:a/:b reading only navigates to other pair readings \u2014 the two TypePickers and Swap swap the pairing (PairReader.tsx:59-62), and the 'How X sits with all sixteen' grid links to /pair/target/x (PairReader.tsx:240). There is no link to /type/:a or /type/:b (to read either person in full) and no link to /network. So from a pairing a practitioner can only move sideways to adjacent pairings; they cannot go 'up' to a full type read or 'out' to the group surface without the global nav.",
+   "evidence": "pair-enfp-istj-desktop-light.png ('How ENFP sits with all sixteen' grid); src/views/PairReader.tsx:59-62 (pickers \u2192 other pairs), :240 (grid \u2192 other pairs); no /type or /network link in the file.",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Make the two type chips in the pair header link to /type/:a and /type/:b, and add an 'add these two to a group \u2192' link to /network so the pair \u2192 network step in the practitioner journey is reachable from the pair itself."
+  },
+  {
+   "severity": "P2",
+   "title": "The 'You are here' pill in the course rail never scrolls into view \u2014 on stage 15 the rail still shows stages 1\u20135",
+   "detail": "The Learn course rail renders all 15 stage pills in a horizontal overflow-x:auto scroller (Learn.tsx:72-83; components.css:659-666) and marks the current one with .on \u2014 but nothing scrolls the active pill into view on navigation (no ref/scrollIntoView). So from about stage 6 onward the current pill is off-screen to the right and the rail always displays stages 1\u20135; on stage 15 the learner sees a rail that looks like it's parked at the beginning. The '.on' marker \u2014 the rail's whole purpose \u2014 is invisible, leaving only the small 'Stage 15 of 15' line and the prev/next buttons to orient the reader.",
+   "evidence": "learn-borrowed-wiring-desktop-light.png (stepper shows stages 1\u20135 while the label reads 'Stage 15 of 15'); src/views/Learn.tsx:72-83; src/styles/components.css:659-666 (overflow-x:auto, no scroll-into-view).",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "On stage change, scroll the active pill into view (ref + scrollIntoView with inline:'center'), or render a windowed rail centered on the current stage. At minimum add a filled progress bar so 'how far along am I' is legible without horizontal scrolling."
+  },
+  {
+   "severity": "P2",
+   "title": "At the calculator result \u2014 the moment a newcomer learns their type \u2014 the assistant's suggested questions are hard-coded ENTP/INFJ/INFP, not their type",
+   "detail": "suggestedPrompts() personalizes for the type, sides, pair, sides, guide and read contexts, but has no `calculator` case, so it falls through to `default:` which returns the generic set 'How is ENTP and INFJ romance interaction?', 'In what ways can ENTP support INFP growth?', etc. (context.ts:458 switch, default at ~524). On the calculator the chat rail already knows the computed type (header reads 'Reading: calculator \u00b7 ISTJ') and the closest fits \u2014 yet the offered next questions are about ENTP/INFJ/INFP, a different type, at the exact moment personalization matters most. (The two defaults are also internally inconsistent: ENTP+INFJ for romance but ENTP+INFP for growth.)",
+   "evidence": "flow-calc-after-8.png (header 'Reading: calculator \u00b7 ISTJ'; suggestions reference ENTP/INFJ/INFP); src/engine/context.ts:458 (switch), calculator not handled \u2192 default block with the ENTP/INFJ/INFP prompts.",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "Add a `calculator`/`read` case that substitutes the resolved type and its top closest fit (e.g. 'What does ISTJ look like doing well vs badly?', 'ISTJ vs ESTP \u2014 how do I tell them apart?'), reusing the CalcSummary already in context so the result page's follow-ups match what was just computed."
+  },
+  {
+   "severity": "P2",
+   "title": "Learn stage 1 front-loads the entire foundation into one ~3,600-px screen \u2014 a drop-off risk before the learner has any momentum",
+   "detail": "The course is otherwise paced well (plain-English first with 'the exact mechanics' toggles, a per-stage 'Before you move on' self-check, and clear prev/next). But stage 1 ('Eight habits of mind') packs the 8-function grid, a ternary-tree diagram, the Fi/Fe beam figure, an 8-item 'what each one sounds like' grid, and the self-check into a single ~3,600-px scroll (desktop) before the reader has invested anything \u2014 the heaviest cognitive load sits on the very first stage, against much shorter later stages (powers/quadras). Stage 1 correctly assumes no prior knowledge ('A function is one of your eight mental tools\u2026'), which is good; the risk is purely front-loaded length at the point of highest drop-off.",
+   "evidence": "learn-functions-desktop-light.png (original 1440\u00d73569; five stacked subsections + diagrams before the self-check); contrast learn-powers/learn-quadras (far shorter); learn-index-desktop-light.png ('15 stages, in order').",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Consider splitting stage 1's 'what each one sounds like' grid and the ternary-tree derivation into an optional expand, or moving the 8-item 'sounds like' catalogue to a later stage, so the first stage delivers one idea and a quick win before asking for a long scroll."
+  },
+  {
+   "severity": "P3",
+   "title": "The onboarding gate is replayed to returning users because it's remembered only in localStorage",
+   "detail": "Whether '/' shows Home or forces the 8-step /welcome is decided by a localStorage flag (App.tsx:182 reads ONBOARDING_DONE_KEY; Welcome.tsx:16,129 writes it). A user who clears storage, switches browser/device, or is in private mode is dropped back into the full 8-screen gate before reaching Home every time \u2014 even though they may be a returning signed-in user. The gate is skippable, so it's friction rather than a wall, but a paying practitioner re-hitting the intro on a new laptop is an avoidable speed bump.",
+   "evidence": "src/App.tsx:182 (readStored(ONBOARDING_DONE_KEY)==='1' ? Home : Navigate to /welcome); src/views/Welcome.tsx:16,128-131; manifest.json (route '/' finalUrl '/welcome' on first signed-in visit).",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Persist 'onboarding done' against the authenticated account (server/KV) rather than device localStorage, so the gate is shown once per person, not once per browser."
+  },
+  {
+   "severity": "P3",
+   "title": "The marketing-owned ENTP/INFP direction-swap also surfaces on the signed-in Home hub and the onramp default prompts",
+   "detail": "Cross-reference, not a re-file: the P0 owned by the marketing audit \u2014 the worked example whose ENTP/INFP directions are swapped vs the engine \u2014 is not confined to the marketing hero. The signed-in app Home reuses the same ENTP 34 / INFP 44 'ease runs both ways' example as its centerpiece proof (home-app-desktop-light.png, '1 \u00b7 EASE RUNS BOTH WAYS'), and the assistant's default suggested prompts hard-code 'ENTP support INFP growth' (context.ts default). So the swapped/again-inconsistent example is the first thing a newcomer sees inside the product too, widening the blast radius of that bug into the FLOW journeys.",
+   "evidence": "home-app-desktop-light.png (ENTP 34 / INFP 44 diagram as the app-home proof); src/engine/context.ts default prompts ('In what ways can ENTP support INFP growth?'); flagged P0 owned by the marketing audit.",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "When the marketing team fixes the ENTP/INFP direction swap, verify the same example on the signed-in Home ('two things this app insists on') and the default chat prompts, since they draw the identical pair and inherit the same error."
+  }
+ ],
+ "score": 6.5,
+ "scoreRationale": "On a 0\u201310 scale. The in-app practitioner and learner journeys are genuinely well-built \u2014 the calculator honors 'always narrows, never returns nothing' (I verified: after 8 answers it shows 'Your type ISTJ', '1 of 16 left', ranked closest fits, and a friction note even under contradiction, then a 'Read it \u2192' handoff), the /network surface hands off cleanly to both /pair and /type, the signed-in Home is a strong hub, and the 15-stage course is paced with plain-first copy, per-stage self-checks and prev/next. What drags the score down are real leaks concentrated at two seams: (1) the paid acquisition funnel \u2014 the onramp email gate over-promises a 'directional reading' and delivers a vague count + paywall, its headline degrades to 'N of the sixteen' nonsense, and the payer/sign-in path contradicts itself and can dead-end a codeless payer; and (2) navigation on the deepest surfaces \u2014 the 16.8k-px type page has no persistent section nav and buries/omits its onward links, the pair page dead-ends laterally, and the course rail's 'you are here' marker is invisible past stage 5. Plus one high-visibility correctness leak: the onboarding's final, thesis-defining screen illustrates asymmetry with a symmetric pair (80|80). None are P0 blockers (nothing is unreachable or crashes), but the funnel and type-page findings materially cost conversion and orientation.",
+ "strongestThing": "The practitioner core loop honors the product's central promise in the UI. The calculator's 'always narrows, never returns nothing' is real and visible: after eight either/or answers it resolves to a single type ('Your type ISTJ', '1 of 16 left \u00b7 4 of 4 deciding answered'), shows ranked 'Closest fits' as links, and \u2014 crucially \u2014 when a confirming coin disagrees it says so plainly ('You said Control; ISTJ is usually Movement. Not an error\u2026') instead of hiding it or returning nothing (flow-calc-after-8.png). That same both-directions honesty carries into /network, which computes hardest/easiest single directions and 'if you could add one person' suggestions and links each onward to /pair and /type (Network.tsx:119,130,207). The instrument-derived, no-dead-ends spine is the strongest thing here.",
+ "notes": "MANDATORY CAVEAT: Google Fonts is blocked by the sandbox, so every screenshot renders fallback fonts (Newsreader\u2192Georgia serif, Inter\u2192system sans, IBM Plex Mono\u2192monospace), NOT the real typefaces. I did not critique letterforms or font rendering, and none of my findings depend on type appearance. Also, full-page captures of pages with a sticky masthead show the masthead floating mid-image \u2014 a capture artifact, ignored.\n\nScope: I audited FLOW / end-to-end journeys only. I did not re-file findings owned by other audits, but referenced two where they bleed into journeys: the marketing hero ENTP/INFP direction swap (P0, marketing-owned \u2014 finding #12 notes it also appears on the signed-in Home hub and default chat prompts), and the known systemic issues (axe dt/dd, color-contrast on .gpath-step .muted.small, README '13 stages' vs 15 shipped, DESIGN-SYSTEM palette not matching palette.ts, Google-Fonts hotlink with no self-host). I confirmed 15 stages ship and are numbered 1\u201315 in the UI (learn-index), consistent with the 15-stage marketing copy but not the README's 'thirteen-stage'.\n\nJourney-by-journey leak summary:\n- NEWCOMER: leaks at the funnel/auth seam. /onramp asks 2 of 8 coins and its email step ('See your directional reading', onramp.ts:359) pays off with only a field count + $25 paywall (finding #1), with a headline that reads '16 of the sixteen' in the captured state (#4). The signed-out\u2192Sign-in path dead-ends a codeless newcomer (no Google button on this deployment) and the home's 'payment \u2192 straight in' promise contradicts /signin's 'wait until they approve you' (#2); Stripe does preapprove the paid email (stripe.ts:141) so the mechanism works via Google, but not on a code-only deployment. Inside the app the newcomer flow is good: welcome (8 well-paced, skippable screens with progress dots and an 'Enter Octant \u2192' / 'Skip intro' handoff) \u2192 Home \u2192 'Find your type \u2192' \u2192 calculator \u2192 first type read is clean \u2014 except the final welcome screen refutes its own asymmetry lesson (#3).\n- LEARNER: well-paced overall; the leak is orientation, not content \u2014 the progress rail never scrolls the active stage into view (#7), and stage 1 is a heavy first bite (#10). Prev/next and 'Stage N of 15' work; stage 1 assumes no prior knowledge; each stage earns the next via a 'Before you move on' check.\n- PRACTITIONER: the spine is strong (calculator and network hand off well and never return nothing), but the middle surfaces leak: the type page has no persistent nav on a 16.8k-px scroll and buries/omits onward links (#5, #6), and the pair page dead-ends laterally with no route up to /type or out to /network (#8). The chat's suggested questions also fail to personalize on the calculator result (#9).\n\n'Always narrows, never returns nothing' in the UI: HONORED on the calculator (single type + '1 of 16 left' + ranked closest fits + friction note) and on /network (always a reading + ranked 'add one person'). PARTIALLY UNDERMINED on /onramp, where the narrowing is real but presented as 'about N of the sixteen' that becomes '16 of the sixteen' (i.e. no narrowing shown) at the boundary the screenshot captured."
+}

@@ -1,0 +1,49 @@
+{
+  "pages": [
+    {
+      "route": "/ (signed-in, onboarded)",
+      "file": "home-app-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "title": "Octant — read the wiring",
+      "h1": "Read the wiring.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET",
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ]
+    },
+    {
+      "route": "/ (signed-in, onboarded)",
+      "file": "home-app-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "title": "Octant — read the wiring",
+      "h1": "Read the wiring.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/ (signed-in, onboarded)",
+      "file": "home-app-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "title": "Octant — read the wiring",
+      "h1": "Read the wiring.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/ (signed-in, onboarded)",
+      "file": "home-app-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "title": "Octant — read the wiring",
+      "h1": "Read the wiring.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    }
+  ]
+}

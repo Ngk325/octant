@@ -130,12 +130,31 @@ of not having this rule.
 
 ## P2 — Brand: decision, then execution
 
-**P2-0 (the decision).** The review presents three directions (REVIEW §10): **A · Sharpen
-the instrument** (refine; recommended), **B · Ink and element** (evolve), **C · New
-coordinates** (rebrand). The recommendation is **A with two B-folds** (true logotype +
-hardened mark; element hues promoted to the hero color roles). The owner picks; the fork
-table at the end of this file maps every item below to its fate under each direction.
-Items P2-1…P2-9 are specified for direction A+.
+**P2-0 — DECIDED 2026-08-20.** The owner reviewed the three directions (REVIEW §10) and
+selected **Direction A — "Sharpen the instrument" — with the two B-folds** (true logotype
++ hardened mark; element hues promoted to the hero color roles), adding one explicit
+mandate: *"more memorable designs, visuals, illustrations."* All other plan items were
+approved as written.
+
+**What the memorability mandate changes.** It does not renumber anything — IDs stay
+stable — but it re-weights the plan:
+
+- **The memorability track is first-class, not polish.** The illustration build-out
+  (P4-15…P4-25) plus the brand moments (P2-1 mark/logotype, P2-6 element-hue hero,
+  P1-2 og:image as a *designed* asset, P1-5 the deck shown) together form the
+  "memorability track" and may be pulled forward to run alongside P1 — they no longer
+  wait for phases 1–3 to finish. The six missing figures (P4-16…P4-21) are the biggest
+  single lever: they are the moments a visitor remembers and screenshots.
+- **The og:image (P1-2) is promoted from checkbox to flagship asset**: a designed render
+  of the product's most memorable figure (RelationLanding or the deck fan), not a logo on
+  a colored ground — it is the brand's face everywhere a link is pasted.
+- **P1-5 (show the deck) upgrades from "a rendered visual" to a hero-grade treatment** —
+  the 78-card deck is the single most distinctive, unfakeable asset the product owns.
+- Direction C's items in the fork table are retired; direction B's two folds are absorbed
+  into P2-1 and P2-6 as specified.
+
+The fork table at the end of this file is retained as the decision record; the A column
+is the plan of record.
 
 | ID | Item | Sev | Eff | Acceptance criteria | Verification |
 |---|---|---|---|---|---|
@@ -227,6 +246,10 @@ Items P2-1…P2-9 are specified for direction A+.
 ---
 
 ## The brand fork — what changes under A / B / C
+
+> **Decision record (2026-08-20):** the owner selected **A** with the two B-folds and the
+> memorability mandate (see P2-0). The A column below is the plan of record; B and C are
+> retained for reference only, in case the direction is ever revisited.
 
 | Item | A · Sharpen (recommended) | B · Ink and element | C · New coordinates |
 |---|---|---|---|
