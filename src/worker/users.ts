@@ -40,6 +40,31 @@ export interface KVNamespace {
  */
 export type UserStatus = "pending" | "approved" | "blocked";
 
+/**
+ * What somebody said about themselves when they asked for access.
+ *
+ * It lives on the User record rather than in a namespace of its own, unlike
+ * the chat logs or the onramp leads. Those are content that happens to be
+ * about a person; this is the evidence the owner decides on. Splitting it
+ * off would mean two reads on the one path that must stay cheap — the gate
+ * runs on every non-asset request — and a decision page that can load the
+ * person but not the reason.
+ *
+ * Every field is a string, including the choices: apply.ts writes the
+ * option's own label rather than a code, so the owner's email and the
+ * decision page read as English without a lookup table that could drift
+ * away from the form.
+ */
+export interface Application {
+  purpose: string;
+  context: string;
+  familiarity: string;
+  hoping: string;
+  /** Optional on the form — the only one that may be empty. */
+  found: string;
+  at: number;
+}
+
 export interface User {
   email: string;
   name: string;
@@ -50,7 +75,34 @@ export interface User {
   decidedAt?: number;
   /** True for OWNER_EMAIL. Cannot be blocked — see setStatus. */
   owner?: boolean;
+  /** What they told us when they applied. Absent until they do. */
+  application?: Application;
 }
+
+/**
+ * Applications did not exist before this. Anybody whose record predates it
+ * already joined under the old rules and is not sent back to fill in a form
+ * — the gate would otherwise ambush every existing reader on their next page
+ * load, which is not what "all NEW users are gated" asked for.
+ *
+ * A date, not a flag, because it needs no migration and no per-user
+ * bookkeeping: the record already knows when its person first arrived.
+ */
+export const APPLICATION_REQUIRED_FROM = Date.parse("2026-08-20T00:00:00Z");
+
+/**
+ * Whether this person still owes an application.
+ *
+ * The owner never does — they are approved on sight precisely because
+ * nobody exists yet to approve them, and a form standing between the owner
+ * and their own /admin page is a lockout waiting to happen.
+ *
+ * Note what this does NOT consult: status. Someone auto-approved by payment
+ * still answers the questions; they simply do not wait afterwards. That is
+ * the difference between skipping the queue and skipping the questions.
+ */
+export const needsApplication = (user: User): boolean =>
+  !user.application && !user.owner && user.firstSeen >= APPLICATION_REQUIRED_FROM;
 
 const KEY = (email: string) => `user:${normalise(email)}`;
 const PREAPPROVE_KEY = (email: string) => `preapproved:${normalise(email)}`;
@@ -164,6 +216,29 @@ export async function recordSignIn(
   await put(env, user);
   if (wasPreapproved) await clearPreapproval(env, email);
   return { user, isNew: true, wasPreapproved };
+}
+
+/**
+ * Store what somebody said when they applied.
+ *
+ * Goes through recordSignIn first rather than writing a record directly, so
+ * that one function stays the only place that decides a new arrival's
+ * starting status. That matters most for the two people who do not wait: the
+ * owner, and somebody the Stripe webhook already pre-approved. Both are
+ * approved on sight there, and both still answer the questions here.
+ *
+ * It also means a code holder — who has no record at all until this moment,
+ * because a code is stateless — gets one built by the same rules as everyone
+ * else, from the address they just typed.
+ */
+export async function recordApplication(
+  env: UserEnv, email: string, name: string, application: Application, now: number,
+): Promise<{ user: User; isNew: boolean; wasPreapproved: boolean } | null> {
+  if (!env.USERS) return null;
+  const { user, isNew, wasPreapproved } = await recordSignIn(env, email, name, now);
+  const next: User = { ...user, application };
+  await put(env, next);
+  return { user: next, isNew, wasPreapproved };
 }
 
 /**

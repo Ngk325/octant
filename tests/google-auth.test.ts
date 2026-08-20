@@ -4,7 +4,8 @@ import {
   type AuthEnv,
 } from "../src/worker/auth";
 import {
-  recordSignIn, setStatus, getUser, listUsers, normalise, isOwner, preapprove,
+  recordSignIn, recordApplication, setStatus, getUser, listUsers, normalise, isOwner,
+  preapprove, APPLICATION_REQUIRED_FROM,
   type KVNamespace, type User,
 } from "../src/worker/users";
 import { handleAdmin } from "../src/worker/admin";
@@ -73,6 +74,22 @@ const get = (path = "/", cookie?: string) =>
 /** The cookie a Google sign-in would have left behind. */
 const sessionFor = async (user: User) =>
   `octant_session=${await issueSession(user.name, "google", user.email, SECRET, NOW)}`;
+
+/**
+ * Put an application on somebody's record. Signing in is no longer the whole
+ * of asking for access — it makes a record, and the form is what turns that
+ * record into a request the owner can decide on.
+ */
+const applied = async (email: string) => {
+  await recordApplication(ENV, email, "Jane", {
+    purpose: "Read a team I'm part of",
+    context: "My team",
+    familiarity: "New to it",
+    hoping: "Stop guessing why two of my leads grate on each other.",
+    found: "",
+    at: NOW,
+  }, NOW);
+};
 
 describe("the user list", () => {
   it("starts a newcomer pending, and says they are new", async () => {
@@ -197,7 +214,7 @@ describe("the user list", () => {
 });
 
 describe("the gate, for a Google session", () => {
-  it("holds a pending person at the door — signed in, and shown nothing", async () => {
+  it("sends somebody who has not applied to the form, and nowhere else", async () => {
     const { user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
     const cookie = await sessionFor(user);
 
@@ -207,14 +224,41 @@ describe("the gate, for a Google session", () => {
     });
 
     const res = (await requireAuth(get("/type/ENTP", cookie), ENV, NOW))!;
+    expect(res.status).toBe(303);
+    expect(res.headers.get("location")).toBe("/apply");
+
+    // The one path they may reach, and it is the form.
+    expect(await requireAuth(get("/apply", cookie), ENV, NOW)).toBeNull();
+  });
+
+  it("holds them at the door once they HAVE applied — signed in, and shown nothing", async () => {
+    const { user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await applied("jane@example.com");
+    const cookie = await sessionFor(user);
+
+    const res = (await requireAuth(get("/type/ENTP", cookie), ENV, NOW))!;
     expect(res.status).toBe(403);
     const html = await res.text();
-    expect(html).toContain("Waiting for approval");
+    expect(html).toContain("Your request is in");
     expect(html).not.toContain("<script type=\"module\"");
+  });
+
+  /**
+   * Nobody who joined before the form existed is sent back to fill it in. The
+   * gate would otherwise ambush every existing reader on their next page load,
+   * which is not what "all NEW users are gated" asked for.
+   */
+  it("does not send an older account to the form", async () => {
+    const before = APPLICATION_REQUIRED_FROM - 86_400_000;
+    const { user } = await recordSignIn(ENV, "old@example.com", "Old Hand", before);
+    await setStatus(ENV, "old@example.com", "approved", before);
+    const cookie = `octant_session=${await issueSession(user.name, "google", user.email, SECRET, NOW)}`;
+    expect(await requireAuth(get("/type/ENTP", cookie), ENV, NOW)).toBeNull();
   });
 
   it("lets them in once approved", async () => {
     const { user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await applied("jane@example.com");
     const cookie = await sessionFor(user);
     await setStatus(ENV, "jane@example.com", "approved", NOW);
     expect(await requireAuth(get("/type/ENTP", cookie), ENV, NOW)).toBeNull();
@@ -227,6 +271,7 @@ describe("the gate, for a Google session", () => {
    */
   it("shuts an approved person out again the moment they are blocked", async () => {
     const { user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    await applied("jane@example.com");
     const cookie = await sessionFor(user);
     await setStatus(ENV, "jane@example.com", "approved", NOW);
     expect(await requireAuth(get("/", cookie), ENV, NOW)).toBeNull();
@@ -237,12 +282,28 @@ describe("the gate, for a Google session", () => {
     expect(await res.text()).toContain("No access");
   });
 
-  it("gives the app's own fetches JSON, not a page", async () => {
+  it("gives the app's own fetches JSON, not a page — a redirect to a form would be unparseable", async () => {
     const { user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
     const cookie = await sessionFor(user);
-    const res = (await requireAuth(get("/api/chat", cookie), ENV, NOW))!;
+
+    const unapplied = (await requireAuth(get("/api/chat", cookie), ENV, NOW))!;
+    expect(unapplied.status).toBe(403);
+    expect(await unapplied.json()).toEqual({ error: "Application required." });
+
+    await applied("jane@example.com");
+    const waiting = (await requireAuth(get("/api/chat", cookie), ENV, NOW))!;
+    expect(waiting.status).toBe(403);
+    expect(await waiting.json()).toEqual({ error: "Waiting for approval." });
+  });
+
+  /** A deliberate no is not a thing to talk your way out of by answering again. */
+  it("keeps a blocked person away from the application form too", async () => {
+    const { user } = await recordSignIn(ENV, "jane@example.com", "Jane", NOW);
+    const cookie = await sessionFor(user);
+    await setStatus(ENV, "jane@example.com", "blocked", NOW);
+    const res = (await requireAuth(get("/apply", cookie), ENV, NOW))!;
     expect(res.status).toBe(403);
-    expect(await res.json()).toEqual({ error: "Waiting for approval." });
+    expect(await res.text()).toContain("No access");
   });
 
   it("refuses a session whose user has been deleted entirely", async () => {

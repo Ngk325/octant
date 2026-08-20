@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import worker from "../../src/worker/index";
 import type { Env } from "../../src/worker/index";
 import { issueSession } from "../../src/worker/auth";
+import { recordApplication, setStatus } from "../../src/worker/users";
 import { stack } from "../../src/engine/core";
 import { TYPES } from "../../src/engine/data";
 
@@ -77,11 +78,32 @@ describe("the export is gated", () => {
   });
 
   it("accepts a signed-in session on this origin, without any token", async () => {
-    const token = await issueSession("tester", "code", undefined, CONFIGURED.AUTH_SECRET!, Date.now());
+    /* An APPROVED session, which since the application form is a different
+       thing from merely a valid one: a signed-in person who still owes an
+       application is held at the form, and that has to hold on this route
+       too or the export would be the way around it. */
+    const email = `exporter-${Math.floor(Math.random() * 1e9)}@example.test`;
+    const now = Date.now();
+    await recordApplication(CONFIGURED, email, "Tester", {
+      purpose: "Figure myself out", context: "Just me", familiarity: "New to it",
+      hoping: "Read my own stack.", found: "", at: now,
+    }, now);
+    await setStatus(CONFIGURED, email, "approved", now);
+
+    const token = await issueSession("tester", "google", email, CONFIGURED.AUTH_SECRET!, now);
     const res = await call("https://octant.test/api/export/stack/INTJ", {
       headers: { cookie: `octant_session=${token}` },
     });
     expect(res.status).toBe(200);
+  });
+
+  it("refuses a session that has not applied — the export is not a way around the form", async () => {
+    const token = await issueSession("tester", "code", undefined, CONFIGURED.AUTH_SECRET!, Date.now());
+    const res = await call("https://octant.test/api/export/stack/INTJ", {
+      headers: { cookie: `octant_session=${token}` },
+    });
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ error: "Application required." });
   });
 
   it("carries CORS headers on the refusal too, so the browser can read it", async () => {

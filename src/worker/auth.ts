@@ -1,6 +1,7 @@
 import { b64url, unb64url, sign, digest, sameDigest, signatureMatches } from "./crypto";
 import { escapeHtml } from "./html";
-import { getUser, isOwner, type UserEnv } from "./users";
+import { SHELL } from "./shell";
+import { getUser, isOwner, needsApplication, type UserEnv } from "./users";
 
 /* ------------------------------------------------------------------ *
  * THE ACCESS WALL
@@ -161,6 +162,15 @@ export interface Session {
    * two people read each other. This is the identity the label is not.
    */
   codeId?: string;
+  /**
+   * Issued-at, seconds. Present only on sessions minted since the
+   * application form existed (2026-08). Its ABSENCE is the signal: a code
+   * session with no `iat` was handed out under the old rules, and sending
+   * that person back to fill in a form mid-visit would be an ambush. They
+   * keep what they have; the session expires within thirty days and the
+   * next login goes through the form like everyone else's.
+   */
+  iat?: number;
   exp: number;
 }
 
@@ -169,8 +179,9 @@ export async function issueSession(
   label: string, kind: SessionKind, email: string | undefined, secret: string, now: number,
   codeId?: string,
 ): Promise<string> {
-  const exp = Math.floor(now / 1000) + SESSION_DAYS * 86_400;
-  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, c: codeId, e: exp }));
+  const iat = Math.floor(now / 1000);
+  const exp = iat + SESSION_DAYS * 86_400;
+  const payload = b64url(JSON.stringify({ l: label, k: kind, m: email, c: codeId, i: iat, e: exp }));
   return `${payload}.${await sign(payload, secret)}`;
 }
 
@@ -180,8 +191,8 @@ async function open(token: string, secret: string, now: number): Promise<Session
   const payload = token.slice(0, dot);
   if (!(await signatureMatches(token.slice(dot + 1), await sign(payload, secret)))) return null;
   try {
-    const { l, k, m, c, e } = JSON.parse(unb64url(payload)) as
-      { l?: string; k?: string; m?: string; c?: string; e?: number };
+    const { l, k, m, c, i, e } = JSON.parse(unb64url(payload)) as
+      { l?: string; k?: string; m?: string; c?: string; i?: number; e?: number };
     if (typeof e !== "number" || e * 1000 <= now) return null;
     return {
       label: typeof l === "string" ? l : "guest",
@@ -189,6 +200,7 @@ async function open(token: string, secret: string, now: number): Promise<Session
       kind: k === "google" ? "google" : "code",
       email: typeof m === "string" ? m : undefined,
       codeId: typeof c === "string" ? c : undefined,
+      iat: typeof i === "number" ? i : undefined,
       exp: e,
     };
   } catch {
@@ -346,19 +358,49 @@ export async function requireAuth(
       : page(gatePage(env, url.pathname + url.search), 401);
   }
 
-  // A code session is as good as its code, and that was checked at login.
-  if (session.kind === "code") return null;
-
-  // A Google session is only as good as the owner's current answer about it.
+  /* Assets skip the rest for both kinds of session. An asset is useless
+     without the shell, the shell IS checked, and checking here would cost a
+     KV read per chunk on every cold load for no security gained. */
   if (isAssetPath(url.pathname)) return null;
 
-  const user = session.email ? await getUser(env, session.email) : null;
-  if (user?.status === "approved") return null;
+  /* No user list means nowhere to record an application and nowhere to store
+     an approval, so a codes-only deployment keeps its old behaviour: the code
+     was the authorisation, and it was checked at login. Google sessions
+     cannot reach this line without USERS — googleAvailable() requires it. */
+  if (!env.USERS) return null;
 
-  const blocked = user?.status === "blocked";
+  /* A code session minted before the application form existed. See Session.iat:
+     these are grandfathered for the rest of their life rather than interrupted. */
+  if (session.kind === "code" && session.iat === undefined) return null;
+
+  const user = session.email ? await getUser(env, session.email) : null;
+
+  /* Blocked is checked first and applies everywhere, including to the
+     application form. A deliberate no is not a thing to talk your way out of
+     by answering questions again. */
+  if (user?.status === "blocked") {
+    return isApi ? json({ error: "Access withdrawn." }, 403) : page(blockedPage(), 403);
+  }
+
+  /* No record at all means a code holder who has never applied — a code is
+     stateless and carries no address, so until they fill in the form there is
+     nobody here to approve. Everyone else has a record from recordSignIn. */
+  if (!user || needsApplication(user)) {
+    /* "/apply" is hardcoded rather than imported: this file must let an
+       unapplied session reach exactly one path, and importing that path from
+       apply.ts would make the wall depend on the page it holds people at.
+       tests/apply.test.ts pins that the two strings agree. */
+    if (url.pathname === "/apply") return null;
+    return isApi
+      ? json({ error: "Application required." }, 403)
+      : new Response(null, { status: 303, headers: { location: "/apply", "cache-control": "no-store" } });
+  }
+
+  if (user.status === "approved") return null;
+
   return isApi
-    ? json({ error: blocked ? "Access withdrawn." : "Waiting for approval." }, 403)
-    : page(blocked ? blockedPage() : pendingPage(session.email ?? ""), 403);
+    ? json({ error: "Waiting for approval." }, 403)
+    : page(pendingPage(session.email ?? user.email), 403);
 }
 
 const page = (html: string, status: number) =>
@@ -390,48 +432,8 @@ export function signinPage(env: AuthEnv, returnTo = "/"): Response {
 /* Written inline and self-contained, because the static assets are behind
    this wall too — the gate cannot load a stylesheet it is protecting. */
 
-const SHELL = (title: string, body: string) => `<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>${title}</title>
-<style>
-  :root { color-scheme: light dark; --paper:#FDFCFA; --ink:#241F19; --ink2:#4C463D;
-          --rule:#E3DED4; --accent:#4C4899; --on:#fff; --bad:#AA2A1E; --surface:#fff; }
-  @media (prefers-color-scheme: dark) {
-    :root { --paper:#141310; --ink:#EDE9E1; --ink2:#B6AFA3; --rule:#2E2A24;
-            --accent:#A8A6D3; --on:#241F19; --bad:#E87A68; --surface:#1D1B17; }
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px;
-         background:var(--paper); color:var(--ink);
-         font:400 19px/1.65 Georgia,"Times New Roman",serif; }
-  main { width:100%; max-width:29rem; }
-  h1 { font-size:34px; line-height:1.2; margin:0 0 8px; }
-  p { color:var(--ink2); margin:0 0 20px; }
-  form { display:flex; flex-direction:column; gap:12px; }
-  label { font:500 15px/1.4 system-ui,sans-serif; }
-  input { font:400 17px/1.4 ui-monospace,SFMono-Regular,monospace; padding:12px 14px;
-          border:1px solid var(--rule); border-radius:6px; background:var(--surface);
-          color:var(--ink); width:100%; }
-  input:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
-  button { font:500 17px/1 system-ui,sans-serif; padding:13px 18px; border:0;
-           border-radius:6px; background:var(--accent); color:var(--on); cursor:pointer; }
-  button[disabled] { opacity:.55; cursor:default; }
-  .msg { font:400 15px/1.5 system-ui,sans-serif; color:var(--bad); min-height:1.4em; margin:0; }
-  .fine { font:400 15px/1.6 system-ui,sans-serif; color:var(--ink2); margin-top:28px;
-          padding-top:20px; border-top:1px solid var(--rule); }
-  code { font:400 15px/1.5 ui-monospace,SFMono-Regular,monospace; background:var(--surface);
-         border:1px solid var(--rule); border-radius:4px; padding:1px 5px; }
-  .google { display:flex; align-items:center; justify-content:center; gap:10px;
-            background:var(--surface); color:var(--ink); border:1px solid var(--rule);
-            text-decoration:none; padding:13px 18px; border-radius:6px;
-            font:500 17px/1 system-ui,sans-serif; }
-  .or { display:flex; align-items:center; gap:12px; color:var(--ink2);
-        font:400 14px/1 system-ui,sans-serif; margin:22px 0; }
-  .or::before, .or::after { content:""; flex:1; height:1px; background:var(--rule); }
-  .mark { font-size:34px; line-height:1; margin-bottom:12px; }
-</style>
-</head><body><main>${body}</main></body></html>`;
+/* SHELL now lives in shell.ts — apply.ts serves the same surface and must not
+   carry a second copy of these rules. */
 
 const GOOGLE_MARK = `<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62Z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18Z"/><path fill="#FBBC05" d="M3.96 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.96a9 9 0 0 0 0 8.08l3-2.33Z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58Z"/></svg>`;
 
@@ -497,11 +499,11 @@ export const GATE_SCRIPT = `
 
 const pendingPage = (email: string) => SHELL("Octant — waiting for approval", `
   <div class="mark">◷</div>
-  <h1>Waiting for approval</h1>
-  <p>You are signed in${email ? ` as <b>${escapeHtml(email)}</b>` : ""}, and the owner has been
-  told you are here. Nothing opens until they say yes.</p>
-  <p>You can close this. Come back and reload once you hear from them — you will not have to
-  sign in again.</p>
+  <h1>Your request is in</h1>
+  <p>Your answers went to the owner${email ? `, along with <b>${escapeHtml(email)}</b>` : ""}, and
+  a person reads every one of them. Nothing opens until they say yes.</p>
+  <p>You can close this &mdash; the acknowledgement in your inbox says the same thing, and you
+  will hear either way. Come back and reload once you do; you will not have to sign in again.</p>
   <p class="fine">Signed in as the wrong account?
   <a href="/api/auth/google/start">Switch account</a>.</p>`);
 

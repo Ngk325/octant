@@ -112,15 +112,27 @@ describe("the wall, configured, in workerd", () => {
     expect(cookie).toContain("octant_session=");
     expect(cookie).toContain("HttpOnly");
 
+    /* A code no longer ends the journey. It opens the door as far as the
+       application form and no further: an invite carries no address, so
+       until they fill it in there is nobody here for the owner to approve,
+       write to, or revoke. */
+    const jar = cookie.split(";")[0];
     const res = await worker.fetch(
-      new Request("https://octant.test/pair/ENTP/ENFJ", {
-        headers: { cookie: cookie.split(";")[0] },
-      }),
+      new Request("https://octant.test/pair/ENTP/ENFJ", { headers: { cookie: jar } }),
       CONFIGURED,
       ctx(),
     );
-    expect(res.status).toBe(200);
-    expect(await res.text()).toBe("APP-SHELL");
+    expect(res.status).toBe(303);
+    expect(res.headers.get("location")).toBe("/apply");
+    expect(await res.text()).not.toContain("APP-SHELL");
+
+    const form = await worker.fetch(
+      new Request("https://octant.test/apply", { headers: { cookie: jar } }),
+      CONFIGURED,
+      ctx(),
+    );
+    expect(form.status).toBe(200);
+    expect(await form.text()).toContain("Ask for access");
   });
 
   it("rejects a forged cookie under real crypto.subtle", async () => {

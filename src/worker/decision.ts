@@ -32,13 +32,25 @@ export interface DecisionPageOptions {
   status?: number;
   /** Where to go next. Defaults to the admin list. */
   footer?: { href: string; label: string };
+  /**
+   * Label/value pairs shown above the buttons, ESCAPED here. This exists so
+   * that showing somebody an application does not mean building markup out of
+   * what that person typed and passing it through `extra` — which would work,
+   * and would be one careless call site away from running their text on the
+   * owner's origin, on the page the owner uses to decide whether to trust
+   * them. Empty values are dropped rather than rendered blank.
+   */
+  details?: [label: string, value: string][];
 }
 
 export function decisionPage(
   title: string, body: string, ok: boolean, opts: DecisionPageOptions = {},
 ): Response {
-  const { extra = "", status = ok ? 200 : 400, footer } = opts;
+  const { extra = "", status = ok ? 200 : 400, footer, details } = opts;
   const link = footer ?? { href: "/admin", label: "Manage everyone →" };
+  const rows = (details ?? []).filter(([, value]) => value).map(([label, value]) => `
+    <div class="row"><div class="k">${escapeHtml(label)}</div><div class="v">${escapeHtml(value)}</div></div>`).join("");
+  const detailBlock = rows ? `<div class="details">${rows}</div>` : "";
   return new Response(
     `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -56,9 +68,15 @@ export function decisionPage(
          cursor:pointer;background:var(--accent);color:var(--on)}
   button.no{background:var(--surface);color:var(--bad);border:1px solid var(--rule)}
   .mark{font-size:34px;line-height:1;margin-bottom:12px}
+  .details{border:1px solid var(--rule);border-radius:8px;padding:4px 16px;margin:20px 0 0;
+           text-align:left;font:400 16px/1.55 system-ui,sans-serif}
+  .row{padding:10px 0;border-bottom:1px solid var(--rule)}
+  .row:last-child{border-bottom:0}
+  .k{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
+  .v{color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
 </style></head><body><main>
 <div class="mark">${ok ? "✓" : "—"}</div>
-<h1>${escapeHtml(title)}</h1><p>${escapeHtml(body)}</p>${extra}
+<h1>${escapeHtml(title)}</h1><p>${escapeHtml(body)}</p>${detailBlock}${extra}
 <p style="margin-top:24px"><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></p>
 </main></body></html>`,
     { status, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } },

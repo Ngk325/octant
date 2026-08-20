@@ -1,7 +1,7 @@
 import { unseal } from "./crypto";
 import { decisionPage } from "./decision";
 import { escapeHtml } from "./html";
-import { getUser, listUsers, setStatus, type UserEnv, type UserStatus } from "./users";
+import { getUser, listUsers, setStatus, type User, type UserEnv, type UserStatus } from "./users";
 import type { ActionPayload } from "./notify";
 
 /* ------------------------------------------------------------------ *
@@ -79,7 +79,8 @@ export async function handleAdmin(
     const subject = await getUser(env, payload.email);
     if (!subject) return page("Nobody by that name", "That person is not on the list any more.", false);
 
-    /* GET: show, do not decide. See the note at the top of this file. */
+    /* GET: show, do not decide. See the note at the top of this file — and
+       show what they SAID, which is the thing the decision is actually about. */
     if (request.method !== "POST") {
       return page(
         payload.action === "approve" ? "Let them in?" : "Block them?",
@@ -89,6 +90,7 @@ export async function handleAdmin(
         false,
         confirmForm(token, payload.action),
         200,
+        applicationDetails(subject),
       );
     }
 
@@ -145,5 +147,26 @@ const confirmForm = (token: string, action: "approve" | "block") => `
 </form>`;
 
 /** The shared one-tap decision page (decision.ts), with this file's footer link. */
-const page = (title: string, body: string, ok: boolean, extra = "", status = ok ? 200 : 400) =>
-  decisionPage(title, body, ok, { extra, status });
+const page = (
+  title: string, body: string, ok: boolean, extra = "", status = ok ? 200 : 400,
+  details?: [string, string][],
+) => decisionPage(title, body, ok, { extra, status, details });
+
+/**
+ * What the applicant said, for the confirm page. Passed as `details` rather
+ * than folded into `extra`: every value here was typed by the person being
+ * judged, and decision.ts escapes `details` while `extra` is trusted.
+ *
+ * A record with no application is one that predates the form. Saying so beats
+ * an empty panel that reads like they refused to answer.
+ */
+const applicationDetails = (user: User): [string, string][] =>
+  user.application
+    ? [
+        ["What brought them", user.application.purpose],
+        ["Who it is for", user.application.context],
+        ["Familiarity", user.application.familiarity],
+        ["Hoping it does", user.application.hoping],
+        ["Found us via", user.application.found],
+      ]
+    : [["Application", "None on file — this account predates the form."]];
