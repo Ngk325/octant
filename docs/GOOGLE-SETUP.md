@@ -145,13 +145,26 @@ does not fail open.
 ## How it behaves once set up
 
 1. Someone opens the site and clicks **Continue with Google**.
-2. They sign in and land on a *waiting for approval* page. They see nothing
-   else — no app shell, no assets, no API.
-3. You get an email: who it is, when, and two buttons, **Approve** and **Deny**.
-   The buttons are signed links that expire in seven days, so you can approve
-   from your phone without signing in.
-4. Approved, they get in. Denied or later disabled, they are back to the waiting
+2. They sign in and land on **/apply** — five questions about what they are
+   here for. They see nothing else: no app shell, no assets, no API, and no
+   other path. Signing in alone reaches nothing.
+3. They submit, get an acknowledgement by email, and land on a *waiting* page
+   they can safely close.
+4. You get an email: who it is, **what they said**, and two buttons, **Approve**
+   and **Deny**. The buttons are signed links that expire in seven days, so you
+   can decide from your phone without signing in — and opening one shows you
+   their answers again before you commit, because opening a link is not
+   deciding (mail scanners fetch every URL in an inbox).
+5. Approved, they get in. Denied or later disabled, they are back to the refusal
    page on their next page load.
+
+Two things worth knowing about who this applies to. An **invite code** now
+opens the door only as far as the form — a code carries no address, so /apply
+is where a code holder becomes somebody you can name, write to or revoke.
+Somebody who **paid** answers the questions too, but is not made to wait:
+their account is already open, and your email is an FYI with a revoke link
+rather than a decision. Nobody who joined before the form existed is sent back
+to fill it in.
 
 You can also do all of this from **/admin**, which only your `OWNER_EMAIL`
 account can open.

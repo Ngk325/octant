@@ -73,10 +73,22 @@ bundle.
 | `GEMINI_API_KEY` | for the assistant | Powers `/api/chat`. Everything else works without it. |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | for Google sign-in | Without both, the Google button does not render and codes are the only way in. Setup: `docs/GOOGLE-SETUP.md`. |
 | `OWNER_EMAIL` | for approval + /admin | The auto-approved account and the only one `/admin` opens for. |
-| `RESEND_API_KEY` | for email | Sign-up notifications, chat transcripts, onramp lead nurture, and the partner rate card. Without it, sign-ups and enquiries still record; nothing mails. |
-| `NOTIFY_FROM` | for owner mail: in practice yes; for onramp lead mail and the partner rate card: yes, hard requirement | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address, so it can't reach a captured lead's inbox — lead/nurture mail refuses to send without `NOTIFY_FROM` rather than silently no-op through it. See `docs/GOOGLE-SETUP.md`. |
+| `RESEND_API_KEY` | for email | Access applications (both halves: the applicant's acknowledgement and your decision email), chat transcripts, onramp lead nurture, and the partner rate card. Without it, applications still record; nothing mails. |
+| `NOTIFY_FROM` | for owner mail: in practice yes; for applicant acknowledgements, onramp lead mail and the partner rate card: yes, hard requirement | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address, so it can't reach a captured lead's inbox — lead/nurture mail refuses to send without `NOTIFY_FROM` rather than silently no-op through it. See `docs/GOOGLE-SETUP.md`. |
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
 | `STRIPE_WEBHOOK_SECRET` | for payment auto-approval | Verifies `POST /api/stripe/webhook` actually came from Stripe (`whsec_...`, from the webhook endpoint's settings in the Stripe dashboard — not the account's API key; no Stripe SDK or API key is used anywhere in this app). Without it, the endpoint 503s and payment stays manual — the customer signs in, lands `pending`, and the owner approves them the existing way. |
+
+**Access is applied for, not just requested.** A new arrival — by Google, by
+invite code, or by payment — lands on `/apply` and answers five questions
+before reaching anything. They get an acknowledgement; you get their answers
+with one-tap Approve/Deny links, and the confirm page shows the answers again
+before you commit. A payer is not made to wait (their account is already open,
+so your email is an FYI with a revoke link), and nobody whose account predates
+the form is sent back to fill it in — see `APPLICATION_REQUIRED_FROM` in
+`src/worker/users.ts` and the session `iat` in `src/worker/auth.ts` for the two
+halves of that promise. To change the questions, edit `QUESTIONS` in
+`src/worker/apply.ts`; the owner's email and the decision page read their
+labels from the same array.
 
 **The partner rate card goes out only when you say so.** The enquiry form on
 `/partners` records the request, acknowledges the enquirer and emails you what

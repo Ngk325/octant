@@ -15,7 +15,8 @@ import {
   endSession, sweepIdle, refreshTrendingTags, validThreadId, listThreads, getThreadFor, type ChatWho,
 } from "./chatlog";
 import { recordSignIn, isOwner, getUser } from "./users";
-import { notifyOwnerOfSignup, notifyOwnerOfApprovedSignup, type NotifyEnv } from "./notify";
+import { handleApply, type ApplyEnv } from "./apply";
+import type { NotifyEnv } from "./notify";
 import { withSecurityHeaders } from "./headers";
 import { handleRead } from "./read";
 import { handleOnramp, type OnrampEnv } from "./onramp";
@@ -44,7 +45,7 @@ import {
  */
 export interface Env
   extends ChatEnv, AuthEnv, GoogleEnv, AdminEnv, NotifyEnv, OnrampEnv, StripeEnv, ExportEnv,
-    PartnerEnquiryEnv {
+    PartnerEnquiryEnv, ApplyEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
   /**
    * Absolute origin used to build the unsubscribe link in cron-driven
@@ -95,7 +96,7 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
 
   // 1. Google's two routes, public by necessity — this is how you get a session.
   if (url.pathname.startsWith("/api/auth/google/")) {
-    return handleGoogle(request, env, url, now, ctx);
+    return handleGoogle(request, env, url, now);
   }
 
   // 2. The code login, logout and "who am I". Also public by necessity.
@@ -212,6 +213,13 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
     return blocked;
   }
 
+  // 5a. The application. Past the wall, ahead of approval: requireAuth lets a
+  //     signed-in person who still owes an application reach this one path and
+  //     nothing else, so a `pending` visitor can answer without being able to
+  //     touch anything. A blocked one still cannot reach it at all.
+  const apply = await handleApply(request, env, url, now, ctx);
+  if (apply) return apply;
+
   // 6. Past the wall. The rest of /api/admin needs to be the owner.
   if (url.pathname.startsWith("/api/admin/")) {
     const session = await readSession(request, env, now);
@@ -308,7 +316,7 @@ async function route(request: Request, env: Env, url: URL, ctx?: Ctx): Promise<R
  * they checked whether they had been let in.
  */
 async function handleGoogle(
-  request: Request, env: Env, url: URL, now: number, ctx?: Ctx,
+  request: Request, env: Env, url: URL, now: number,
 ): Promise<Response> {
   if (!googleConfigured(env) || !env.USERS) {
     return new Response(JSON.stringify({ error: "Google sign-in is not configured." }), {
@@ -334,34 +342,17 @@ async function handleGoogle(
   const result = await completeGoogleSignIn(request, env, now);
   if (!result.ok) return signInProblem(result.error);
 
-  const { user, isNew, wasPreapproved } =
-    await recordSignIn(env, result.identity.email, result.identity.name, now);
+  const { user } = await recordSignIn(env, result.identity.email, result.identity.name, now);
 
-  /* The email is best-effort and must never fail the sign-in — neither notify
-     function ever throws, so neither branch below can.
+  /* No email here any more. The owner used to be told at this exact moment,
+     which meant an alert carrying a Google display name and an address and
+     nothing else — not enough to decide anything, and nothing further arrived
+     when the person went on to explain themselves. The alert now fires when
+     they APPLY (apply.ts), which is the moment there is something to read.
 
-     waitUntil lives on the ExecutionContext, the THIRD argument to fetch. It was
-     previously read off the Request, where it does not exist: the check was always
-     false, the send was never registered, and the runtime was free to cancel it the
-     moment the redirect went out. The owner could silently never be told anyone had
-     signed up — the one failure mode this whole feature exists to prevent.
-
-     Without a context (a direct call in a test), await instead. Fire-and-forget was
-     the other half of the bug: an unawaited promise in a Worker is not a background
-     task, it is a promise nobody is keeping alive.
-
-     A preapproved (already-paid) signup gets the FYI version — no approve link,
-     since there is nothing left to approve. `wasPreapproved` can fire on a
-     RETURNING sign-in too (someone who signed in before paying, then paid,
-     then signs in again) — `isNew` alone would miss that transition and the
-     owner would never learn a pending account just paid and unlocked. */
-  if ((isNew || wasPreapproved) && !user.owner) {
-    const send = wasPreapproved
-      ? notifyOwnerOfApprovedSignup(env, url.origin, user, now)
-      : notifyOwnerOfSignup(env, url.origin, user, now);
-    if (typeof ctx?.waitUntil === "function") ctx.waitUntil(send);
-    else await send;
-  }
+     A visitor who signs in and never finishes the form is therefore silent.
+     That is deliberate: they did not ask for anything, /admin still lists
+     them, and the owner's inbox is not the place to learn about bounces. */
 
   const token = await issueSession(user.name, "google", user.email, env.AUTH_SECRET!, now);
   return new Response(null, {
