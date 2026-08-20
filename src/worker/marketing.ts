@@ -41,6 +41,41 @@ export const STRIPE_LINK = "https://buy.stripe.com/6oU7sM4Tnd4PdyU1nocfK00";
 const BUSINESS_MAILTO =
   "mailto:nick@stratfieldpartners.com?subject=Octant%20for%20our%20team";
 
+/* ------------------------------------------------------------------ *
+ * The deck's one mark, restated for this self-contained page: a
+ * two-letter element code in a filled disc, four ripples on the
+ * diagonals with crests breaking outward for e and inward for i.
+ * Verbatim geometry from the print deck and the app's FnDisc; the hues
+ * come from the --m-* element variables so both themes hold.
+ * ------------------------------------------------------------------ */
+function disc(fn: string, size: number): string {
+  const out = fn[1] === "e";
+  const R = 15, C = 22.5;
+  const arcR = out ? R * 1.22 : R * 1.3;
+  const span = out ? 0.42 : 0.4;
+  const tipR = out ? R * 1.5 : R * 1.04;
+  const hue = `var(--m-${fn.toLowerCase()})`;
+  const P = (r: number, a: number) => `${(C + r * Math.cos(a)).toFixed(1)} ${(C + r * Math.sin(a)).toFixed(1)}`;
+  let ripples = "";
+  for (let k = 0; k < 4; k++) {
+    const a = Math.PI / 4 + (k * Math.PI) / 2;
+    ripples += `<path d="M ${P(arcR, a - span)} A ${arcR.toFixed(1)} ${arcR.toFixed(1)} 0 0 1 ${P(arcR, a + span)}" stroke="${hue}" stroke-width="1.3" stroke-opacity=".45" fill="none" stroke-linecap="round"/>`;
+    ripples += `<path d="M ${P(arcR, a - 0.13)} L ${P(tipR, a)} L ${P(arcR, a + 0.13)} Z" fill="${hue}" fill-opacity=".55"/>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 45 45" aria-hidden="true">${ripples}
+  <circle cx="22.5" cy="22.5" r="15" fill="${hue}"/>
+  <text x="22.5" y="23.2" text-anchor="middle" dominant-baseline="central" font-family="Inter,system-ui,sans-serif" font-size="14.6" font-weight="700" fill="var(--m-paper)">${fn}</text></svg>`;
+}
+
+/** The alphabet band: eight named discs in their four families, one caption. */
+const ALPHABET = `
+<div class="alphabet" role="img" aria-label="The eight elements in their four families: Ne and Ni, Se and Si, Te and Ti, Fe and Fi — indigo intuition, sienna sensing, verdigris thinking, madder feeling. Ripples break outward on the e forms and inward on the i forms.">
+  ${(["NeNi", "SeSi", "TeTi", "FeFi"] as const)
+    .map((fam) => `<span class="fam">${disc(fam.slice(0, 2), 44)}${disc(fam.slice(2), 44)}</span>`)
+    .join("\n  ")}
+</div>
+<p class="alphabet-cap">The eight elements every reading is spelled in &mdash; indigo N, sienna S, verdigris T, madder F &middot; ripples break out for e, in for i.</p>`;
+
 /** The two-stacks-with-arrows hero drawing — the product's core idea, inline. */
 
 /* ------------------------------------------------------------------ *
@@ -86,15 +121,17 @@ const GLYPH_PAIR = `
   ${gPerson(74, 24, 5.8, "var(--m-ink)", 3.6)}
 </svg>`;
 
-/** Four beads sized by rank, crossed bonds — one mind as a molecule. */
+/** Four beads sized by rank, crossed bonds — one mind as a molecule. The
+ * beads carry a real stack's own element hues (ENTP: Ne, Ti, Fe, Si), the
+ * same convention every molecule in the app draws with. */
 const GLYPH_SELF = `
 <svg viewBox="0 0 96 64" fill="none" aria-hidden="true">
   <line x1="34" y1="22" x2="64" y2="50" stroke="var(--m-muted)" stroke-width="2" opacity=".5"/>
   <line x1="66" y1="26" x2="36" y2="50" stroke="var(--m-muted)" stroke-width="2" opacity=".5"/>
-  <circle cx="34" cy="22" r="11" fill="var(--m-accent)"/>
-  <circle cx="66" cy="26" r="8.6" fill="var(--m-accent)" opacity=".75"/>
-  <circle cx="36" cy="50" r="6.2" fill="var(--m-rose)" opacity=".8"/>
-  <circle cx="64" cy="50" r="4.6" fill="var(--m-rose)" opacity=".55"/>
+  <circle cx="34" cy="22" r="11" fill="var(--m-ne)"/>
+  <circle cx="66" cy="26" r="8.6" fill="var(--m-ti)"/>
+  <circle cx="36" cy="50" r="6.2" fill="var(--m-fe)"/>
+  <circle cx="64" cy="50" r="4.6" fill="var(--m-si)"/>
 </svg>`;
 
 /* The hero shows an actual reading rather than an illustration of one. Both
@@ -106,6 +143,7 @@ const HERO_READING = `
 <div class="reading" role="figure" aria-label="A worked reading of the ENTP and INFP pair, scored in both directions">
   <div class="reading-top">
     <span class="mono rlabel">Worked example</span>
+    <span class="rdiscs" aria-hidden="true">${disc("Ne", 32)}${disc("Fi", 32)}</span>
     <span class="mono rpair">ENTP &middot; INFP</span>
   </div>
 
@@ -162,7 +200,12 @@ export const SITE_CSS = `  :root {
     --m-paper:#FDFCFA; --m-surface:#FFFFFF; --m-soft:#F4F1EA;
     --m-ink:#241F19; --m-ink2:#4C463D; --m-muted:#6B6459;
     --m-rule:#E3DED4; --m-accent:#4C4899; --m-accent-ink:#373474;
-    --m-accent-soft:#ECEBF7; --m-on:#fff; --m-rose:#C2477F;
+    --m-accent-soft:#ECEBF7; --m-on:#fff; --m-rose:#983E4A;
+    /* The Pigment palette's eight elements — the deck's own hues, both
+       themes, so every drawing on this page speaks the product's colour
+       language: indigo N, raw sienna S, verdigris T, madder F. */
+    --m-ne:#4C4899; --m-ni:#373474; --m-se:#855723; --m-si:#694521;
+    --m-te:#326758; --m-ti:#244C43; --m-fe:#983E4A; --m-fi:#762E37;
     --serif:"Newsreader",Georgia,"Times New Roman",serif;
     --sans:"Inter",system-ui,-apple-system,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -173,6 +216,8 @@ export const SITE_CSS = `  :root {
       --m-ink:#EDE9E1; --m-ink2:#B6AFA3; --m-muted:#8E8779;
       --m-rule:#2E2A24; --m-accent:#A8A6D3; --m-accent-ink:#C6C4E8;
       --m-accent-soft:#1F2033; --m-on:#241F19; --m-rose:#DAA0A7;
+      --m-ne:#A8A6D3; --m-ni:#8986BB; --m-se:#D0AE80; --m-si:#B9946A;
+      --m-te:#81BBA8; --m-ti:#67A290; --m-fe:#DAA0A7; --m-fi:#C18189;
     }
   }
   * { box-sizing: border-box; }
@@ -303,8 +348,23 @@ export const SITE_CSS = `  :root {
   .reading { background:var(--m-surface); border:1px solid var(--m-rule); border-radius:14px;
              padding:22px 24px 20px;
              box-shadow:0 1px 2px rgba(26,23,20,.05), 0 12px 32px rgba(26,23,20,.06); }
-  .reading-top { display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  .reading-top { display:flex; align-items:center; justify-content:space-between; gap:12px;
                  padding-bottom:14px; border-bottom:1px solid var(--m-rule); }
+  .rdiscs { display:flex; gap:6px; margin-left:auto; }
+  .rdiscs svg { display:block; }
+  .reading-top .rpair { margin-left:0; }
+
+  /* ---- the alphabet band ------------------------------------------- *
+   * The deck's eight named discs, family by family, under the hero: the
+   * product's entire colour language declared before the first section
+   * asks anyone to read it.
+   * ------------------------------------------------------------------ */
+  .alphabet { display:flex; flex-wrap:wrap; gap:12px 28px; justify-content:center;
+              padding:18px 0 0; }
+  .alphabet .fam { display:flex; gap:8px; flex:0 0 auto; }
+  .alphabet svg { display:block; }
+  .alphabet-cap { text-align:center; font-family:var(--sans); font-size:13.5px;
+                  color:var(--m-muted); margin:12px auto 18px; max-width:none; }
   .rlabel { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
             color:var(--m-muted); }
   .rpair { font-size:13px; font-weight:600; color:var(--m-ink); letter-spacing:.04em; }
@@ -541,6 +601,7 @@ ${siteHeader(true)}
   </div>
 
   <div class="wrap">
+    ${ALPHABET}
     <div class="proof">
       <div class="proof-item"><span class="pv">16</span><span class="pk">patterns generate every reading</span></div>
       <div class="proof-item"><span class="pv">256</span><span class="pk">ordered pairs, each scored twice</span></div>
@@ -629,7 +690,7 @@ ${siteHeader(true)}
         <div class="card">
           <h3>Learn it properly</h3>
           <p>
-            A built-in thirteen-stage course takes you from &ldquo;what is a habit of mind&rdquo;
+            A built-in fifteen-stage course takes you from &ldquo;what is a habit of mind&rdquo;
             to reading whole groups, every concept drawn as a diagram, plus an assistant that
             answers questions from the instrument&rsquo;s own model — not from internet folklore.
           </p>
@@ -738,7 +799,7 @@ ${siteHeader(true)}
             <li>All sixteen pattern readings, in full</li>
             <li>All 256 pair readings, both directions</li>
             <li>Group composition &amp; team graphs</li>
-            <li>The complete thirteen-stage course</li>
+            <li>The complete fifteen-stage course</li>
             <li>The grounded assistant</li>
             <li>Cancel anytime</li>
           </ul>
