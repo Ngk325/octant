@@ -12,16 +12,31 @@
  * discount floor every future partner starts from and the standalone
  * price in marketing.ts has to stay credible next to them. So the page
  * keeps the SHAPE of the deal — which is what qualifies an enquiry —
- * and quotes commercials per engagement.
+ * and never prints a partner number.
+ *
+ * The numbers are one form away, not one call away. The enquiry form at
+ * the foot of the page mails the private rate card on submit (enquiry.ts,
+ * whose header records what that trade costs and why it was taken). The
+ * split this file protects is therefore public-page vs. private-email,
+ * not public vs. earned — what must never happen is a partner rate
+ * appearing at a URL a search engine can index.
  *
  * The three-axis decomposition is the load-bearing idea and the reason
  * this is a page rather than a mailto: a partner who can already see
- * which row they are in writes a far better first email, and the
- * questions at the end are the ones that email should answer.
+ * which row they are in writes a far better first reply, and the
+ * questions at the end are the ones that reply should answer.
  * ------------------------------------------------------------------ */
 
+import { ENQUIRY_CSS, enquiryForm, enquiryNotice } from "./enquiry";
 import { SITE_CSS, siteFooter, siteHead, siteHeader } from "./marketing";
 
+/**
+ * Kept, demoted. The form below is the front door now — it is what puts the
+ * rate card in a partner's hands in the first five minutes. But a form is a
+ * thing you have to trust, and some people would simply rather write an
+ * email; sending those people away because the funnel prefers a POST would
+ * cost exactly the enquiries most worth having.
+ */
 const PARTNER_MAILTO =
   "mailto:nick@stratfieldpartners.com" +
   "?subject=Octant%20partnership" +
@@ -92,12 +107,22 @@ const PARTNERS_CSS = `
   .rail p { font-family:var(--sans); font-size:15.5px; color:var(--m-ink2); margin:0; }
 `;
 
-export function partnersPage(origin: string): Response {
+/**
+ * Async, and no longer cacheable, both for the same reason: the enquiry form
+ * carries a signed, per-render token (see enquiry.ts) that has to be minted
+ * here. A shared cache would hand one token to every visitor for its lifetime
+ * — harmless in itself, since the payload is a timestamp and the signature is
+ * what matters, but not worth reasoning about every time this page changes.
+ * Five minutes of edge caching on one page is a cheap thing to give up.
+ */
+export async function partnersPage(
+  origin: string, opts: { token?: string | null; sent?: string | null } = {},
+): Promise<Response> {
   const html = `<!doctype html>
 <html lang="en">
 <head>
 ${siteHead({ title: TITLE, description: DESCRIPTION, origin, path: "/partners" })}
-<style>${SITE_CSS}${PARTNERS_CSS}</style>
+<style>${SITE_CSS}${PARTNERS_CSS}${ENQUIRY_CSS}</style>
 </head>
 <body>
 
@@ -113,8 +138,11 @@ ${siteHeader(false)}
       and it can sit inside what you already sell, under four different arrangements.
     </p>
     <div class="cta-row">
-      <a class="btn primary" href="${PARTNER_MAILTO}">Start a conversation</a>
+      <a class="btn primary" href="#enquiry">Get the rates and terms</a>
       <a class="btn" href="#shapes">See the four shapes</a>
+      <p class="cta-note">
+        Real numbers by email, straight away &mdash; no call first, nothing to sign.
+      </p>
     </div>
   </div>
 
@@ -277,8 +305,9 @@ ${siteHeader(false)}
           <h3>The software</h3>
           <p>
             Octant on its own is <strong>$25 per user / month</strong>, everything included.
-            Partner rates sit below that and are set by shape and volume &mdash; tell us which
-            row you are in and roughly how many people, and you get real numbers back.
+            Partner rates sit below that and are set by shape and volume. They are not published
+            here &mdash; but they are not hidden behind a call either: ask below and the whole
+            rate card is in your inbox in a couple of minutes.
           </p>
         </div>
         <div class="rail">
@@ -316,13 +345,33 @@ ${siteHeader(false)}
         <li><p>Does your client need Octant&rsquo;s vocabulary, or does it need to arrive already translated into yours?</p></li>
         <li><p>What is the missing piece that would make this fit cleanly?</p></li>
       </ol>
-      <div class="cta-row" style="margin-top:36px">
-        <a class="btn primary" href="${PARTNER_MAILTO}">Start a conversation</a>
-        <a class="btn" href="/#pricing">See the standalone product</a>
-      </div>
-      <p class="small muted" style="margin-top:16px">
+      <p class="small muted" style="margin-top:28px">
         The four shapes are a starting decomposition, not a menu. If the axes above cut in the
         wrong place for what you are building, say so &mdash; a fifth shape is available.
+      </p>
+    </div>
+  </section>
+
+  <section class="alt" id="enquiry">
+    <div class="wrap">
+      <p class="kicker">The numbers</p>
+      <h2>Take the rate card away and work out the fit.</h2>
+      <p>${
+        opts.sent === "1"
+          ? `Read it on your own time, and reply when you have a view. There is nothing to book,
+             nobody will chase you, and &ldquo;none of the four shapes cut in the right place&rdquo;
+             is a useful answer rather than a dead end.`
+          : `Leave an address and the full sheet arrives by email: the standalone price, what each
+             of the four shapes costs, what our time costs, and which terms are fixed rather than
+             open. Read it on your own time, and reply when you have a view &mdash; there is
+             nothing to book and nobody will chase you.`
+      }</p>
+      ${enquiryNotice(opts.sent ?? null)}
+      ${opts.sent === "1" ? "" : enquiryForm(opts.token ?? null)}
+      <p class="small muted" style="margin-top:24px">
+        Would rather just write to a person?
+        <a href="${PARTNER_MAILTO}">Email us directly</a> &mdash; that reaches the same inbox.
+        Or <a href="/#pricing">see the standalone product</a> first.
       </p>
     </div>
   </section>
@@ -337,8 +386,10 @@ ${siteFooter(false)}
     status: 200,
     headers: {
       "content-type": "text/html; charset=utf-8",
-      // Same posture as the front door: public, and cacheable only briefly.
-      "cache-control": "public, max-age=300",
+      // Not "public, max-age=300" like the front door: this page carries a
+      // per-render form token and, after a submit, a personal confirmation.
+      // Neither belongs in a shared cache.
+      "cache-control": "no-store",
     },
   });
 }

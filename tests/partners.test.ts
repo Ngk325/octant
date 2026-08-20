@@ -91,9 +91,11 @@ describe("the partner door", () => {
     expect((await get("/partnersx")).status).toBe(401);
   });
 
-  it("renders standalone, without going through the router", () => {
-    const res = partnersPage("https://octant.example");
+  it("renders standalone, without going through the router", async () => {
+    const res = await partnersPage("https://octant.example");
     expect(res.status).toBe(200);
-    expect(res.headers.get("cache-control")).toContain("public");
+    // Not shared-cacheable, unlike the front door: the page mints a
+    // per-render enquiry token and can carry a personal confirmation.
+    expect(res.headers.get("cache-control")).toBe("no-store");
   });
 });

@@ -28,7 +28,7 @@ describe("the compact menu", () => {
     ["partners", () => partnersPage("https://octant.example")],
   ] as const) {
     it(`${name}: every masthead destination is also in the compact menu`, async () => {
-      const html = await page().text();
+      const html = await (await page()).text();
       const bar = barLinks(html).filter((h) => h !== "#pricing" && h !== "/#pricing");
       const panel = panelLinks(html);
       expect(panel.length).toBeGreaterThan(0);
@@ -36,7 +36,7 @@ describe("the compact menu", () => {
     });
 
     it(`${name}: the menu needs no script`, async () => {
-      const html = await page().text();
+      const html = await (await page()).text();
       // script-src is 'self' plus three pinned sha256 hashes (headers.ts).
       // A menu that needed JS would mean a fourth pinned hash.
       expect(html).not.toContain("<script");
@@ -62,7 +62,7 @@ describe("the compact menu", () => {
     ["partners", () => partnersPage("https://octant.example")],
   ] as const) {
     it(`${name}: nothing sharing an element with .wrap uses a padding shorthand`, async () => {
-      const html = await page().text();
+      const html = await (await page()).text();
       const css = html.slice(html.indexOf("<style>"), html.indexOf("</style>"));
 
       const companions = new Set<string>();

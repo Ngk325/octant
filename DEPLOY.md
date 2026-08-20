@@ -73,10 +73,21 @@ bundle.
 | `GEMINI_API_KEY` | for the assistant | Powers `/api/chat`. Everything else works without it. |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | for Google sign-in | Without both, the Google button does not render and codes are the only way in. Setup: `docs/GOOGLE-SETUP.md`. |
 | `OWNER_EMAIL` | for approval + /admin | The auto-approved account and the only one `/admin` opens for. |
-| `RESEND_API_KEY` | for email | Sign-up notifications, chat transcripts, and onramp lead nurture. Without it, sign-ups still record; nothing mails. |
-| `NOTIFY_FROM` | for owner mail: in practice yes; for onramp lead mail: yes, hard requirement | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address, so it can't reach a captured lead's inbox — lead/nurture mail refuses to send without `NOTIFY_FROM` rather than silently no-op through it. See `docs/GOOGLE-SETUP.md`. |
+| `RESEND_API_KEY` | for email | Sign-up notifications, chat transcripts, onramp lead nurture, and the partner rate card. Without it, sign-ups and enquiries still record; nothing mails. |
+| `NOTIFY_FROM` | for owner mail: in practice yes; for onramp lead mail and the partner rate card: yes, hard requirement | Sender on a domain verified in Resend. The shared default only delivers to the Resend account's own address, so it can't reach a captured lead's inbox — lead/nurture mail refuses to send without `NOTIFY_FROM` rather than silently no-op through it. See `docs/GOOGLE-SETUP.md`. |
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
 | `STRIPE_WEBHOOK_SECRET` | for payment auto-approval | Verifies `POST /api/stripe/webhook` actually came from Stripe (`whsec_...`, from the webhook endpoint's settings in the Stripe dashboard — not the account's API key; no Stripe SDK or API key is used anywhere in this app). Without it, the endpoint 503s and payment stays manual — the customer signs in, lands `pending`, and the owner approves them the existing way. |
+
+**The partner rate card is a committed file, not a generated one.** The
+enquiry form on `/partners` mails `public/octant-partner-rate-card.pdf` to
+whoever asks (`src/worker/enquiry.ts` reads it back through the `ASSETS`
+binding — there is no Chromium in a Worker to print it on demand). After
+editing `docs/partner-rate-card.html`, run `npm run rate-card` and commit both
+the regenerated PDF and `docs/partner-rate-card.source.sha256`;
+`tests/rate-card.test.ts` fails the build if they fall behind the HTML, because
+the failure mode otherwise is partners quietly receiving last quarter's prices.
+Without `NOTIFY_FROM` the card is not sent at all — the owner's copy of the
+enquiry says so in the same email, so nothing is lost silently.
 
 The three KV namespaces (`USERS`, `CHAT_LOGS`, `LEADS`), both rate-limit
 bindings and the hourly cron live in `wrangler.jsonc` and deploy with the code
