@@ -78,16 +78,23 @@ bundle.
 | `NOTIFY_EMAIL` | optional | Redirects delivery without changing who owns `/admin`. |
 | `STRIPE_WEBHOOK_SECRET` | for payment auto-approval | Verifies `POST /api/stripe/webhook` actually came from Stripe (`whsec_...`, from the webhook endpoint's settings in the Stripe dashboard — not the account's API key; no Stripe SDK or API key is used anywhere in this app). Without it, the endpoint 503s and payment stays manual — the customer signs in, lands `pending`, and the owner approves them the existing way. |
 
-**The partner rate card is a committed file, not a generated one.** The
-enquiry form on `/partners` mails `public/octant-partner-rate-card.pdf` to
-whoever asks (`src/worker/enquiry.ts` reads it back through the `ASSETS`
-binding — there is no Chromium in a Worker to print it on demand). After
-editing `docs/partner-rate-card.html`, run `npm run rate-card` and commit both
-the regenerated PDF and `docs/partner-rate-card.source.sha256`;
+**The partner rate card goes out only when you say so.** The enquiry form on
+`/partners` records the request, acknowledges the enquirer and emails you what
+they typed with two signed links — *Send the rate card* and *Leave it*. Nothing
+confidential leaves until you open one and confirm (two taps: the GET only
+shows who is asking, because mail scanners fetch every URL in an inbox). The
+links last thirty days and need no sign-in, so the decision works from a phone.
+
+**And it is a committed file, not a generated one.** Releasing it mails
+`public/octant-partner-rate-card.pdf`, which `src/worker/enquiry.ts` reads back
+through the `ASSETS` binding — there is no Chromium in a Worker to print it on
+demand. After editing `docs/partner-rate-card.html`, run `npm run rate-card` and
+commit both the regenerated PDF and `docs/partner-rate-card.source.sha256`;
 `tests/rate-card.test.ts` fails the build if they fall behind the HTML, because
 the failure mode otherwise is partners quietly receiving last quarter's prices.
-Without `NOTIFY_FROM` the card is not sent at all — the owner's copy of the
-enquiry says so in the same email, so nothing is lost silently.
+Without `NOTIFY_FROM` neither the acknowledgement nor the card can be sent — the
+decision page names that as the fix, and your copy of the enquiry says the
+enquirer was never acknowledged, so nothing is lost silently.
 
 The three KV namespaces (`USERS`, `CHAT_LOGS`, `LEADS`), both rate-limit
 bindings and the hourly cron live in `wrangler.jsonc` and deploy with the code

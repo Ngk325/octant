@@ -15,11 +15,11 @@
  * and never prints a partner number.
  *
  * The numbers are one form away, not one call away. The enquiry form at
- * the foot of the page mails the private rate card on submit (enquiry.ts,
- * whose header records what that trade costs and why it was taken). The
- * split this file protects is therefore public-page vs. private-email,
- * not public vs. earned — what must never happen is a partner rate
- * appearing at a URL a search engine can index.
+ * the foot of the page puts the request in front of the owner, who
+ * releases the private rate card with one tap (enquiry.ts). So the split
+ * this file protects has two halves: no partner rate at a URL a search
+ * engine can index, and no partner rate leaving at all until a person has
+ * read who is asking.
  *
  * The three-axis decomposition is the load-bearing idea and the reason
  * this is a page rather than a mailto: a partner who can already see
@@ -141,7 +141,7 @@ ${siteHeader(false)}
       <a class="btn primary" href="#enquiry">Get the rates and terms</a>
       <a class="btn" href="#shapes">See the four shapes</a>
       <p class="cta-note">
-        Real numbers by email, straight away &mdash; no call first, nothing to sign.
+        Real numbers by email &mdash; no call first, nothing to sign.
       </p>
     </div>
   </div>
@@ -306,8 +306,8 @@ ${siteHeader(false)}
           <p>
             Octant on its own is <strong>$25 per user / month</strong>, everything included.
             Partner rates sit below that and are set by shape and volume. They are not published
-            here &mdash; but they are not hidden behind a call either: ask below and the whole
-            rate card is in your inbox in a couple of minutes.
+            here &mdash; but they are not hidden behind a call either: ask below, and once we have
+            read who is asking, the whole rate card comes back by email.
           </p>
         </div>
         <div class="rail">
@@ -358,13 +358,13 @@ ${siteHeader(false)}
       <h2>Take the rate card away and work out the fit.</h2>
       <p>${
         opts.sent === "1"
-          ? `Read it on your own time, and reply when you have a view. There is nothing to book,
-             nobody will chase you, and &ldquo;none of the four shapes cut in the right place&rdquo;
-             is a useful answer rather than a dead end.`
-          : `Leave an address and the full sheet arrives by email: the standalone price, what each
-             of the four shapes costs, what our time costs, and which terms are fixed rather than
-             open. Read it on your own time, and reply when you have a view &mdash; there is
-             nothing to book and nobody will chase you.`
+          ? `When it arrives, read it on your own time and reply when you have a view. There is
+             nothing to book, nobody will chase you, and &ldquo;none of the four shapes cut in the
+             right place&rdquo; is a useful answer rather than a dead end.`
+          : `Tell us who you are and the full sheet comes back by email: the standalone price, what
+             each of the four shapes costs, what our time costs, and which terms are fixed rather
+             than open. A person reads every enquiry before the numbers go out &mdash; but there is
+             nothing to book, and nobody will chase you afterwards.`
       }</p>
       ${enquiryNotice(opts.sent ?? null)}
       ${opts.sent === "1" ? "" : enquiryForm(opts.token ?? null)}

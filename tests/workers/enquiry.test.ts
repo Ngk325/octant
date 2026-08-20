@@ -76,14 +76,17 @@ describe("the partner enquiry, in workerd", () => {
     expect(submitted.headers.get("location")).toBe("/partners?sent=0#enquiry");
   });
 
-  it("records the address in real KV, so a second submit cannot mail twice", async () => {
+  it("records the address in real KV, undecided, so a second submit cannot mail twice", async () => {
     const email = `dedupe-${Math.floor(Math.random() * 1e9)}@partner.test`;
     await post({ email, _s: (await aged())! });
     const stored = await (CONFIGURED.LEADS as unknown as {
       get(k: string): Promise<string | null>;
     })?.get(`partner:${email}`);
     expect(stored).toBeTruthy();
-    expect(JSON.parse(stored!).email).toBe(email);
+    const record = JSON.parse(stored!);
+    expect(record.email).toBe(email);
+    // The gate, at rest: the form records an enquiry and decides nothing.
+    expect(record.status).toBe("new");
   });
 
   it("keeps the rate card out of reach of an anonymous request", async () => {
