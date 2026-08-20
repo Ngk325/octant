@@ -1,0 +1,138 @@
+{
+ "score": 80,
+ "scoreRationale": "The illustration system is rare-quality and genuinely disciplined: a real grammar (hue=element, size=rank via the exact 1/.78/.56/.42 ratio in TypeMolecule, vertical position=order, opacity=shadow/certainty, direction=attitude) is honored across ~30 components, every named figure is derived from the engine rather than authored, both light and dark themes hold by construction (verified on matrix-desktop-dark), and the flagship figures (RelationLanding, MutualLanding, DivergingEase, the lexicon figures, the door/molecule glyphs) actually pass their comprehension tests. Points come off for: the single most load-bearing claim (\"nothing is looked up\") shipping as a text table rather than a figure (the doctrine's own #1 build priority); the 14px SVG floor \u2014 a self-declared acceptance criterion \u2014 being breached on phones across core diagrams, worst on OctagramWheel; data-rich SVGs flattening to a one-sentence label for assistive tech; and several of the doctrine's stated encoding gaps (seasons, energy-vs-information, camp adjacency, four-sides motion, wheel uncertainty) still unaddressed. The floor is excellent; the ceiling items are mostly the mechanisms the model most needs to teach.",
+ "strongestThing": "RelationLanding (\u00a711 \"one relation\") is the diagram to build everything else around, and it earns it: two stacks face each other, arrows carry the reader's top two functions into the other person's eight seats, the landing rows light up, and each side keeps its own directional ease number \u2014 the entire 256-relation engine made legible in one picture. It reads cleanly on the pair page, the type \"Who you fit\" section, and the course. (Note: the task brief attributes \"the best diagram in the product\" to the quadra grid, but DESIGN-SYSTEM.md \u00a711 explicitly gives that title to RelationLanding \u2014 \"Anything new should be judged against it\" \u2014 and the shipped figures bear that out; the quadra grid is in fact still a table, \u00a710.) MutualLanding (both directions of one meeting, home page) and DivergingEase (the asymmetry bars) are the same idea extended and are equally worth preserving.",
+ "findings": [
+  {
+   "severity": "P1",
+   "title": "The 14px SVG floor \u2014 the doctrine's own acceptance criterion \u2014 is breached on phones across the core diagrams",
+   "detail": "DESIGN-SYSTEM.md makes 'No text below 14px at rendered size, including inside SVG where the viewBox scales it' both a Texture rule and an Acceptance checkbox, and the Figure component (src/components/Figure.tsx:18-26) exists specifically to enforce it by wrapping a diagram in a minWidth div so it PANS instead of shrinking \u2014 its docstring says 'Set it to the viewBox width so the labels never render below the size they were drawn at.' That rule is applied inconsistently. OctagramWheel has NO minWidth wrapper at either call site (src/views/TypeReader.tsx:658, src/learn/curriculum.tsx:881); on a 390px phone it renders the wide cross layout squished (loct2/wheeltight2x crops of learn-octagram-mobile-light.png), so its 'Living virtue / Deadly sin / Shadow pole / Aspirational pole' captions (fontSize 14 in a 440\u2013760 viewBox) render at roughly 6\u201311px. The flagship figures are also under-protected: RelationLanding (viewBox W=560) is given minWidth={480} at every use (PairReader.tsx:89, TypeReader.tsx:860, curriculum.tsx:665, :1006), and MutualLanding (viewBox W=700) is wrapped at minWidth 620 on Home \u2014 both below their own viewBox, so their 14px seat labels still shrink to ~12px on a narrow phone. WiringSchematic (660/660), NetworkRing (440/440) and OctagramMap (560/560) are set correctly and prove the fix is understood.",
+   "evidence": "src/components/Figure.tsx:18-26 (rule); OctagramWheel no minWidth at TypeReader.tsx:658 & curriculum.tsx:881; wheeltight2x/loct2 crops of learn-octagram-mobile-light.png (squished wide cross, sub-floor pole labels); RelationLanding W=560 at RelationLanding.tsx:32 given minWidth={480} at PairReader.tsx:89 / TypeReader.tsx:860 / curriculum.tsx:665,1006; MutualLanding W=700 wrapped minWidth 620 in Home.tsx:220; correct siblings WiringSchematic 660/660 (TypeReader.tsx:267), NetworkRing 440/440 (Network.tsx:175)",
+   "lenses": [
+    "newcomer",
+    "partner"
+   ],
+   "recommendation": "Set every figure's minWidth EQUAL to its SVG viewBox width (OctagramWheel 440/760, RelationLanding 560, MutualLanding 700), or add the missing wrapper entirely for OctagramWheel. For OctagramWheel also fix the layout switch so a 390px viewport actually gets the tall canvas rather than the squished wide one. A single test that asserts minWidth \u2265 viewBox width for each Figure-wrapped SVG would keep this from regressing."
+  },
+  {
+   "severity": "P1",
+   "title": "The 'nothing is looked up' spine (\u00a75, the three moves) ships as a table of text tags, not a figure",
+   "detail": "DESIGN-SYSTEM.md \u00a75 and the 'What to make' ranking both name this the product's single most load-bearing claim and its #1 illustration to build: 'It is a table, and it is the single most load-bearing claim in the product. It deserves a figure: three operations as three visual transformations on one bead, so the composition is watchable.' The shipped InvolutionTable is exactly the CSS grid of mono FnTags the doctrine flags \u2014 flip/swap/turn columns of before\u2192after text labels (visible on lexicon-index-desktop and per-term in the lexicon). There is zero geometric encoding of the three operations: no bead, no motion, no attitude-flip or element-swap drawn. The whole 'nothing is looked up, it is all derived' argument \u2014 repeated on the app home ('Everything here is derived\u2026 computed from the same small piece of structure') \u2014 is asserted in prose and demonstrated only as a lookup-table-shaped grid, which is the opposite of what it claims.",
+   "evidence": "src/components/InvolutionTable.tsx:26-96 (CSS grid of FnTag text, comment even concedes 'A CSS grid rather than SVG'); lex1.png (lexicon-index-desktop-light.png) shows flip/swap/turn as text columns; band_4 shows the same claim in prose; DESIGN-SYSTEM.md \u00a75 + \u00a74 'First \u2014 the three that unlock the model' item 1",
+   "lenses": [
+    "enthusiast",
+    "newcomer",
+    "partner"
+   ],
+   "recommendation": "Build octant-fig-three-moves: one FnDisc bead undergoing flip (attitude), swap (element) and turn (both) as three watchable transformations, then a short composition showing the shadow / Counterpart / four-sides all falling out of the same three operations. The FnDiscMark geometry (ripples for attitude, hue for element) already gives you the vocabulary to animate this. Keep the table as the reference tail beneath the figure."
+  },
+  {
+   "severity": "P2",
+   "title": "Data-rich SVGs collapse to a single one-sentence label for assistive tech \u2014 the visual richness is lost",
+   "detail": "The core diagrams are marked role=\"img\" with one flat aria-label sentence: WiringSchematic's eight seats become 'The eight function seats of ENTP, from Lead down to Dread' (WiringSchematic.tsx:51), RelationLanding's arrows/landings become one sentence (RelationLanding.tsx:42-43), MutualLanding's whole both-directions structure becomes one long sentence (MutualLanding.tsx:69-75). A screen-reader user gets the caption but none of the per-seat, per-arrow or per-landing structure the sighted reader gets \u2014 exactly the flattening the axe pass implies. The fix already exists in the codebase and is used in exactly one place: NetworkRing renders a visually-hidden <ul> mirroring every edge (NetworkRing.tsx:83-87, the only component with sr-only) precisely because 'the per-edge title tooltips are inside role=img, which collapses the subtree.' None of the other data diagrams adopt that pattern.",
+   "evidence": "WiringSchematic.tsx:51 single aria-label; RelationLanding.tsx:42-43; MutualLanding.tsx:69-75; grep confirms sr-only count 0 for WiringSchematic/MutualLanding/RelationLanding vs 1 for NetworkRing.tsx:83-87; corroborates the session's axe role=img/role=group flattening finding",
+   "lenses": [
+    "partner",
+    "newcomer"
+   ],
+   "recommendation": "Give each data-dense figure the NetworkRing treatment: keep the role=img summary, but add a visually-hidden structured list (per seat, per arrow with source\u2192landing slot and direction, per ease number). This is a small, mechanical addition per component and closes the gap the one-sentence labels leave."
+  },
+  {
+   "severity": "P2",
+   "title": "OctagramWheel (\u00a714) draws its least-certain claim at full confidence \u2014 the opacity=certainty grammar is available and unused",
+   "detail": "The wheel's two sideways poles (Shadow pole, Aspirational pole) are, by the app's own admission in the 'Where this app stops' panel, the least-settled part of the whole model ('the per-type meaning of each pole lives in members-only lectures\u2026 The geometry is asserted; the moral weighting is not'), and \u00a714's gap says so explicitly: 'Nothing in the drawing carries that lower confidence, and it should.' In the shipped figure (band_5 of type-entp-desktop-light, and wheeltight2x) all four arms are drawn with identical stroke weight and full-opacity labels; only the danger-red 'Envy/Deadly sin' is visually differentiated, and that encodes badness, not uncertainty. The grammar has a property reserved for exactly this \u2014 \u00a71 'Opacity encodes certainty\u2026 Reduced (~.4\u2013.6) = unset or self-reported' \u2014 and the drift poles are the textbook case for it, yet they render at full ink.",
+   "evidence": "src/components/OctagramWheel.tsx:89-125 (all arms same strokeWidth 1 / full-opacity var(--ink-2) labels; only 'on' emphasis differs); band_5 & wheeltight2x show equal weight on all four poles; app prose in band_6 ('Where this app stops'); DESIGN-SYSTEM.md \u00a714 gap + \u00a71 opacity rule",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Render the two drift poles (shadow/aspirational arms, labels and any fill) at reduced opacity ~.5, leaving the virtue-above / sin-below axis at full ink. That makes the drawing admit what the prose already admits, using the system's own certainty channel \u2014 and costs nothing structurally."
+  },
+  {
+   "severity": "P2",
+   "title": "ThemeSeasons (\u00a715) carries the seasons in words only \u2014 the doctrine's requested pure-geometry illustration is absent",
+   "detail": "\u00a715's gap asks for the four seasons drawn 'as pure geometry, never literal trees or snowflakes. Sprouting strata, a full fan, falling beads, a bare lattice.' The shipped ThemeSeasons is a 2\u00d72 of text cards \u2014 Joy/Summer, Decay/Autumn, Hope/Spring, Despair/Winter \u2014 with the season name as a small label and prose beneath (band_6 of type-entp-desktop-light, and learn-octagram-theme). There is no geometry carrying the mood at all; the 'seasons as the mood carrier' the doc credits it with is a word, not a figure. The 2\u00d72 also leans on rotated vertical axis captions ('Subconscious fed early \u00b7 SD' / 'Subconscious denied early \u00b7 UD') that are small and awkward to read.",
+   "evidence": "src/components/ThemeSeasons.tsx (text 2\u00d72, season names as labels); band_6 (Your theme grid) of type-entp-desktop-light.png; DESIGN-SYSTEM.md \u00a715 gap + 'Second \u2014 the ones that make it felt' item 8",
+   "lenses": [
+    "enthusiast",
+    "newcomer"
+   ],
+   "recommendation": "Draw octant-fig-seasons: four small pure-geometry marks in the family hues \u2014 sprouting strata (spring), a full open fan (summer), falling beads (autumn), a bare lattice (winter) \u2014 seated in each 2\u00d72 cell so focus\u00d7development reads as geometry, not just as a season word."
+  },
+  {
+   "severity": "P2",
+   "title": "The four currents (\u00a79) never show energy-vs-information \u2014 the distinction that is the whole point is a text chip",
+   "detail": "\u00a79's gap: 'Energy-versus-information is currently a label, not a visual property. Two of these four are a different kind of thing from the other two and nothing in the drawing says so.' Confirmed: AnimalGlyph draws only flow direction \u2014 arrows in (Consume), arrows out (Blast), both (Play), closed loop (Sleep) \u2014 in chrome colors, and the kind ('Energy' vs 'Information') appears only as a text chip in AnimalStack (band_4 of type-entp-desktop-light: Absorb=Information, Charge=Energy, etc.). A reader cannot see, from the glyph, that Absorb/Broadcast move information while Charge/Settle move energy; the comprehension test ('say which two facts a current encodes \u2014 kind, and direction \u2014 without a legend') fails because kind is legend-only.",
+   "evidence": "src/components/glyphs/AnimalGlyph.tsx:17-72 (arrows/loop = direction only, no kind channel); src/components/AnimalStack.tsx:72-73 (ANIMAL_KIND rendered as a chip); band_4 shows Information/Energy as chips beside identical-family glyphs; DESIGN-SYSTEM.md \u00a79 gap",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Add a second visual channel to AnimalGlyph for kind \u2014 e.g. the flowing mark's form (a stream of beads for information vs a filled pulse/wave for energy), or a distinct stroke style \u2014 so the two energy currents read as a different kind of thing from the two information currents without the chip."
+  },
+  {
+   "severity": "P2",
+   "title": "Camps (\u00a710, QuadraFunctionGrid) is a table; adjacency \u2014 the thing it exists to show \u2014 is derivable but not drawn",
+   "detail": "\u00a710's comprehension test is 'see why two camps feel adjacent and two feel opposed,' and its gap says 'Adjacency is derivable from the grid but not shown. The four camps have a real geometry and it is currently a table.' The shipped QuadraFunctionGrid is exactly that \u2014 role=\"table\", four stacked rows of FnTags with member types listed (learn-quadras; source confirms). To see why Alpha and Delta feel adjacent (shared Ne/Si) versus opposed you must read down columns and hold four functions in your head; the geometry is never rendered. Compounding it, the quadra identity dot uses QUADRA_COLOR, which by deliberate design is four near-identical steps of the same warm-neutral ink (palette.ts:71-74, Alpha #241F19 \u2192 Delta #6F6353) \u2014 so the one color mark on each row barely distinguishes the four camps; identity rides almost entirely on the text label.",
+   "evidence": "src/components/QuadraFunctionGrid.tsx:31-80 (role=table of FnTags, adjacency not drawn); src/engine/palette.ts:71-74 (four near-identical neutral tans, with the code comment acknowledging identity 'rides on the label\u2026 not on colour alone'); DESIGN-SYSTEM.md \u00a710 gap",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Give the camps their real geometry \u2014 e.g. a 2\u00d72 / ring where shared-axis camps sit adjacent and opposite-value camps sit across \u2014 with the shared functions drawn on the connecting edges. Keep the grid as the detail view beneath it."
+  },
+  {
+   "severity": "P2",
+   "title": "Four sides (\u00a76) shows the re-sorting as four finished cards, not as the deal that is the actual mechanism",
+   "detail": "\u00a76's gap: 'The re-sorting is the mechanism and it is currently shown as a result. Four static cards do not show eight beads being dealt into four hands.' FourSidesDiagram (band_2 of type-entp-desktop, and sides-intp) renders four completed cards, each with its own molecule and four-slot list, and asserts the correspondence with small cross-labels ('your Cave', 'your Delight'). The key idea \u2014 that these are the SAME eight beads re-dealt, so the ego's worst function is another side's best \u2014 is carried by those text labels rather than by any visible motion or shared-bead choreography. This is \u00a76, the second-ranked 'what to make' item and the idea the doc says readers find hardest.",
+   "evidence": "src/components/FourSidesDiagram.tsx (four static cards, correspondence via 'your {egoSlot}' text at line 66-70); band_2 (Four sides of the mind) of type-entp-desktop-light.png; sidoors.png (sides-intp) same four cards; DESIGN-SYSTEM.md \u00a76 gap + \u00a74 item 2",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "Build octant-fig-four-sides showing the eight ego beads visibly re-dealt into four hands (a transition or a single figure with connecting threads from each ego seat to its new home), so 'your worst is another side's best' is a fact of the picture rather than a caption."
+  },
+  {
+   "severity": "P2",
+   "title": "NetworkRing (\u00a713) is O(n\u00b2) and the only group view; above ~6 people it is a known hairball, and the default demo never exercises it",
+   "detail": "\u00a713's gap is stated and unsolved: 'Above about six people the ring becomes a hairball.' NetworkRing draws every pair as a quadratic-B\u00e9zier through the centre for all pairs (NetworkRing.tsx:23-60), so edge count grows as n(n-1)/2 \u2014 7 people = 21 crossing curves through one point. It is the app's only group visualization. Two practical consequences: (1) for a partner embedding this for real teams (8\u201312 people), the flagship group figure degrades badly with no fallback; (2) the shipped default seed is only 3 people (Network.tsx:14-17 You/Second/Third), so the network-desktop/mobile screenshots show a clean triangle and the very failure mode the doc flags is never visible to anyone evaluating the product.",
+   "evidence": "src/components/NetworkRing.tsx:23-60 (all-pairs O(n\u00b2) centre-crossing curves); src/views/Network.tsx:14-17 (3-person SEED); network-desktop-light.png / network-mobile-light.png show only the 3-person triangle; DESIGN-SYSTEM.md \u00a713 gap + \u00a74 item 10 'Open problem \u2014 propose a form'",
+   "lenses": [
+    "partner",
+    "enthusiast"
+   ],
+   "recommendation": "Propose a form that scales past six (bundled edges, a matrix/heat strip for the room, or a carrier-and-faultline summary that promotes only the few most-loaded links), and seed the demo with a 5\u20136 person room so evaluators see the real case. The person-by-person bars already carry the directional detail the ring cannot."
+  },
+  {
+   "severity": "P3",
+   "title": "SideDoor's openness ladder barely reads as geometry \u2014 three of four states are near-identical, only 'barred' is legible",
+   "detail": "SideDoor encodes each side's condition as a door state (open/ajar/cracked/barred), a genuinely nice idea. But in practice open = empty lit arch, ajar = a thin leaf swung from the right jamb, cracked = a shut leaf against the left jamb plus a single 2.6px-radius dot, and barred adds a red X. Open, ajar and cracked differ only by a small leaf position and a ~3px dot; at the ~76px rendered size they are nearly indistinguishable (band_2 'Four doors, compared' and sidoors.png). Only 'barred' (the red X) reads on its own. The state is redundantly spelled out in a word label below each door, so nothing is lost functionally \u2014 but the door geometry, which is the whole conceit of the figure, is doing almost no work for three of the four states.",
+   "evidence": "src/components/glyphs/SideDoor.tsx:64-85 (ajar leaf, cracked = leaf + r=2.6 circle, barred = + red X); band_2 (Four doors, compared) of type-entp-desktop-light.png and sidoors.png of sides-intp-desktop-light.png show open/ajar/cracked as visually near-identical arches; DESIGN-SYSTEM.md \u00a77",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Make the openness ladder actually laddered: widen the visible gap progressively (open = no leaf, ajar = leaf clearly swung with a visible opening angle, cracked = mostly-shut with a distinct sliver, barred = shut + X), or add a small consistent 'openness' indicator so the four states are separable without reading the caption."
+  },
+  {
+   "severity": "P3",
+   "title": "WiringSchematic (\u00a73): the stack's emotional gradient is carried only by opacity \u2014 the property that makes it land is the weakest-encoded",
+   "detail": "\u00a73's gap: 'The emotional gradient across the eight \u2014 comfortable at the top, uneasy at the bottom \u2014 is currently carried only by opacity, and it is the thing that makes the stack land.' The shipped WiringSchematic (top of band_1, type-entp-desktop) does exactly that: shadow rows at reduced opacity plus a surface-2 band behind seats 1\u20134, with bracket-style right-edge markers ('the cave', 'anchor', 'flinch'). The comfortable\u2192uneasy feeling that is the whole emotional payload of the eight-seat column has no dedicated visual channel; it is a byproduct of the shadow dimming. The figure is otherwise honest and well-built (and correctly floor-protected at minWidth 660).",
+   "evidence": "src/components/WiringSchematic.tsx:87-135 (opacity + surface-2 band as the only gradient; no dedicated warmth/unease channel); band_1 of type-entp-desktop-light.png; DESIGN-SYSTEM.md \u00a73 gap + \u00a74 item 4",
+   "lenses": [
+    "enthusiast"
+   ],
+   "recommendation": "Add a deliberate top-to-bottom gradient channel to the column (a warm\u2192cool rail, or a comfort band that fades down the eight seats) so the emotional gradient is drawn, not merely implied by shadow opacity."
+  },
+  {
+   "severity": "P3",
+   "title": "The handoff doc has drifted from the shipped components \u2014 several 'gaps' are already built, and the palette it hands off ships nowhere",
+   "detail": "DESIGN-SYSTEM.md is the brief a designer would work from, but it is stale against the code in ways that would waste a redesign. \u00a71's gap ('the eight\u2026 have never been drawn as a set') is already resolved: EightSet (glyphs/EightSet.tsx) draws four families \u00d7 two directions as one figure and is live in Welcome and Learn (seen on home-app as the eight-disc row). \u00a72 is marked solid and DerivationTree indeed ships. Meanwhile the palette the doc hands off (N #6B3BC4 / S #8A5410 / T #0D6560 / F #AE3355) matches nothing in the product \u2014 the shipped FN_COLOR is a different, desaturated set (Ne #4C4899, Se #855723, Te #326758, Fe #983E4A) tuned for WCAG on paper (palette.ts:27-40). A designer following this doc would redraw figures that already exist, and would build them to a brand palette the app has never used. (Palette mismatch noted here as context, per brief; not re-filed as a headline finding.)",
+   "evidence": "src/components/glyphs/EightSet.tsx (satisfies \u00a71 'eight as one set', used in Welcome.tsx & Learn.tsx); DerivationTree present (glyphs/DerivationTree.tsx, curriculum.tsx:108) per \u00a72; DESIGN-SYSTEM.md \u00a71 palette table vs src/engine/palette.ts:27-40 FN_COLOR; corroborates the session's documented-palette-ships-nowhere fact",
+   "lenses": [
+    "partner"
+   ],
+   "recommendation": "Reconcile the doc with the shipped components before commissioning new work: mark \u00a71 (EightSet) and \u00a72 (DerivationTree) as built, and either update \u00a71's palette table to the shipped FN_COLOR or explicitly fork the doc into a 'target brand palette (aspirational)' vs 'shipped palette (WCAG-tuned)' so no one draws to a palette the app cannot render at AA."
+  }
+ ],
+ "notes": "MANDATORY CAVEAT (stated per brief, NOT filed as a bug): Google Fonts is blocked by the sandbox, so every screenshot renders fallback fonts (Newsreader\u2192Georgia serif, Inter\u2192system sans, IBM Plex Mono\u2192monospace), not the intended typefaces. I did not critique letterforms or font rendering, and my sub-14px findings rest on viewBox math and layout (viewBox width vs minWidth, layout squish) rather than on judging rendered glyph shapes. Full-page screenshots of pages with a sticky masthead show the masthead floating mid-image \u2014 a capture artifact, not a layout bug; ignored. (That fonts are hotlinked from Google with no self-host is a separate real issue judged from source, owned by the a11y/performance audit; not re-filed here.)\n\nMETHOD: Read the actual PNGs (not filenames), cropping figure-dense regions with PIL since ImageMagick was unavailable. Opened and inspected: type-entp desktop (8 bands) + mobile crops, network desktop+mobile (ring), matrix desktop+mobile + matrix-desktop-DARK (both-themes spot check), pair-entp-infp desktop, home-app desktop (MutualLanding+TwoReadings+nav glyphs), sides-intp desktop (FourSides/SideDoor/GatewayPath), learn-octagram mobile (OctagramMap + OctagramWheel, measured pixel geometry), lexicon-index desktop. Cross-read source for WiringSchematic, NetworkRing, FourSidesDiagram, OctagramWheel, OctagramMap, MutualLanding, RelationLanding, DivergingEase, InvolutionTable, QuadraFunctionGrid, AnimalStack/AnimalGlyph, ThemeSeasons, SideDoor, TypeMolecule, FnDisc, EightSet, Figure, useMeasuredWidth, palette.ts, tokens.css.\n\nBRIEF CORRECTION: the task states \u00a73 calls the QUADRA GRID 'the best diagram in the product.' It does not \u2014 DESIGN-SYSTEM.md \u00a711 gives that title to RelationLanding ('Anything new should be judged against it'); \u00a710 says the quadra grid 'is currently a table' (see finding F7). The strong figure to preserve is RelationLanding (and its siblings MutualLanding/DivergingEase), reflected in strongestThing.\n\nWHAT IS STRONG AND MUST BE PRESERVED: RelationLanding/MutualLanding/DivergingEase (the \u00a711\u2013\u00a712 relation figures), TypeMolecule (correctly sizes beads to the exact 1/.78/.56/.42 RANK_RATIO and carries attitude via ripples, not hollowness), FnDiscMark (letters-in-disc so nothing depends on colour alone; ego 4-functions are always one-per-family so colour never collides within a molecule), EightSet (resolves \u00a71), the lexicon per-term figures, and the home nav glyph set. The grammar is coherent and both themes hold by construction (verified on matrix dark).\n\nGRAMMAR HEALTH: I found no property actively CONTRADICTING the grammar (no decorative size/hue/opacity making false rank/certainty claims) \u2014 the deliberate exception, QUADRA_COLOR using neutral ink instead of an element hue, is documented and intentional (a quadra is not an element), though it leaves the camp dots barely distinguishable (F7). The recurring problem is the opposite: mechanisms where TEXT carries what a picture should \u2014 three moves (F2), energy-vs-information (F6), camp adjacency (F7), four-sides re-sorting (F8), wheel uncertainty (F4), seasons (F5) \u2014 i.e., the model's hardest ideas are the least-drawn. Also cross-referenced but owned elsewhere: axe serious color-contrast on .gpath-step .muted.small (GatewayPath captions) and the onramp/calculator landmark+heading-order issues \u2014 real, but a11y-audit territory, not re-filed here except the SVG-flattening issue (F3) which is specifically an illustration concern."
+}

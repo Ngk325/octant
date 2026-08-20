@@ -1,0 +1,2112 @@
+{
+  "generated": "session-run",
+  "stageLinks": [
+    "/learn/functions",
+    "/learn/order",
+    "/learn/ego",
+    "/learn/shadow",
+    "/learn/powers",
+    "/learn/four-sides",
+    "/learn/growth",
+    "/learn/exchange",
+    "/learn/quadras",
+    "/learn/relations",
+    "/learn/bonds",
+    "/learn/groups",
+    "/learn/octagram",
+    "/learn/octagram-theme",
+    "/learn/borrowed-wiring"
+  ],
+  "welcomeSteps": [
+    "/welcome/2"
+  ],
+  "lexLinks": [
+    "/lexicon/ne",
+    "/lexicon/ni",
+    "/lexicon/si",
+    "/lexicon/observer",
+    "/lexicon/gather"
+  ],
+  "pages": [
+    {
+      "route": "/",
+      "finalUrl": "/",
+      "file": "home-signedout-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — compatibility runs in two directions",
+      "h1": "Compatibility runs in two directions.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/signin",
+      "finalUrl": "/signin",
+      "file": "signin-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — access required",
+      "h1": "Octant",
+      "consoleErrors": []
+    },
+    {
+      "route": "/",
+      "finalUrl": "/welcome",
+      "file": "home-signedin-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome",
+      "finalUrl": "/welcome",
+      "file": "welcome-index-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome/2",
+      "finalUrl": "/welcome/2",
+      "file": "welcome-2-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every one of those eight either reaches outward, toward the world — or draws inward, toward something already settled.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn",
+      "finalUrl": "/learn",
+      "file": "learn-index-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Learn this from scratch",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/functions",
+      "finalUrl": "/learn/functions",
+      "file": "learn-functions-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Eight habits of mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/order",
+      "finalUrl": "/learn/order",
+      "file": "learn-order-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The order is the type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/ego",
+      "finalUrl": "/learn/ego",
+      "file": "learn-ego-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your top four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/shadow",
+      "finalUrl": "/learn/shadow",
+      "file": "learn-shadow-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your bottom four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/powers",
+      "finalUrl": "/learn/powers",
+      "file": "learn-powers-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Superpower and kryptonite",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+      ]
+    },
+    {
+      "route": "/learn/four-sides",
+      "finalUrl": "/learn/four-sides",
+      "file": "learn-four-sides-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Four sides of the mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/growth",
+      "finalUrl": "/learn/growth",
+      "file": "learn-growth-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Gateways, and the two crises",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/exchange",
+      "finalUrl": "/learn/exchange",
+      "file": "learn-exchange-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The exchange overlay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/quadras",
+      "finalUrl": "/learn/quadras",
+      "file": "learn-quadras-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Clubs and temperaments",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/relations",
+      "finalUrl": "/learn/relations",
+      "file": "learn-relations-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "When two wirings meet",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/bonds",
+      "finalUrl": "/learn/bonds",
+      "file": "learn-bonds-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The pairings that work",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/groups",
+      "finalUrl": "/learn/groups",
+      "file": "learn-groups-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "More than two",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram",
+      "finalUrl": "/learn/octagram",
+      "file": "learn-octagram-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — the wheels",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram-theme",
+      "finalUrl": "/learn/octagram-theme",
+      "file": "learn-octagram-theme-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — your childhood",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/borrowed-wiring",
+      "finalUrl": "/learn/borrowed-wiring",
+      "file": "learn-borrowed-wiring-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Borrowed wiring",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/calculator",
+      "finalUrl": "/calculator",
+      "file": "calculator-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Find your type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/read-someone",
+      "finalUrl": "/read-someone",
+      "file": "read-someone-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read someone",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/types",
+      "finalUrl": "/types",
+      "file": "types-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "All sixteen",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ENTP",
+      "finalUrl": "/type/ENTP",
+      "file": "type-entp-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ISFJ",
+      "finalUrl": "/type/ISFJ",
+      "file": "type-isfj-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ISFJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/INTJ",
+      "finalUrl": "/type/INTJ",
+      "file": "type-intj-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "INTJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides",
+      "finalUrl": "/sides",
+      "file": "sides-index-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides/INTP",
+      "finalUrl": "/sides/INTP",
+      "file": "sides-intp-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/bonds",
+      "finalUrl": "/bonds",
+      "file": "bonds-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Bonds",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENTP/INFP",
+      "finalUrl": "/pair/ENTP/INFP",
+      "file": "pair-entp-infp-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How INFP should handle ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENFP/ISTJ",
+      "finalUrl": "/pair/ENFP/ISTJ",
+      "file": "pair-enfp-istj-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How ISTJ should handle ENFP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/network",
+      "finalUrl": "/network",
+      "file": "network-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read a whole group",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/matrix",
+      "finalUrl": "/matrix",
+      "file": "matrix-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every pair at once",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon",
+      "finalUrl": "/lexicon",
+      "file": "lexicon-index-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ne",
+      "finalUrl": "/lexicon/ne",
+      "file": "lexicon-ne-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ni",
+      "finalUrl": "/lexicon/ni",
+      "file": "lexicon-ni-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide",
+      "finalUrl": "/guide",
+      "file": "guide-index-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide/ENTP",
+      "finalUrl": "/guide/ENTP",
+      "file": "guide-entp-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/admin",
+      "finalUrl": "/admin",
+      "file": "admin-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Who can get in",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+      ]
+    },
+    {
+      "route": "/",
+      "finalUrl": "/",
+      "file": "home-signedout-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — compatibility runs in two directions",
+      "h1": "Compatibility runs in two directions.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/signin",
+      "finalUrl": "/signin",
+      "file": "signin-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — access required",
+      "h1": "Octant",
+      "consoleErrors": []
+    },
+    {
+      "route": "/",
+      "finalUrl": "/welcome",
+      "file": "home-signedin-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome",
+      "finalUrl": "/welcome",
+      "file": "welcome-index-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome/2",
+      "finalUrl": "/welcome/2",
+      "file": "welcome-2-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every one of those eight either reaches outward, toward the world — or draws inward, toward something already settled.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn",
+      "finalUrl": "/learn",
+      "file": "learn-index-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Learn this from scratch",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/functions",
+      "finalUrl": "/learn/functions",
+      "file": "learn-functions-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Eight habits of mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/order",
+      "finalUrl": "/learn/order",
+      "file": "learn-order-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The order is the type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/ego",
+      "finalUrl": "/learn/ego",
+      "file": "learn-ego-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your top four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/shadow",
+      "finalUrl": "/learn/shadow",
+      "file": "learn-shadow-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your bottom four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/powers",
+      "finalUrl": "/learn/powers",
+      "file": "learn-powers-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Superpower and kryptonite",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/four-sides",
+      "finalUrl": "/learn/four-sides",
+      "file": "learn-four-sides-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Four sides of the mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/growth",
+      "finalUrl": "/learn/growth",
+      "file": "learn-growth-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Gateways, and the two crises",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/exchange",
+      "finalUrl": "/learn/exchange",
+      "file": "learn-exchange-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The exchange overlay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/quadras",
+      "finalUrl": "/learn/quadras",
+      "file": "learn-quadras-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Clubs and temperaments",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/relations",
+      "finalUrl": "/learn/relations",
+      "file": "learn-relations-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "When two wirings meet",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/bonds",
+      "finalUrl": "/learn/bonds",
+      "file": "learn-bonds-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The pairings that work",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/groups",
+      "finalUrl": "/learn/groups",
+      "file": "learn-groups-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "More than two",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram",
+      "finalUrl": "/learn/octagram",
+      "file": "learn-octagram-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — the wheels",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram-theme",
+      "finalUrl": "/learn/octagram-theme",
+      "file": "learn-octagram-theme-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — your childhood",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/borrowed-wiring",
+      "finalUrl": "/learn/borrowed-wiring",
+      "file": "learn-borrowed-wiring-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Borrowed wiring",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/calculator",
+      "finalUrl": "/calculator",
+      "file": "calculator-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Find your type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/read-someone",
+      "finalUrl": "/read-someone",
+      "file": "read-someone-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read someone",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/types",
+      "finalUrl": "/types",
+      "file": "types-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "All sixteen",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ENTP",
+      "finalUrl": "/type/ENTP",
+      "file": "type-entp-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ISFJ",
+      "finalUrl": "/type/ISFJ",
+      "file": "type-isfj-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ISFJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/INTJ",
+      "finalUrl": "/type/INTJ",
+      "file": "type-intj-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "INTJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides",
+      "finalUrl": "/sides",
+      "file": "sides-index-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides/INTP",
+      "finalUrl": "/sides/INTP",
+      "file": "sides-intp-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/bonds",
+      "finalUrl": "/bonds",
+      "file": "bonds-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Bonds",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENTP/INFP",
+      "finalUrl": "/pair/ENTP/INFP",
+      "file": "pair-entp-infp-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How INFP should handle ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENFP/ISTJ",
+      "finalUrl": "/pair/ENFP/ISTJ",
+      "file": "pair-enfp-istj-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How ISTJ should handle ENFP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/network",
+      "finalUrl": "/network",
+      "file": "network-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read a whole group",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/matrix",
+      "finalUrl": "/matrix",
+      "file": "matrix-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every pair at once",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon",
+      "finalUrl": "/lexicon",
+      "file": "lexicon-index-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ne",
+      "finalUrl": "/lexicon/ne",
+      "file": "lexicon-ne-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ni",
+      "finalUrl": "/lexicon/ni",
+      "file": "lexicon-ni-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide",
+      "finalUrl": "/guide",
+      "file": "guide-index-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide/ENTP",
+      "finalUrl": "/guide/ENTP",
+      "file": "guide-entp-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/admin",
+      "finalUrl": "/admin",
+      "file": "admin-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Who can get in",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+      ]
+    },
+    {
+      "route": "/",
+      "finalUrl": "/",
+      "file": "home-signedout-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — compatibility runs in two directions",
+      "h1": "Compatibility runs in two directions.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/signin",
+      "finalUrl": "/signin",
+      "file": "signin-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — access required",
+      "h1": "Octant",
+      "consoleErrors": []
+    },
+    {
+      "route": "/",
+      "finalUrl": "/welcome",
+      "file": "home-signedin-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome",
+      "finalUrl": "/welcome",
+      "file": "welcome-index-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome/2",
+      "finalUrl": "/welcome/2",
+      "file": "welcome-2-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every one of those eight either reaches outward, toward the world — or draws inward, toward something already settled.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn",
+      "finalUrl": "/learn",
+      "file": "learn-index-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Learn this from scratch",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/functions",
+      "finalUrl": "/learn/functions",
+      "file": "learn-functions-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Eight habits of mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/order",
+      "finalUrl": "/learn/order",
+      "file": "learn-order-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The order is the type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/ego",
+      "finalUrl": "/learn/ego",
+      "file": "learn-ego-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your top four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/shadow",
+      "finalUrl": "/learn/shadow",
+      "file": "learn-shadow-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your bottom four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/powers",
+      "finalUrl": "/learn/powers",
+      "file": "learn-powers-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Superpower and kryptonite",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/four-sides",
+      "finalUrl": "/learn/four-sides",
+      "file": "learn-four-sides-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Four sides of the mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/growth",
+      "finalUrl": "/learn/growth",
+      "file": "learn-growth-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Gateways, and the two crises",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/exchange",
+      "finalUrl": "/learn/exchange",
+      "file": "learn-exchange-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The exchange overlay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/quadras",
+      "finalUrl": "/learn/quadras",
+      "file": "learn-quadras-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Clubs and temperaments",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/relations",
+      "finalUrl": "/learn/relations",
+      "file": "learn-relations-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "When two wirings meet",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/bonds",
+      "finalUrl": "/learn/bonds",
+      "file": "learn-bonds-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The pairings that work",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/groups",
+      "finalUrl": "/learn/groups",
+      "file": "learn-groups-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "More than two",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram",
+      "finalUrl": "/learn/octagram",
+      "file": "learn-octagram-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — the wheels",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram-theme",
+      "finalUrl": "/learn/octagram-theme",
+      "file": "learn-octagram-theme-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — your childhood",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/borrowed-wiring",
+      "finalUrl": "/learn/borrowed-wiring",
+      "file": "learn-borrowed-wiring-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Borrowed wiring",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/calculator",
+      "finalUrl": "/calculator",
+      "file": "calculator-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Find your type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/read-someone",
+      "finalUrl": "/read-someone",
+      "file": "read-someone-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read someone",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/types",
+      "finalUrl": "/types",
+      "file": "types-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "All sixteen",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ENTP",
+      "finalUrl": "/type/ENTP",
+      "file": "type-entp-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ISFJ",
+      "finalUrl": "/type/ISFJ",
+      "file": "type-isfj-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ISFJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/INTJ",
+      "finalUrl": "/type/INTJ",
+      "file": "type-intj-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "INTJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides",
+      "finalUrl": "/sides",
+      "file": "sides-index-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides/INTP",
+      "finalUrl": "/sides/INTP",
+      "file": "sides-intp-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/bonds",
+      "finalUrl": "/bonds",
+      "file": "bonds-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Bonds",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENTP/INFP",
+      "finalUrl": "/pair/ENTP/INFP",
+      "file": "pair-entp-infp-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How INFP should handle ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENFP/ISTJ",
+      "finalUrl": "/pair/ENFP/ISTJ",
+      "file": "pair-enfp-istj-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How ISTJ should handle ENFP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/network",
+      "finalUrl": "/network",
+      "file": "network-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read a whole group",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/matrix",
+      "finalUrl": "/matrix",
+      "file": "matrix-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every pair at once",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon",
+      "finalUrl": "/lexicon",
+      "file": "lexicon-index-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ne",
+      "finalUrl": "/lexicon/ne",
+      "file": "lexicon-ne-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ni",
+      "finalUrl": "/lexicon/ni",
+      "file": "lexicon-ni-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide",
+      "finalUrl": "/guide",
+      "file": "guide-index-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide/ENTP",
+      "finalUrl": "/guide/ENTP",
+      "file": "guide-entp-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/admin",
+      "finalUrl": "/admin",
+      "file": "admin-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Who can get in",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+      ]
+    },
+    {
+      "route": "/",
+      "finalUrl": "/",
+      "file": "home-signedout-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — compatibility runs in two directions",
+      "h1": "Compatibility runs in two directions.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/signin",
+      "finalUrl": "/signin",
+      "file": "signin-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — access required",
+      "h1": "Octant",
+      "consoleErrors": []
+    },
+    {
+      "route": "/",
+      "finalUrl": "/welcome",
+      "file": "home-signedin-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome",
+      "finalUrl": "/welcome",
+      "file": "welcome-index-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "There are eight basic ways of paying attention — and everyone uses all eight, just not equally.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/welcome/2",
+      "finalUrl": "/welcome/2",
+      "file": "welcome-2-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every one of those eight either reaches outward, toward the world — or draws inward, toward something already settled.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn",
+      "finalUrl": "/learn",
+      "file": "learn-index-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Learn this from scratch",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/functions",
+      "finalUrl": "/learn/functions",
+      "file": "learn-functions-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Eight habits of mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/order",
+      "finalUrl": "/learn/order",
+      "file": "learn-order-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The order is the type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/ego",
+      "finalUrl": "/learn/ego",
+      "file": "learn-ego-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your top four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/shadow",
+      "finalUrl": "/learn/shadow",
+      "file": "learn-shadow-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Your bottom four",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/powers",
+      "finalUrl": "/learn/powers",
+      "file": "learn-powers-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Superpower and kryptonite",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/four-sides",
+      "finalUrl": "/learn/four-sides",
+      "file": "learn-four-sides-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Four sides of the mind",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/growth",
+      "finalUrl": "/learn/growth",
+      "file": "learn-growth-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Gateways, and the two crises",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/exchange",
+      "finalUrl": "/learn/exchange",
+      "file": "learn-exchange-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The exchange overlay",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/quadras",
+      "finalUrl": "/learn/quadras",
+      "file": "learn-quadras-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Clubs and temperaments",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/relations",
+      "finalUrl": "/learn/relations",
+      "file": "learn-relations-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "When two wirings meet",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/bonds",
+      "finalUrl": "/learn/bonds",
+      "file": "learn-bonds-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The pairings that work",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/groups",
+      "finalUrl": "/learn/groups",
+      "file": "learn-groups-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "More than two",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram",
+      "finalUrl": "/learn/octagram",
+      "file": "learn-octagram-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — the wheels",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/octagram-theme",
+      "finalUrl": "/learn/octagram-theme",
+      "file": "learn-octagram-theme-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The Octagram — your childhood",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/learn/borrowed-wiring",
+      "finalUrl": "/learn/borrowed-wiring",
+      "file": "learn-borrowed-wiring-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Borrowed wiring",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/calculator",
+      "finalUrl": "/calculator",
+      "file": "calculator-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Find your type",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/read-someone",
+      "finalUrl": "/read-someone",
+      "file": "read-someone-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read someone",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/types",
+      "finalUrl": "/types",
+      "file": "types-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "All sixteen",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ENTP",
+      "finalUrl": "/type/ENTP",
+      "file": "type-entp-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/ISFJ",
+      "finalUrl": "/type/ISFJ",
+      "file": "type-isfj-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "ISFJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/type/INTJ",
+      "finalUrl": "/type/INTJ",
+      "file": "type-intj-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "INTJ",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides",
+      "finalUrl": "/sides",
+      "file": "sides-index-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/sides/INTP",
+      "finalUrl": "/sides/INTP",
+      "file": "sides-intp-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The four sides, in practice",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/bonds",
+      "finalUrl": "/bonds",
+      "file": "bonds-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Bonds",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENTP/INFP",
+      "finalUrl": "/pair/ENTP/INFP",
+      "file": "pair-entp-infp-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How INFP should handle ENTP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/pair/ENFP/ISTJ",
+      "finalUrl": "/pair/ENFP/ISTJ",
+      "file": "pair-enfp-istj-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "How ISTJ should handle ENFP",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/network",
+      "finalUrl": "/network",
+      "file": "network-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Read a whole group",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/matrix",
+      "finalUrl": "/matrix",
+      "file": "matrix-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every pair at once",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon",
+      "finalUrl": "/lexicon",
+      "file": "lexicon-index-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ne",
+      "finalUrl": "/lexicon/ne",
+      "file": "lexicon-ne-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/lexicon/ni",
+      "finalUrl": "/lexicon/ni",
+      "file": "lexicon-ni-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Every term, defined",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide",
+      "finalUrl": "/guide",
+      "file": "guide-index-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/guide/ENTP",
+      "finalUrl": "/guide/ENTP",
+      "file": "guide-entp-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "The emoji guide",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/admin",
+      "finalUrl": "/admin",
+      "file": "admin-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — read the wiring",
+      "h1": "Who can get in",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+        "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+      ]
+    }
+  ]
+}
