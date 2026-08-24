@@ -26,8 +26,12 @@ and silently detaches the app from its user list.
 `ACCESS_CODES` · `AUTH_SECRET` · `GEMINI_API_KEY` · `GOOGLE_CLIENT_ID` ·
 `GOOGLE_CLIENT_SECRET` · `OWNER_EMAIL` · `RESEND_API_KEY`
 
-**One more to set** once this branch deploys: `NOTIFY_FROM` =
-`Octant <octant@insuranceprosct.com>` — see the notification section below.
+**One more to set**: `NOTIFY_FROM` = `Octant <octant@send.stratfieldpartners.com>`,
+once that subdomain verifies in Resend — see `docs/COWORK-DNS-RESEND-RUNBOOK.md`.
+It supersedes the `insuranceprosct.com` value this file used to recommend; that
+domain belongs to a different business, and Octant mail arriving from an
+insurance agency reads as phishing to the applicants and partners who now
+receive it.
 
 **Registered redirect URIs** on `Octant Worker`:
 
@@ -87,9 +91,16 @@ in code, one secret still to set.
    `{ sent: false }`.
 
 **To finish:** set the Cloudflare secret `NOTIFY_FROM` to
-`Octant <octant@insuranceprosct.com>` — the one verified domain on the Resend
-account; a direct send from it to `nick@stratfieldpartners.com` was tested on
-26 Jul and came back **delivered**. Leave `OWNER_EMAIL` alone.
+`Octant <octant@send.stratfieldpartners.com>` once that subdomain verifies —
+`docs/COWORK-DNS-RESEND-RUNBOOK.md` carries the DNS records and the steps.
+Leave `OWNER_EMAIL` alone.
+
+Until 20 Aug this said `Octant <octant@insuranceprosct.com>`, the one domain
+verified on the Resend account, and a send from it was tested as delivered on
+26 Jul. That was defensible while the only recipient was the owner. It stopped
+being defensible once `/apply` and `/partners` began mailing strangers: a
+stranger receiving Octant mail from an insurance agency's domain has every
+reason to treat it as phishing.
 
 The same sender now also carries **chat transcripts**: every assistant
 conversation is logged to the `CHAT_LOGS` namespace and mailed to
