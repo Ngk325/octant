@@ -168,7 +168,7 @@ app has nothing between `InvolutionTable` (structure) and `/pair`
    both ways), with the deck's "why it works" copy and the Upstream 54 /
    Downstream 48 half-mesh fact. Tab between "Four sides" and "A pair".
 3. **Course stage:** a "Bonds" stage between `relations` and `groups`
-   (also fix the header comment saying thirteen stages — there are 14).
+   (also fix the header comment saying thirteen stages — there are 15).
 4. **Registries:** lexicon entries for Bond/Spark mesh; a `bond` chat-figure
    directive in `chat-figures.tsx`.
 

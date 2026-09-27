@@ -113,9 +113,13 @@
   // Cloudflare's own docs examples, so another Worker on this account using the
   // canonical examples would silently merge counters with these. These two are
   // arbitrary and specific to avoid that.
+  // ONRAMP_LIMITER guards only the funnel's done-step capture path — the one
+  // public GET that writes KV and sends an Octant-branded email. A real
+  // person captures once; ten a minute from one address is already a script.
   "ratelimits": [
     { "name": "LOGIN_LIMITER", "namespace_id": "748301", "simple": { "limit": 30, "period": 60 } },
-    { "name": "CHAT_LIMITER", "namespace_id": "748302", "simple": { "limit": 20, "period": 60 } }
+    { "name": "CHAT_LIMITER", "namespace_id": "748302", "simple": { "limit": 20, "period": 60 } },
+    { "name": "ONRAMP_LIMITER", "namespace_id": "748303", "simple": { "limit": 10, "period": 60 } }
   ],
 
   // The transcript sweep used to piggyback on chat traffic, which had two

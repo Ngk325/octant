@@ -3,6 +3,7 @@ import { seal, unseal } from "./crypto";
 import { escapeHtml } from "./html";
 import { captureLead, FRICTION_COPY, stripeHref, type LeadsEnv } from "./leads";
 import { FAVICON, MARK, STRIPE_LINK } from "./marketing";
+import { normalise } from "./users";
 
 /** The third argument the runtime passes to fetch. Duplicated from index.ts's
  *  Ctx (a type-only cross-import would work too, but this is a one-line
@@ -17,6 +18,13 @@ interface AnalyticsEngineDataset {
 
 export interface OnrampEnv extends LeadsEnv {
   ONRAMP_ANALYTICS?: AnalyticsEngineDataset;
+  /**
+   * Cross-isolate ceiling on done-step capture attempts, keyed by connecting
+   * IP — same binding shape and degrade-open posture as LOGIN_LIMITER
+   * (auth.ts). Only the capture path consumes it; browsing the funnel's
+   * steps never does.
+   */
+  ONRAMP_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
 }
 
 /* ------------------------------------------------------------------ *
@@ -76,25 +84,54 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  * capture at the done step requires a token whose signature checks out AND
  * whose age is at least MIN_COMPLETION_MS: long enough that no real person
  * could have answered ten questions in less, short enough to not slow down
- * anyone who actually did. This does not stop a determined scripted
- * attacker (two requests with a sleep between them still works) — it stops
- * the single-request version of the abuse, which is the shape automated
- * probing actually takes. IP-based rate limiting would close the rest, but
- * needs new state this Worker doesn't have a cheap place to put (KV is the
- * wrong tool for high-frequency writes — see leads.ts's header comment).
+ * anyone who actually did.
+ *
+ * The token also carries a random nonce, which makes it single-use: the
+ * first capture records which address consumed it (in LEADS, beside the
+ * lead it created — one extra write per genuine capture, nowhere near the
+ * high-frequency shape leads.ts's header comment warns about), so the same
+ * token replayed with a second address is refused outright instead of
+ * minting an unlimited stream of Octant-branded emails and KV writes. The
+ * same address again is just a reload of the done page, which captureLead
+ * already treats as a no-op. ONRAMP_LIMITER (above) caps how fast one IP
+ * can attempt captures at all, which also closes the mint-a-fresh-token-
+ * per-address loop the nonce alone cannot see.
  */
 const START_TTL_SECONDS = 60 * 60;
 const MIN_COMPLETION_MS = 2_000;
 
 async function issueStartToken(env: LeadsEnv, now: number): Promise<string | null> {
   if (!env.AUTH_SECRET) return null;
-  return seal({ t: now }, env.AUTH_SECRET, START_TTL_SECONDS, now);
+  const nonce = [...crypto.getRandomValues(new Uint8Array(16))]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return seal({ t: now, n: nonce }, env.AUTH_SECRET, START_TTL_SECONDS, now);
 }
 
-async function verifyStartToken(env: LeadsEnv, token: string | null, now: number): Promise<boolean> {
-  if (!env.AUTH_SECRET || !token) return false;
-  const payload = await unseal<{ t: number }>(token, env.AUTH_SECRET, now);
-  return !!payload && now - payload.t >= MIN_COMPLETION_MS;
+/** The token's nonce when signature and age both check out, else null. */
+async function verifyStartToken(env: LeadsEnv, token: string | null, now: number): Promise<string | null> {
+  if (!env.AUTH_SECRET || !token) return null;
+  const payload = await unseal<{ t: number; n?: string }>(token, env.AUTH_SECRET, now);
+  if (!payload || typeof payload.n !== "string" || !payload.n) return null;
+  return now - payload.t >= MIN_COMPLETION_MS ? payload.n : null;
+}
+
+/**
+ * Enforce one capture per start token. "fresh" claims the nonce for this
+ * address; "reload" is the same address again (harmless — captureLead is
+ * idempotent); "replayed" is the abuse case: a second address on a token
+ * that already captured. Without a LEADS store there is nothing to protect —
+ * captureLead is a no-op — so the check passes open.
+ */
+async function consumeStartToken(
+  env: LeadsEnv, nonce: string, email: string,
+): Promise<"fresh" | "reload" | "replayed"> {
+  if (!env.LEADS) return "fresh";
+  const key = `start:${nonce}`;
+  const used = await env.LEADS.get(key);
+  if (used !== null) return used === normalise(email) ? "reload" : "replayed";
+  await env.LEADS.put(key, normalise(email), { expirationTtl: START_TTL_SECONDS });
+  return "fresh";
 }
 
 type Option = { value: string; label: string };
@@ -133,6 +170,17 @@ function answersFrom(p: URLSearchParams): (string | null)[] {
   a[0] = p.get("q0");
   a[4] = p.get("q4");
   return a;
+}
+
+/**
+ * The genuinely-narrowed field size, or null when the coins say nothing: 16
+ * means no coin was answered (nothing narrowed), 0 means the values were
+ * invalid (a hand-edited URL). Both used to render self-negating headlines —
+ * "one of about 16 of the sixteen", "0 of the sixteen" — so both fall back.
+ */
+function fieldNarrowed(p: URLSearchParams): number | null {
+  const n = calculate(answersFrom(p)).field.length;
+  return n > 0 && n < 16 ? n : null;
 }
 
 /**
@@ -218,12 +266,17 @@ const STEPS: readonly Step[] = [
   {
     kind: "interstitial",
     heading: (p) => {
-      const field = calculate(answersFrom(p)).field.length;
-      return `Your pattern is one of about ${field} of the sixteen.`;
+      const field = fieldNarrowed(p);
+      return field
+        ? `Your pattern is one of about ${field} of the sixteen.`
+        : "Your pattern is one of the sixteen.";
     },
-    body: () =>
-      "The other six either/or questions pin down exactly which one — that's the full read, " +
-      "not this teaser.",
+    body: (p) =>
+      fieldNarrowed(p)
+        ? "The other six either/or questions pin down exactly which one — that's the full read, " +
+          "not this teaser."
+        : "The eight either/or questions pin down exactly which one — that's the full read, " +
+          "not this teaser.",
   },
   {
     // Objection handling right before the email ask — the same "descriptions
@@ -355,8 +408,10 @@ function renderInterstitial(
 
 function renderEmail(i: number, p: URLSearchParams): string {
   const email = p.get("email") ?? "";
+  // Titled by what the step actually sends — the explainer email leads.ts
+  // fires at capture — never by something the funnel does not deliver.
   return `
-  <h1>See your directional reading.</h1>
+  <h1>Get your two-minute explainer.</h1>
   <p class="lede">We'll send the two-minute explainer for what you've found so far, and nothing else without asking.</p>
   <form method="get" action="/onramp">
     ${hiddenEcho(p, ["email", "optin"])}
@@ -374,17 +429,24 @@ function renderEmail(i: number, p: URLSearchParams): string {
 }
 
 function renderDone(p: URLSearchParams): string {
-  const result = calculate(answersFrom(p));
+  const field = fieldNarrowed(p);
   const email = p.get("email") ?? "";
   // stripeHref() normalises the email — reused from leads.ts so this CTA and
   // the nurture email's CTA build the identical client_reference_id for the
   // same person, even when the address's casing differs between requests.
   const href = email ? stripeHref(email) : STRIPE_LINK;
+  const heading = field
+    ? `Your pattern is one of about ${field} of the sixteen.`
+    : "Your pattern is one of the sixteen.";
+  const lede = field
+    ? "That's a directional read from two of the eight questions — the full instrument answers " +
+      "the other six and shows the mechanism, not just where you land."
+    : "The full instrument's eight either-or questions find which one — and show the mechanism, " +
+      "not just where you land.";
   return `
-  <h1>Your pattern is one of about ${result.field.length} of the sixteen.</h1>
+  <h1>${heading}</h1>
   <p class="lede">
-    That's a directional read from two of the eight questions — the full instrument answers
-    the other six and shows the mechanism, not just where you land.
+    ${lede}
   </p>
   <div class="cta-row">
     <a class="btn primary" href="${escapeHtml(href)}">Start now — $25/user·mo</a>
@@ -519,6 +581,21 @@ ${backLink(p, step)}
 </html>`;
 }
 
+/** A capture refusal, styled like the funnel, always with a way to start over. */
+const refusalResponse = (status: number, message: string) =>
+  new Response(
+    `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>${TITLE}</title><style>${STYLE}</style></head>
+<body><div class="wrap">
+<header class="top"><a href="/">${MARK(24)} Octant</a></header>
+<h1>That didn&rsquo;t work.</h1>
+<p class="lede">${escapeHtml(message)}</p>
+<p><a class="btn primary" href="/onramp">Start over</a></p>
+</div></body></html>`,
+    { status, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } },
+  );
+
 /**
  * `GET /onramp` — the whole funnel, one route, state in the query string.
  * Returns null for anything it doesn't own, matching handleRead's contract,
@@ -557,12 +634,29 @@ export async function handleOnramp(
     // Octant-branded email to that address from the verified sender,
     // turning the endpoint into an open mail relay. EMAIL_RE rejects
     // malformed addresses; the start-token check (above) rejects requests
-    // that never actually rendered step 0 first.
+    // that never actually rendered step 0 first; the nonce record refuses
+    // a token that already captured for a different address.
     if (email && email.length <= 254 && EMAIL_RE.test(email)) {
-      if (await verifyStartToken(env, url.searchParams.get("_s"), now)) {
+      if (env.ONRAMP_LIMITER) {
+        const ip = request.headers.get("cf-connecting-ip") ?? "unknown";
+        const verdict = await env.ONRAMP_LIMITER.limit({ key: ip }).catch(() => ({ success: true }));
+        if (!verdict.success) {
+          return refusalResponse(429, "Too many attempts from this connection. Wait a minute and try again.");
+        }
+      }
+      const nonce = await verifyStartToken(env, url.searchParams.get("_s"), now);
+      if (nonce) {
+        const use = await consumeStartToken(env, nonce, email);
+        if (use === "replayed") {
+          console.error("onramp: lead capture refused — start token replayed with a different address");
+          return refusalResponse(403, "That link has already been used for a different address.");
+        }
         const goal = url.searchParams.get("goal") ?? undefined;
         const friction = frictionValues(url.searchParams);
-        const fieldSize = calculate(answersFrom(url.searchParams)).field.length;
+        // A boundary field size (16 = nothing answered, 0 = invalid values)
+        // is withheld, so the explainer email falls back to its generic body
+        // instead of repeating the same nonsense the page now guards against.
+        const fieldSize = fieldNarrowed(url.searchParams) ?? undefined;
         const optin = url.searchParams.get("optin") === "yes";
         const work = captureLead(env, url.origin, email, goal, friction, fieldSize, optin, now);
         if (ctx?.waitUntil) ctx.waitUntil(work); else await work;

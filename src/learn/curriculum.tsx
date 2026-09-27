@@ -678,7 +678,7 @@ export const STAGES: Stage[] = [
         <Panel title="Three worth knowing" style={{ marginTop: "var(--s5)" }}>
           <Row stacked k={<Term id="rel-du">Counterpart</Term>} v={<span className="small">{REL_PLAIN.DU}</span>} />
           <Row stacked k={<Term id="rel-sr">Examiner</Term>} v={<span className="small">{REL_PLAIN.SR}</span>} />
-          <Row stacked k={<Term id="rel-cf">Conflict</Term>} v={<span className="small">{REL_PLAIN.CF}</span>} />
+          <Row stacked k={<Term id="rel-cf">Headwind</Term>} v={<span className="small">{REL_PLAIN.CF}</span>} />
         </Panel>
 
         <p className="note warn" style={{ marginTop: "var(--s5)" }}>

@@ -254,23 +254,26 @@ export const TRICKSTER_BLIND: Record<Fn, string> = {
   "Fe": "managing group emotion",
   "Fi": "naming their own values"
 };
+/* Every frame opens with the relation's shipped REL_NAME — never a retired
+ * working name — so a pair page shows one name, twice. Asserted for all
+ * sixteen codes in tests/lexicon.test.ts. */
 export const REL_FRAME: Record<RelCode, string> = {
-  "ID": "Identity. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap.",
+  "ID": "Twin. Same wiring, so understanding is instant and the blind spots are shared — neither of you covers the gap.",
   "DU": "Counterpart. Their wiring completes yours; this is the lowest-friction pairing in the model.",
-  "AC": "Activity. Genuinely energising, and quietly draining if you never step out of it.",
-  "MI": "Mirror. Same two functions, opposite order — you agree on what matters and argue about sequence.",
+  "AC": "Spark. Genuinely energising, and quietly draining if you never step out of it.",
+  "MI": "Opposite hand. Same two functions, opposite order — you agree on what matters and argue about sequence.",
   "KD": "Cousin. Shared leading function: you see the same thing and then do different things with it.",
-  "BU": "Business. Shared second function — easy to work alongside, harder to get close to.",
+  "BU": "Colleague. Shared second function — easy to work alongside, harder to get close to.",
   "HD": "Near fit. Partial completion; comfortable until the half you do not share is the half that is needed.",
   "MG": "Loose fit. Relaxing and slightly unserious — good for rest, poor for joint execution.",
-  "SE": "Super-Ego. Fascinating at a distance, abrasive up close.",
-  "CF": "Conflict. Your strongest function lands on their Blind spot, and theirs on yours.",
+  "SE": "Standoff. Fascinating at a distance, abrasive up close.",
+  "CF": "Headwind. Your strongest function lands on their Blind spot, and theirs on yours.",
   "QI": "Near-twin. You look alike from outside and arrive by routes that do not translate.",
   "EX": "Damper. Same four letters, every attitude flipped — a constant near-miss on intent.",
-  "SR": "You supervise them. Asymmetric: your Lead lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
-  "SV": "They supervise you. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
-  "BR": "You are Upstream of them. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
-  "BE": "You are Downstream of them. You will find them more compelling than they find you; do not read the asymmetry as rejection."
+  "SR": "Examiner. Asymmetric: your Lead lands on their blind side, so your offhand remarks arrive as verdicts. Go gentler than feels necessary.",
+  "SV": "Examined. Asymmetric: their casual corrections land harder than they intend, and they cannot see it happening. Do not mistake the pressure for malice.",
+  "BR": "Upstream. They will find you more compelling than you find them; spend that credit deliberately rather than assuming it is mutual.",
+  "BE": "Downstream. You will find them more compelling than they find you; do not read the asymmetry as rejection."
 };
 
 /**

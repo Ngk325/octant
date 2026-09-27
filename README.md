@@ -35,7 +35,7 @@ src/engine/
   data.ts       seed + frozen score tables + authored copy (see "Provenance")
 src/worker/     Cloudflare Worker: access wall, Google sign-in + approval, admin,
                 /api/chat proxying Gemini, transcript logging, security headers
-src/learn/      the thirteen-stage course
+src/learn/      the fifteen-stage course
 ```
 
 ## Plain first, technical underneath
@@ -43,7 +43,7 @@ src/learn/      the thirteen-stage course
 Every surface leads with plain English and puts the precise version one click below it, in a
 disclosure labelled *The exact mechanics*. Nothing is hidden from either reader: a newcomer gets
 a sentence they can act on, and can see exactly which vocabulary they are growing into.
-`tests/plain.test.ts` asserts all 100 lexicon entries carry a gloss and that the plain layer does
+`tests/plain.test.ts` asserts all 103 lexicon entries carry a gloss and that the plain layer does
 not smuggle back the jargon it exists to replace.
 
 ## Surfaces
@@ -53,7 +53,7 @@ not smuggle back the jargon it exists to replace.
 | `/` | Marketing page for the signed-out; the app (or onboarding, first visit) for the signed-in. |
 | `/signin` | The gate as its own page: invite code, and Google when configured. |
 | `/welcome` · `/welcome/:step` | Eight onboarding screens, shown once, skippable, before the full app. |
-| `/learn` · `/learn/:stage` | Thirteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. |
+| `/learn` · `/learn/:stage` | Fifteen stages, in order, from "what is a cognitive function" to reading and borrowing another type's wiring. |
 | `/calculator` | Four determining coins fix the type; four confirming coins are derivable checks. Always narrows, never returns nothing. |
 | `/read-someone` | The same instrument for typing someone else: six ordinary things to ask or notice in conversation, none of them naming the axis they test. Scores through the same `calculate()` as the calculator. |
 | `/types` | All sixteen at a glance, grouped by quadra or temperament. |
