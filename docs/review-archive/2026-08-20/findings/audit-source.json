@@ -1,0 +1,566 @@
+{
+ "marketing": {
+  "findings": [
+   {
+    "severity": "P0",
+    "title": "Flagship hero 'worked example' contradicts the engine and the site's own public /read page \u2014 directions swapped",
+    "detail": "The hero panel (marketing.ts HERO_READING) is hardcoded HTML labeled 'Worked example', with a code comment (marketing.ts:137-141) claiming 'the panel cannot drift away from what the app would say on /pair/ENTP/INFP'. It has drifted: the row 'ENTP \u2192 INFP | Examined | 44 | Your leading function lands on their Blind spot; you can flatten them without noticing' (marketing.ts:150-157) and 'INFP \u2192 ENTP | Examiner | 34' (marketing.ts:160-167) attach each score and gloss to the wrong side. Engine introspection this session: relation(ENTP,INFP)=SR 'Examiner', ease(ENTP,INFP)=34, gloss 'THEIR leading function lands on YOUR Blind spot'; relation(INFP,ENTP)=SV 'Examined', ease(INFP,ENTP)=44. Stack check confirms the physical fact: INFP's lead Fi sits in ENTP's Blind spot (seat 6); ENTP's lead Ne sits in INFP's Support (seat 1) \u2014 so INFP is the oblivious 'flattener' with the easier 44, and ENTP carries the 34. The same site's own public SEO page agrees with the engine and against the hero: curl of /read/entp-and-infp renders 'ENTP experiences it as 34/100 effortful, INFP experiences it as 44/100 ... INFP has the easier time of it.' The hero's footer ('only one of them can feel it', marketing.ts:170-172) therefore points readers at the wrong person. For a brand whose one page-level claim is 'Nothing can quietly contradict anything else' (marketing.ts:663-664), the front door contradicting its own public reading page on its flagship example is the exact failure mode the positioning stakes itself against \u2014 discoverable by any enthusiast in two clicks. tests/marketing.test.ts pins '128/128', 'r \u22120.15' and '$25' as strings (lines 36-45) but nothing pins the hero panel's direction mapping.",
+    "evidence": "src/worker/marketing.ts:137-173; engine outputs run this session: ease(ENTP,INFP)=34 / ease(INFP,ENTP)=44, relation(ENTP,INFP)='Examiner', INFP lead Fi in ENTP seat 6 'Blind spot', ENTP lead Ne in INFP seat 1 'Support'; curl http://localhost:5173/read/entp-and-infp ('ENTP experiences it as 34/100 effortful, INFP ... 44/100'); tests/marketing.test.ts:36-45; screenshot home-signedout-desktop-light.png (hero panel top-right shows ENTP\u2192INFP 44)",
+    "lenses": [
+     "newcomer",
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Swap the two direction labels in HERO_READING (44/Examined/its gloss belongs to INFP \u2192 ENTP; 34/Examiner to ENTP \u2192 INFP), and add a marketing test that renders marketingPage() and asserts each row's score equals ease() for the direction its label names \u2014 the same discipline tests/cards.test.ts already applies to the deck."
+   },
+   {
+    "severity": "P1",
+    "title": "Paying customers are promised 'straight in' but /signin tells them they will wait for owner approval",
+    "detail": "The pricing card promises 'Checkout via Stripe. Payment unlocks your account automatically \u2014 sign in with Google right after and you're straight in' (marketing.ts:807-810), and stripe.ts does implement automatic preapproval on a settled checkout (stripe.ts:124-152 \u2192 preapprove()). But the /signin gate a payer actually lands on says the opposite: 'This is a private instrument. Sign in to continue. ... Access is granted by the owner of this deployment. If you sign in with Google you will wait until they approve you' (curl of /signin this session; screenshot signin-desktop-light.png). There is no 'already paid?' acknowledgment anywhere on the gate, and in the dev deployment no Google button renders at all \u2014 only an Access code field \u2014 so the only visible path is the invite code the visitor does not have. The moment of maximum buyer anxiety (just paid $25, hit a wall labeled 'private instrument') gets copy written for the invite-only posture, not the self-serve one the marketing page sells.",
+    "evidence": "src/worker/marketing.ts:807-810; src/worker/stripe.ts:124-152; curl http://localhost:5173/signin visible-text extract ('you will wait until they approve you'); screenshot signin-desktop-light.png (Access code field only, no Google button, no mention of payment)",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "Add one sentence to the /signin gate: 'Just subscribed? Sign in with Google using the email you paid with \u2014 payment unlocks your account automatically.' Render it (and the Google button) whenever Stripe + Google are configured; keep the owner-approval sentence only for the non-payer path."
+   },
+   {
+    "severity": "P1",
+    "title": "Hero CTA promises 'Eight either-or questions' free; /onramp delivers two, behind a required email gate, and never shows the promised 'directional reading'",
+    "detail": "The hero cta-note reads 'Free, no account. Eight either-or questions, no scoring you can fail' (marketing.ts:596). The /onramp funnel it links to asks only TWO of the eight real coin questions (answersFrom() reads only q0 and q4, onramp.ts:131-136; header comment onramp.ts:50-52 says 'Two of the questions read real coins'); the rest are a Likert hook, a friction checklist and interstitials. The email step is titled 'See your directional reading.' (onramp.ts:359) with a required email input (onramp.ts:366) \u2014 but the done step delivers no directional reading of any kind, only 'Your pattern is one of about N of the sixteen' plus a $25 CTA (onramp.ts:384-393), and the emailed 'explainer' (leads.ts:285-303) is the same one-of-N sentence with a 'Start now \u2014 $25/user\u00b7mo' button. Three promises ('eight questions', 'no account'/free result without giving anything, 'see your directional reading') are each broken in sequence, which is precisely the pattern the page's own copy attacks in competitors ('Tools that promise more than this are overpromising', marketing.ts:783).",
+    "evidence": "src/worker/marketing.ts:594-596; src/worker/onramp.ts:50-52,131-136,359,366,384-393; src/worker/leads.ts:285-303",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Make the copy tell the truth about the funnel: 'Free two-minute teaser \u2014 two of the eight questions, watch the field narrow' \u2014 or make the funnel honor the copy by asking all four determining coins (calculate() already supports it) so the done page can show a genuinely narrowed result; retitle the email step to what it delivers ('Get the two-minute explainer by email')."
+   },
+   {
+    "severity": "P1",
+    "title": "The 136 public /read pair readings \u2014 the site's best free proof \u2014 are linked from nowhere in the marketing funnel",
+    "detail": "read.ts serves fully public, crawlable, engine-derived readings for every pair and type ('the two ease scores as a headline', read.ts:10-36); /read and /read/entp-and-infp both return 200 anonymously with real directional scores. This is exactly the try-before-buy proof the front page's claims need \u2014 a live demonstration of 'both directions, derived'. But grep of marketing.ts finds zero links to /read: the nav (marketing.ts:512-519) and footer (552-560) list Product / Who it's for / Pricing / Compared / Partners / Sign in only. A visitor unwilling to pay $25 sight-unseen has no discoverable way to see one real full-ish reading; the surface exists purely for search crawlers via sitemap.xml (read.ts:447-449). The onramp done page likewise sells the $25 plan without ever showing a sample reading (onramp.ts:383-393).",
+    "evidence": "src/worker/read.ts:10-36,445-467; curl: GET /read \u2192 200, GET /read/entp-and-infp \u2192 200 with 'ENTP experiences it as 34/100'; grep '\"/read' src/worker/marketing.ts \u2192 no matches; src/worker/marketing.ts:512-519,552-560",
+    "lenses": [
+     "newcomer",
+     "enthusiast"
+    ],
+    "recommendation": "Add 'Sample readings' to the nav/footer and a 'See a real pair reading, free \u2192' link under the hero panel and on the onramp done page \u2014 the asset is already built, tested, and on-message; it just needs to be reachable by humans, not only crawlers."
+   },
+   {
+    "severity": "P2",
+    "title": "Proof band's '27% of pairs differ by direction' is not reproducible from the band's own definition and is pinned by no test",
+    "detail": "The proof band says '256 ordered pairs, each scored twice' followed by '27% of pairs differ by direction' (marketing.ts:607-608). Engine sweep this session: 64 of 256 ordered pairs are asymmetric = 25.0%; 32 of 136 unordered = 23.5%. The 27% is only recoverable as 64/240 = 26.7% (excluding the 16 self-pairs), a denominator the band never states \u2014 and the adjacent stat has just told the reader the universe is 256. Meanwhile two of the band's five numbers ARE genuinely test-pinned and reproduced (tests/ingested.test.ts:55-58 asserts 128/128; :214 asserts r \u2248 \u22120.154; 61/61 tests passed this session), which makes the un-pinned 27% the soft spot an adversarial enthusiast will find. Also '256 ordered pairs, each scored twice' double-counts: each ordered pair is scored once; it is the 136 unordered pairs that get two scores.",
+    "evidence": "src/worker/marketing.ts:606-611; engine sweep output: 'ordered pairs: 256 asymmetric: 64 = 25.0%; unordered pairs: 136 asymmetric: 32 = 23.5%'; npx vitest run tests/ingested.test.ts \u2192 61 passed; tests/marketing.test.ts:36-45 (pins 128/128 and r \u22120.15 strings, not 27%)",
+    "lenses": [
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Either restate as '1 in 4 ordered pairs differ by direction' (25%, matching the stated 256 universe) or '27% of cross-type pairs', and add a marketing test that derives the figure from ease() the way ingested.test.ts derives 128/128; fix 'each scored twice' to '136 pairings, each scored in both directions'."
+   },
+   {
+    "severity": "P2",
+    "title": "No og:image or twitter:image on any public page \u2014 shares of a visually distinctive product render as bare text",
+    "detail": "siteHead() emits og:type/title/description/url/site_name and twitter:card 'summary' but no og:image or twitter:image (marketing.ts:487-506, confirmed by grep: no matches for og:image in marketing.ts). The product's whole aesthetic argument \u2014 the discs, the worked-reading panel, the seals \u2014 is invisible in the one context (a shared link) where a first impression is decided. The favicon is a data: URI SVG (marketing.ts:30-37), so there is not even a logo fallback most scrapers can use.",
+    "evidence": "src/worker/marketing.ts:487-506; grep 'og:image\\|twitter:image' src/worker/marketing.ts \u2192 no matches",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Serve a static /og.png (the hero worked-reading panel or the eight-disc alphabet band rendered at 1200\u00d7630) from the worker and add og:image + twitter:card 'summary_large_image' to siteHead(); pin its presence in tests/marketing.test.ts alongside the existing metadata assertions."
+   },
+   {
+    "severity": "P2",
+    "title": "Partner terms doc says 'thirteen-stage course'; the public page and the product say fifteen",
+    "detail": "PARTNERSHIP-TERMS.md:35 describes 'a thirteen-stage course', while the public marketing page says 'fifteen-stage course' twice (marketing.ts:693, 802) and the curriculum actually contains 15 stage slugs (src/learn/curriculum.tsx, 15 slug entries counted this session; Home.tsx:88 renders STAGES.length dynamically). A partner doing diligence who reads both documents finds the confidential terms understating the public claim \u2014 small, but this doc opens by declaring its numbers 'fixed until 31 December 2026' (PARTNERSHIP-TERMS.md:4), which makes stale facts inside it read as either carelessness or a different product version. The doc's other quantitative claims check out where verifiable (103-term lexicon is pinned by tests/plain.test.ts:30; 128/128 and r \u2248 \u22120.15 reproduced by tests/ingested.test.ts; $25/25%/$18/$15/$12-20k/$750+$12/$36k figures match partner-rate-card.html exactly).",
+    "evidence": "docs/PARTNERSHIP-TERMS.md:4,35; src/worker/marketing.ts:693,802; src/learn/curriculum.tsx (15 stage slugs listed via grep this session); tests/plain.test.ts:28-30; docs/partner-rate-card.html:155-203,235-256",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Update PARTNERSHIP-TERMS.md to 'fifteen-stage' (and audit its other prose counts against the code on each release); consider generating such counts into the doc the way the deck derives card copy, since stale numbers in a 'fixed until 2026' document are disproportionately damaging."
+   },
+   {
+    "severity": "P2",
+    "title": "The crown-jewel fact \u2014 256 directed scores derived at runtime from ~2KB of seed, no database, no stored matrix \u2014 is quantified only in a confidential partner doc",
+    "detail": "The public page's version of the differentiator is soft: 'computed from one small piece of structure, never looked up in a table' (marketing.ts:661-663) and the meta description's 'one small piece of structure' (marketing.ts:176-179). The arresting, concrete form \u2014 'The structure is derived at runtime from roughly 2 KB of seed data. There is no database and no stored matrix. The structural tables cannot drift apart, because they are computed' \u2014 appears only in PARTNERSHIP-TERMS.md:43-45, a document marked confidential. 'Derived' is above the fold as an adjective, but the falsifiable, memorable quantity that makes an enthusiast stop scrolling never reaches the public surface, while the proof band spends its five slots on counts (16/256/27%) that any lookup-table competitor could also print.",
+    "evidence": "src/worker/marketing.ts:176-179,606-611,656-664; docs/PARTNERSHIP-TERMS.md:43-45; screenshot home-signedout-desktop-light.png (proof band shows 16/256/27%/128-128/r\u22120.15, no seed-size or no-database claim)",
+    "lenses": [
+     "enthusiast"
+    ],
+    "recommendation": "Give the derivation claim one proof-band slot in its concrete form \u2014 e.g. '~2 KB \u00b7 the seed everything is computed from \u2014 no stored matrix' \u2014 and verify the figure with a test that measures the actual seed tables, so the number is as pinned as 128/128."
+   },
+   {
+    "severity": "P2",
+    "title": "Validation claims cite deliberately unnamed sources, leaving the strongest trust signals unfalsifiable to outsiders",
+    "detail": "The proof band's best items \u2014 '128/128 agreement with an independent published table' and 'the survey matrix that disagrees, shipped anyway' (marketing.ts:609-610) \u2014 name no source, per the stated positioning rule 'No third-party system, author or trademark is named' (marketing.ts:10-11), enforced repo-wide by tests/attribution.test.ts (referenced at tests/marketing.test.ts:89-90). PARTNERSHIP-TERMS.md:49-58 repeats the same claims equally unnamed ('An independent published 16-pattern table', 'One published survey matrix'). Internally these are real (ingested.test.ts reproduces both), but an enthusiast or a partner's diligence reviewer cannot distinguish them from invented benchmarks \u2014 'we agree with a table we won't name' reads as the same rhetorical move the page condemns in others. The /compare page shows the no-naming rule is scoped, not absolute: it names MBTI, Socionics and the Big Five (curl this session: title 'Octant compared \u2014 MBTI, Socionics and the Big Five').",
+    "evidence": "src/worker/marketing.ts:9-12,606-611; docs/PARTNERSHIP-TERMS.md:49-58; tests/marketing.test.ts:88-91; tests/ingested.test.ts:55-58,214; curl http://localhost:5173/compare \u2192 title names MBTI/Socionics/Big Five",
+    "lenses": [
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Since /compare already breaks the naming seal deliberately, add a short public 'Validation' note (or a /compare section) that names the ingested sources and links the test file names, so the honest-asterisk culture is checkable rather than asserted; at minimum name the sources in the partner materials, where diligence is the whole point."
+   },
+   {
+    "severity": "P3",
+    "title": "Hero proof panel leans on undefined jargon for the newcomer's first ten seconds",
+    "detail": "The first thing a newcomer must parse in the hero is 'ENTP \u00b7 INFP', two unlabeled colored discs (Ne, Fi), relation names 'Examined'/'Examiner', and 'Blind spot' \u2014 none defined before use (marketing.ts:142-173). The alphabet caption beneath speaks in the palette's own language: 'indigo N, sienna S, verdigris T, madder F \u00b7 ripples break out for e, in for i' (marketing.ts:77), which is legible only after the course. The headline and lede are excellent plain language; the proof panel then costs newcomers exactly the comprehension the lede just bought. Enthusiasts, by contrast, parse it instantly \u2014 the panel is well aimed at them.",
+    "evidence": "src/worker/marketing.ts:71-77,142-173; screenshot home-signedout-desktop-light.png (hero panel and alphabet caption visible above the fold)",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Add one plain-language line inside the panel ('Two people, one relationship, scored from each side') and simplify the caption to 'The eight habits of mind every reading is spelled in' \u2014 keep the color vocabulary for the course."
+   },
+   {
+    "severity": "P3",
+    "title": "Two different taglines: the public page sells 'Compatibility runs in two directions', the app a convert enters is titled 'Read the wiring'",
+    "detail": "Public title and h1: 'Octant \u2014 compatibility runs in two directions' (marketing.ts:175,587). The gated app's document title is 'Octant \u2014 read the wiring' (index.html:6) and the signed-in Home hero is 'Read the wiring.' (Home.tsx:39). The promise a buyer just paid for (directional compatibility) is not the headline of the product they enter; the directional claim survives inside signed-in Home only as band 1 ('EASE RUNS BOTH WAYS', Home.tsx:211-233). The onboarding does bridge well \u2014 /welcome's final screen is exactly the marketing claim ('One number would have quietly picked a side', Welcome.tsx:83-92) \u2014 so this is a naming split, not a substance split.",
+    "evidence": "src/worker/marketing.ts:175,587; index.html:6; src/views/Home.tsx:39,208-233; src/views/Welcome.tsx:83-92; screenshot home-signedin-desktop-light.png (actually /welcome step 1, confirming onboarding entry)",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Pick one flagship phrase for both doors, or make the signed-in Home's first band the directional-ease claim so the just-converted buyer immediately sees the thing they bought."
+   },
+   {
+    "severity": "P3",
+    "title": "Partner rate card uses a different brand accent than every other surface",
+    "detail": "partner-rate-card.html sets --accent:#5B32A8 (line 25) and draws its logo dot in #5B32A8 (lines 139, 224); the marketing site, onramp, favicon and mark all use #4C4899 (marketing.ts:21,34-36,203; onramp.ts STYLE:417). The rate card is the single artifact partners forward internally, and it is the one surface in a different violet. Everything else about the card is unusually consistent with PARTNERSHIP-TERMS.md \u2014 every price, minimum, floor and rollover term matches line for line.",
+    "evidence": "docs/partner-rate-card.html:25,139,224; src/worker/marketing.ts:21,34-36,203; src/worker/onramp.ts:417; cross-check of all figures against docs/PARTNERSHIP-TERMS.md sections 3-6",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Change the rate card's --accent and logo fill to #4C4899 (or document #5B32A8 as the deliberate print-optimized variant in the design system so it stops looking like drift)."
+   }
+  ],
+  "score": 6.5,
+  "scoreRationale": "The marketing architecture is unusually strong for a solo product: a sharp, differentiated wedge claim ('a single compatibility score is a fiction') stated identically across the landing page, onramp interstitials, nurture emails and partner docs (FRICTION_COPY reused verbatim, leads.ts:231-262); a real no-invite path (free /onramp \u2192 Stripe $25 \u2192 webhook auto-preapproval, verified in stripe.ts); pricing that is consistent to the dollar across five surfaces; a proof band whose two hardest claims (128/128, r \u22120.15) are actually reproduced by the test suite; partner materials with diligence-grade candor (P1-P5 premises, the non-negotiable no-hiring clause); and a genuinely good CSS-only mobile treatment. But the execution has one disqualifying wound and several self-inflicted trust leaks: the flagship hero worked example has its two directions swapped relative to the engine AND to the site's own public /read page \u2014 falsifying the page's central 'nothing can quietly contradict anything else' claim on its own front door \u2014 the /signin gate tells paying customers the opposite of what pricing promised, the hero CTA overpromises what /onramp delivers three separate ways, and the best free proof surface (136 public readings) is unlinked from the funnel. For a brand built entirely on derived consistency and honest asterisks, these are category errors, not polish gaps; fixing the P0 and three P1s would move this to an 8+.",
+  "strongestThing": "The proof band's honest-asterisk item \u2014 'r \u22120.15 \u00b7 the survey matrix that disagrees, shipped anyway' (marketing.ts:610) \u2014 is real marketed evidence backed by CI: tests/ingested.test.ts:214 asserts the correlation \u2248 \u22120.154 and :55-58 derives the 128/128 agreement, and the whole file passed 61/61 when run this session; tests/marketing.test.ts:38-41 then pins both strings into the page. Marketing copy that advertises its own disconfirming evidence and reproduces it in the test suite is a genuinely rare trust asset for the enthusiast and partner lenses \u2014 preserve it and extend the same test-pinned discipline to the band's other numbers.",
+  "notes": "Verified this session (commands run, not quoted from docs): ease(ENTP,INFP)=34 / ease(INFP,ENTP)=44; INFP lead Fi in ENTP's Blind spot seat, ENTP lead Ne in INFP's Support seat; asymmetric ordered pairs 64/256=25.0% (64/240=26.7% if self-pairs excluded \u2014 the likely origin of the marketed '27%'); npx vitest run tests/ingested.test.ts \u2192 61/61 passed (reproduces 128/128 and r\u2248\u22120.154); 15 course stage slugs in src/learn/curriculum.tsx; lexicon 103 pinned by tests/plain.test.ts:30; anonymous route statuses on the live dev server: / 200 (marketing HTML), /signin 200, /onramp 200, /partners 200, /compare 200, /read 200, /read/entp-and-infp 200, /pricing 401, /waitlist 401, /reading/ENTP-INFP 401. Unverified: PARTNERSHIP-TERMS.md's 'two independently-keyed intertype charts agree on all 256 cells each' and the wheel-layer claims (plausibly inside the 61 passed ingested tests but not individually confirmed); the '~2 KB seed' size itself (quoted from the partner doc, not measured). Drift found: 'thirteen-stage' in PARTNERSHIP-TERMS.md:35 vs fifteen in code/marketing; rate-card accent #5B32A8 vs site #4C4899; hero worked-example direction swap (the big one). Screenshot caveats: 'home-signedin-desktop-light.png' actually captures /welcome step 1 (first-sign-in onboarding), so the signed-in Home.tsx was audited from source only; no mobile screenshots existed \u2014 mobile behavior of the signed-out page was verified in code only (CSS-only details/summary menu \u2264860px at marketing.ts:271-322, stacked full-width CTAs \u2264560px at :331-335), and both desktop light/dark screenshots render correctly. Funnel mechanics verified in code: Stripe payment link \u2192 checkout.session webhook \u2192 preapprove(email) \u2192 Google sign-in (stripe.ts), onramp lead capture is abuse-gated by a signed start token with a 2s minimum (onramp.ts:86-98), and the nurture sequence honors its own opt-in split (leads.ts:14-23,141-180). The signin gate's owner-approval copy and missing Google button reflect this dev deployment's config; production may render the Google button, but the contradictory copy is unconditional in the template."
+ },
+ "copy": {
+  "findings": [
+   {
+    "severity": "P1",
+    "title": "Marketing hero's flagship worked example attaches both scores/labels opposite to the app's own direction convention",
+    "detail": "The hero panel (served on anonymous GET /) shows 'ENTP \u2192 INFP \u00b7 Examined \u00b7 44' and 'INFP \u2192 ENTP \u00b7 Examiner \u00b7 34'. The engine says ease(ENTP,INFP)=34 and REL[ENTP][INFP]=SR ('Examiner' \u2014 INFP examines ENTP). Every in-app surface attaches ease(a,b) to a's experience: PairReader labels ease(target,persp) as '[target] being around [persp]', Matrix titles cells 'ease v for t'. So on /pair/ENTP/INFP the app prints 'ENTP being around INFP' = 34, while the marketing row headed 'ENTP \u2192 INFP' prints 44. The panel is only coherent under an unstated receiver-perspective arrow convention no app surface uses. Worse, the row bodies reuse REL_DEF's second-person glosses ('Your leading function lands on their Blind spot') under headings naming two third parties \u2014 the exact two-pronoun defect plain.ts:48-60 documents fixing in-app with SLOT_ABOUT. The in-code comment claims the panel 'cannot drift away from what the app would say on /pair/ENTP/INFP' \u2014 it already disagrees with that page. A diligent partner or enthusiast who checks the numbers (the product's whole pitch is that you can) finds the front door contradicting the app.",
+    "evidence": "src/worker/marketing.ts:137-173 (hardcoded panel + 'cannot drift' comment); served output confirmed via curl http://localhost:5173/ ('ENTP \u2192 INFP / Examined / 44'); engine output via npx tsx: REL[ENTP][INFP]=SR, ease(ENTP,INFP)=34, ease(INFP,ENTP)=44; src/views/PairReader.tsx:111-115 ('${target} being around ${persp}'); src/views/Matrix.tsx:92 ('ease ${v} for ${t}'); src/engine/plain.ts:48-60 (two-pronoun rationale)",
+    "lenses": [
+     "partner",
+     "enthusiast",
+     "newcomer"
+    ],
+    "recommendation": "Rebuild the hero panel from ease()/REL_NAME at build time (or copy the app's exact labeling: 'ENTP being around INFP \u2014 Examiner across from you \u2014 34'). Replace second-person REL_DEF text with slotAbout-style named-party copy. Add a marketing test asserting the two numbers appear beside the same party-labels the app uses."
+   },
+   {
+    "severity": "P1",
+    "title": "Every pair page's 'The short version' opens with the old borrowed relation name, contradicting the shipped name shown two lines below",
+    "detail": "REL_FRAME \u2014 the first sentence of every composed playbook \u2014 still carries six pre-rename names: 'Identity.', 'Activity.', 'Mirror.', 'Business.', 'Super-Ego.', 'Conflict.' The shipped vocabulary (REL_NAME, live per VOCABULARY.md \u00a72 status) is Twin, Spark, Opposite hand, Colleague, Standoff, Headwind. On a pair page the playbook panel renders first, so a reader sees 'Conflict. Your strongest function lands\u2026' directly above an Explain saying the relationship's name is 'Headwind'. Two names for one relation, inches apart, one of them ('Super-Ego', 'Duality-family' socionics naming) exactly the borrowed vocabulary VOCABULARY.md \u00a74/\u00a710 exists to keep out \u2014 it slips the attribution test because that test bans authors/systems, not relation names. The curriculum has the same slip: stage 10 labels rel-cf 'Conflict' after stage 6 taught 'Counterpart/Damper/Standoff'.",
+    "evidence": "src/engine/data.ts:257-274 (REL_FRAME: 'Identity.', 'Activity.', 'Mirror.', 'Business.', 'Super-Ego.', 'Conflict.') vs src/engine/data.ts:96-113 (REL_NAME: Twin/Spark/Opposite hand/Colleague/Standoff/Headwind); src/engine/playbook.ts:24 (parts[0] = REL_FRAME[code]); src/views/PairReader.tsx:71-83 (playbook panel above REL_NAME Explain); src/learn/curriculum.tsx:681 (<Term id=\"rel-cf\">Conflict</Term>) vs curriculum.tsx:408-410; docs/VOCABULARY.md \u00a74, \u00a710; tests/attribution.test.ts:50-65 (ban list covers authors/systems only)",
+    "lenses": [
+     "enthusiast",
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "Update REL_FRAME's six stale lead-ins to the REL_NAME terms (or derive the lead-in from REL_NAME programmatically so they cannot diverge), fix curriculum.tsx:681 to 'Headwind', and extend the attribution/vocab test to assert REL_FRAME's first word matches REL_NAME."
+   },
+   {
+    "severity": "P1",
+    "title": "Marketing CTA promises the free onramp is 'Eight either-or questions'; it delivers two, plus a flattery hook and an email gate mislabeled 'See your directional reading'",
+    "detail": "Under the hero button the note reads 'Free, no account. Eight either-or questions, no scoring you can fail.' The /onramp flow behind it asks 2 of the 8 coin questions (q0, q4), a persuasion Likert ('I can usually tell within a few minutes how someone is \"wired\"'), a goal-segmentation question, a pain-point multi-pick, and an email capture headed 'See your directional reading' \u2014 after which no reading appears, only 'Your pattern is one of about N of the sixteen' plus a $25 CTA. The done-step copy is honest ('a directional read from two of the eight questions'), but that honesty arrives after the email is collected. The funnel's tone also inverts the instrument's: the calculator says 'Self-report is the weakest evidence in typology\u2026 read two or three of the closest fits rather than trusting the number', while the funnel affirms 'That's exactly where seeing the mechanism\u2026 does the most work.' This is the one surface where the honest-asterisk culture breaks.",
+    "evidence": "src/worker/marketing.ts:594-596 (CTA + 'Eight either-or questions' note); src/worker/onramp.ts:160-192 (only q0 and q4 are coin questions), 170-173 (hook1 Likert), 356-374 ('See your directional reading' email step), 376-393 (done step, $25 CTA); tone contrast: src/views/Calculator.tsx:209-212 vs onramp.ts:177-182",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "Make the CTA note describe what's actually behind it ('Free two-minute teaser \u2014 two of the eight questions; the full read is in the product'), retitle the email step to what it does ('Get the two-minute explainer by email'), or let the onramp ask all eight coins and gate only the mechanism. Cut or reframe the flattery Likert."
+   },
+   {
+    "severity": "P2",
+    "title": "Three collective nouns for the same grouping live simultaneously: 'quadra', 'Camp', and 'Clubs'",
+    "detail": "Home says 'grouped by quadra or temperament'; the course stage is titled 'Clubs and temperaments' but its body teaches 'quadra' (Explain: 'A quadra is the set of four types\u2026'); two stages later the bonds stage says 'exactly one such mesh exists per Camp' and 'Your Camp's one mesh'; the type page header chip prints 'Alpha Camp'; the plain gloss for quadra opens 'A Camp: four types that trust the same four tools.' VOCABULARY.md documents the camps rename (Hearth/Forge/Market/Field) as pending \u2014 but the interim state is not the old term consistently, it's three terms interleaved across consecutive course stages, which reads as three different concepts to a newcomer and as carelessness to an enthusiast.",
+    "evidence": "src/views/Home.tsx:152 ('grouped by quadra or temperament'); src/learn/curriculum.tsx:597 (title 'Clubs and temperaments'), 601-606 ('A quadra is\u2026'), 720-721 & 740 ('per Camp', 'Your Camp's one mesh'); src/views/TypeReader.tsx:205-207 ('<Term>{quadra(t)}</Term> Camp'); src/engine/plain.ts:162-164 ('A Camp: \u2026'); docs/VOCABULARY.md:10-17 (status: camps pending), \u00a75",
+    "lenses": [
+     "newcomer",
+     "enthusiast"
+    ],
+    "recommendation": "Pick the interim word (Camp, since the plain layer and type page already use it), sweep 'quadra' and 'Clubs' from headings and body copy, and note the choice in VOCABULARY.md's status block so the pending Hearth/Forge rename has one word to replace."
+   },
+   {
+    "severity": "P2",
+    "title": "Half-landed renames: 'animals' vs 'currents' inside one course stage, and 'coins' vs 'switches' across instrument surfaces",
+    "detail": "VOCABULARY.md \u00a73 decided 'currents' (was animals) and 'switch' (was coin); the labels Charge/Settle/Broadcast/Absorb are live. But curriculum stage 8 carries the heading 'The four animals' and figure label 'Your animals, in order' while its own Explain says 'Each current pairs one observer attitude with one decider attitude' \u2014 old and new collective nouns in the same viewport. Likewise the Calculator, Home tile, and Read view all say 'coins' ('The same four coins', 'Coin 3 gives the anchor observer's attitude') while the type page's self-report section is headed 'Your switches' with 'self-reported switches' copy. A reader moving Calculator \u2192 TypeReader meets two names for one mechanic with no bridge.",
+    "evidence": "src/learn/curriculum.tsx:541 ('The four animals'), 545-547 ('Each current pairs\u2026'), 571 ('Your animals, in order'); src/engine/ops.ts:75-80 (ANIMAL_LABEL Play\u2192Charge etc.); src/views/Home.tsx:113 ('The same four coins'); src/views/Calculator.tsx:98-104 (coin 1/3/4/5 mechanics copy); src/views/TypeReader.tsx:721-722 ('Your switches', 'Subtype switches \u2014 self-reported'), 560 ('self-reported switches'); docs/VOCABULARY.md \u00a73",
+    "lenses": [
+     "newcomer",
+     "enthusiast"
+    ],
+    "recommendation": "Finish each rename per surface, not per file: 'currents' everywhere the label set Charge/Settle/Broadcast/Absorb appears; either promote 'switch' everywhere (updating COIN_PLAIN intro copy and Calculator/Read mechanics text) or revert the type page to 'coins' until the \u00a73 pass ships. Add the interim state to VOCABULARY.md's status itemization."
+   },
+   {
+    "severity": "P2",
+    "title": "FN_LONG's hype register ('absolute moral truth', 'flawless internal logic', 'Simulates the multiverse') breaks the honest-asterisk voice inside the mechanics layer",
+    "detail": "The plain layer describes Fi as 'Knows what it personally believes is right\u2026 will not be talked out of it' \u2014 measured, behavioral. One disclosure below, FN_LONG asserts Fi 'Wields absolute moral truth\u2026 dictates what is authentic, corrupt, right, and wrong', Ti 'Constructs flawless internal logic', Se 'Kinetic mastery. Unmatched awareness', Ne 'Simulates the multiverse'. 'Absolute', 'flawless', 'unmatched' are exactly the words the rest of the product refuses ('A lens, not a measurement\u2026 does not measure ability'). Because Explain promises the technical layer is the *precise* version, the inflated register lands where credibility matters most \u2014 and it also ships as card ledes and in the SSR type pages crawlers index.",
+    "evidence": "src/engine/data.ts:169-178 (FN_LONG); rendered at src/views/TypeReader.tsx:306, src/cards/deck.ts:273, src/worker/read.ts:296-297; contrast src/engine/plain.ts:19-28 (FN_PLAIN) and src/views/Home.tsx:255-259 ('A lens, not a measurement'); src/components/Explain.tsx:4-10 (the layer's stated contract)",
+    "lenses": [
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Rewrite FN_LONG in the lexicon's register (src/engine/lexicon.ts:44-91 already has excellent precise definitions for the same eight \u2014 reuse or condense those), reserving superlatives for FN_SHADOW where the exaggeration is the point."
+   },
+   {
+    "severity": "P2",
+    "title": "British and American spellings mix in user-facing copy \u2014 including the same word both ways, and once on the same calculator card",
+    "detail": "Calculator card copy: prompt option 'Answers come from gathering new material first. I organise it afterwards.' renders directly above its axis label 'Organize vs Gather' \u2014 both dialects of one word on one panel. Across surfaces: 'energise/energising' (relation glosses) vs 'energizes' (marketing, onramp, nurture emails \u2014 the identical horoscope line in two dialects); 'practiced' (Welcome screen 5) vs 'practised' (curriculum); epithets mix 'Skeptic' and 'Candor' with 'Reveller' and 'Organiser'; FN_ROLE has 'Empathizing/Systemizing' while BEHAVIOURAL has 'Harmonising' and 'Fake behaviour'. No single-dialect policy exists in VOCABULARY.md.",
+    "evidence": "src/views/Calculator.tsx:21-22 ('I organise it afterwards') + src/engine/data.ts:648 ('Organize vs Gather'); src/engine/plain.ts:87,175 ('energise/energising') vs src/worker/marketing.ts:638, src/worker/onramp.ts:234, src/worker/leads.ts:243 ('energizes'); src/views/Welcome.tsx:55 ('practiced') vs src/learn/curriculum.tsx:382 ('practised'); src/engine/data.ts:296 ('Skeptic'), 307/309 ('Reveller','Organiser'), 387 ('Candor'), 507 ('Fake behaviour'), 528 ('Harmonising'); src/engine/functions.ts:25,29 ('Empathizing','Systemizing'); grep tally run this session",
+    "lenses": [
+     "partner",
+     "enthusiast"
+    ],
+    "recommendation": "Pick one dialect (the voice reads British: 'colour', 'humour', 'practised' dominate the authored prose), sweep the American strays in user-facing strings, document the choice in VOCABULARY.md, and add a spelling-variant lint over authored string tables."
+   },
+   {
+    "severity": "P2",
+    "title": "The proof-stat band muddles its own numbers: 'each scored twice', an unstated 240 base for '27%', and '128/128' beside 256-cell claims",
+    "detail": "'256 ordered pairs, each scored twice' is wrong \u2014 each ordered pair is scored once; 256 ordered scores ARE both directions (the course states it correctly: 'That gives 256 ordered relations'). Home's hero has the same double-count phrasing ('256 relationships, both directions of every one'). '27% of pairs differ by direction' is 64/240 excluding same-type pairs; computed on the 256 base the band itself just established, it's 25.0% (verified). '128/128 agreement with an independent published table' is the stack-slot check (16 types \u00d7 8 slots vs Berens' table) but carries no unit \u2014 sitting beside 256-pair figures it reads as half the relation cells matching, when the stronger verified claim (two published charts agreeing on all 256 relation cells each, tested) is only made on /compare.",
+    "evidence": "src/worker/marketing.ts:606-610 (proof band); src/views/Home.tsx:61-63; src/learn/curriculum.tsx:652-654 (correct phrasing); engine run this session: 64/256 asymmetric = 25.0%, 64/240 = 26.7%; tests/ingested.test.ts:55-58 (128 slots), 315-326 & 377-386 (256/256 twice); src/worker/compare.ts:113-115; tests/marketing.test.ts:39-40 pins the current strings",
+    "lenses": [
+     "partner",
+     "enthusiast"
+    ],
+    "recommendation": "Reword: '256 ordered pairs \u2014 every relationship, both directions'; '27% of distinct pairs differ by direction' (or use 25% on the 256 base); '128/128 stack slots match an independently published table' \u2014 and promote the 256/256 relation-chart agreement to the band, since it's the stronger, tested claim."
+   },
+   {
+    "severity": "P2",
+    "title": "The orientation page leaks ~6 unexplained terms-of-art into first-contact tile copy",
+    "detail": "Home's hero and doctrine are exemplary, but the tiles beneath introduce vocabulary with no gloss layer (Tiles don't use Explain/Term): 'The same four coins' (coins never defined yet), 'the exchange overlay', 'the growth gate', 'four axis bonds, four spark meshes', 'grouped by quadra or temperament', and 'where they land in the shadow' (band 1 caption). A newcomer's first screen after the hero asks them to navigate by nouns the course hasn't taught. The Welcome onboarding avoids this completely \u2014 the leak is specific to Home's tile blurbs.",
+    "evidence": "src/views/Home.tsx:113 ('four coins'), 128-129 ('exchange overlay', 'growth gate'), 152 ('quadra or temperament'), 174-175 ('axis bonds\u2026 spark meshes'), 230-231 ('land in the shadow'); contrast src/views/Welcome.tsx:33-93 (zero undefined terms across eight screens)",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Rewrite tile blurbs in the plain register ('four everyday questions', 'which two tools you trust and which two you don't', 'the eight pairings of tools that work'), or wrap the terms in <Term> so the tiles participate in the plain-first pattern."
+   },
+   {
+    "severity": "P2",
+    "title": "The public marketing hero reads ~6 grades harder than the product's own plain layer",
+    "detail": "Flesch-Kincaid estimates (computed this session): marketing hero lede grade \u224810.7 ('A single compatibility score is a fiction\u2026 shows the derivation behind each number') vs app Home lede \u22484.8 and course stage-1 plain gloss \u22484.1. The hardest sentence a newcomer meets is the very first one, and it leads with 'derivation' \u2014 the most technical noun in the product \u2014 while the in-app doctrine is plain-first with mechanics one click down. The marketing page has no equivalent disclosure structure, so its plainest register ('Same two people. Ten points apart, and only one of them can feel it.') is buried in the panel footer.",
+    "evidence": "Command output this session: FK grades 10.7 (marketing.ts:588-592) vs 4.8 (Home.tsx:42-45) vs 4.1 (plain.ts:134-136); src/worker/marketing.ts:588-592, 179 (DESCRIPTION also leads 'derives all 256 ordered pairs')",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Let the hero lede do what the app lede does \u2014 one plain claim first ('Most relationships are easier for one person than the other. The one having the harder time usually can't tell.'), keep 'derivation' for the proof band where the technical audience is already reading."
+   },
+   {
+    "severity": "P3",
+    "title": "'iNtuition' and 'Intraverted' are consistent house spellings but glossed nowhere, and 'iNtuition' is borrowed MBTI styling",
+    "detail": "COIN_LABELS ships 'Sensing vs iNtuition' \u2014 the mid-word capital is MBTI's mnemonic convention (N for iNtuition), an odd survivor in a product whose tests ban borrowed vocabulary; on the calculator card it reads as a typo to a newcomer. 'Intraverted' appears 33 times with zero 'introverted' \u2014 deliberate-looking, but no surface or doc explains the deviation from the universal spelling; VOCABULARY.md (the file that claims 'if a word is not in this file, it is not in the product') mentions neither.",
+    "evidence": "src/engine/data.ts:649 ('Sensing vs iNtuition'), 667-676 (FN_FULL 'Intraverted' \u00d74); grep tally this session: 33 intraverted / 0 introverted in src; grep of docs/VOCABULARY.md for 'ntraverted|ntroverted' returned nothing; rendered via COIN_LABELS on Calculator.tsx:117 and Read.tsx:69",
+    "lenses": [
+     "enthusiast",
+     "newcomer"
+    ],
+    "recommendation": "Change the label to 'Sensing vs Intuition' (nothing in this product's own system needs the N-mnemonic), and either adopt 'introverted' or add a one-line entry to VOCABULARY.md \u00a71 stating that 'intraverted' is intentional and why."
+   },
+   {
+    "severity": "P3",
+    "title": "SLOT_TAGS diagram labels: 'Blindspot' contradicts 'Blind spot', and 'Hate' is the product's harshest word, undocumented",
+    "detail": "SLOT_TAGS = ['Power','Responsibility','Innocence','Fear','Worry','Cynicism','Blindspot','Hate'] prints on the wiring schematic (curriculum stage 2 and the type page). 'Blindspot' (one word) sits beside SLOT_NAMES' 'Blind spot' (two words) \u2014 cards/deck.ts already patches it with .replace('Blindspot', 'Blind spot'), proving the inconsistency is known, while WiringSchematic prints it raw. 'Hate' as seat 8's tag is the bluntest word anywhere in the product (the slot itself is named 'Dread', its gloss 'Your worst setting'); the tag vocabulary appears nowhere in VOCABULARY.md.",
+    "evidence": "src/engine/data.ts:678 (SLOT_TAGS); src/components/WiringSchematic.tsx:115 (prints raw); src/cards/deck.ts:300 (the .replace patch); src/engine/data.ts:677 (SLOT_NAMES 'Blind spot'); docs/VOCABULARY.md \u00a72 (no tag row)",
+    "lenses": [
+     "newcomer",
+     "enthusiast"
+    ],
+    "recommendation": "Fix 'Blindspot' \u2192 'Blind spot' at the source and delete the deck patch; reconsider 'Hate' (the \u00a72 register suggests 'Fear/Threat' territory) or add the tag set to VOCABULARY.md as a decided row."
+   },
+   {
+    "severity": "P3",
+    "title": "'Superpower and kryptonite' vs 'Superpowers & kryptonite' \u2014 and neither term is in the locked vocabulary",
+    "detail": "The course stage is singular ('Superpower and kryptonite', blurb 'asked one question each'); the type page's section nav is plural ('Superpowers & kryptonite') for a section about one superpower and one kryptonite. Beyond the number disagreement, neither word appears in VOCABULARY.md, whose own rule is 'If a word is not in this file, it is not in the product' \u2014 and 'kryptonite' is borrowed pop-IP vocabulary in a product that removed 'Victim' and 'demon' for being borrowed or loaded.",
+    "evidence": "src/learn/curriculum.tsx:340 ('Superpower and kryptonite'); src/views/TypeReader.tsx:86 (SECTIONS: 'Superpowers & kryptonite'); src/engine/plain.ts:336-341 (powersPlain 'superpower\u2026 kryptonite'); docs/VOCABULARY.md:6-8 (the locked-file rule; no entry for either term)",
+    "lenses": [
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Align on the singular, and either add Superpower/Kryptonite to VOCABULARY.md as a decided pair or rename in-house ('Strongest move and worst setting' already exist in the plain layer)."
+   }
+  ],
+  "notes": "VERIFIED this session: engine outputs (REL[ENTP][INFP]=SR, ease(ENTP,INFP)=34, ease(INFP,ENTP)=44; 64/256=25.0% asymmetric ordered pairs, 64/240=26.7%); served marketing hero contains 'ENTP \u2192 INFP / Examined / 44' (curl); FK grade estimates computed by script; tests confirm 128/128 is the Berens stack-slot check (tests/ingested.test.ts:55-58) and two 256/256 relation-chart agreements exist (ingested.test.ts:315-326, 377-386) plus r\u2248\u22120.154 (ingested.test.ts:214). UNVERIFIED: the Stripe link/price behind buy.stripe.com; partner rate cards ($18/$15/$12/$10, 25%/20% \u2014 asserted in tests/partners.test.ts:67 but the page prose wasn't fully read); whether GOAL_PHRASE covers all onramp goal values. DOCUMENTED DEBT vs SILENT DRIFT: VOCABULARY.md's status header honestly itemizes camps, Octagram\u2192Rose, and four-sides renames as pending \u2014 so 'midlife crisis', 'subconscious/superego', 'Octagram', 'temple', 'living virtue/deadly sin' in-app are recorded debt, not findings; I only reported places where OLD and NEW terms collide on the same screen or the doc's 'shipped' claims are contradicted (REL_FRAME's six old relation names vs the shipped REL_NAME \u2014 the \u00a74 table VOCABULARY marks as live). Task brief said '13-stage course'; the file comment says 'Fifteen stages' and STAGES has 15 entries (curriculum.tsx:41,60-1085) \u2014 Home prints the count dynamically and marketing says 'fifteen-stage', so surfaces agree with the code, not the brief. Also worth knowing: plain.test.ts's jargon ban covers only PLAIN_BY_ID strings, not view copy \u2014 which is how 'coins/exchange overlay/spark meshes' leaked onto Home tiles unchecked; extending that test to tile blurbs would lock the doctrine. Error/empty microcopy is a genuine strength (ErrorBoundary.tsx:44-61 'the fault is in the software, not in anything you did'; useChat.ts:191-196; Calculator conflicts note 'Not an error.'), as are the compare pages' concessions (compare.ts:147-152 tells hiring buyers to use Big Five instruments instead).",
+  "score": 7,
+  "scoreRationale": "The copy craft here is unusually strong: a written doctrine (plain first, technical underneath) that is actually implemented as a component (Explain), enforced by tests (plain coverage, jargon bans, attribution bans, marketing string pins), with humane error copy, honest uncertainty notes in the course, and comparison pages that concede real ground. Grade-4 plain glosses sit above grade-10 mechanics exactly as promised. But the audit found the doctrine's trust layer cracked in three places that matter most: the public hero's flagship worked example attaches both direction scores opposite to the app's own labeling convention (in a product whose one pitch is 'check our numbers'), every pair page opens its playbook with a stale borrowed relation name that contradicts the shipped name two lines below, and the marketing CTA misdescribes the free funnel while the funnel itself breaks the product's honesty register. Add systematic half-landed renames (quadra/Camp/Clubs, animals/currents, coins/switches) and a mixed spelling dialect, and the voice \u2014 brilliant sentence by sentence \u2014 is inconsistent surface to surface. That is a 9 on craft dragged to 7 by drift and by the three P1s sitting on the highest-traffic pages.</scoreRationale>\n<parameter name=\"scoreRationale\">The copy craft here is unusually strong: a written doctrine (plain first, technical underneath) that is actually implemented as a component (Explain), enforced by tests (plain coverage, jargon bans, attribution bans, marketing string pins), with humane error copy, honest uncertainty notes in the course, and comparison pages that concede real ground. Grade-4 plain glosses sit above grade-10 mechanics exactly as promised. But the audit found the doctrine's trust layer cracked in three places that matter most: the public hero's flagship worked example attaches both direction scores opposite to the app's own labeling convention (in a product whose one pitch is 'check our numbers'), every pair page opens its playbook with a stale borrowed relation name that contradicts the shipped name two lines below, and the marketing CTA misdescribes the free funnel while the funnel itself breaks the product's honesty register. Add systematic half-landed renames (quadra/Camp/Clubs, animals/currents, coins/switches) and a mixed spelling dialect, and the voice \u2014 brilliant sentence by sentence \u2014 is inconsistent surface to surface. That is a 9 on craft dragged to 7 by drift and by the three P1s sitting on the highest-traffic pages.",
+  "strongestThing": "The plain-first architecture as *enforced copy infrastructure*, not aspiration: every one of 103 lexicon entries has a jargon-free gloss asserted by tests (tests/plain.test.ts:14-56, including a regex ban on 'cognitive function/Model A/Socionics/auxiliary' inside the plain layer itself), the Explain component (src/components/Explain.tsx:4-10) guarantees the technical text is 'never removed, never paraphrased, never gated', and the plain strings themselves are genuinely excellent \u2014 FN_PLAIN's 'Sees where something is going to end up. Gets a strong hunch about the outcome and usually cannot show its working.' (src/engine/plain.ts:21) and SLOT_PLAIN's 'Your sore spot. You want to be good at this and you are afraid you are not. Growth lives here.' (plain.ts:41) measured at roughly grade-4 reading level this session. Paired with the honest-asterisk notes that survive into marketing (curriculum.tsx:961-967 'What this app does not know\u2026only two wheels of eight could be cross-checked'; compare.ts:147-152 sending hiring decisions to validated instruments), this is the thing to preserve at all costs while fixing the drift around it."
+ },
+ "supporting": {
+  "findings": [
+   {
+    "severity": "P1",
+    "title": "[security] Onramp lead-capture token is replayable: one aged token can mail Octant-branded email to unlimited arbitrary addresses and burn the KV write budget",
+    "detail": "The anti-abuse token for the public /onramp funnel is seal({t: now}) \u2014 it carries only its issue time, is not bound to the submitted email, is not single-use, and lives 1 hour (START_TTL_SECONDS=3600, MIN_COMPLETION_MS=2000). verifyStartToken (onramp.ts:94-98) checks only signature + age >= 2s. So a script mints one token via a single GET, waits 2 seconds, then replays that same token with any number of different email= values. Each new email triggers captureLead: up to 2 KV writes (leads.ts:90,96 \u2014 against the free tier's 1,000 writes/day noted at wrangler.jsonc:75-77) plus one outbound Octant-branded Resend explainer email to an address the attacker chose (leads.ts:91-93) \u2014 the exact sender-reputation/spam-complaint risk the in-source comment names. The comment (onramp.ts:63-84) acknowledges 'two requests with a sleep between them still works' and defers IP rate limiting, but understates the exposure: it is not two requests per victim, it is one mint plus N replays for N victims. LOGIN_LIMITER and CHAT_LIMITER exist as cross-isolate bindings (wrangler.jsonc:116-119); no limiter covers this path. This accepted risk was priced when the funnel was hypothetical; with the marketing site, Stripe checkout and nurture sequence now live, it is the front door.",
+    "evidence": "src/worker/onramp.ts:63-98 (token design + comment); src/worker/leads.ts:78-101 (captureLead: KV write + sendMail per new email); wrangler.jsonc:75-77 (KV write-budget note), 116-119 (limiters exist for login/chat only); curl http://localhost:5173/onramp \u2192 200 anonymous this session",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Make the start token single-use per capture (include a nonce and record it briefly in LEADS, or bind the token to the email at the email step and verify the binding at done), and/or add an ONRAMP_LIMITER ratelimit binding keyed on cf-connecting-ip \u2014 the binding mechanism is already proven in this codebase and costs nothing."
+   },
+   {
+    "severity": "P2",
+    "title": "[security] QA-REVIEW's adversarial review predates the entire public surface \u2014 auth.ts still claims 'Nothing is public' while index.ts now exposes ~9 unauthenticated routes",
+    "detail": "docs/QA-REVIEW.md \u00a72 (dated 2026-08-01) adversarially tested a system whose wall design doc says 'Nothing is public' (src/worker/auth.ts:8 \u2014 comment still present, verified this session). Since then the public, pre-wall dispatch in index.ts has grown to: Google OAuth routes (index.ts:92), code auth (97), signed admin links (104), /signin (110), the token-gated export path (128), /read SEO pages + sitemap + robots (143), the /onramp funnel (150), the Stripe webhook (155), the leads unsubscribe (161), and 401-GET carve-outs for /, /partners, /compare, /compare/<slug> (174-181). The wall itself remains intact \u2014 carve-outs are named-path, GET-only, 401-only, and each new route documents its posture \u2014 but none of these routes appears in QA-REVIEW's attack table, and a diligence reader relying on that document (its stated purpose: 'a reader deciding whether to license or acquire') gets a security review of roughly half the current unauthenticated surface. The onramp replay finding above is exactly the class of issue such a re-review would catch.",
+    "evidence": "src/worker/auth.ts:8 ('Nothing is public. Every request\u2026'); src/worker/index.ts:88-184 (public dispatch, read this session); docs/QA-REVIEW.md:54-84 (\u00a72 attack table \u2014 no onramp/stripe/leads/export/compare rows)",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Re-run the \u00a72 adversarial pass over the post-2026-08-01 public routes and append the rows to QA-REVIEW (or a dated addendum); update the auth.ts header comment to 'Nothing of the instrument is public' with a pointer to index.ts's public dispatch list."
+   },
+   {
+    "severity": "P2",
+    "title": "[docs-drift] QA-REVIEW's verification gates are all stale within 3 weeks: tests 832\u21921225, bundle 558KB\u2192632KB, lint 0-warnings\u21925, CSP two hashes\u2192three",
+    "detail": "QA-REVIEW.md presents itself as 'the single dated source' for the gates after retiring the README's rotted '540 tests' number \u2014 and every gate in its table has since drifted: tests are now 1225 passing / 47 files (was 832/29); the single JS chunk is 632,308 B / 195,377 B gzip (was '558 KB / 178 KB gzip'), +13% with no size budget watching it; lint now emits 5 warnings (was '0 errors'): 3\u00d7 noImportantStyles at src/styles/base.css:121-123 (the prefers-reduced-motion reset \u2014 arguably correct CSS that should be suppressed with a reason, in the repo's own stated style) and 2\u00d7 noDescendingSpecificity at src/styles/components.css:394 and 483; and the H6 row's 'CSP hashing the two inline scripts' is now three (theme + gate + onramp, headers.ts:31-50, three sha256 entries observed in the live CSP header this session). None of these drifts is a defect \u2014 the direction is all improvement \u2014 but the document that exists specifically because numbers rot is itself rotting, and it is the document a licensee is told to trust.",
+    "evidence": "Measured this session: `npx vitest run` \u2192 'Test Files 47 passed / Tests 1225 passed'; `wc -c dist/assets/index-B4qwz5m7.js` \u2192 632308, `gzip -c | wc -c` \u2192 195377; `npx biome lint src` \u2192 'Found 5 warnings' at base.css:121-123, components.css:394,483; curl / \u2192 CSP with three sha256- entries; docs/QA-REVIEW.md:11-17,36",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Add a dated 'gates as of' addendum (or a tiny script that regenerates the table), suppress the three intentional !important lines with biome-ignore + reason, and fix the two descending-specificity orderings; consider a bundle-size assertion test so growth is a decision, not a drift."
+   },
+   {
+    "severity": "P2",
+    "title": "[docs-drift] The regression checklist's secrets scan (item 12) now false-positives on every clean build \u2014 Admin UI copy contains 'AUTH_SECRET' and 'ACCESS_CODES' as literal strings",
+    "detail": "QA-REVIEW \u00a76 item 12 instructs grepping dist/ for secret shapes including the tokens ACCESS_CODES and AUTH_SECRET, expecting '\u2192 nothing'. On the current build the grep matches: the Admin view's help copy renders those env-var names in <code> elements ('rotate AUTH_SECRET instead', 'they live in the ACCESS_CODES secret'), which webpack'd into dist/assets/index-B4qwz5m7.js. The check as written fails on a healthy build, and a pre-deploy checklist step that always fails is a step operators learn to skip \u2014 defeating the one manual guard against actually leaking a secret value into the bundle. (The matches are variable NAMES in UI copy, not values; no real secret is present \u2014 verified by reading the match context.)",
+    "evidence": "grep -oE of dist/assets/index-B4qwz5m7.js run this session shows both matches inside JSX copy (`children:`AUTH_SECRET``, `children:`ACCESS_CODES``); docs/QA-REVIEW.md:220-223 (item 12 expects 'nothing'); src/views/Admin.tsx ships in-bundle (statically imported at src/App.tsx:17)",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Rewrite item 12 to grep only for value shapes (AIza, GOCSPX-, re_[A-Za-z0-9], AQ.) plus the actual secret values from .dev.vars, or exclude the two known copy strings \u2014 and note the exception inline so the check stays trustworthy."
+   },
+   {
+    "severity": "P2",
+    "title": "[a11y] No skip link: keyboard and screen-reader users traverse 12 nav tabs plus 4 icon buttons before reaching content on every page",
+    "detail": "App.tsx renders the masthead (12 NavLinks from TABS at lines 24-37, then 4 icon buttons at 137-171) before <main> with no skip-to-content mechanism. grep for 'skip' across src/App.tsx, src/main.tsx and all of src/styles returns nothing. The .sr-only utility already exists (base.css:130-140) and :focus-visible styling is defined (base.css:44-48), so the ingredients are present \u2014 a focusable skip link is a ~5-line addition. This compounds with the missing focus management on route change (next finding): after every navigation, a keyboard user is back at the top of the tab order, re-traversing the full masthead. WCAG 2.4.1 (Bypass Blocks) is a Level A criterion \u2014 the kind an accessibility line-item in a licensing/procurement review checks first.",
+    "evidence": "src/App.tsx:119-175 (header precedes main; no skip link in the tree); grep 'skip' src/App.tsx src/main.tsx src/styles/*.css \u2192 no matches (this session); src/styles/base.css:130 (.sr-only exists, unused for this)",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "Add an <a href=\"#main\" class=\"skip-link\"> as the first child of .app, visually hidden until focused, targeting id on the existing <main className=\"main-inner\">."
+   },
+   {
+    "severity": "P2",
+    "title": "[a11y] SPA route changes neither move focus nor announce the new page \u2014 navigation is silent to assistive tech",
+    "detail": "The navigation effect (App.tsx:67-77) scrolls to top or to a hash target but never moves focus and there is no aria-live route announcer anywhere in the app (grep for aria-live across src/ finds only the gate page's error message region, auth.ts:450, and role=\"status\" on the calculator dock and chat spinner). In an SPA, a click on 'Matrix' produces no screen-reader feedback that anything happened; focus remains on the clicked nav link while the entire main region has been replaced. This is the canonical client-side-routing accessibility gap, and QA-REVIEW \u00a74 already concedes 'Screen-reader announcement in an actual reader' is untested \u2014 this is the concrete defect that test would have caught.",
+    "evidence": "src/App.tsx:66-77 (scroll-only navigation effect); grep 'aria-live' src \u2192 only src/worker/auth.ts:450 (gate page) \u2014 no app-side live region (this session); docs/QA-REVIEW.md:122 (\u00a74 admits the gap)",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "On pathname change, move focus to the main heading or the main container (tabIndex={-1} + focus()), or add a visually-hidden aria-live=\"polite\" region announcing the new page title; either is a small change to the existing effect."
+   },
+   {
+    "severity": "P2",
+    "title": "[a11y] Chat assistant answers stream into a container with no live region \u2014 replies are never announced",
+    "detail": "ChatRail.tsx has good label hygiene (aside aria-label=\"Assistant\" at 114, textarea aria-label=\"Your question\" at 233, close buttons labeled at 110/133) and the 'Thinking' spinner is role=\"status\" (263-268) \u2014 but the message log itself (.rail-log, line 141) has no aria-live, role=\"log\", or equivalent, confirmed by grep across src/chat returning zero matches for aria-live/role=\"log\". A screen-reader user hears 'Thinking', then silence: the streamed answer \u2014 the product's flagship grounded-assistant feature \u2014 arrives invisibly, and they must manually re-navigate into the rail to find it. The auto-scroll effect (lines 52-56) shows the sighted-user equivalent was considered.",
+    "evidence": "grep 'aria-live|role=\"log\"' src/chat \u2192 no matches (exit 1, this session); src/chat/ChatRail.tsx:141 (.rail-log container), 263-268 (Thinking role=status only)",
+    "lenses": [
+     "newcomer",
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Give the message container role=\"log\" (implicit aria-live=polite) \u2014 one attribute \u2014 and verify streaming chunks don't spam announcements (announce per completed message if they do)."
+   },
+   {
+    "severity": "P2",
+    "title": "[perf] One 632KB/195KB-gzip chunk, zero code splitting; every view statically imported \u2014 and the bundle grew 13% in 3 weeks with nothing watching it",
+    "detail": "Verified: src/App.tsx:3-22 imports all 16 views statically (no React.lazy anywhere in src \u2014 grep confirms), and vite.config.ts's build block is `{ outDir: \"dist\", sourcemap: false }` with no manualChunks/rollupOptions. The one chunk is 632,308 B raw / 195,377 B gzip (measured), up from QA-REVIEW's 558KB/178KB on 2026-08-01. Honest split assessment from source sizes: the heaviest modules \u2014 engine/lexicon.ts (89,148 B) and learn/curriculum.tsx (48,307 B) \u2014 are NOT cleanly splittable (lexicon is imported by Term.tsx which renders everywhere; curriculum by Home.tsx), but TypeReader.tsx (46,034 B source, one route), Guide.tsx (14,422 B), Matrix, and Admin.tsx (6,350 B, owner-only) are route-isolated and lazy-loadable today. Counterweight the fix must respect: under run_worker_first every extra chunk request is a billable Worker invocation (wrangler.jsonc:30-35), so splitting into many small chunks pulls against the platform economics \u2014 a handful of route chunks, not fine-grained splitting, is the right shape. At invite-only scale this is P2 not P1; it becomes user-facing the day a paid signup from the funnel hits the app shell on a phone.",
+    "evidence": "ls -la dist/assets \u2192 index-B4qwz5m7.js 632308 B; gzip -c | wc -c \u2192 195377 (both this session); src/App.tsx:3-22 (static imports); vite.config.ts:107 (build block); wc -c src/views/*.tsx and src/engine/* src/learn/* (sizes above); import graphs via grep (engine/lexicon \u2190 Term.tsx:3; curriculum \u2190 Home.tsx:6); docs/QA-REVIEW.md:16 (558KB baseline)",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "React.lazy the four route-isolated heavy views (TypeReader, Guide, Matrix, Admin) behind the existing ErrorBoundary/Suspense, cap it there given the invocation economics, and add a bundle-size assertion test so the next 13% is a decision."
+   },
+   {
+    "severity": "P2",
+    "title": "[docs-drift] Five QA-REVIEW still-open items verified still open against current source \u2014 none regressed, none closed",
+    "detail": "Spot-verified the review's named open items: (1) M6's overclaiming test names are byte-for-byte still there \u2014 tests/engine.test.ts:180 'defines every relation code, coin pole and type-level term' checks quadra ids and relation ids but zero coin poles, and tests/lexicon.test.ts:194-200's Counterpart-on-the-Cave test still carries the vacuous guard `quadra(x) !== undefined` (always true) and checks only 'cave is somebody's lead', not the Counterpart relation the name claims. (2) AR-2's recommended asset cache policy is unimplemented: no _headers file exists (dist/ holds only index.html + assets/), no cache-control is set on asset responses in the Worker (grep shows cache-control only on marketing/read/compare HTML). (3) shots.mjs remains unwired to CI \u2014 .github/workflows/ci.yml runs typecheck/lint/test/build only. (4) AR-8's OAuth token-exchange leg is still untested \u2014 tests/google-auth.test.ts contains no mock of the Google token endpoint. (5) \u00a74's 'keyboard operability in a real AT' gap persists: no playwright, no axe in package.json. The repo's discipline of writing risks down is real; the follow-through loop from 'documented' to 'scheduled' does not yet exist.",
+    "evidence": "tests/engine.test.ts:180-185; tests/lexicon.test.ts:194-200 (read this session); ls dist/ (no _headers); grep cache-control src/worker/*.ts; .github/workflows/ci.yml (full read \u2014 no shots/e2e step); grep 'axe|playwright' package.json \u2192 nothing; grep 'oauth2.googleapis.com' tests/google-auth.test.ts \u2192 nothing",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Triage the five into 'fix now' (the two mislabeled tests are 10-minute renames/rewrites) vs 'tracked with a trigger' (AR-2, AR-8, e2e), and record the triage where QA-REVIEW already lives so the accepted-risk register stays a register."
+   },
+   {
+    "severity": "P3",
+    "title": "[a11y] role=\"img\" flattens data-rich diagrams to one-sentence labels; the sr-only fallback pattern exists but is applied inconsistently",
+    "detail": "The codebase's own best practice: NetworkRing pairs role=\"img\" with a visually-hidden per-edge list because '<title> inside role=img' is mouse-only (NetworkRing.tsx:80, tests/a11y.test.tsx:44-59 asserts it), and OctagramWheel's aria-label is a generated full-sentence describe(wheel) (OctagramWheel.tsx:81-82). But WiringSchematic \u2014 the flagship figure \u2014 collapses eight seat assignments rendered as SVG <text> to the static label 'The eight function seats of ENTP, from Lead down to Dread' (WiringSchematic.tsx:47-52): role=\"img\" hides the child text from AT, so which function sits in which seat is not announced by the figure itself (recoverable only if surrounding page text duplicates it). Same pattern risk applies to OctagramMap and BondFigure/MutualLanding/RelationLanding (role=\"img\" with short labels, verified via grep). This is P3 not P2 because every SVG in src/components does carry at least role=\"img\"+aria-label or aria-hidden (verified across all 21 svg-bearing files this session) \u2014 the floor is high; the ceiling is uneven.",
+    "evidence": "src/components/WiringSchematic.tsx:47-56 (label vs. rendered seat text); src/components/NetworkRing.tsx:80 + src/styles/base.css:127-140 (the existing sr-only pattern); src/components/OctagramWheel.tsx:78-82 (describe()); per-file svg/aria audit via grep this session (21 files, no unlabeled SVG found)",
+    "lenses": [
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Apply the NetworkRing pattern to WiringSchematic (an sr-only ordered list of the eight seats is derivable from the same props), or generate a describe()-style sentence as OctagramWheel does."
+   },
+   {
+    "severity": "P3",
+    "title": "[perf] Asset serving has no cache policy under run_worker_first \u2014 every reload re-invokes the Worker for revalidation, and the documented trigger for fixing it has arguably fired",
+    "detail": "wrangler.jsonc:30-42 states the tradeoff with unusual candor: run_worker_first: true makes every asset request a billable invocation, accepted as 'a rounding error' for 'an invite-only instrument with a handful of readers', with the fix (long immutable TTLs on fingerprinted assets) deferred until 'this ever opens up'. Since that was written, the deployment grew a public marketing site, an ad-traffic quiz funnel (onramp.ts:28-30 explicitly anticipates 'anonymous ad traffic'), Stripe checkout, and an SEO surface with a sitemap \u2014 i.e., the open-up trigger is partially pulled: paid conversions land signed-in on the un-cached 632KB app shell. No _headers file exists in dist/ and headers.ts deliberately never touches cache-control (headers.ts:65-67). The fingerprinted filename (index-B4qwz5m7.js) makes an immutable TTL trivially safe, and browser caching is per-already-authenticated-user so the wall is unaffected \u2014 AR-2's own reasoning.",
+    "evidence": "wrangler.jsonc:30-42 (read this session); ls dist/ \u2192 no _headers; src/worker/headers.ts:65-67 ('never touches\u2026 existing cache-control'); docs/QA-REVIEW.md:143-149 (AR-2 with the trigger condition); src/worker/onramp.ts:28-30 (ad-traffic intent)",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Ship AR-2's own recommendation: cache-control immutable max-age on /assets/* responses (settable in the Worker after env.ASSETS.fetch, keeping headers.ts's no-touch rule for everything else), and watch the invocation graph as the comment prescribes."
+   },
+   {
+    "severity": "P3",
+    "title": "[perf] Font chain: three Google-hosted families on the critical path of both the gated app and the public marketing pages; self-hosting is also the named path to a tighter CSP",
+    "detail": "index.html:8-10 loads Newsreader + Inter + IBM Plex Mono via a render-blocking fonts.googleapis.com stylesheet (mitigated properly: both preconnects present, display=swap requested, real fallback stacks in tokens.css:15-17 \u2014 Georgia/system-ui/ui-monospace). Cost: a third-party DNS+TLS+CSS+font waterfall on first paint for every visitor including anonymous funnel traffic, and a privacy/GDPR talking point (Google Fonts IP transmission) that diligence reviews raise. headers.ts:26-28 already records that self-hosting 'would be the one change that lets this tighten to self alone' for style-src/font-src \u2014 the CSP currently carries style-src 'unsafe-inline' https://fonts.googleapis.com and font-src https://fonts.gstatic.com (observed live this session). The owner's call is documented ('owner's call, 2026-08'), so this is a priced decision, not an oversight \u2014 flagged because two improvements (perf waterfall, CSP tightening) share the one fix.",
+    "evidence": "index.html:8-10 and dist/index.html (same, read this session); src/styles/tokens.css:15-17 (fallback stacks); src/worker/headers.ts:26-28,51-52; live CSP header captured via curl this session",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "Self-host the three families as woff2 in /assets (they are all OFL-licensed), drop the two Google hosts from the CSP, and keep display=swap via @font-face."
+   },
+   {
+    "severity": "P3",
+    "title": "[security] Dev server serves the SPA shell without the security header layer \u2014 CSP breakage of the app is invisible until deployed",
+    "detail": "In dev, the Worker's ASSETS.fetch returns a passthrough marker and vite.config.ts hands the request to Vite's own pipeline (vite.config.ts devApi: 'if (out.headers.get(PASS)) return next()') \u2014 which bypasses withSecurityHeaders entirely. Verified live: authenticated GET /type/ENTP on localhost:5173 returns no CSP/XCTO/referrer-policy headers, while the Worker-rendered marketing page on the same server carries the full set including the three-hash CSP. Consequence: a change that violates the CSP inside the React app (a new inline script, an external fetch) sails through `npm run dev` and every test, and first fails in a deployed browser \u2014 which is why QA-REVIEW's manual checklist item 8 exists. Dev-only, by construction; noted because the repo's stated philosophy is 'the SAME Worker in dev that runs in production' (vite.config.ts header comment) and this is the one seam where that promise doesn't hold.",
+    "evidence": "curl -D - http://localhost:5173/type/ENTP (authed) \u2192 no security headers vs curl -D - / \u2192 full CSP (both this session); vite.config.ts:44-100 (PASS marker + next()); docs/QA-REVIEW.md:208-209 (checklist item 8)",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "In the dev middleware, when the passthrough fires for an HTML/document request, still apply withSecurityHeaders to Vite's response (or at minimum inject the CSP meta) so CSP violations surface in dev consoles."
+   },
+   {
+    "severity": "P3",
+    "title": "[a11y] Onramp quiz radio groups lack fieldset/legend; question prompt is not programmatically bound to its options",
+    "detail": "The public funnel's answer options are correctly label-wrapped radios (verified live: <label class=\"choice\"><input type=\"radio\" name=\"goal\" \u2026>), but there is no <fieldset>/<legend> grouping, so a screen-reader user tabbing into the radio group hears option text without the question it answers. The gated app's equivalent (Calculator) uses aria-pressed toggle buttons with visible question context instead (Bits.tsx:124-139 ChoiceCard) \u2014 a different, acceptable pattern. Low severity: one question per page and the heading precedes the group, so context is recoverable by reading order; still a cheap conformance win on the page type most likely to be a stranger's first contact.",
+    "evidence": "curl 'http://localhost:5173/onramp?step=1&goal=self' markup captured this session (label+radio, no fieldset/legend in output); src/components/Bits.tsx:124-139 (the app-side pattern for contrast)",
+    "lenses": [
+     "newcomer"
+    ],
+    "recommendation": "Wrap each step's options in <fieldset> with the question as <legend> (styling reset is 3 lines of CSS) in onramp.ts's step renderer."
+   },
+   {
+    "severity": "P3",
+    "title": "[docs-drift] TypeReaderLegacy.tsx: 40KB dead view kept in src/views with no import path \u2014 correctly tree-shaken, but indistinguishable from live code to a reader",
+    "detail": "src/views/TypeReaderLegacy.tsx (40,403 B, second-largest view) is imported by nothing \u2014 the only reference in src/ is a comment in TypeReader.tsx:60 pointing at 'the header there'. Verified it does not ship: the string 'TypeReaderLegacy' is absent from dist/assets/index-B4qwz5m7.js. So no runtime or perf cost; the cost is diligence noise \u2014 a reviewer sizing the views directory counts it, biome lints it, typecheck compiles it, and nothing marks it as retired except its own header. In a codebase whose distinguishing virtue is that documents say what is true, an unreferenced 40KB file is off-brand.",
+    "evidence": "wc -c src/views/*.tsx (40403 B, this session); grep 'TypeReaderLegacy' src \u2192 only src/views/TypeReaderLegacy.tsx:129 (its own export) and TypeReader.tsx:60 (comment); node probe of dist bundle \u2192 'TypeReaderLegacy false' (this session)",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Move it to docs/archive/ (which already exists) or delete it \u2014 git history is the archive the repo already relies on for the removed binaries (AR-1)."
+   },
+   {
+    "severity": "P3",
+    "title": "[security] Minor hygiene: signInProblem strips <>& instead of using the existing escapeHtml; Google error strings are currently all-internal so exposure is nil",
+    "detail": "index.ts:362 interpolates the OAuth failure message into HTML via message.replace(/[<>&]/g, \"\") \u2014 an ad-hoc strip, while the codebase's real escaper (escapeHtml, used by auth.ts:501 and leads.ts:221) sits unused here. Audited every error string completeGoogleSignIn can return (google.ts:109-161): all are fixed literals; the one branch keyed on a user-controlled query param (error=access_denied) selects between two fixed strings rather than echoing input. So there is no injection today \u2014 this is a latent-footgun note: the sanitizer at the sink is weaker than the house standard, and a future error message that embeds a Google-supplied string (error_description is the classic) would rely on it. Filed at P3 precisely because the current code is safe; it costs one identifier to make the sink match the rest of the Worker.",
+    "evidence": "src/worker/index.ts:349-366 (signInProblem); src/worker/google.ts:107-161 (all error strings enumerated this session); src/worker/html.ts escapeHtml used at auth.ts:501, leads.ts:221",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Replace the regex strip with escapeHtml(message) in signInProblem."
+   }
+  ],
+  "notes": "Evidence base: all file:line citations were read this session from /home/user/octant; all measurements run this session against the repo and the dev server at localhost:5173 (authenticated via the provided cookie where noted). Key verified numbers: npx vitest run \u2192 1225 tests / 47 files, all passing; dist/assets/index-B4qwz5m7.js = 632,308 B raw / 195,377 B gzip (dist built this session), CSS 22,864 B / 5,430 B gzip; npx biome lint src \u2192 5 warnings (base.css:121-123 noImportantStyles \u00d73, components.css:394 and 483 noDescendingSpecificity), matching the orchestrator's stated drift figures independently. QA-REVIEW baseline figures (832 tests, 558KB, 0 warnings, two CSP hashes) are quoted from docs/QA-REVIEW.md:11-16,36 as the DOCUMENT's claims, not re-verified against the 2026-08-01 commit \u2014 the drift deltas are the finding. REVIEW-FINDINGS.md is correctly self-marked as a superseded historical snapshot (its own header), so I did not treat its counts as open claims; QA-REVIEW is the live document and is the one drifting. Reconciliation of QA-REVIEW open items \u2014 verified still open this session: M6's two overclaiming test names (engine.test.ts:180, lexicon.test.ts:194-200 with the always-true quadra guard), AR-2 asset cache policy (no _headers, no cache-control on assets), shots.mjs absent from ci.yml, AR-8 OAuth token-exchange leg untested (no token-endpoint mock in google-auth.test.ts), and \u00a74's real-AT keyboard/screen-reader gap (no playwright/axe in package.json). Nothing QA-REVIEW marked fixed was found regressed: rate-limit bindings present and fail-open-tested (ratelimit.test.ts:42-49), error boundaries in App.tsx:178,209, headers layer at the single exit, chat context validation tests present, logout-only-on-ok at App.tsx:87-92. Security items examined and found sound (deliberately not filed as findings): Stripe webhook verification (stripe.ts:44-61 \u2014 timestamp tolerance, multi-v1 acceptance, constant-time compare; retry-safe 500 on KV failure at :145-149), session HMAC design and constant-time comparison discipline (crypto.ts:58-67 used consistently), admin owner-gating (index.ts:186-192 resolves owner server-side per request; admin.ts signed links are single-person, GET-shows/POST-decides), export token via digest comparison (export.ts:103-111), codeId identity fix for bare-code chat history (auth.ts:157-164, index.ts history routes scope by who). Secrets scan of dist found only env-var NAMES in Admin UI copy, no values. Claims I could NOT verify from here and did not assert: production run_worker_first edge behavior (platform-only, as QA-REVIEW itself states), real Cloudflare invocation billing, actual screen-reader behavior (no AT available in this environment \u2014 announcement findings are derived from the DOM/ARIA semantics, which is the standard basis but not a live NVDA/VoiceOver pass). The P1 (onramp token replay) is a source-level proof of capability \u2014 I did not send actual emails or flood KV to demonstrate it. One caution for synthesis: the dev server's missing security headers on the SPA shell is a dev-only parity gap, not a production hole \u2014 production shell responses flow through withSecurityHeaders; do not let it get summarized as 'app has no CSP'.",
+  "score": 7.5,
+  "scoreRationale": "The supporting dimensions are unusually strong for a project of this size, which is why one P1 and a cluster of P2s still leave a 7.5. Accessibility floor is far above typical: every one of the 21 SVG-bearing components carries role=img+aria-label or aria-hidden (audited individually), mouse-only affordances have deliberate sr-only/text fallbacks with tests asserting them, interactive controls are native elements with correct states (aria-pressed choice buttons, native select, aria-expanded menu, Escape handling), and prefers-reduced-motion, focus-visible, and scrollable-region focusability are all handled \u2014 but the three SPA-era gaps (no skip link, silent route changes, unannounced chat streaming) are exactly the ones that make the app hard to actually use with a screen reader, so the polish exceeds the plumbing. Security posture is the best dimension: fail-closed wall ordered before assets, one header layer with a hash-pinned CSP, constant-time comparison discipline in a single shared module, correct hand-rolled Stripe verification with retry-safe failure semantics, and tests that assert failure postures \u2014 undermined one notch by the replayable onramp token on the now-live public funnel and by the QA review's adversarial coverage lagging the public surface it vouches for. Performance is unoptimized but consciously priced (632KB single chunk, no asset caching, Google fonts \u2014 each with a written tradeoff), and the growth-without-a-budget pattern plus the partially-fired AR-2 trigger keep it from being fully excused. The docs-drift theme is the real deduction: this repo's differentiator is that its documents are load-bearing, and the load-bearing one (QA-REVIEW) went stale on every gate within three weeks, including a pre-deploy check that now cries wolf.",
+  "strongestThing": "The single-exit security architecture and its honesty about failure modes \u2014 preserve it exactly. Every response leaves through withSecurityHeaders at the router's one exit (src/worker/index.ts:57-64), the CSP pins its three inline scripts by recomputed hash so drift fails the suite rather than the page (src/worker/headers.ts:31-62, tests/headers.test.ts:29-55), all secret comparisons route through one constant-time module (src/worker/crypto.ts:58-67), the wall fails closed with the reasoning written at the decision site (auth.ts:17-38, wrangler.jsonc:16-42 \u2014 including the billing cost of run_worker_first stated rather than waved away), and the tests assert postures most suites never touch: a rate-limiter OUTAGE failing open on purpose (tests/ratelimit.test.ts:42-49), a malformed-context flood not charging the shared budget (ratelimit.test.ts:98-127), a webhook KV failure returning 500 specifically so Stripe redelivers (stripe.ts:145-149). This is diligence-grade engineering because the accepted risks are in the source next to the code they price \u2014 the audit's job was mostly checking whether reality still matched the writing, which is the highest compliment a codebase can earn."
+ },
+ "integrity": {
+  "findings": [
+   {
+    "severity": "P1",
+    "title": "Partner terms overclaim: 'A\u2192B and B\u2192A are different numbers, always' is false for 73% of pairs",
+    "detail": "docs/PARTNERSHIP-TERMS.md states ease scores are 'different numbers, always' by direction. Computed against the real engine: only 64 of 240 ordered cross-type pairs differ by direction (the SR/SV and BR/BE relations); 176 cross pairs plus all 16 self-pairs are numerically identical both ways. The engine's own doc comment (src/engine/core.ts:93-95) correctly says the relation is 'Symmetric for twelve of the sixteen'. A diligent partner who spot-checks /pair/ENTP/INTP will see the same number both ways and conclude the terms document overstates.",
+    "evidence": "docs/PARTNERSHIP-TERMS.md:47; npx tsx run this session: 'cross pairs where ease differs by direction: 64 ; same both ways: 176'; src/engine/core.ts:93-102",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Reword to: 'Ease is read directionally, and for the four asymmetric relations (Examiner/Examined, Upstream/Downstream) the two directions are different numbers.' Never say 'always' about a claim the engine itself refutes."
+   },
+   {
+    "severity": "P1",
+    "title": "DESIGN-SYSTEM.md and DESIGN-BRIEF.md specify a palette that ships nowhere in the app",
+    "detail": "The design system's Palette table gives element hexes (#6B3BC4, #C9A0FF, #5FE0D6, #FF8FB0 etc.) and hue names 'N violet \u00b7 S amber \u00b7 T teal \u00b7 F rose'. The shipped palette (src/engine/palette.ts FN_COLOR) is entirely different: #4C4899/#A8A6D3 etc., named 'N = indigo, S = sienna, T = verdigris, F = madder'. Grep confirms the doc hexes appear in zero src/ files. docs/PLATFORM-BACKPORT.md:38-47 documents the migration to candidate 'A \u2014 Pigment' whose table exactly matches shipped palette.ts \u2014 the migration landed, but the two authoritative design docs were never updated. A licensee producing assets from DESIGN-SYSTEM.md would produce off-brand colours. (The same doc's ease-gradient endpoints and glow alphas DO match palette.ts, so the doc is partially maintained, which makes the stale palette table more misleading, not less.)",
+    "evidence": "docs/DESIGN-SYSTEM.md:56,77-82 vs src/engine/palette.ts:13-14,27-40; grep '6B3BC4|C9A0FF|5FE0D6|FF8FB0' hits only docs/ (DESIGN-SYSTEM.md, DESIGN-BRIEF.md:64,80-83, PLATFORM-BACKPORT.md), zero hits in src/; PLATFORM-BACKPORT.md:44-47 Pigment table = palette.ts values",
+    "lenses": [
+     "partner",
+     "enthusiast"
+    ],
+    "recommendation": "Replace the DESIGN-SYSTEM.md and DESIGN-BRIEF.md palette tables with the shipped Pigment values from palette.ts (or generate the table from palette.ts in a test the way tokens.css is asserted), and update the hue names to indigo/sienna/verdigris/madder."
+   },
+   {
+    "severity": "P1",
+    "title": "Course stage count drifted twice: 15 stages shipped, docs say thirteen (README \u00d72, partner terms) and 14 (backport doc)",
+    "detail": "src/learn/curriculum.tsx STAGES has 15 entries (runtime-counted; slugs functions \u2192 borrowed-wiring). README says 'the thirteen-stage course' (line 38) and 'Thirteen stages, in order' (line 56). docs/PARTNERSHIP-TERMS.md:35 also says 'thirteen-stage course'. docs/PLATFORM-BACKPORT.md:171 says 'there are 14'. Meanwhile the live marketing and partner pages correctly say 'fifteen-stage' (src/worker/marketing.ts:693,802; src/worker/partners.ts:156) \u2014 so the partner web page and the partner terms document contradict each other on the same fact.",
+    "evidence": "npx tsx: 'STAGES length: 15' with all 15 titles listed; README.md:38,56; docs/PARTNERSHIP-TERMS.md:35; docs/PLATFORM-BACKPORT.md:171; src/worker/marketing.ts:693,802; src/worker/partners.ts:156; src/learn/curriculum.tsx:41 header comment correctly says 'Fifteen stages'",
+    "lenses": [
+     "newcomer",
+     "partner"
+    ],
+    "recommendation": "Sweep 'thirteen'/'14' to fifteen in README.md:38,56, PARTNERSHIP-TERMS.md:35, PLATFORM-BACKPORT.md:171, and the stale comment at src/views/Learn.tsx:182 \u2014 or better, stop hard-coding the count in prose and add a test asserting any prose count against STAGES.length."
+   },
+   {
+    "severity": "P2",
+    "title": "README route table omits two live surfaces: /bonds and /guide (+ /guide/:type)",
+    "detail": "The Surfaces table (README.md:51-66) lists 14 route groups but App.tsx registers /bonds (line 192) and /guide, /guide/:type (lines 198-199) as full app routes. The omission is self-undermining: README's own deck section (lines 258-264) presents Bonds as a headline derived result (bondFacts/sparkFacts), yet a reader of the route table would not know /bonds exists as a page; and /guide (the emoji guide) is invisible everywhere in the README.",
+    "evidence": "src/App.tsx:192 (/bonds), :198-199 (/guide, /guide/:type) \u2014 grep output this session; README.md:51-66 route table read in full, no /bonds or /guide row",
+    "lenses": [
+     "newcomer",
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "Add two rows to the Surfaces table: /bonds (the axis-bond and Spark-bond proofs as a page) and /guide \u00b7 /guide/:type (the emoji guide)."
+   },
+   {
+    "severity": "P2",
+    "title": "README's src/engine listing omits 5 of the directory's 21 substantive modules",
+    "detail": "README.md:19-35 lists 16 engine files. The directory holds 22; besides the trivial barrel index.ts, the listing is missing bonds.ts (5,579 B \u2014 powers the /bonds route and two README deck claims), emoji.ts (2,189 B \u2014 powers /guide), romance.ts (4,810 B \u2014 data.ts:351-358 calls it 'the app's own romantic-dynamics reading... used everywhere the app answers about romance on its own authority'), powers.ts (2,199 B), and learnGrounding.ts (5,788 B). The README leans on bondFacts()/sparkFacts() by name while the module map says bonds.ts doesn't exist.",
+    "evidence": "ls src/engine/ this session: 22 files; README.md:19-35 lists core, sides, ops, read, octagram, playbook, network, empirical, functions, plain, translation, context, palette, verify, lexicon, data only; src/engine/data.ts:349-358 comment referencing romance.ts",
+    "lenses": [
+     "partner",
+     "enthusiast"
+    ],
+    "recommendation": "Add the five missing lines to the engine map (bonds, emoji, romance, powers, learnGrounding), since the map presents itself as complete."
+   },
+   {
+    "severity": "P2",
+    "title": "DESIGN-SYSTEM.md's absolute 'no emoji' rule is contradicted by a whole shipped surface (/guide)",
+    "detail": "The Texture section rules: 'No gradients-as-decoration, no glassmorphism, no photographic realism, no emoji.' \u2014 stated as absolute. The app ships an entire emoji guide at /guide built on src/engine/emoji.ts (FN_EMOJI: one emoji per function \u2014 \ud83c\udf86\ud83c\udfaf\u26a1\ud83d\udcda\u2699\ufe0f\ud83d\udd0d\ud83e\udd1d\ud83e\udded \u2014 plus DOOR_EMOJI), rendered by src/views/Guide.tsx ('The emoji guide' h1 at line 60). Whether or not the guide is a deliberate exception, the design doc does not record one, so the doc and the app disagree.",
+    "evidence": "docs/DESIGN-SYSTEM.md:101-102 ('no emoji'); src/engine/emoji.ts:22-30 (FN_EMOJI table); src/views/Guide.tsx:8,60 (imports FN_EMOJI, renders 'The emoji guide')",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Either scope the rule ('no emoji inside illustrations; the emoji guide is a deliberate translation surface, see engine/emoji.ts') or note /guide as the recorded exception in DESIGN-SYSTEM.md."
+   },
+   {
+    "severity": "P3",
+    "title": "README 'Plain first' section says 'all 100 lexicon entries'; the lexicon has 103 (stated correctly twice elsewhere in the same README)",
+    "detail": "README.md:46 says tests/plain.test.ts 'asserts all 100 lexicon entries carry a gloss'. Runtime count this session: ENTRIES.length === 103, matching the pinned test (tests/plain.test.ts:30, verified earlier this session) and the README's own '103 term definitions' (line 34) and '103 defined terms' (line 65). An internal contradiction three lines apart from a correct figure.",
+    "evidence": "README.md:46 vs README.md:34,65; npx tsx: 'lexicon entries: 103'; tests/plain.test.ts:30 (cited as previously verified this session)",
+    "lenses": [
+     "enthusiast"
+    ],
+    "recommendation": "Change '100' to '103' at README.md:46, or drop the number and say 'every lexicon entry'."
+   },
+   {
+    "severity": "P3",
+    "title": "'No stored matrix to keep in sync' is slightly overstated: RECIPROCAL and REL_SCORE are stored frozen tables in data.ts",
+    "detail": "README.md:9-10 claims 'There is no database and no stored matrix to keep in sync \u2014 the structural tables cannot drift apart, because they are computed.' REL is genuinely computed at runtime (core.ts:78-90, from DOM_AUX + three involutions), but RECIPROCAL (data.ts:150-167) is a stored 16-entry structural table whose consistency with REL is held by a test-time assertion (verify.ts:71-73), not by derivation \u2014 data.ts's own header calls it a 'frozen' computed table. The README's honest asterisk (lines 12-16) covers authored numbers/words but not this stored structural table. Minor, because the assertion makes silent drift impossible in practice, but 'cannot drift because computed' is the wrong mechanism for RECIPROCAL \u2014 it cannot drift because it is asserted.",
+    "evidence": "README.md:9-16; src/engine/data.ts:1-4 (header: 'the computed tables below are frozen'), :150-167 (RECIPROCAL); src/engine/core.ts:78-90 (REL computed); src/engine/verify.ts:71-73 (reciprocity assertion over all 256 pairs)",
+    "lenses": [
+     "enthusiast",
+     "partner"
+    ],
+    "recommendation": "One clause fixes it: '...the structural tables cannot drift apart \u2014 they are computed, and the one frozen table (RECIPROCAL) is asserted against the computed relation table on every test run.'"
+   },
+   {
+    "severity": "P3",
+    "title": "Stale code comment: Learn index described as 'thirteen text cards'",
+    "detail": "src/views/Learn.tsx:182 comment says the stage index reads as 'thirteen text cards under a text lede'; STAGES.length is 15, so the index renders 15 cards. Comment-only, but it is the same 13\u219215 drift as the README and would misdirect a maintainer counting cards.",
+    "evidence": "src/views/Learn.tsx:182 (grep this session); npx tsx: 'STAGES length: 15'",
+    "lenses": [
+     "partner"
+    ],
+    "recommendation": "Update the comment, or remove the count from it."
+   }
+  ],
+  "score": 7.5,
+  "scoreRationale": "Every load-bearing mechanical claim I could execute verified exactly, often to the decimal: the empirical counterweight's r = \u22120.1540 (README says \u2248 \u22120.15; empirical.ts header says \u22120.154), duality survey mean 7.4 vs identity 92.6 as documented, the Dread-in-two-slots claim 16/16 on both sides, bondFacts' 93-mean/29-clearance and sparkFacts' 92 exactly as printed, the deck at exactly 78 cards in the stated suit breakdown, 8 onboarding screens, 6 read-someone prompts, 90-day KV TTL, the hand-set 16-value ease ramp precisely where the README says it is, and a defensible ~2 KB seed figure (~1.7-2.0 KB by direct byte measurement of data.ts's structural constants, with the remaining ~87% of the file honestly disclosed as authored copy). That is an unusually high hit rate for a codebase this verbal. The deductions are for a systematic weakness in the opposite direction: counts and inventories that live in prose drift when the code moves \u2014 the course grew 13\u219215 stages and four documents (including the partner-facing terms) still carry old counts in three different states (13, 14, 15); the README's route table and engine map are missing shipped surfaces they themselves reference; the two authoritative design docs specify a palette that was migrated out from under them; and one partner-terms sentence ('different numbers, always') asserts something the engine computably refutes for 176 of 240 pairs. Nothing found is a P0 \u2014 no claim about the model's structure, validation, or security posture was false \u2014 but a project whose brand is 'the words match the code' loses real credibility per stale number, and the drift is concentrated exactly in the documents partners would read first.",
+  "strongestThing": "The empirical counterweight is real and exact, and it should be preserved and foregrounded: README.md:159-164 stakes credibility on shipping a published survey matrix that disagrees with the model, and direct recomputation this session (npx tsx over src/engine/empirical.ts + core.ts ease()) reproduces every number claimed \u2014 Pearson r = \u22120.1540 across all 256 ordered pairs, duality pairs surveyed at a mean of 7.4% against a derived 100, identity pairs at 92.6% against a derived 74, and 132/256 pairs landing on opposite sides of a median split. The attribution (CC BY 4.0, personalitydata.org, changes stated) is carried in the shipped bundle (empirical.ts:40-47), not just in docs, and divergence() (empirical.ts:103-137) narrates the gap honestly per pair rather than smoothing it \u2014 including a documented self-correction of an earlier misleading phrasing at lines 110-115. This is diligence-grade intellectual honesty implemented as executable code, and it is the single strongest trust asset the product has for all three audiences.",
+  "notes": "CLAIM TABLE (claim \u2192 verdict \u2192 evidence; all evidence read/run this session unless marked 'given' = verified earlier this session per task brief):\n\n1. catalysts() = Damper+Loose fit for all 16 \u2192 VERIFIED (given).\n2. README:46 'all 100 lexicon entries' \u2192 DRIFTED; runtime ENTRIES.length=103 (npx tsx) + tests/plain.test.ts:30 pins 103 (given); README:34,65 correctly say 103.\n3. Octagram dyads/temples/40 fields/eight sins \u2192 VERIFIED (given, 207 tests).\n4. calculate() always narrows \u2192 VERIFIED (given).\n5. Suite 1225/47, typecheck, lint, build \u2192 VERIFIED (given).\n6. README route table completeness \u2192 DRIFTED: /bonds (App.tsx:192) and /guide,/guide/:type (App.tsx:198-199) missing; /signin exists but is a Worker route (src/worker/index.ts:110), consistent with its table row.\n7. README engine map completeness \u2192 DRIFTED: omits bonds.ts, emoji.ts, romance.ts, powers.ts, learnGrounding.ts (ls src/engine = 22 files vs 16 listed).\n8. '~2 KB of genuine seed data' \u2192 VERIFIED/DEFENSIBLE: byte spans measured in data.ts \u2014 TYPES 194 + DOM_AUX 631 + COIN_LABELS/DETERMINING/CONFIRMING 365 + FN_FULL/SLOT_NAMES/SLOT_TAGS 530 = 1,720 B; +REL_SCORE 247 = 1,967 B; +RECIPROCAL 281 = 2,248 B. File total 23,420 B; authored copy (REL_NAME 375 + REL_DEF 2,014 + FN_LONG..REL_FRAME 8,200 + ARCHETYPE..BEHAVIOURAL 9,927) \u2248 20.5 KB \u2248 87%, matching README's own asterisk that data.ts is 'mostly authored copy'. Involutions are ~500 B of code in core.ts:12-22.\n9. 'Dread sits in Cave slot of unconscious and Lead slot of superego' \u2192 VERIFIED 16/16 both (npx tsx over sides(); ENTP: unconscious Cave:Se(Dread), superego Lead:Se(Dread)); also asserted structurally at verify.ts:65-68.\n10. 'ease() reads a hand-set 16-value score ramp' \u2192 VERIFIED: core.ts:101-102 ease = REL_SCORE[REL[target][perspective]]; REL_SCORE is 16 literal values at data.ts:132-149.\n11. Empirical counterweight r \u2248 \u22120.15 \u2192 VERIFIED: computed \u22120.1540; DU mean 7.4 (derived 100), ID mean 92.6 (derived 74); 132/256 median-split disagreements. Matrix symmetric as claimed (empirical() is order-independent read of a symmetric M).\n12. Thirteen-stage course \u2192 DRIFTED: STAGES.length = 15 (npx tsx, all titles listed). Stale at README:38,56; PARTNERSHIP-TERMS.md:35; PLATFORM-BACKPORT.md:171 (says 14); Learn.tsx:182 comment. Correct at curriculum.tsx:41, marketing.ts:693,802, partners.ts:156.\n13. index.html title/meta \u2192 VERIFIED: 'Octant \u2014 read the wiring' matches README h1; description's 'sixteen wirings, four sides of the mind, 256 derived relations' all confirmed (16 TYPES, sides() verified, 256 REL cells given).\n14. DESIGN-SYSTEM.md spot-checks \u2192 mixed: (a) Palette table DRIFTED (doc hexes #6B3BC4 etc. appear in zero src files; shipped = PLATFORM-BACKPORT.md:44-47 'Pigment' values = palette.ts:27-40); (b) ease gradient endpoints VERIFIED (doc rgb(170,42,30)\u2192(15,95,70) light, (232,122,104)\u2192(120,214,175) dark = palette.ts EASE_TEXT:82-89); (c) size ratio 1/.78/.56/.42 VERIFIED (geometry.ts:26 RANK_RATIO); (d) 'Fifteen ideas' VERIFIED (15 '### N \u00b7' headers); (e) 'nothing depends on colour alone' SUPPORTED (FnTag at Bits.tsx:57-94 always renders the two-letter mono text plus an attitude-encoding disc; QUADRA_COLOR deliberately neutral per palette.ts:61-69); (f) 'no emoji' CONTRADICTED by /guide (emoji.ts, Guide.tsx).\n15. Deck 'seventy-eight cards' + suit counts \u2192 VERIFIED: deck().length = 78; suits Elements 8, Seats 8, Wirings 16, Sides 4, Camps 4, Bonds 8, Channels 17, Wheels 8 (npx tsx).\n16. bondFacts 93 mean / 29 clear; sparkFacts 92; Upstream 54 / Downstream 48 \u2192 VERIFIED (npx tsx; REL_SCORE BR=54, BE=48 at data.ts:141-142).\n17. Eight onboarding screens \u2192 VERIFIED: 8 'idea:' objects in Welcome.tsx:35-83 (9th hit is the interface field at :25).\n18. Six read-someone prompts, 4 determining + 2 confirming \u2192 VERIFIED: READ_PROMPTS.length=6, coins 2,5,4,3,0,1 (npx tsx).\n19. 90-day transcript TTL \u2192 VERIFIED: chatlog.ts:92 TTL_SECONDS = 90*24*60*60, used at :116.\n20. PARTNERSHIP-TERMS 'A\u2192B and B\u2192A are different numbers, always' \u2192 FALSE: 64 of 240 ordered cross pairs differ, 176 identical both ways (npx tsx). Terms doc otherwise accurate (103 lexicon, 78 cards, r\u2248\u22120.15, 128/128, 16/16/40/40 all consistent with verified facts).\n21. 'No stored matrix' \u2192 MOSTLY TRUE: REL computed (core.ts:78-90); RECIPROCAL stored frozen (data.ts:150-167) but asserted vs REL at verify.ts:71-73.\n\nUNVERIFIED (not reproduced this session, flagged only): Berens 128/128 and the two 256-cell socionics chart agreements (asserted in tests/ingested.test.ts which is part of the passing suite \u2014 indirectly supported, not independently recomputed); '~80 lines of chat.ts Gemini specifics'; '~25 MB removed binaries'; card trim dimensions 63x88mm/69.09x94.23mm; OPS slide confirmation. No screenshots were taken; all evidence is file:line reads and npx tsx command outputs. No files were modified."
+ }
+}

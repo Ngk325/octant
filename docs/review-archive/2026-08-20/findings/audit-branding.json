@@ -1,0 +1,178 @@
+{
+ "score": 7.5,
+ "scoreRationale": "As a visual system Octant is unusually well-built for a product this size: one warm-paper canvas, one WCAG-locked semantic palette, one type stack, and a genuinely first-class dark mode all hold across a server-rendered marketing site and a dense React instrument (home-signedout-desktop-light.png vs home-app-desktop-light.png share palette, accent, type, the eight-disc alphabet, the two-stack RelationLanding diagram and the \"A lens, not a measurement\" callout verbatim). The semantic-color doctrine is enforced by build-failing tests, not vibes. Points come off almost entirely at the BRAND layer sitting on top of that system: the single strongest device \u2014 the mark \u2014 is absent from the entire signed-in product (App.tsx:121); the mark that does exist reads as a generic crosshair/settings glyph; the app ships no favicon and no social image exists anywhere; the type identity is hotlinked from Google with no self-host (this very session rendered every screenshot in Georgia because that link was blocked); and the accent violet exists in three drifting values across product, rate card (#5B32A8) and design docs (#6B3BC4). The core is an 8.5; the unfinished brand-asset and logotype layer pulls it to 7.5.",
+ "strongestThing": "The semantic-color system executed as one coherent instrument in both themes. Hue always means a cognitive element (Ne indigo, Se sienna, Te verdigris, Fe madder), the same four hues carry the disc alphabet, the molecules, the ease heatmap and the octagram, and nothing depends on color alone \u2014 all of it WCAG-AA-locked by tests/palette.test.ts. The dark octagram (learn-octagram-desktop-dark.png) and the dark 16x16 ease matrix (matrix-desktop-dark.png) show a warm near-black canvas that stays calm and legible where most products' dark modes fall apart. This rigor IS the brand's differentiator and must survive any direction.",
+ "currentIdentityAssessment": "Octant runs one identity across two surfaces that are more aligned than the \"two brands\" framing suggests. Marketing (server-rendered, marketing.ts) and the app (React, tokens.css) share the exact same paper (#FDFCFA / #141310), the exact same element palette and accent violet (#4C4899 = Ne), the same Newsreader/Inter/IBM Plex Mono stack, the same eight-disc alphabet band, the same core diagrams and the same violet-soft \"lens, not a measurement\" callout \u2014 visible side by side in home-signedout-desktop-light.png and home-app-desktop-light.png, and holding in dark (home-signedout-desktop-dark.png). This is genuine coherence, not luck.\n\nThe divergences are at the identity/brand layer, not the system layer. (1) LOGO: marketing pairs the MARK() glyph with \"Octant\" (mkt-partners-desktop-light.png header); the app uses a bare \"Octant \u2014 read the wiring\" set in the body serif with no mark at all (home-app-desktop-light.png, types-desktop-light.png mastheads; App.tsx:121-123). The product's single most reusable brand device is missing from every signed-in screen. (2) The mark itself is weak: two rounded squares at 45 degrees plus a dot (marketing.ts:21-27) reads at 22-30px as a crosshair / target / settings octagon and does not encode \"eight\" or \"octant\"; the wordmark is literally the word in Newsreader with no custom lockup. (3) COMPOSITION drifts even inside the app: marketing is left-aligned editorial, the app home is centered (home-app-desktop-light.png), the types index is left-aligned (types-desktop-light.png). (4) The marketing masthead uses translucent backdrop-blur (marketing.ts:243), which the brand's own doctrine forbids (\"no glassmorphism\", DESIGN-SYSTEM.md \u00a71). (5) A THIRD micro-identity exists: docs/partner-rate-card.html uses accent #5B32A8 and ink #17130F, off the shipped #4C4899/#241F19 a partner just saw on /partners. And the documented brand palette in DESIGN-SYSTEM.md (N #6B3BC4 etc.) ships NOWHERE \u2014 #6B3BC4 appears only in docs, never in src/ \u2014 so the brand book and the product openly disagree. Net: a strong, disciplined system wearing an unfinished, slightly generic, three-times-drifting brand.",
+ "directions": [
+  {
+   "id": "A",
+   "name": "Sharpen the instrument (refine quiet paper)",
+   "thesis": "Keep the 'quiet paper, precise geometry' identity that already reads as trustworthy and rare in this category, and finish it: unify marketing and app on one system, close every divergence, and give the brand the assets it is missing (a real logotype + hardened mark, a favicon, a social image, self-hosted type, one reconciled palette). The system is an 8.5; this makes the brand match it.",
+   "palette": "Unchanged. The shipped FN_COLOR family (Ne #4C4899 / Se #855723 / Te #326758 / Fe #983E4A) stays as the single semantic palette in both themes; the warm paper and warm-neutral chrome stay. Work is reconciliation: retire the rate card's #5B32A8, and rewrite DESIGN-SYSTEM.md's palette table (#6B3BC4 etc.) to the shipped values so docs == tokens, guarded by a test.",
+   "typography": "Unchanged stack (Newsreader serif display + Inter UI + IBM Plex Mono codes) but self-hosted as subset WOFF2 instead of hotlinked, and formalized into a true logotype: 'Octant' drawn once as a fixed SVG lockup beside a hardened mark, not re-set as live body text per surface.",
+   "illustration": "Unchanged and unified. The existing glyph language (people as head+arc, molecules, discs, the RelationLanding two-stack) already spans both surfaces; the only additions are brand-asset renders \u2014 an og:image built from the hero diagram, and the 78-card deck photographed as marketing/social imagery.",
+   "audienceEffect": "Newcomer: the calm, editorial, paper-and-serif feel already lowers the intimidation of a dense typology tool; fixing the nameless browser tab, the imageless shared link and the settings-glyph logo removes the 'is this finished?' doubt without changing the reassuring surface. Enthusiast: the restraint and semantic-color rigor are exactly what a jaded audience values over neon quiz branding; a real mark and a shown deck reward them. Partner: delivers embed-grade consistency \u2014 one locked palette, a favicon, an og:image, a rate card that matches \u2014 which is precisely what someone putting Octant inside their offering needs.",
+   "equityLost": "Essentially none \u2014 this preserves all existing equity (palette, diagrams, deck, dark mode, WCAG tests). The only thing 'lost' is the current bare-word wordmark, which has little equity to begin with.",
+   "effort": "M",
+   "affectedItems": "App masthead (add mark+lockup), index.html (favicon, og:image, self-hosted fonts), marketing.ts + read.ts + onramp.ts (self-host fonts, add og:image, drop backdrop-blur), partner-rate-card.html (reconcile accent/ink), DESIGN-SYSTEM.md (fix palette table), new /brand asset folder + public favicon set, a rendered deck photo, and a chosen alignment rule applied across app views."
+  },
+  {
+   "id": "B",
+   "name": "Ink and element (evolve the surface, keep the doctrine)",
+   "thesis": "Keep the semantic-color doctrine exactly \u2014 hue means element, WCAG-AA, nothing on color alone \u2014 but replace the surface aesthetic to become distinctive. 'Warm off-white + serif' is tasteful yet reads like a hundred editorial/Substack SaaS sites; make the four element hues the ONLY color on the page, push everything else to strict ink-on-paper with a signature structural frame (the eight-slot column, the ruled diagram grid, the molecule) as a recurring brand device, and pair the serif with a real display cut so headlines carry identity.",
+   "palette": "Keeps the four semantic hues (values re-locked to WCAG on the new surface if the paper shifts) but demotes the violet accent: chrome, buttons and links go ink/graphite rather than borrowing Ne's violet, so the four element hues stop competing with a fifth 'brand' violet and become the memorable thing. Doctrine: KEPT.",
+   "typography": "Newsreader stays for reading, but adds a distinctive display face for H1/hero and a stronger mono presence for the two-letter codes, so the type does identity work the body serif currently can't. Self-hosted.",
+   "illustration": "Same primitives, promoted to framing: the eight-slot stack and the molecule become a persistent structural motif (page frames, section dividers, the mark itself), so a stranger recognizes an Octant screen from its skeleton, not just its palette.",
+   "audienceEffect": "Newcomer: slightly higher activation energy than A (bolder, more 'designed'), but a stronger first impression and clearer 'this is a serious instrument.' Enthusiast: the biggest payoff \u2014 making the hues the single hero color sharpens exactly the semantic rigor they came for, and a structural motif is catnip. Partner: more ownable and memorable to embed, but requires them to adopt a more opinionated look inside their own product, which some will resist.",
+   "equityLost": "Moderate: the violet-accent chrome (a recognizable current signal across both surfaces) and the specific 'quiet warmth' are traded for distinctiveness. Diagrams, deck and the color doctrine survive; the calm approachability is partly spent.",
+   "effort": "M",
+   "affectedItems": "tokens.css + marketing.ts palette (demote accent, re-lock any shifted pairs), a new display font pipeline, new page-frame/section-divider components, the mark, and every surface's chrome (buttons, links, masthead). Diagram internals largely untouched because hues are preserved."
+  },
+  {
+   "id": "C",
+   "name": "New coordinates (full rebrand)",
+   "thesis": "New palette, new type, new illustration frame, new wordmark \u2014 justified only if the current identity actively worked against the product, which the evidence says it does NOT. Included as the honest third option: a screen-native reinvention that moves off the muted naturalist colorants to a brighter four-hue system, a geometric/grotesk type pairing, and a freshly drawn geometric wordmark, aiming for maximum memorability at maximum risk.",
+   "palette": "Wholesale replacement: four new brighter, screen-native element hues plus a new neutral system and a genuinely new accent. Doctrine CAN be kept (hue-means-element is independent of which hues) but every value must be re-derived and re-locked against WCAG on both canvases, and every diagram, disc, molecule, ease ramp and the deck re-tested \u2014 the palette.test.ts suite effectively rewritten.",
+   "typography": "New pairing (e.g. a geometric sans display + a different reading face), fully self-hosted, with a purpose-drawn logotype replacing the Newsreader word.",
+   "illustration": "A new illustration language and mark; the existing glyph grammar (people, molecules, discs) would be redrawn to the new system rather than reused.",
+   "audienceEffect": "Newcomer: potentially the freshest, most 'app-like' first impression, but loses the paper-and-serif trust cues that currently soften a clinical subject. Enthusiast: high risk \u2014 this audience prizes the existing restraint and rigor; a brighter, trendier skin can read as exactly the pop-psych quiz branding Octant defines itself against. Partner: highest churn and lowest stability right when partners need a settled, dependable identity to embed.",
+   "equityLost": "Large. Discards the WCAG-locked palette and its guardrail tests, the recognizable warm-paper/violet signal across both surfaces, the tuned dark mode, and forces re-derivation of the entire diagram library and the printed deck's art and card back. Months of built, tested equity spent for a bet.",
+   "effort": "L",
+   "affectedItems": "Everything color- or type-bearing: palette.ts + palette.test.ts, tokens.css, all of src/components diagrams, src/cards art/render, marketing.ts, read.ts, onramp.ts, the deck, all brand assets, and the design docs."
+  }
+ ],
+ "recommendedDirection": "A \u2014 Sharpen the instrument (refine quiet paper), with the two highest-value moves from B folded in: commission a true logotype + hardened mark, and let the four element hues be the single hero color. Justification against the evidence and the three lenses: the audit shows the SYSTEM is strong and coherent (home-signedout-desktop-light.png and home-app-desktop-light.png already share palette, type and diagrams) and the deficits are all at the finishing/brand-asset layer, not the foundation \u2014 so the rational move is to finish, not to restart. NEWCOMER: the paper-and-serif restraint is what makes a dense, clinical subject feel trustworthy and non-gimmicky; the things a newcomer actually trips on are the unbranded browser tab (index.html has no favicon), the imageless shared link (no og:image), and a logo that looks like a settings icon \u2014 all of which A fixes while keeping the calm. A rebrand (C) would throw away the very approachability that lowers their guard. ENTHUSIAST: this audience has seen every neon-gradient quiz brand and values Octant's semantic-color rigor precisely because it refuses that; making the mark real and showing the 78-card deck (invisible today) rewards them far more than a new skin, and B's 'hues as the only color' sharpens exactly what they care about. PARTNER: someone embedding Octant needs a settled, self-consistent identity and drop-in assets \u2014 a locked palette, a favicon, an og:image, a rate card that matches what they saw on /partners \u2014 which is the exact content of A; the current third-accent rate card (#5B32A8) and the docs-vs-shipped palette split are partner-facing embarrassments that only reconciliation fixes, and a rebrand would inject churn where partners need stability. The one deficit all three lenses genuinely feel \u2014 a wordmark that is just the word set in the body serif, plus a mark that reads as a crosshair \u2014 is real and load-bearing, so A must include commissioning a proper lockup and hardening the mark, not merely tidying; that is why B's logotype work is pulled into the recommendation rather than deferred.",
+ "findings": [
+  {
+   "severity": "P1",
+   "title": "The mark is absent from the entire signed-in app; the app wordmark is bare body-serif text",
+   "detail": "Marketing pairs the MARK() glyph with the word ('MARK(30) Octant', marketing.ts:524) but the app masthead renders only the plain text 'Octant \u2014 read the wiring' set in Newsreader, with no mark (App.tsx:121-123). Every signed-in screen \u2014 the product users spend real time in \u2014 therefore has no logo, only a word. The product's single most reusable brand device already exists and is simply never imported into the app.",
+   "evidence": "home-app-desktop-light.png and types-desktop-light.png (mastheads show 'Octant' text only) vs mkt-partners-desktop-light.png (mark + word); App.tsx:121-123; marketing.ts:21-27,524",
+   "lenses": [
+    "newcomer",
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Bring the mark into the app masthead as one canonical lockup (mark + wordmark), shared by both surfaces from a single asset."
+  },
+  {
+   "severity": "P1",
+   "title": "The mark reads as a generic crosshair/settings glyph and does not encode 'eight' or 'octant'",
+   "detail": "The mark is two rounded squares rotated 45 degrees with a center dot (marketing.ts:21-27). At the 22-30px it is actually used, the two squares fuse into an octagon-with-a-plus that reads as a target, crosshair or settings icon and collides with common UI iconography; it carries no distinctive letterform or clear 'eight-pointed' reading. Combined with a wordmark that is just the word in the body serif, the brand has no memorable, ownable mark for any of the three audiences.",
+   "evidence": "home-signedout-desktop-light.png header ('circled-plus Octant'); marketing.ts:21-27 (MARK geometry), 30-37 (FAVICON)",
+   "lenses": [
+    "newcomer",
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Commission a true logotype and harden the mark so it unmistakably reads as eight points / an octant and is distinct from target and settings glyphs at 16-32px."
+  },
+  {
+   "severity": "P1",
+   "title": "Type identity is hotlinked from Google Fonts with no self-host \u2014 a single point of failure for the whole brand",
+   "detail": "Newsreader/Inter/IBM Plex Mono are loaded via https://fonts.googleapis.com links in four places with no self-hosted fallback file. When that host is blocked, throttled or down, every surface silently collapses to Georgia/system-sans/mono and the entire visual voice is gone (this audit session is itself the proof: all screenshots rendered in fallback fonts because the link was blocked). It is also a privacy leak \u2014 Google receives every visitor's IP \u2014 which matters for a self-described honesty-first tool and for partners whose end-users would hit Google through an embed.",
+   "evidence": "index.html:11; marketing.ts:504-506; read.ts:102-104; onramp.ts (FAVICON/font block); CA note: fonts blocked this session so screenshots show fallbacks",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Self-host subset WOFF2 for all three faces, keep the existing fallback stacks, and drop the third-party preconnect."
+  },
+  {
+   "severity": "P1",
+   "title": "No favicon in the app, and no social share image (og:image) exists anywhere",
+   "detail": "The SPA shell index.html declares no rel=\"icon\", so the signed-in app tab is unbranded (default browser icon). Marketing pages do set an SVG favicon but use twitter:card=summary with NO og:image tag at all (marketing.ts:491-503; read.ts:96-101), so any link to Octant shared into Slack, iMessage or social renders with no preview image. For a product sold partly on being shared and embedded, there is no share artwork.",
+   "evidence": "index.html (no rel=icon in full file); marketing.ts:492-503 (favicon present, no og:image); read.ts:96-101 (no og:image)",
+   "lenses": [
+    "newcomer",
+    "partner"
+   ],
+   "recommendation": "Add the FAVICON to index.html and a proper favicon set to /public; generate a 1200x630 og:image from the mark + the RelationLanding hero and upgrade twitter:card to summary_large_image."
+  },
+  {
+   "severity": "P2",
+   "title": "A third accent lives in the partner rate card, off the shipped brand violet",
+   "detail": "docs/partner-rate-card.html defines --accent:#5B32A8 and --ink:#17130F, both off the shipped --accent:#4C4899 / --ink:#241F19 used on /partners and throughout the app. A partner reading the rate card sees a brighter purple than the /partners page they just came from \u2014 a small but direct consistency break in exactly the artifact where professionalism is being judged. (Notably #5B32A8 sits nearer the never-shipped documented #6B3BC4 than the real token.)",
+   "evidence": "docs/partner-rate-card.html:25 (--accent:#5B32A8, --accent-soft:#F5F0FD), :23 (--ink:#17130F); grep census: #5B32A8 x3 (all in this file) vs #4C4899 x22",
+   "lenses": [
+    "partner"
+   ],
+   "recommendation": "Reconcile the rate card to the shipped tokens (#4C4899 / #241F19) or, better, generate it from the same token source."
+  },
+  {
+   "severity": "P2",
+   "title": "The documented brand palette ships nowhere \u2014 the design system and the product disagree",
+   "detail": "DESIGN-SYSTEM.md's canonical palette table (N #6B3BC4 violet / S #8A5410 amber / T #0D6560 teal / F #AE3355 rose) does not match the shipped palette.ts FN_COLOR (Ne #4C4899 / Se #855723 / Te #326758 / Fe #983E4A). #6B3BC4 appears only in docs (DESIGN-SYSTEM.md, DESIGN-BRIEF.md, PLATFORM-BACKPORT.md) and never once in src/. Anyone designing a new asset from the brand book will produce off-brand color, which is likely how the rate card's third violet happened.",
+   "evidence": "DESIGN-SYSTEM.md \u00a7Palette (#6B3BC4 etc.); src/engine/palette.ts:28-38 (#4C4899 etc.); grep: #6B3BC4 found only under docs/, 'NOT in src'",
+   "lenses": [
+    "partner",
+    "enthusiast"
+   ],
+   "recommendation": "Make one source of truth: rewrite the DESIGN-SYSTEM.md table to the shipped hexes (or derive both from palette.ts) and add a test asserting docs == tokens so they cannot drift again."
+  },
+  {
+   "severity": "P2",
+   "title": "Marketing masthead uses backdrop-blur glassmorphism, breaking the brand's own doctrine",
+   "detail": "The sticky marketing header is translucent with backdrop-filter:blur(10px) (marketing.ts:241-245), but the design system explicitly bans glassmorphism ('No gradients-as-decoration, no glassmorphism, no photographic realism', DESIGN-SYSTEM.md \u00a71). The app masthead is solid. It is a small effect, but it is the brand contradicting its own stated rule on the public front door and diverging from the app.",
+   "evidence": "marketing.ts:243 (backdrop-filter:blur(10px)); DESIGN-SYSTEM.md \u00a71 Texture ('no glassmorphism'); app masthead solid in home-app-desktop-light.png",
+   "lenses": [
+    "enthusiast"
+   ],
+   "recommendation": "Make the marketing masthead a solid var(--m-paper) surface matching the app."
+  },
+  {
+   "severity": "P2",
+   "title": "The 78-card printed deck \u2014 a genuinely distinctive brand asset \u2014 is invisible in marketing",
+   "detail": "The deck (docs/CARDS.md; engine-derived fronts + a matching card back, backArt() in src/cards/render.ts:280-287) is arguably Octant's most ownable, tangible brand expression: a physical object with a coherent back, generated so it cannot disagree with the app. Yet on the marketing surfaces it is only named in a prose list ('a printed 78-card deck'), never shown. A strong asset is doing zero brand work.",
+   "evidence": "mkt-partners-desktop-light.png (deck mentioned in prose, no image); home-signedout-desktop-light.png (no deck imagery); docs/CARDS.md; src/cards/render.ts:280-287 (backDocument/backArt)",
+   "lenses": [
+    "newcomer",
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Render/photograph the deck and card back as a hero and og:image, and package it as a partner leave-behind."
+  },
+  {
+   "severity": "P2",
+   "title": "Composition and alignment language is not unified, even within the app",
+   "detail": "Marketing is left-aligned editorial; the app home centers its hero and section headers (home-app-desktop-light.png); the app types index is left-aligned (types-desktop-light.png). There is no single alignment rule, so the two surfaces \u2014 and two pages of the same app \u2014 feel composed by different hands despite identical color and type.",
+   "evidence": "home-signedout-desktop-light.png (left) vs home-app-desktop-light.png (centered) vs types-desktop-light.png (left)",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Adopt one alignment doctrine (recommend the left-aligned editorial rhythm already used by marketing and the types index) and apply it to the app home."
+  },
+  {
+   "severity": "P3",
+   "title": "App masthead controls are terse Unicode glyphs, off the product's in-house glyph language",
+   "detail": "The app masthead actions render as bare Unicode characters \u2014 '?', a moon/sun ('\u263e'/'\u2600'), a power symbol ('\u23fb') and a hamburger ('\u2630') (App.tsx:137-170). In a product that otherwise draws every icon in its own stroke grammar (FnIcons, molecules, people), these read as utilitarian placeholders and undercut the crafted feel.",
+   "evidence": "home-app-desktop-light.png and types-desktop-light.png mastheads (?, moon, power, hamburger); App.tsx:145,153,161,169",
+   "lenses": [
+    "enthusiast"
+   ],
+   "recommendation": "Replace with small SVG icons drawn in the mark's stroke weight and radius language."
+  },
+  {
+   "severity": "P3",
+   "title": "There is no canonical, reproducible logo lockup \u2014 the wordmark shifts by viewport",
+   "detail": "The app wordmark carries an inline tagline '\u2014 read the wiring' (App.tsx:122) that hides at narrower masthead widths (tokens.css:66-68 comment), so the brand line appears and disappears by viewport, and marketing carries no tagline in its lockup at all. The 'logo' is live text assembled differently per surface and width rather than one fixed asset.",
+   "evidence": "App.tsx:121-123; tokens.css:66-68 ('the wordmark tagline hides' at 1399px); marketing.ts:524 (no tagline)",
+   "lenses": [
+    "partner"
+   ],
+   "recommendation": "Define one canonical lockup (mark + wordmark, with an optional tagline variant) as a fixed SVG and use it everywhere instead of re-composing live text."
+  },
+  {
+   "severity": "P3",
+   "title": "No exported brand-asset source a partner or browser can fetch",
+   "detail": "The mark and favicon exist only as TypeScript template strings inside marketing.ts (MARK, FAVICON); there is no /brand or /public directory offering an SVG logo, a favicon.ico/png set, an og:image or a social avatar. A partner asked for 'your logo' has nothing to download, and browsers requesting /favicon.ico on the app get nothing.",
+   "evidence": "marketing.ts:21-37 (mark/favicon as code only); index.html (no asset links); no /public brand assets found",
+   "lenses": [
+    "partner"
+   ],
+   "recommendation": "Add a /brand asset folder (SVG logo, lockups, og:image, avatar) and a standard /public favicon set derived from the single mark source."
+  }
+ ],
+ "notes": "CAVEAT (stated per instructions, NOT filed as a bug): Google Fonts is blocked by the audit sandbox, so EVERY screenshot renders in fallback faces (Newsreader\u2192Georgia serif, Inter\u2192system sans, IBM Plex Mono\u2192monospace), never the real typefaces. I did not critique letterforms or font rendering from the screenshots. Separately, that the fonts are hotlinked from Google with no self-host IS a real finding (P1 above), judged from source (index.html:11, marketing.ts:506, read.ts:104), not from the screenshots. Second caveat: full-page screenshots of pages with a sticky masthead show the masthead floating mid-image \u2014 a capture artifact I treated as such, not a layout bug.\n\nScope notes: The marketing hero ENTP/INFP direction-swap (P0) is owned by the marketing audit and I did not re-file it; I only reference it. The 'thirteen-stage course' vs 15-shipped mismatch (README.md:38,56 vs the 'Stage 13 of 15' label in learn-octagram-desktop-dark.png) and the axe-core dt/dd, color-contrast and landmark issues are pre-verified this session and out of scope for a branding audit, so they are referenced, not re-filed.\n\nCross-surface coherence is genuinely high and should be protected by whichever direction is chosen: marketing.ts:200-221 (--m-*) and tokens.css/palette.ts ship the identical element hues, accent (#4C4899) and type stack, and both dark modes are first-class (home-signedout-desktop-dark.png, home-app-desktop-dark equivalents, learn-octagram-desktop-dark.png, matrix-desktop-dark.png). The 'two visual identities' are really one system plus an unfinished brand layer; that is why the recommendation is to refine (A) rather than evolve or rebrand. The semantic-color constraint (hue encodes element, WCAG-AA, nothing on color alone) is real and enforced by tests/palette.test.ts \u2014 Direction A keeps it fully, Direction B keeps it (re-locking any shifted pairs), and Direction C can keep it only by re-deriving and re-locking every value, which is a large part of why C's equity cost is high."
+}

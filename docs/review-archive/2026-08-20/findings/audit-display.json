@@ -1,0 +1,123 @@
+{
+ "findings": [
+  {
+   "severity": "P1",
+   "title": "The longest reading pages have no persistent wayfinding \u2014 the only in-page nav sits at the top and scrolls away",
+   "detail": "Density is genuinely extreme: /type/* measures ~16,860px desktop (~19 screens) and ~27,900px on a phone; /lexicon ~34\u201335k px; /sides ~7k. Every in-page navigation aid is placed once, at the very top, and is NOT sticky: the type/sides section-nav chips are a plain nav.cluster (Section.tsx:36), the lexicon search + 11 category-filter chips sit above the fold, and the course learn-rail (components.css .learn-rail) has no position:sticky. There is no scroll-spy, no 'back to top', no sticky table of contents. Once a reader is even one screen down a ~19-screen type page, the only persistent chrome is the sticky masthead \u2014 whose own page links are hidden behind a hamburger by default (see separate finding). A reader deep in the 'Who you fit' section (which reproduces all sixteen full relation stack-maps) cannot tell where they are or jump elsewhere without scrolling all the way back up. The app already knows how to do sticky sub-navs (the pair page's .persp-bar sticks under the masthead), so the pattern exists \u2014 it is just not applied to the pages that need it most.",
+   "evidence": "type-entp-desktop-light.png (full 16,864px page); crops/type-entp-top.png (chip nav 'The eight seats \u2026 Reference' near hero); lex-top.png + lex-mid.png (search+filters at top, none visible mid-page); sides-intp-desktop-light.png; Section.tsx:31-38 (SectionNav = nav.cluster, plain margin, no sticky); src/styles/components.css:659-666 (.learn-rail, no sticky). Page-height figures from session-notes.md.",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "Give the tall reading surfaces (type, sides, lexicon, learn) a sticky in-page nav that docks under the masthead once the top instance scrolls off \u2014 reuse the .persp-bar sticky pattern. Add scroll-spy 'on' state so it shows current section, and consider progressive disclosure for the type page's all-sixteen 'Who you fit' block, which is the single biggest contributor to the 19-screen height."
+  },
+  {
+   "severity": "P2",
+   "title": "On a default signed-in desktop the 12 primary nav tabs are collapsed behind a hamburger \u2014 because the chat rail opens itself",
+   "detail": "The assistant rail defaults to OPEN on desktop (ChatContext.tsx:34-40 returns true when no stored preference and not an overlay). Open, it reserves 384px (--rail), so at a 1440px viewport the masthead container is only ~1008px \u2014 below the 1239px container-query threshold that collapses nav.tabs to the \u2630 menu (components.css:1036). The result: a first-run user on the most common laptop widths (1440/1536/1600) sees NO horizontal navigation at all \u2014 just four icon buttons (?, theme, sign-out, menu) \u2014 even though twelve destinations exist (App.tsx:24-37). The tabs only appear if the user closes the assistant or has a viewport past ~1680px. So the app's entire information architecture is one hamburger click away by default, on desktop, which is exactly where a persistent tab bar is expected. This compounds the tall-page wayfinding problem above.",
+   "evidence": "Every signed-in desktop shot shows only icon buttons, no tabs: home-app-desktop-light.png, type-entp-desktop-light.png, matrix-desktop-light.png, network-desktop-light.png. crops/mast-1680-railopen.png shows the 12 tabs appearing only at 1680px (and even then wrapping). src/chat/ChatContext.tsx:39 (default true); src/App.tsx:24-37 (TABS array, 12 entries); src/styles/components.css:1036-1059.",
+   "lenses": [
+    "newcomer",
+    "enthusiast"
+   ],
+   "recommendation": "Either default the rail closed on first desktop visit (let the launcher invite it), or keep a compact always-visible primary nav independent of rail state (e.g. a condensed tab set or a persistent left rail) so desktop users are not navigating a 12-destination app through a hamburger."
+  },
+  {
+   "severity": "P2",
+   "title": "The masthead wraps to two rows in a laptop-width band, breaking the --masthead-h token so deep-link anchors land hidden behind it",
+   "detail": "tokens.css hard-codes --masthead-h:64px and every scroll offset in the app (.sec scroll-margin, .lex-entry, the sticky .persp-bar 'top') derives from it. The design comment claims the tab row 'collapses to the menu button \u2026 BEFORE it would ever need a second line.' It does not: the collapse threshold is 1239px container width, but the twelve tabs need ~1430px to fit on one row, so there is a band where tabs are shown AND wrap to two lines. Measured: at 1300/1400/1500px viewport with the rail closed the masthead is 111px tall, not 64px. Consequence, verified live: navigating to /type/entp#exchange at 1400px lands the target heading at top:80px (its scroll-margin) while the masthead bottom is at 111px \u2014 the heading sits 30px BEHIND the sticky masthead. On the pair page the .persp-bar (top:64px, z-30) is likewise overlapped by the taller masthead (z-40). This is a real regression the shots.mjs height-assertion misses because it only checks the collapsed (rail-open 1440) and mobile states.",
+   "evidence": "crops/mast-closed-1400.png (two-row masthead: 'Lexicon'/'Emoji guide' on row 2); measured mastH=111 at viewports 1300/1400/1500 (mh.mjs); anchor.mjs live result: {mastBottom:111, headingTop:80, hiddenBehind:30} for /type/entp#exchange. src/styles/tokens.css:46; src/styles/components.css:67-72 (nav.tabs flex-wrap:wrap), :162, :495, :952.",
+   "lenses": [
+    "enthusiast",
+    "partner"
+   ],
+   "recommendation": "Raise the tab-collapse container threshold to the width the full tab row actually needs (~1430px) so the masthead is never two rows, OR make --masthead-h dynamic (measure and set as a CSS var). Extend the height-vs-token assertion to cover the 1287\u20131680px rail-closed band."
+  },
+  {
+   "severity": "P2",
+   "title": "The gateway-path step labels fail WCAG AA contrast \u2014 in both light and dark",
+   "detail": "The four-step gateway path (GatewayPath.tsx) renders each step's ordinal label ('1 \u00b7 Ego', '2 \u00b7 Subconscious', \u2026) as .muted.small text sitting ON tinted step cards (accent-soft lavender / warn-soft tan). Muted ink on a tinted panel drops below AA \u2014 axe-core already flags 6 serious color-contrast nodes on '.gpath-step .muted.small' on the type page. The captured crops confirm it visually in light AND dark (the muted labels wash out against the tinted backgrounds), so it is not a light-only artifact. The 'through your Dread' line is also set in --danger, which is borderline on the tan tint in light mode. The palette.test.ts AA assertions pass because they check tokens against the plain canvas, not muted text composited over the soft-tint surfaces.",
+   "evidence": "crops/type-entp-gpath.png (light) and crops/gpath-dark.png (dark) \u2014 '1 \u00b7 Ego', '2 \u00b7 Subconscious', '3 \u00b7 Unconscious', '4 \u00b7 Superego' low-contrast on tints; same component on sides-intp-desktop-light.png. axe-results.json / session-notes.md: color-contrast serious \u00d76 on .gpath-step .muted.small. src/styles/components.css:579-600.",
+   "lenses": [
+    "newcomer",
+    "partner"
+   ],
+   "recommendation": "Darken the step ordinal labels to --ink-2 (or drop the tint behind them), and add these composed muted-on-soft-tint pairs to palette.test.ts so the build guards them the way it guards token-on-canvas pairs."
+  },
+  {
+   "severity": "P2",
+   "title": "All three typefaces are hotlinked from Google Fonts with no self-hosted fallback",
+   "detail": "index.html:9-11 loads Newsreader, Inter and IBM Plex Mono directly from fonts.googleapis.com with display=swap; there is no @font-face self-host and no woff2 in the repo. The entire 'reading-first, the canvas is paper' identity rests on Newsreader, yet the app has a hard runtime dependency on a third-party CDN to render it. With display=swap the first paint is always the fallback (Georgia/system/mono) and then reflows when the real faces arrive \u2014 a visible FOUT on the load-bearing serif. If Google is slow, blocked (corporate/EU networks, and note this very sandbox), or down, the whole typographic system degrades to Georgia. It also leaks every visitor's IP to Google on each load, a documented GDPR concern. Because wrangler runs every request through the Worker already, self-serving woff2 would be trivial and matches the 'private instrument' posture. (Judged from source per the brief, not from the fallback-rendered screenshots.)",
+   "evidence": "index.html:9-11 (preconnect + single Google Fonts stylesheet link, display=swap); grep found zero @font-face and zero woff/woff2/ttf assets in src/ or public/. dev-server console ERR_CONNECTION_RESET on the font host confirms the availability failure mode.",
+   "lenses": [
+    "partner",
+    "enthusiast"
+   ],
+   "recommendation": "Self-host the three families as woff2 subsets served by the Worker, declare them with @font-face and font-display:swap, and drop the Google links (keep a system fallback stack, which tokens.css already defines). Removes the FOUT, the CDN dependency, and the privacy leak in one move."
+  },
+  {
+   "severity": "P2",
+   "title": "Heading levels skip on several pages \u2014 visual hierarchy is not carried in the document outline",
+   "detail": "axe-core reports heading-order violations on the type, calculator and learn pages. Visually the hierarchy reads fine (serif H1, section H2s, sans card-titles), but the DOM outline jumps levels \u2014 e.g. card/question labels are styled as headings' visual peers while the real heading sequence skips a level, so a screen-reader or reader-mode user gets a broken table of contents on exactly the tall pages where an outline matters most. Because the app leans on an editorial reading experience, a correct heading spine is also what would power an auto-generated in-page TOC (see the wayfinding finding).",
+   "evidence": "session-notes.md / axe-results.json: heading-order flagged on type-entp, calculator, learn-stage. Cross-checked visually on calculator-desktop-light.png (numbered questions as h-level peers of section headings) and learn-functions-desktop-light.png. src/components/Section.tsx (h2) vs card-title usage.",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Audit the heading levels per page so they descend without gaps (h1\u2192h2\u2192h3), demote non-heading labels (card-title, question numbers) to non-heading elements, and then the same outline can drive a generated sticky TOC."
+  },
+  {
+   "severity": "P3",
+   "title": "The signed-in home centers multi-line body prose, breaking with every other reading surface and the app's own reading-first doctrine",
+   "detail": "Home.tsx sets textAlign:center on the hero and on several multi-line explanatory blocks ('Everything here is derived. Sixteen wirings produce 256 relationships \u2026 Nothing can quietly disagree with anything else.' runs four centered lines; the 'Two things this app insists on' intro likewise). Centered multi-line body copy gives every line a different left start, which measurably slows reading and contradicts base.css's stated 'a size you can actually read' reading-first intent. Every other surface \u2014 the marketing home, type, sides, learn, lexicon \u2014 left-aligns its prose, so home is the odd one out. A centered one-line hero is defensible; the centered paragraph-length copy is the weak part.",
+   "evidence": "home-app-desktop-light.png (centered 'Read the wiring.' hero + centered 3\u20134 line paragraphs); src/views/Home.tsx:38, 41, and the centered section intros at 68/208/211; contrast with left-aligned home-signedout-desktop-light.png and type-entp.",
+   "lenses": [
+    "enthusiast"
+   ],
+   "recommendation": "Keep the H1 (and perhaps the one-sentence lede) centered as a landing gesture, but left-align the paragraph-length explanatory copy so it matches the rest of the app and reads faster."
+  },
+  {
+   "severity": "P3",
+   "title": "The floating 'Ask about this' launcher occludes bottom-edge content",
+   "detail": "When the rail is closed, the .rail-launch pill is fixed at bottom-right on every page (components.css:921-930) with no content padding reserved for it. On mobile it lands on top of real content: it overlaps the last rows of the type page's section-nav chips and covers part of the first lexicon card's diagram. It is the only way back into the assistant, so it must stay visible \u2014 but it should not sit on top of tappable/readable content.",
+   "evidence": "crops/type-mob-top.png ('Ask about this' pill over the 'Who you fit'/'Reference' chip area); crops/lex-mob-top.png (pill over the Ne card's crowd figure). src/styles/components.css:919-930.",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Reserve bottom padding on scroll containers when the launcher is present (as the calculator already does for its dock via .main:has(.calc-dock)), or inset the launcher clear of interactive content."
+  },
+  {
+   "severity": "P3",
+   "title": "Masthead icon buttons are 38px \u2014 under the 44px comfortable-target size, and they are the whole desktop nav when tabs collapse",
+   "detail": ".icon-btn is 38\u00d738px (components.css:91-93). That clears the WCAG 2.5.8 AA minimum (24px) but is under the 44px comfortable/AAA target. Normally minor, but per the nav-collapse finding these buttons \u2014 including the \u2630 that hides the entire primary nav \u2014 are frequently the ONLY controls in the masthead on desktop, so their size and spacing (gap --s2 = 8px) carry more weight than usual for a fine-motor or touch user on a hybrid device.",
+   "evidence": "crops/type-entp-top.png and type-mob-top.png (four 38px icon buttons, tight 8px gaps); src/styles/components.css:89-102, :87.",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Bump .icon-btn to ~44px (or add padding to the hit area while keeping the 38px visual), especially given the \u2630 menu button's outsized navigational role."
+  },
+  {
+   "severity": "P3",
+   "title": "The matrix's sixteen-relations list is a tall single-column stack, and the grid has an empty corner header",
+   "detail": "On desktop /matrix, below the 16\u00d716 heatmap the 'sixteen relations' render as sixteen full-width cards stacked in one column (~2000px of scroll) while each card's text only fills the measure \u2014 the right half is whitespace, and a 2\u20133 column grid would roughly halve the section's height and reduce the page's overall length. Separately, axe flags an empty-table-header on the matrix: the top-left corner cell of the grid is a blank <th>, which reads as an unlabeled header to assistive tech and looks like a stray empty box visually.",
+   "evidence": "matrix-desktop-light.png (Counterpart\u2026Headwind stacked single-column, wide right margin) and matrix-dark equivalent; session-notes.md axe: matrix empty-table-header + dlitem \u00d76. src/styles/components.css:405-426 (table.matrix).",
+   "lenses": [
+    "enthusiast"
+   ],
+   "recommendation": "Lay the sixteen relation cards out in a responsive multi-column grid (they already collapse cleanly), and give the matrix's corner cell a visually-hidden label (e.g. 'row type \\\\ column type')."
+  },
+  {
+   "severity": "P3",
+   "title": "Definition-list-styled rows are marked up as bare dt/dd without a <dl> wrapper",
+   "detail": "The .row component pairs a dt label with a dd value (components.css:184-205) and is used across type, matrix, calculator, learn \u2014 axe counts 84 serious dlitem nodes on a single type page. Visually these are the app's key-value rows ('Relation code   SR \u00b7 reciprocal SV', the aspect rows, etc.), which look and behave like definition lists but are not wrapped in <dl>, so a screen reader announces orphaned terms/definitions. It is a semantics-behind-the-visual issue: the presentation implies a list structure the markup does not provide.",
+   "evidence": "session-notes.md / axe-results.json: dlitem serious \u00d784 (type-entp), \u00d710 (calculator), \u00d76 (matrix), \u00d732 (learn-stage). Visual pattern in pair-entp-infp-desktop-light.png ('Relation code' / 'Camps' rows) and calculator-desktop-light.png. src/styles/components.css:182-205.",
+   "lenses": [
+    "newcomer"
+   ],
+   "recommendation": "Wrap each run of .row dt/dd pairs in a <dl> (or switch the rows to non-dl markup with role-appropriate elements); the a11y audit owns the fix but it is the structural twin of the heading-order gap."
+  }
+ ],
+ "notes": "MANDATORY CAVEAT: Google Fonts is blocked by the sandbox, so every screenshot (and my own live Playwright crops) renders fallback faces (Newsreader\u2192Georgia serif, Inter\u2192system sans, IBM Plex Mono\u2192monospace), NOT the real typefaces. I did not critique letterforms or font rendering; all typography comments are about SCALE, alignment and hierarchy only. (The fonts-hotlinked finding is judged from index.html source, not from the fallback screenshots.) Also, full-page screenshots of sticky-masthead pages show the masthead floating mid-image \u2014 a capture artifact I ignored.\n\nMETHOD: Read the shipped tokens.css/base.css/components.css and DESIGN-SYSTEM.md, opened ~30 screenshots across both viewports and themes, and captured ~15 additional readable crops + live measurements from the real dev Worker (authenticated) to nail down the masthead-height and anchor-offset bugs. Scripts live in scratchpad/crop.mjs, mh.mjs, anchor.mjs, hscroll.mjs; crops in scratchpad/crops/.\n\nSTRENGTHS (why the score is high despite 11 findings): Light/dark parity is excellent \u2014 every surface I checked (home-app, type gpath, matrix heatmap, network ring, lexicon 34k-px index) converts cleanly to dark with no unconverted white panels, no broken shadows, and function hues re-tuned per theme (palette.ts). Responsive containment is rock-solid: measured zero horizontal document scroll at 390px on matrix/type/lexicon/network/calculator (overflow-x:clip on html + per-container overflow-x:auto). Mobile collapse is thoughtful and correct: masthead \u2192 icons+hamburger, section chips wrap, glossary popover becomes a bottom sheet, calculator gets a fixed dock, the rail uses dvh + env(safe-area-inset-bottom) and starts closed as an overlay. The design system is coherent and genuinely encodes meaning (hue=element, size=rank, the 5-property grammar), spacing/measure discipline is consistent, and the breakpoint set is contract-tested. This is a mature, cohesive UI; the weaknesses are concentrated in wayfinding on very tall pages and a few bounded layout/contrast bugs.\n\nREFERENCED, NOT RE-FILED (per brief, owned by other audits): (1) DESIGN-SYSTEM.md documents a brand palette (N #6B3BC4 / S #8A5410 / T #0D6560 / F #AE3355) that ships nowhere \u2014 the shipped FN_COLOR is Ne #4C4899 / Se #855723 / Te #326758 / Fe #983E4A; the documented brand hues appear in no rendered surface. Owned by the palette/brand audit. (2) The marketing hero worked-example has ENTP/INFP ease directions swapped vs the engine (P0) \u2014 owned by the marketing audit. (3) The systemic axe a11y set (dlitem, heading-order, landmark/region on onramp+calculator) is a11y-audit territory; I cross-checked and filed only the pieces with a direct display consequence (gpath contrast = visual; heading-order and dlitem as hierarchy/structure display-semantics).\n\nDENSITY VERDICT (the headline question): Yes, the tall pages are wayfinding-hostile as shipped \u2014 not because the content is wrong but because navigation aids are placed once at the top and never persist, and the sticky masthead's own links are hidden behind a hamburger by default. Type ~16.9k px desktop / ~27.9k px mobile and lexicon ~34\u201335k px are the acute cases. Fixing finding #1 (sticky in-page nav + scroll-spy) and #2 (don't hide desktop nav) would resolve most of the density pain without cutting content.",
+ "score": 7.5,
+ "scoreRationale": "A mature, internally-coherent design system executed with unusual discipline: excellent light/dark parity (no unconverted surfaces on any page I checked), zero horizontal scroll at 390px on the widest pages, thoughtful mobile collapse (bottom-sheet popover, dvh rail, safe-area insets), and a color system that actually encodes meaning. It loses points for a concentrated set of real issues: tall reading pages with no persistent wayfinding (P1), the default-open chat rail hiding the entire desktop nav behind a hamburger (P2), a genuine correctness bug where the masthead wraps to two rows in a laptop-width band and breaks the --masthead-h token so deep-link anchors land hidden (P2, verified live: heading 30px behind a 111px masthead), a WCAG-AA contrast fail on the gateway-path labels in both themes (P2), and fonts hotlinked from Google with no self-host (P2). None are catastrophic and most are bounded, so the work sits solidly in the 'good, with fixable seams' range rather than higher.",
+ "strongestThing": "Light/dark parity and responsive containment are handled with real rigor: every surface converts cleanly to dark (function hues re-tuned per theme, no orphaned white panels, shadows intact) across pages as long as the 34k-px lexicon index, and there is measured zero horizontal document scroll at 390px on matrix/type/lexicon/network/calculator \u2014 the wide artefacts (16\u00d716 matrix, big SVG figures) scroll inside their own overflow containers while html uses overflow-x:clip. Combined with the thoughtful mobile collapse (masthead\u2192icons+hamburger, chips wrap, popover\u2192bottom sheet, dvh + safe-area-inset rail), it reflects a design system that was engineered, contract-tested, and held to its own invariants rather than eyeballed."
+}

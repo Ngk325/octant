@@ -1,0 +1,404 @@
+{
+  "pages": [
+    {
+      "route": "/partners",
+      "file": "mkt-partners-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant for partners — put the relational layer inside your offering",
+      "h1": "Octant, inside your offering.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare",
+      "file": "mkt-compare-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant compared — MBTI, Socionics and the Big Five",
+      "h1": "How Octant differs.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/mbti",
+      "file": "mkt-compare-mbti-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant vs MBTI — what the four letters leave out",
+      "h1": "Octant and MBTI.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/socionics",
+      "file": "mkt-compare-socionics-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant vs Socionics — the same relations, computed rather than tabulated",
+      "h1": "Octant and Socionics.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/big-five",
+      "file": "mkt-compare-bigfive-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant vs the Big Five — measurement and mechanism are different jobs",
+      "h1": "Octant and the Big Five.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/onramp",
+      "file": "mkt-onramp-1-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "See your pattern.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=2",
+      "file": "mkt-onramp-2-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Walking into something new and unstructured — what happens first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=5",
+      "file": "mkt-onramp-5-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "When you're trying to understand something, which comes first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=11&email=probe%40example.com",
+      "file": "mkt-onramp-11-desktop-light.png",
+      "viewport": "desktop",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Your pattern is one of about 16 of the sixteen.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/partners",
+      "file": "mkt-partners-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant for partners — put the relational layer inside your offering",
+      "h1": "Octant, inside your offering.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare",
+      "file": "mkt-compare-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant compared — MBTI, Socionics and the Big Five",
+      "h1": "How Octant differs.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/mbti",
+      "file": "mkt-compare-mbti-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant vs MBTI — what the four letters leave out",
+      "h1": "Octant and MBTI.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/socionics",
+      "file": "mkt-compare-socionics-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant vs Socionics — the same relations, computed rather than tabulated",
+      "h1": "Octant and Socionics.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/big-five",
+      "file": "mkt-compare-bigfive-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant vs the Big Five — measurement and mechanism are different jobs",
+      "h1": "Octant and the Big Five.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/onramp",
+      "file": "mkt-onramp-1-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "See your pattern.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=2",
+      "file": "mkt-onramp-2-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Walking into something new and unstructured — what happens first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=5",
+      "file": "mkt-onramp-5-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "When you're trying to understand something, which comes first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=11&email=probe%40example.com",
+      "file": "mkt-onramp-11-desktop-dark.png",
+      "viewport": "desktop",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Your pattern is one of about 16 of the sixteen.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/partners",
+      "file": "mkt-partners-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant for partners — put the relational layer inside your offering",
+      "h1": "Octant, inside your offering.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare",
+      "file": "mkt-compare-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant compared — MBTI, Socionics and the Big Five",
+      "h1": "How Octant differs.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/mbti",
+      "file": "mkt-compare-mbti-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant vs MBTI — what the four letters leave out",
+      "h1": "Octant and MBTI.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/socionics",
+      "file": "mkt-compare-socionics-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant vs Socionics — the same relations, computed rather than tabulated",
+      "h1": "Octant and Socionics.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/big-five",
+      "file": "mkt-compare-bigfive-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant vs the Big Five — measurement and mechanism are different jobs",
+      "h1": "Octant and the Big Five.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/onramp",
+      "file": "mkt-onramp-1-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "See your pattern.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=2",
+      "file": "mkt-onramp-2-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Walking into something new and unstructured — what happens first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=5",
+      "file": "mkt-onramp-5-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "When you're trying to understand something, which comes first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=11&email=probe%40example.com",
+      "file": "mkt-onramp-11-mobile-light.png",
+      "viewport": "mobile",
+      "theme": "light",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Your pattern is one of about 16 of the sixteen.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/partners",
+      "file": "mkt-partners-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant for partners — put the relational layer inside your offering",
+      "h1": "Octant, inside your offering.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare",
+      "file": "mkt-compare-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant compared — MBTI, Socionics and the Big Five",
+      "h1": "How Octant differs.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/mbti",
+      "file": "mkt-compare-mbti-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant vs MBTI — what the four letters leave out",
+      "h1": "Octant and MBTI.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/socionics",
+      "file": "mkt-compare-socionics-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant vs Socionics — the same relations, computed rather than tabulated",
+      "h1": "Octant and Socionics.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/compare/big-five",
+      "file": "mkt-compare-bigfive-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant vs the Big Five — measurement and mechanism are different jobs",
+      "h1": "Octant and the Big Five.",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_CONNECTION_RESET"
+      ]
+    },
+    {
+      "route": "/onramp",
+      "file": "mkt-onramp-1-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "See your pattern.",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=2",
+      "file": "mkt-onramp-2-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Walking into something new and unstructured — what happens first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=5",
+      "file": "mkt-onramp-5-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "When you're trying to understand something, which comes first?",
+      "consoleErrors": []
+    },
+    {
+      "route": "/onramp?step=11&email=probe%40example.com",
+      "file": "mkt-onramp-11-mobile-dark.png",
+      "viewport": "mobile",
+      "theme": "dark",
+      "status": 200,
+      "title": "Octant — find your pattern",
+      "h1": "Your pattern is one of about 16 of the sixteen.",
+      "consoleErrors": []
+    }
+  ]
+}
