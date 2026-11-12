@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router";
 import Home from "./views/Home";
 import Welcome, { ONBOARDING_DONE_KEY } from "./views/Welcome";
+
+const ExperiencePrototype = lazy(() => import("./views/ExperiencePrototype"));
 import Learn from "./views/Learn";
 import Types from "./views/Types";
 import TypeReader from "./views/TypeReader";
@@ -96,7 +98,7 @@ export default function App() {
      — because showing the fully-loaded application is exactly the problem
      it exists to defer. Still inside .app/.main/.main-inner for the same
      canvas, padding and max-width as everywhere else. */
-  if (pathname.startsWith("/welcome")) {
+  if (pathname.startsWith("/welcome") || pathname === "/prototype/experience") {
     return (
       <div className="app">
         <div className="main">
@@ -105,6 +107,7 @@ export default function App() {
               <Routes>
                 <Route path="/welcome" element={<Welcome />} />
                 <Route path="/welcome/:step" element={<Welcome />} />
+                <Route path="/prototype/experience" element={<Suspense fallback={<p role="status">Opening the design study…</p>}><ExperiencePrototype /></Suspense>} />
               </Routes>
             </ErrorBoundary>
           </main>

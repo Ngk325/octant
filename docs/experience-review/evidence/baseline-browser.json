@@ -1,0 +1,577 @@
+[
+  {
+    "route": "/",
+    "label": "desktop",
+    "theme": "light",
+    "title": "Read the wiring.",
+    "height": 3239,
+    "width": 1440,
+    "words": 669,
+    "violations": []
+  },
+  {
+    "route": "/type/ENTP",
+    "label": "desktop",
+    "theme": "light",
+    "title": "ENTP",
+    "height": 16833,
+    "width": 1440,
+    "words": 3978,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 6
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 84
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/sides/ENTP",
+    "label": "desktop",
+    "theme": "light",
+    "title": "The four sides, in practice",
+    "height": 7041,
+    "width": 1440,
+    "words": 2025,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 4
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 22
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/pair/ENTP/INFP",
+    "label": "desktop",
+    "theme": "light",
+    "title": "How INFP should handle ENTP",
+    "height": 4531,
+    "width": 1440,
+    "words": 1036,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 8
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/network",
+    "label": "desktop",
+    "theme": "light",
+    "title": "Read a whole group",
+    "height": 1800,
+    "width": 1440,
+    "words": 473,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 12
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/learn",
+    "label": "desktop",
+    "theme": "light",
+    "title": "Learn this from scratch",
+    "height": 2081,
+    "width": 1440,
+    "words": 439,
+    "violations": [
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/lexicon",
+    "label": "desktop",
+    "theme": "light",
+    "title": "Every term, defined",
+    "height": 33787,
+    "width": 1440,
+    "words": 8442,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 52
+      }
+    ]
+  },
+  {
+    "route": "/",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "Read the wiring.",
+    "height": 3239,
+    "width": 1440,
+    "words": 669,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/type/ENTP",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "ENTP",
+    "height": 16833,
+    "width": 1440,
+    "words": 3978,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 18
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 84
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/sides/ENTP",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "The four sides, in practice",
+    "height": 7041,
+    "width": 1440,
+    "words": 2025,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 14
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 22
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/pair/ENTP/INFP",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "How INFP should handle ENTP",
+    "height": 4531,
+    "width": 1440,
+    "words": 1036,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 2
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 8
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/network",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "Read a whole group",
+    "height": 1800,
+    "width": 1440,
+    "words": 473,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 1
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 12
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/learn",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "Learn this from scratch",
+    "height": 2081,
+    "width": 1440,
+    "words": 439,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 2
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/lexicon",
+    "label": "desktop",
+    "theme": "dark",
+    "title": "Every term, defined",
+    "height": 33787,
+    "width": 1440,
+    "words": 8442,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 159
+      }
+    ]
+  },
+  {
+    "route": "/",
+    "label": "mobile",
+    "theme": "light",
+    "title": "Read the wiring.",
+    "height": 4809,
+    "width": 390,
+    "words": 669,
+    "violations": []
+  },
+  {
+    "route": "/type/ENTP",
+    "label": "mobile",
+    "theme": "light",
+    "title": "ENTP",
+    "height": 27806,
+    "width": 390,
+    "words": 3968,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 6
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 84
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/sides/ENTP",
+    "label": "mobile",
+    "theme": "light",
+    "title": "The four sides, in practice",
+    "height": 12590,
+    "width": 390,
+    "words": 2025,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 4
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 22
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/pair/ENTP/INFP",
+    "label": "mobile",
+    "theme": "light",
+    "title": "How INFP should handle ENTP",
+    "height": 8024,
+    "width": 390,
+    "words": 1034,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 8
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/network",
+    "label": "mobile",
+    "theme": "light",
+    "title": "Read a whole group",
+    "height": 3470,
+    "width": 390,
+    "words": 473,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 12
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/learn",
+    "label": "mobile",
+    "theme": "light",
+    "title": "Learn this from scratch",
+    "height": 3325,
+    "width": 390,
+    "words": 439,
+    "violations": [
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/lexicon",
+    "label": "mobile",
+    "theme": "light",
+    "title": "Every term, defined",
+    "height": 71391,
+    "width": 390,
+    "words": 8412,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 52
+      }
+    ]
+  },
+  {
+    "route": "/",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "Read the wiring.",
+    "height": 4809,
+    "width": 390,
+    "words": 669,
+    "violations": []
+  },
+  {
+    "route": "/type/ENTP",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "ENTP",
+    "height": 27806,
+    "width": 390,
+    "words": 3968,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 17
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 84
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/sides/ENTP",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "The four sides, in practice",
+    "height": 12590,
+    "width": 390,
+    "words": 2025,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 13
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 22
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/pair/ENTP/INFP",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "How INFP should handle ENTP",
+    "height": 8024,
+    "width": 390,
+    "words": 1034,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 1
+      },
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 8
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/network",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "Read a whole group",
+    "height": 3470,
+    "width": 390,
+    "words": 473,
+    "violations": [
+      {
+        "id": "dlitem",
+        "impact": "serious",
+        "nodes": 12
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/learn",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "Learn this from scratch",
+    "height": 3325,
+    "width": 390,
+    "words": 439,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 1
+      },
+      {
+        "id": "heading-order",
+        "impact": "moderate",
+        "nodes": 1
+      }
+    ]
+  },
+  {
+    "route": "/lexicon",
+    "label": "mobile",
+    "theme": "dark",
+    "title": "Every term, defined",
+    "height": 71391,
+    "width": 390,
+    "words": 8412,
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": 158
+      }
+    ]
+  }
+]

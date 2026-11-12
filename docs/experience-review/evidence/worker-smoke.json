@@ -1,0 +1,37 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "app_shell": false
+  },
+  {
+    "route": "/read",
+    "status": 200,
+    "app_shell": false
+  },
+  {
+    "route": "/type/ENTP",
+    "status": 401,
+    "app_shell": false
+  },
+  {
+    "route": "/prototype/experience",
+    "status": 401,
+    "app_shell": false
+  },
+  {
+    "route": "/api/export/stack/ENTP",
+    "status": 401,
+    "app_shell": false
+  },
+  {
+    "route": "/assets/index-BIoAbLMH.js",
+    "anonymous": 401,
+    "authenticated": 200
+  },
+  {
+    "route": "authenticated /api/export/stack/ENTP",
+    "status": 200,
+    "expected_stack": true
+  }
+]

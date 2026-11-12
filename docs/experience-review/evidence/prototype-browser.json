@@ -1,0 +1,38 @@
+[
+  {
+    "label": "desktop",
+    "theme": "light",
+    "errors": [],
+    "width": 1440,
+    "viewport": 1440,
+    "svgTextMin": 22.88558294946091,
+    "violations": []
+  },
+  {
+    "label": "desktop",
+    "theme": "dark",
+    "errors": [],
+    "width": 1440,
+    "viewport": 1440,
+    "svgTextMin": 22.88558294946091,
+    "violations": []
+  },
+  {
+    "label": "mobile",
+    "theme": "light",
+    "errors": [],
+    "width": 390,
+    "viewport": 390,
+    "svgTextMin": 15.342187347589062,
+    "violations": []
+  },
+  {
+    "label": "mobile",
+    "theme": "dark",
+    "errors": [],
+    "width": 390,
+    "viewport": 390,
+    "svgTextMin": 15.342187347589062,
+    "violations": []
+  }
+]
