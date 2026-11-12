@@ -317,6 +317,22 @@ and `tests/engine.test.ts` asserts the TypeScript port reproduces its structural
 handover is complete: **TypeScript is canonical**, and the authored tables in `data.ts` are
 edited directly — regenerating it is not part of the build and has not been for some time.
 
+## Next build: visual-first product excellence (proposed)
+
+**Codex / next-thread starting point:** [AGENTS.md](./AGENTS.md) and
+[docs/NEXT-THREAD-START-HERE.md](./docs/NEXT-THREAD-START-HERE.md).
+The complete proposal is distributed across
+[product/UX blueprint](./docs/PRODUCT-EXCELLENCE-BLUEPRINT.md),
+[anonymized cognitive-development research](./docs/COGNITIVE-DEVELOPMENT-RESEARCH.md),
+[all-type practice spec](./docs/PRACTICE-ENGINE-SPEC.md),
+[PDF + practitioner strategy](./docs/PDF-GUIDES-AND-PRACTITIONER-STUDIO.md), and
+[QA/UAT/release gates](./docs/QA-UAT-RELEASE-GATES.md).
+
+These files are **design/handoff proposals, not shipped features**. Reconcile open PRs
+#56 (prior full audit and approved design direction), #57 (P0 fixes), #37 and #38
+before starting implementation. Preserve the derived engine, public/private access
+boundary, and current attribution rules; do not merge or deploy without owner approval.
+
 ## Deliberately deferred
 
 - A pluggable chat-model provider (the Gemini specifics are ~80 lines of `chat.ts`; the
