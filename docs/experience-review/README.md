@@ -93,6 +93,10 @@ These compare the existing field guide with the proposed experience; this is not
 | Mobile light | [Before](evidence/before-sides-ENTP-mobile-light.png) | [Prototype](evidence/after-experience-mobile-light.png) |
 | Mobile dark | [Before](evidence/before-sides-ENTP-mobile-dark.png) | [Prototype](evidence/after-experience-mobile-dark.png) |
 
+A [32-second scripted interaction capture](evidence/prototype-walkthrough.mp4) demonstrates side selection, terminology, expression choice, mechanics and type change. It is a browser walkthrough, not a participant UAT session.
+
+To reproduce the browser check, use the retained `/workspace/setup-tools` Node project, where Playwright and axe are installed. Copy `evidence/browser-check.mjs` there and run it with the local dev server active. The script waits for visible headings and fails on page exceptions, document overflow, labels below 14px, or serious/critical axe violations.
+
 ## Formative UAT: pending, zero participants
 
 Use novices, enthusiasts and practitioners; start with 5–8 per cohort as a qualitative target. Obtain consent for recordings. Without coaching, ask participants to: choose an entry within 60 seconds; trace one function from starting pattern to selected side; change type and explain what changed; locate exact mechanics; distinguish authored expression from a measured state; explain what the model cannot tell them. Record task success, time, wrong turns and verbatim paraphrase with participant permission. Target ≥80% correct mechanism explanation and ≥90% task success, report denominators and limitations. These targets are not achieved results.
